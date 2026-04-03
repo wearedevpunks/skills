@@ -1,0 +1,7 @@
+interface:
+  display_name: "Domain Plan"
+  short_description: "Plan a domain and sync its backlog"
+  default_prompt: "Use $domain-plan to create an execution-ready domain plan and sync tasks to the chosen backlog."
+
+policy:
+  allow_implicit_invocation: false

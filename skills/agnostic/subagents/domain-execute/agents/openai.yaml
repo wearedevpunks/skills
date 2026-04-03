@@ -1,0 +1,7 @@
+interface:
+  display_name: "Domain Execute"
+  short_description: "Execute an approved domain swarm plan"
+  default_prompt: "Use $domain-execute to run an approved domain plan with the selected swarm executor."
+
+policy:
+  allow_implicit_invocation: false

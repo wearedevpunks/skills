@@ -1,0 +1,4 @@
+interface:
+  display_name: "Parallel Research"
+  short_description: "Parallelize readonly subagent exploration"
+  default_prompt: "Use $parallel-research to fan out readonly research and synthesize the results."

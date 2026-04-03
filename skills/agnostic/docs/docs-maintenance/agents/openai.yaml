@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Maintenance"
+  short_description: "Repo docs update routing and rules"
+  default_prompt: "Use $docs-maintenance to decide whether a code change requires repo doc updates and to keep docs/ human-facing and implementation-grounded."

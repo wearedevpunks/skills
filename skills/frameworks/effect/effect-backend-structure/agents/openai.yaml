@@ -1,0 +1,4 @@
+interface:
+  display_name: "Effect Backend Structure"
+  short_description: "Repo-specific Effect backend architecture"
+  default_prompt: "Use $effect-backend-structure to shape or bootstrap Effect backend code in packages/api."

@@ -1,0 +1,2 @@
+- `pack-topology.md` Public skills repo now mirrors CLI pack taxonomy in its physical directory layout so pack intent is visible at authoring time and pack drift is easier to spot before vendoring.
+- `framework-skill-portability.md` Framework skills must avoid product-specific workspace names like `packages/api` unless clearly marked as placeholders; reusable skills should speak in terms of backend/app roots and local conventions.
