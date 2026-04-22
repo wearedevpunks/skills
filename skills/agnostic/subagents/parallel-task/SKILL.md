@@ -1,158 +1,125 @@
 ---
 name: parallel-task
-description: >
-  Only to be triggered by explicit /parallel-task commands. 
+description: Run wave-based parallel execution for an approved plan. Only trigger from explicit `/parallel-task` commands when the user wants direct orchestration of unblocked tasks.
 ---
 
-# Parallel Task Executor
+# Parallel Task
 
-You are an Orchestrator for subagents. Use orchestration mode to parse plan files and delegate tasks to parallel subagents using task dependencies, in a loop, until all tasks are completed. Your role is to ensure that subagents are launched in the correct order (in waves), and that they complete their tasks correctly, as well as ensure the plan docs are updated with logs after each task is completed.
+This is the explicit-command entrypoint for the same wave-based execution contract used by `$domain-execute` in `parallel` mode.
+
+Own the orchestration loop yourself. Worker spawning is only one part of the job.
 
 ## Process
 
-### Step 1: Parse Request
+### 1. Parse the request
 
 Extract from user request:
-1. **Plan file**: The markdown plan to read
-2. **Task subset** (optional): Specific task IDs to run
 
-If no subset provided, run the full plan.
+- **Plan file**: the markdown plan to read
+- **Task subset**: optional specific task ids to run
 
-### Step 2: Read & Parse Plan
+If no subset is provided, run the full plan.
 
-1. Find task subsections (e.g., `### T1:` or `### Task 1.1:`)
-2. For each task, extract:
-   - Task ID and name
-   - **depends_on** list (from `- **depends_on**: [...]`)
-   - Full content (description, location, acceptance criteria, validation)
-3. Build task list
-4. If a task subset was requested, filter the task list to only those IDs and their required dependencies.
+### 2. Read and parse the plan
 
-### Step 3: Launch Subagents
+Find task subsections such as `### T1:` or `### Task 1.1:`.
 
-For each **unblocked** task, launch subagent with:
-- **description**: "Implement task [ID]: [name]"
-- **prompt**: Use template below
+For each task, extract:
 
-Launch all unblocked tasks in parallel. A task is unblocked if all IDs in its depends_on list are complete.
+- task id and name
+- `depends_on`
+- location
+- description
+- acceptance criteria
+- validation
+- `tdd_target`
+- `review_mode`
+- backlog metadata when present
+- relevant plan-level risks or constraints
 
-### Task Prompt Template
+Build the task list from that data.
 
-```
-You are implementing a specific task from a development plan.
+If a task subset was requested, filter to those ids plus every required dependency.
 
-## Context
-- Plan: [filename]
-- Goals: [relevant overview from plan]
-- Dependencies: [prerequisites for this task]
-- Related tasks: [tasks that depend on or are depended on by this task]
-- Constraints: [risks from plan]
+### 3. Build the current wave
 
-## Your Task
-**Task [ID]: [Name]**
+A task is unblocked only when all ids in its `depends_on` list are complete.
 
-Location: [File paths]
-Description: [Full description]
+For the current wave:
 
-Acceptance Criteria:
-[List from plan]
+- include every unblocked task
+- exclude already-complete tasks
+- exclude tasks blocked by failed prerequisites
 
-Validation:
-[Tests or verification from plan]
+Launch all unblocked tasks in parallel.
 
-## Instructions
-1. Read the working plan and fully understand this task before coding.
-2. Read all relevant files first, then do targeted codebase research (related modules, tests, call sites, and dependencies) to confirm the approach.
-3. Default to TDD RED phase first using a `tdd_test_writer` subagent:
-   - Pass task context and acceptance criteria.
-   - Require tests-only edits.
-   - Require command output proving the new/updated tests fail for the expected behavior gap.
-   - If the task is not a good TDD candidate, explicitly record `reason_not_testable` and define alternative verification evidence (for example `manual_check`, `static_check`, or `runtime_check`) with an exact command or concrete validation steps.
-4. Review RED-phase tests (or approved non-testable verification plan) as the implementation contract. Do not weaken or remove tests unless requirements changed.
-5. Implement production changes for all acceptance criteria.
-6. Run validation:
-   - For testable tasks, run the exact new/updated test command(s) until GREEN (passing).
-   - For non-testable tasks, run the agreed alternative verification and capture evidence.
-   - Run any additional validation steps from the plan if feasible.
-7. Commit your work.
-   - Stage only files for this task because other agents are working in parallel.
-   - NEVER PUSH. ONLY COMMIT.
-8. After the commit, update the `*-plan.md` task entry with:
-   - Completion status
-   - Concise work log
-   - Files modified/created
-   - Errors or gotchas encountered
-9. Return summary of:
-   - Files modified/created
-   - Changes made
-   - How criteria are satisfied
-   - Verification evidence: RED -> GREEN or documented non-testable alternative
-   - Validation performed or deferred
+### 4. Spawn workers
 
-## Important
-- Be careful with paths
-- Stop and describe blockers if encountered
-- Focus on this specific task
-```
+Each worker brief must include:
 
-Ensure that each task is only considered complete after either RED -> GREEN test evidence or explicit non-testable verification evidence is provided, then the task is committed and the plan is updated.
+- plan context
+- task id and name
+- dependencies
+- related tasks when relevant
+- file locations
+- full description
+- acceptance criteria
+- validation contract
+- `tdd_target`
+- `review_mode`
+- relevant risks or constraints
 
-### Step 4: Check and Validate.
+Each worker brief must require:
 
-After subagents complete their work:
-1. Inspect their outputs for correctness and completeness.
-2. Validate the results against the expected outcomes.
-3. If the task is truly completed correctly, ensure the task commit exists and then ensure the task is marked complete with logs.
-4. If a task was not successful, have the agent retry or escalate the issue.
-5. Ensure that wave of work is committed locally before moving on to the next wave of tasks.
+1. read the plan and relevant files first
+2. do targeted codebase research before editing
+3. start from `tdd_target` and capture RED evidence when the task is testable
+4. record `reason_not_testable` plus exact alternative verification when the task is not a good TDD candidate
+5. treat RED-phase tests or the approved non-testable verification plan as the implementation contract
+6. implement only the assigned task scope
+7. run the exact task validation before returning
+8. update the plan entry with status, log, touched files, and gotchas before handoff closes
 
-### Step 5: Repeat
+Worker output must return:
 
-1. Review the plan again to see what new set of unblocked tasks are available.
-2. Continue launching unblocked tasks in parallel until plan is done.
-3. Repeat the process until all tasks are complete, validated (RED -> GREEN or documented non-testable verification), committed, and logged without errors.
+- files modified or created
+- concise summary of changes
+- how acceptance criteria are satisfied
+- verification evidence: RED -> GREEN or the exact alternative verification run
+- validation intentionally deferred
+- anything blocked or risky
 
+### 5. Review and validate the wave
 
-## Error Handling
+After workers return:
 
-- Task subset not found: List available task IDs
-- Parse failure: Show what was tried, ask for clarification
+1. inspect outputs for correctness and completeness
+2. validate against the task contract
+3. ensure the plan entry reflects completed status, execution log, and touched files
+4. retry or escalate failed work instead of quietly advancing
 
-## Example Usage
+Move to the next wave only after the current wave is validated and logged.
 
-```
-'Implement the plan using parallel task skill'
-/parallel-task plan.md
-/parallel-task ./plans/auth-plan.md T1 T2 T4
-/parallel-task user-profile-plan.md --tasks T3 T7
-```
+### 6. Repeat
 
-## Execution Summary Template
+Re-read the plan state, compute the next wave, and continue until:
 
-```markdown
-# Execution Summary
+- all reachable tasks are complete
+- or a real blocker remains
 
-## Tasks Assigned: [N]
+## Completion rule
 
-### Completed
-- Task [ID]: [Name] - [Brief summary]
+A task is complete only when all are true:
 
-### Issues
-- Task [ID]: [Name]
-  - Issue: [What went wrong]
-  - Resolution: [How resolved or what's needed]
+- assigned scope is finished
+- acceptance criteria are satisfied
+- RED -> GREEN evidence exists for testable tasks, or exact alternative verification exists
+- validation evidence matches the task contract
+- the plan entry reflects status, log, and touched files
 
-### Blocked
-- Task [ID]: [Name]
-  - Blocker: [What's preventing completion]
-  - Next Steps: [What needs to happen]
+If any are missing, the task is not done yet.
 
-## Overall Status
-[Completion summary]
+## Error handling
 
-## Files Modified
-[List of changed files]
-
-## Next Steps
-[Recommendations]
-```
+- Task subset not found: list available task ids
+- Parse failure: show what was tried, ask for clarification

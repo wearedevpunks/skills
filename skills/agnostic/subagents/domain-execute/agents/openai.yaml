@@ -1,7 +1,7 @@
 interface:
   display_name: "Domain Execute"
-  short_description: "Execute an approved domain swarm plan"
-  default_prompt: "Use $domain-execute to run an approved domain plan with the selected swarm executor."
+  short_description: "Execute an approved plan with explicit validation"
+  default_prompt: "Use $domain-execute to run an approved plan in sequential or parallel mode with TDD-first task briefs, review-mode validation, plan upkeep, and simplify at the end."
 
 policy:
   allow_implicit_invocation: false

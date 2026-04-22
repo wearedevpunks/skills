@@ -1,2 +1,3 @@
 - `pack-topology.md` Public skills repo now mirrors CLI pack taxonomy in its physical directory layout so pack intent is visible at authoring time and pack drift is easier to spot before vendoring.
 - `framework-skill-portability.md` Framework skills must avoid product-specific workspace names like `packages/api` unless clearly marked as placeholders; reusable skills should speak in terms of backend/app roots and local conventions.
+- `skill-backport-boundaries.md` Backports from product repos often mix portable orchestration logic with app-specific wiki/docs flows; copy the reusable contract, strip product paths, and map internal wrapper names to public skill names instead of mirroring internals verbatim.
