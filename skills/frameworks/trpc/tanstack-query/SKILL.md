@@ -1055,4 +1055,4 @@ select: (data) => data.filter(todo => todo.completed)
 
 ---
 
-**Official Docs**: https://tanstack.com/query/latest | **v5 Migration**: https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5 | **GitHub**: https://github.com/TanStack/query | **Source Context**: use `opensrc --modify false @tanstack/react-query`
+**Official Docs**: https://tanstack.com/query/latest | **v5 Migration**: https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5 | **GitHub**: https://github.com/TanStack/query | **Source Context**: run `opensrc path @tanstack/react-query`, then inspect the returned checkout path

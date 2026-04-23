@@ -35,7 +35,7 @@ Use `opensrc` next when the guide is not enough or you need real source context:
 - `opensrc/repos/github.com/Effect-TS/effect/packages/sql`
 - `opensrc/repos/github.com/Effect-TS/effect/packages/sql-drizzle`
 
-For non-Effect libraries, prefer `opensrc --modify false <package>` over guessing.
+For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/repo` to resolve the local checkout path, then inspect there instead of guessing.
 
 ## Structure rules
 

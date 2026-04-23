@@ -31,7 +31,7 @@ Read the minimum reference set before editing:
 - **Test code**: `references/test-patterns.md`
 - **UI / Effect-Atom code**: `references/effect-atom-patterns.md`
 
-If uncertain about Effect library behavior, inspect local source context with `opensrc --modify false` instead of guessing.
+If uncertain about Effect library behavior, run `opensrc path effect` or `opensrc path Effect-TS/effect` to resolve the local checkout path, then inspect there instead of guessing.
 
 ### Step 3: Build a Pre-Write Checklist
 

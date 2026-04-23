@@ -46,7 +46,7 @@ Read, in this order:
 4. `<wiki-root>/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
 5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
 
-If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.
+If package or framework behavior matters, run `opensrc path <package>` or `opensrc path owner/repo` to resolve the local checkout path, then inspect there before guessing.
 
 ## 4. Prepare execution notes
 

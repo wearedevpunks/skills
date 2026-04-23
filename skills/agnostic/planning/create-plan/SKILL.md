@@ -30,7 +30,7 @@ Create a plan first. Never implement code in this skill.
 3. Read `references/grill-phase.md` and run `$grill-me` as an explicit inner phase.
 4. Update a running decision ledger after every answer so the user never has to reconstruct state from memory.
 5. Insert a synthesis checkpoint before the thread gets noisy, then continue only if more ambiguity reduction is still needed.
-6. Research with `opensrc --modify false` and primary-source web docs when current behavior matters.
+6. Research with `opensrc path <package>` / `opensrc path owner/repo` and primary-source web docs when current behavior matters.
 7. Read `references/planner-phase.md` and run `$swarm-planner` as an explicit inner phase.
 8. Read `references/tdd-phase.md` and run `$tdd` as an explicit inner phase.
 9. Read `references/backlog-sync.md` and sync one backlog item per task.

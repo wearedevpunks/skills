@@ -4,7 +4,7 @@ Use this reference for the `$swarm-planner` phase.
 
 ## Research before task design
 
-Use `opensrc --modify false` when source context from installed or external packages matters.
+Use `opensrc path <package>` or `opensrc path owner/repo` when source context from installed or external packages matters, then inspect the returned checkout path.
 
 Use web search when `opensrc` is insufficient or when current API behavior matters.
 

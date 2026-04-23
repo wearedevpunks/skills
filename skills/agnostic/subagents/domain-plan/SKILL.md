@@ -30,7 +30,7 @@ Create a plan first. Do not implement code in this skill.
 2. Keep a visible planning control panel in the conversation: current phase, locked decisions, open decisions, next step.
 3. Run `$grill-me` as an explicit ambiguity-reduction phase.
 4. Update a running decision ledger after every answer.
-5. Research with `opensrc --modify false` and primary-source docs when current behavior matters.
+5. Research with `opensrc path <package>` / `opensrc path owner/repo` and primary-source docs when current behavior matters.
 6. Run `$swarm-planner` as the task-graph phase.
 7. Run `$tdd` while shaping each execution task.
 8. Normalize the saved plan so it stands alone without hidden chat context.
@@ -52,7 +52,7 @@ Create a plan first. Do not implement code in this skill.
    - backlog context if that target requires it
 
 3. Research before planning.
-   Use `opensrc --modify false` for external packages or repos when source context helps.
+   Use `opensrc path <package>` or `opensrc path owner/repo` for external packages or repos when source context helps.
    Use web search when source retrieval is insufficient or when current API behavior matters.
    Prefer primary sources.
 
