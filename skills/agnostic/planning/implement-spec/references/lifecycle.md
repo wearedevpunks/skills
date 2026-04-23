@@ -15,7 +15,7 @@ Do not recreate wrapper skills for these modes. Keep the routing here and load o
 
 Execution must stay grounded in:
 
-`apps/wiki/specs/<domain>/<spec>/`
+`<wiki-root>/specs/<domain>/<spec>/`
 
 Required files:
 
@@ -40,10 +40,10 @@ Normalize to the containing spec folder before doing any work.
 
 Read, in this order:
 
-1. `apps/wiki/AGENTS.md`
-2. `apps/wiki/specs/<domain>/<spec>/SPEC.md`
-3. `apps/wiki/specs/<domain>/<spec>/PLAN.md`
-4. `apps/wiki/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
+1. `<wiki-root>/AGENTS.md`
+2. `<wiki-root>/specs/<domain>/<spec>/SPEC.md`
+3. `<wiki-root>/specs/<domain>/<spec>/PLAN.md`
+4. `<wiki-root>/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
 5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
 
 If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.

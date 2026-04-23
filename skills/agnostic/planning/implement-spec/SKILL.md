@@ -36,7 +36,7 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 
 ## Quick start
 
-1. Resolve the target spec folder under `apps/wiki/specs/<domain>/<spec>/`.
+1. Resolve the target spec folder under `<wiki-root>/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
 3. Choose the execution mode explicitly:
    - Read `references/sequential.md` for one-thread execution.

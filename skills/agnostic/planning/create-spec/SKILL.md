@@ -12,16 +12,20 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Upstream:** new idea, feature request, or problem statement
 - **Delegates to:** none
 - **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
-- **Entry conditions:** wiki domain can be resolved, or the user creates one first with `create-wiki-domain`
+- **Entry conditions:** wiki domain can be resolved from the existing wiki scaffold
 - **Stop conditions:** `SPEC.md`, wiki index, and wiki log are updated, then wait for user review
 
 This skill creates `SPEC.md` files that stay in the problem space: what to build, who it is for, why it matters, what counts as done, and what is out of scope.
 
-The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
+The output lives at `<wiki-root>/specs/<domain>/<folder-name>/SPEC.md`.
+
+`<wiki-root>` is repo-shape dependent:
+- monorepo: `apps/wiki`
+- single-repo: `wiki`
 
 ## Quick start
 
-1. Read `apps/wiki/AGENTS.md` first. Stop if the wiki is not bootstrapped.
+1. Read `<wiki-root>/AGENTS.md` first. Stop if the wiki is not bootstrapped.
 2. Read `references/discovery.md` and orient yourself in the right wiki domain before asking questions.
 3. If the user did not provide a concrete request, ask for a rough description first.
 4. Read `references/questioning.md` and ask only the clarifying questions needed to write a trustworthy spec.
