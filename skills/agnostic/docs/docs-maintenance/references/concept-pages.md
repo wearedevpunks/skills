@@ -6,8 +6,8 @@ Use this reference during Step 6 of `docs-maintenance`.
 
 For each extracted concept:
 
-1. Read existing flow pages under `apps/wiki/domains/<domain>/flows/` for cross-linking.
-2. Scan `apps/wiki/raw/` recursively and collect files where frontmatter `ingested: false` or `ingested` is absent.
+1. Read existing flow pages under `<wiki-root>/domains/<domain>/flows/` for cross-linking.
+2. Scan `<wiki-root>/raw/` recursively and collect files where frontmatter `ingested: false` or `ingested` is absent.
 3. Use relevant raw content only as supplementary material. Do not mark raw files as ingested here.
 
 ## Output contract
@@ -22,7 +22,7 @@ For each extracted concept:
    - `implemented` when `IMPLEMENTATION-NOTES.md` is present
 6. Derive the output path:
    - slugify the concept name to kebab-case
-   - write to `apps/wiki/domains/<domain>/concepts/<concept-name>.md`
+   - write to `<wiki-root>/domains/<domain>/concepts/<concept-name>.md`
 7. Write or merge the concept page:
    - preserve established facts
    - append new information under `## [Source: <origin>]`
@@ -45,4 +45,4 @@ For each extracted concept:
    - `Attributes` table
    - `Related flows`
    - `## [Source: <origin>]`
-9. Update `apps/wiki/domains/<domain>/<domain>.md` to link the concept page if not already present
+9. Update `<wiki-root>/domains/<domain>/<domain>.md` to link the concept page if not already present

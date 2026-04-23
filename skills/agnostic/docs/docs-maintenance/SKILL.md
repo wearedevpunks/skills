@@ -17,11 +17,15 @@ description: Ingest a spec folder into the wiki domain layer by extracting and w
 
 ## Overview
 
-**Primary purpose:** synthesize `apps/wiki/specs/<domain>/<spec>/SPEC.md` (and optionally `IMPLEMENTATION-NOTES.md`) into the wiki domain knowledge layer. Write flow pages first, then concept pages, then sync ingest bookkeeping.
+**Primary purpose:** synthesize `<wiki-root>/specs/<domain>/<spec>/SPEC.md` (and optionally `IMPLEMENTATION-NOTES.md`) into the wiki domain knowledge layer. Write flow pages first, then concept pages, then sync ingest bookkeeping.
 
 **Secondary purpose:** keep `docs/` accurate when code changes alter architecture, setup, contracts, decisions, or operator-facing behavior.
 
-Read `apps/wiki/AGENTS.md` before touching any wiki content.
+Read `<wiki-root>/AGENTS.md` before touching any wiki content.
+
+`<wiki-root>` is repo-shape dependent:
+- monorepo: `apps/wiki`
+- single-repo: `wiki`
 
 ---
 
@@ -40,7 +44,7 @@ docs-maintenance (orchestrator)
 ### Inputs
 
 Accept any of:
-- A spec folder path: `apps/wiki/specs/<domain>/<spec>/`
+- A spec folder path: `<wiki-root>/specs/<domain>/<spec>/`
 - A domain name + spec name
 - An explicit `SPEC.md` path
 
@@ -72,7 +76,7 @@ Read in order:
      ---
      ```
 
-Verify `apps/wiki/domains/<domain>/` exists with a `<domain>.md` index file. If the domain is missing, stop — it must be scaffolded first with `$create-wiki-domain`.
+Verify `<wiki-root>/domains/<domain>/` exists with a `<domain>.md` index file. If the domain is missing, stop and scaffold the wiki/domain structure first.
 
 ### Step 3: Extract flows
 
@@ -138,7 +142,7 @@ Also populate its `links` array with every flow and concept page written in Step
 
 ### Step 8: Log entry
 
-Append to `apps/wiki/log.md` (cap at 50 entries; drop oldest when over):
+Append to `<wiki-root>/log.md` (cap at 50 entries; drop oldest when over):
 ```md
 ## [YYYY-MM-DD] ingest | <spec title>
 - Source: [[specs/<domain>/<spec>/SPEC]]
@@ -148,7 +152,7 @@ Append to `apps/wiki/log.md` (cap at 50 entries; drop oldest when over):
 
 ### Step 9: Update wiki index
 
-If new pages were created, update the Concepts and Flows counts in the relevant Domains table row in `apps/wiki/index.md`.
+If new pages were created, update the Concepts and Flows counts in the relevant Domains table row in `<wiki-root>/index.md`.
 
 ### Resumability
 
@@ -186,4 +190,4 @@ Update `docs/` when a code task changes **architecture, setup, contracts, decisi
 - Document speculative or future-state features as current truth
 - Put agent task instructions inside human-facing docs pages
 - Leave docs orphaned from `docs/README.md` after adding or renaming them
-- Duplicate content between `apps/wiki/domains/` (the "what") and `docs/reference/domains/` (the "how")
+- Duplicate content between `<wiki-root>/domains/` (the "what") and `docs/reference/domains/` (the "how")

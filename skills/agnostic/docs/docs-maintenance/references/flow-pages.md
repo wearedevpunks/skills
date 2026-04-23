@@ -8,7 +8,7 @@ For each extracted flow:
 
 1. Derive the output path:
    - slugify `flow_name` to kebab-case
-   - write to `apps/wiki/domains/<domain>/flows/<flow-name>.md`
+   - write to `<wiki-root>/domains/<domain>/flows/<flow-name>.md`
 2. Determine status:
    - `proposed` when only `SPEC.md` is present
    - `implemented` when `IMPLEMENTATION-NOTES.md` is present
@@ -38,4 +38,4 @@ For each extracted flow:
      ```
    - a Mermaid diagram
    - a numbered step list aligned to the diagram nodes
-6. Update `apps/wiki/domains/<domain>/<domain>.md` to link the flow page if not already present
+6. Update `<wiki-root>/domains/<domain>/<domain>.md` to link the flow page if not already present
