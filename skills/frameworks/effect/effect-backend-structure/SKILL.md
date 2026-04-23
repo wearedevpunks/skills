@@ -1,17 +1,17 @@
 ---
 name: effect-backend-structure
-description: Bootstrap and refactor structured Effect backends. Use when creating or changing Effect services, layers, RPC procedures, DB integrations, test layers, or initial backend boilerplate. Prefer a `platform / integrations / features` split, feature-local actions vs services, `effect-solutions` + `opensrc` source workflow, and `@effect/vitest` unit/integration testing conventions.
+description: Bootstrap and refactor repo-specific Effect backends in `packages/api`. Use when creating or changing Effect services, layers, tRPC procedures, DB integrations, test layers, or initial backend boilerplate. Enforce this repo's `platform / integrations / features` structure, feature-local actions vs services split, `effect-solutions` + `opensrc` source workflow, and `@effect/vitest` unit/integration testing conventions.
 ---
 
 # Effect Backend Structure
 
 ## Overview
 
-Use this skill to keep the target backend workspace or app aligned with a clean Effect backend architecture. Start with `effect-solutions`, verify against local `opensrc` sources, then place code in the correct level and domain before writing any implementation.
+Use this skill to keep `packages/api` aligned with this repo's Effect backend architecture. Start with `effect-solutions`, verify against local `opensrc` sources, then place code in the correct level and domain before writing any implementation.
 
 ## Workflow
 
-1. Read any workspace-local instructions for the target backend package/app if they exist.
+1. Read `packages/api/AGENTS.md`.
 2. Run the relevant `effect-solutions` guides before coding.
 3. Check the local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
 4. Place code using the level-based root and feature-local domain rules below.
@@ -62,7 +62,7 @@ Put code in `platform/` only when it is cross-domain execution wiring:
 Put code in `integrations/` only when it wraps an external system or shared provider mechanic:
 
 - Better Auth client
-- DB adapter helpers if they are owned by the backend workspace/app
+- DB adapter helpers if they are owned by `packages/api`
 - email, queues, storage, third-party APIs
 
 Do not put product policy in `integrations/`.
@@ -158,13 +158,13 @@ Integration tests:
 - cover public behavior through the router/action boundary
 - run serially when they share mutable auth/DB state
 
-## Backend boundaries in a typical modular setup
+## Backend boundaries in this repo
 
-- a dedicated auth package/module owns Better Auth config and plugins
-- a dedicated DB package/module owns schema and DB runtime wiring
-- the backend workspace/app owns application logic, Effect services/actions, and transport procedures
+- `packages/auth` owns Better Auth config and plugins
+- `packages/db` owns Drizzle schema and Effect DB runtime
+- `packages/api` owns application logic, Effect services/actions, and tRPC procedures
 
-Do not move business logic into auth/provider packages.
+Do not move app business logic into `packages/auth`.
 
 ## Output checklist
 

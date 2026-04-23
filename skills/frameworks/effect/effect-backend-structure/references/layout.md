@@ -1,9 +1,9 @@
 # Effect backend layout
 
-Target backend workspace/app shape:
+Target `packages/api` shape:
 
 ```text
-<backend-root>/src/
+packages/api/src/
   platform/
     effect/
       app.ts
@@ -48,7 +48,7 @@ Dependency direction:
 Test layout:
 
 ```text
-<backend-root>/src/features/<domain>/
+packages/api/src/features/<domain>/
   tests/
     support/
       layer.ts

@@ -1,6 +1,6 @@
 # Source-Backed Primitives
 
-Use local `opensrc` source to verify the following recoverability primitives.
+This repo ships the following recoverability primitives in local `opensrc` source.
 
 ## Transactions
 
@@ -10,7 +10,7 @@ Use local `opensrc` source to verify the following recoverability primitives.
 - The `sql-drizzle` tests show Drizzle queries participate in the transaction and roll back on failure.
 - Those guarantees apply to work that stays inside the transaction-aware Effect/SQL context. Work escaped into plain promises or remote callbacks needs separate care.
 
-Implication for authoring:
+Implication for this repo:
 
 - teach action-level transaction wrapping
 - do not teach manual savepoint orchestration as the primary authoring model
@@ -21,7 +21,7 @@ Implication for authoring:
 - `Cause.YieldableError` is explicitly yieldable in `Effect.gen`.
 - `Schema.TaggedError` extends a yieldable error base.
 
-Implication for authoring:
+Implication for this repo:
 
 - recoverable action-flow failures should stay typed
 - typed yieldable errors are valid directly inside generator flows
@@ -35,7 +35,7 @@ These are present in `Effect` source and are fair game for this skill:
 - `retry`
 - `retryOrElse`
 
-Implication for authoring:
+Implication for this repo:
 
 - prefer selective typed recovery over generic `catchAll`
 - keep retries narrow and explicit
@@ -49,7 +49,7 @@ These are present in `Effect` source:
 - `match`
 - `matchEffect`
 
-Implication for authoring:
+Implication for this repo:
 
 - use them when the control-flow choice carries recovery meaning
 - keep commit-path sequencing obvious
@@ -71,13 +71,13 @@ Important source-backed semantics:
 - `validateAll` accumulates failures but loses successes if any failures exist
 - `partition` keeps both failures and successes
 
-Practical choice:
+Practical choice in this repo:
 
 - use `validateAll` when you want "all successes or the full set of failures" in a preflight phase
 - use `partition` when you need successes and failures kept separately
 - use `Effect.all(..., { mode: "either" | "validate" })` when the work is naturally concurrent and the per-branch result shape matters
 
-Implication for authoring:
+Implication for this repo:
 
 - use these in preflight, batch validation, or deliberate parallel collection phases
 - do not hide commit-path mutation semantics behind them
@@ -89,7 +89,7 @@ These are present in `Effect` source:
 - `acquireUseRelease`
 - `ensuring`
 
-Implication for authoring:
+Implication for this repo:
 
 - they are cleanup/finalization primitives
 - they are not automatic business rollback or compensation
@@ -98,7 +98,7 @@ Implication for authoring:
 
 - `Effect.withExecutionPlan` exists, but source marks it experimental
 
-Implication for authoring:
+Implication for this repo:
 
 - mention only as adjacent background
 - do not teach it as the default project recoverability model in v1

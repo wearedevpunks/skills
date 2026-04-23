@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Domain Structure"
+  short_description: "Domain-first React structure"
+  default_prompt: "Use $react-domain-structure to place React and Next code in the correct layer, enforce app/features/modules boundaries, and keep shared libraries reusable."

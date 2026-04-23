@@ -1,6 +1,6 @@
-# Flow Cases
+# Repo Cases
 
-Use these representative flow shapes as grounding examples.
+Use these current repo flows as grounding examples.
 
 ## `changeRole`
 
@@ -60,15 +60,15 @@ Target guidance:
 
 ## Why these cases matter
 
-These examples cover the main flow shapes the skill must steer:
+These three examples cover the main flow shapes the skill must steer:
 
 - DB-only transactional groups
 - DB plus Better Auth / external mutation
 - staged bootstrap logic with follow-up reads and validation
 
-## Canonical DB-only shape
+## Canonical repo-native shape
 
-Use this as the default shape for a recoverable DB-only multi-step action in a backend workspace/app:
+Use this as the default shape for a recoverable DB-only multi-step action in `packages/api`:
 
 ```ts
 import { SqlClient } from "@effect/sql"
@@ -96,7 +96,7 @@ export const performAction = Effect.fn("Feature.performAction")(function* (input
 })
 ```
 
-For a cross-system action:
+For a cross-system action in this repo:
 
 - keep preflight checks before the first durable mutation
 - isolate the DB-only group in its own transaction
@@ -111,7 +111,7 @@ Default test shape:
 
 ## Canonical cross-system shape
 
-Use this as the default shape for an action that touches DB, Better Auth, and email:
+Use this as the default shape for a repo-native action that touches DB, Better Auth, and email:
 
 ```ts
 import { SqlClient } from "@effect/sql"

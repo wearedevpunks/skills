@@ -2,9 +2,9 @@
 name: effect-authoring
 description: >-
   Use when asked to plan, write, build, fix, refactor, or review Effect-TS
-  code. Apply before editing so the first implementation follows local
+  code. Apply before editing so the first implementation follows repo
   conventions for Effect primitives, branded IDs, observability, error design,
-  `@effect/vitest`, and Effect-Atom.
+  `@effect/vitest`, and Effect-Atom, especially in `packages/api`.
 ---
 
 # Effect-TS Authoring Guide
@@ -39,7 +39,7 @@ Turn the loaded references into a short implementation checklist for the exact f
 
 For backend Effect work, check for these constraints up front:
 
-- Use Effect primitives over native patterns where the local codebase expects them: `Array`, `Match`, `Option`, `Schema`, `Effect.forEach`, `Layer`
+- Use Effect primitives over native patterns where the repo expects them: `Array`, `Match`, `Option`, `Schema`, `Effect.forEach`, `Layer`
 - Avoid `try/catch`, `async/await`, `console.log`, ad-hoc validation, and plain `Error` classes in Effect code
 - Carry branded IDs through boundaries; do not fall back to raw `string` / `number`
 - Use named `Effect.fn("Service.method")` wrappers for named effectful functions
@@ -85,7 +85,7 @@ Run the narrowest useful validation for the touched area:
 - targeted tests
 - relevant typecheck
 - lint if the changed surface is lint-sensitive
-- any workspace-specific command that proves the new behavior
+- any repo-specific command that proves the new behavior
 
 If validation fails, fix the code before moving on.
 

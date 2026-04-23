@@ -1,11 +1,11 @@
 ---
 name: effect-recoverable-actions
-description: Build or refactor recoverable multi-step Effect action flows in a backend workspace/app. Use when a task chains multiple dependent operations, especially DB writes plus external calls, and explicitly needs a transaction, retry, rollback, compensation, or failure-path testing strategy. Do not use for simple single-step reads or writes.
+description: Build or refactor recoverable multi-step Effect action flows in `packages/api`. Use when a task chains multiple dependent operations, especially DB writes plus external calls, and explicitly needs a transaction, retry, rollback, compensation, or failure-path testing strategy. Do not use for simple single-step reads or writes.
 ---
 
 # Effect Recoverable Actions
 
-Use this skill for chained multi-step backend action flows with multiple dependent operations. Every mutating flow must be atomic or intentionally repairable.
+Use this skill for chained multi-step `packages/api` action flows with multiple dependent operations. Every mutating flow must be atomic or intentionally repairable.
 
 Load this alongside `effect-backend-structure` and `effect-best-practices`. It does not replace them.
 
@@ -27,11 +27,11 @@ Do not use this skill for:
 - router-only changes
 - generic Effect code with no multi-step action orchestration
 
-Treat any workspace-local instructions for the target backend as the routing summary. Treat this skill as the detailed implementation guidance for recoverable action flows.
+Treat `packages/api/AGENTS.md` as the routing summary. Treat this skill as the detailed implementation guidance for recoverable action flows.
 
 ## Workflow
 
-1. Read any workspace-local instructions for the target backend package/app if they exist.
+1. Read `packages/api/AGENTS.md`.
 2. Run `effect-solutions show error-handling` and `effect-solutions show testing`.
 3. Check local `opensrc` source when transaction, retry, accumulation, or control-flow behavior matters:
    - `opensrc/repos/github.com/Effect-TS/effect/packages/effect`
@@ -49,7 +49,7 @@ Treat any workspace-local instructions for the target backend as the routing sum
 
 Read [references/strategy-matrix.md](references/strategy-matrix.md) for the approved flow shapes.
 Read [references/source-backed-primitives.md](references/source-backed-primitives.md) when you need the exact Effect surface.
-Read [references/repo-cases.md](references/repo-cases.md) for representative examples.
+Read [references/repo-cases.md](references/repo-cases.md) for repo-specific examples.
 Read [references/test-matrix.md](references/test-matrix.md) when designing tests.
 
 ## Hard rules
@@ -67,7 +67,7 @@ Read [references/test-matrix.md](references/test-matrix.md) when designing tests
 - Commit paths default to sequential orchestration. If you introduce concurrency, make the failure semantics explicit.
 - Use typed yieldable errors with `Schema.TaggedError` for recoverable failures.
 - `acquireUseRelease` and `ensuring` are cleanup/finalization primitives, not substitutes for business rollback.
-- Do not recommend `Effect.withExecutionPlan` as default v1 recoverability guidance. It is experimental in current source.
+- Do not recommend `Effect.withExecutionPlan` in this repo for v1 recoverability guidance. It is experimental in current source.
 
 ## Output checklist
 
