@@ -40,6 +40,12 @@ Every task must include:
 - `tdd_target`
 - `review_mode`
 
+`backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
+
+Multiple tasks may point to the same story when one story needs several execution steps.
+
+Do not create a new backlog item only because a task boundary exists in the plan.
+
 ```md
 ### T3: Example task
 
@@ -50,8 +56,8 @@ Every task must include:
 - **status**: Planned
 - **log**:
 - **files edited/created**:
-- **backlog_item_id**:
-- **backlog_item_url**:
+- **backlog_item_id**: CP-128
+- **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-story
 - **relation_mode**: native | body-links
 - **tdd_target**: First failing public behavior to implement.
 - **review_mode**: cli | browser | mixed

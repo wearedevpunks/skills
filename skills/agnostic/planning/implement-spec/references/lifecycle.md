@@ -15,7 +15,7 @@ Do not recreate wrapper skills for these modes. Keep the routing here and load o
 
 Execution must stay grounded in:
 
-`<wiki-root>/specs/<domain>/<spec>/`
+`apps/wiki/specs/<domain>/<spec>/`
 
 Required files:
 
@@ -40,13 +40,13 @@ Normalize to the containing spec folder before doing any work.
 
 Read, in this order:
 
-1. `<wiki-root>/AGENTS.md`
-2. `<wiki-root>/specs/<domain>/<spec>/SPEC.md`
-3. `<wiki-root>/specs/<domain>/<spec>/PLAN.md`
-4. `<wiki-root>/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
+1. `apps/wiki/AGENTS.md`
+2. `apps/wiki/specs/<domain>/<spec>/SPEC.md`
+3. `apps/wiki/specs/<domain>/<spec>/PLAN.md`
+4. `apps/wiki/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
 5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
 
-If package or framework behavior matters, run `opensrc path <package>` or `opensrc path owner/repo` to resolve the local checkout path, then inspect there before guessing.
+If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.
 
 ## 4. Prepare execution notes
 
@@ -79,6 +79,9 @@ Do not create the file when nothing durable must survive the run.
 - Treat every `review_mode` as required validation routing, never optional metadata.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
 - Keep scope discipline. Out-of-scope findings go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
+- If backlog sync is part of the run, keep epic and story bodies product-facing.
+- Execution-time backlog sync may use comments, links, native status, and native relations.
+- Never rewrite epic or story bodies with task ids, TDD targets, validation commands, or file lists.
 
 ## 7. Shared upkeep after each completed unit
 
@@ -89,6 +92,7 @@ After each completed task or wave:
 - record touched files in `PLAN.md`
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - update the spec-linked tech-debt file when durable drift appears
+- if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
 
 ## 8. Handle blockers honestly
 

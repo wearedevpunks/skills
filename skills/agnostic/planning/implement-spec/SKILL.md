@@ -36,7 +36,7 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 
 ## Quick start
 
-1. Resolve the target spec folder under `<wiki-root>/specs/<domain>/<spec>/`.
+1. Resolve the target spec folder under `apps/wiki/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
 3. Choose the execution mode explicitly:
    - Read `references/sequential.md` for one-thread execution.
@@ -44,7 +44,8 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 4. Record the chosen mode under **Execution mode** in `IMPLEMENTATION-NOTES.md` before coding.
 5. Execute only the chosen mode. Do not mix modes inside one run.
 6. After each completed task or wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and spec-linked tech debt before advancing.
-7. Finish with the shared acceptance audit and spec finalization contract.
+7. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
+8. Finish with the shared acceptance audit and spec finalization contract.
 
 ## Mode selection
 

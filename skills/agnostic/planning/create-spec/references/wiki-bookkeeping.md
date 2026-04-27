@@ -4,17 +4,17 @@ Use this reference after writing `SPEC.md`.
 
 ## Required updates
 
-1. Add a row to the **Specs** table in `<wiki-root>/index.md`:
+1. Add a row to the **Specs** table in `apps/wiki/index.md`:
 
 ```md
 | <domain> | [[specs/<domain>/<folder-name>/SPEC]] | Draft |
 ```
 
-2. Add an entry to `<wiki-root>/specs/<domain>/<domain>-specs.md` with:
+2. Add an entry to `apps/wiki/specs/<domain>/<domain>-specs.md` with:
    - the spec name
    - a one-line summary
 
-3. Append to `<wiki-root>/log.md`:
+3. Append to `apps/wiki/log.md`:
 
 ```md
 ## [YYYY-MM-DD] spec | <spec title>

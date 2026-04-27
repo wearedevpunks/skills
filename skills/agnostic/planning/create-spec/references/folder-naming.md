@@ -4,8 +4,8 @@ Use this reference after questioning and before writing the file.
 
 ## Domain resolution
 
-- The spec path is `<wiki-root>/specs/<domain>/<folder-name>/SPEC.md`.
-- Use the exact existing domain directory name from `<wiki-root>/`.
+- The spec path is `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
+- Use the exact existing domain directory name from `apps/wiki/`.
 - If multiple domains are touched, choose the primary owner and describe the cross-domain aspect in the spec body.
 
 ## Folder-name rules

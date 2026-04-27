@@ -31,4 +31,5 @@
 - Keep the user's sense of control explicit through visible state summaries, not implied progress.
 - Derive repo ownership and hosting from git state instead of hardcoding assumptions.
 - If a required tool is unavailable, stop clearly and report the missing dependency.
+- Keep the canonical backlog model aligned with [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md).
 - Never start implementation from this skill.

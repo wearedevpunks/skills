@@ -13,7 +13,9 @@ id:               # optional — ticket ID, remove if not applicable
 <!--
 INSTRUCTIONS FOR THE AGENT (remove this block before saving the final spec):
 
-- Each spec covers a single user story — one problem, one outcome.
+- Each spec covers one epic/capability boundary.
+- If the epic contains multiple child stories, the spec must cover all of them.
+- Preserve individual story requirements while unifying them into one coherent problem-space contract.
 - The audience is engineers. Keep it tight. A spec that takes 10 minutes to read won't get reviewed. Aim for 2–3 minutes.
 - This template is a starting point, not a rulebook:
     - Remove sections that don't apply — don't leave them blank or write "N/A"
@@ -46,7 +48,7 @@ _Explicitly list what is out of scope for this spec. This prevents scope creep a
 
 ## Acceptance Criteria
 
-_The observable, binary conditions that define "done". Each one should be independently testable — you should be able to read it and immediately know what test would prove it true or false._
+_The observable, binary conditions that define "done". Each one should be independently testable — you should be able to read it and immediately know what test would prove it true or false. When the epic has multiple child stories, consolidate their requirements into one coherent epic-level contract and ensure every story contributes explicit criteria._
 
 -
 -
