@@ -37,6 +37,7 @@ Every task must include:
 - `backlog_item_id`
 - `backlog_item_url`
 - `relation_mode`
+- `assigned_skills`
 - `tdd_target`
 - `review_mode`
 
@@ -59,6 +60,7 @@ Do not create a new backlog item only because a task boundary exists in the plan
 - **backlog_item_id**: CP-128
 - **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-story
 - **relation_mode**: native | body-links
+- **assigned_skills**: [`effect-authoring`, `effect-best-practices`, `tdd`]
 - **tdd_target**: First failing public behavior to implement.
 - **review_mode**: cli | browser | mixed
 ```

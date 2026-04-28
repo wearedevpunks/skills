@@ -1,0 +1,1 @@
+`create-plan` PLAN tasks must include `assigned_skills`, derived from each task path's scoped `AGENTS.md` `Primary skills here` lists. This matters because executors need the same per-scope skill routing before implementation, not just generic plan-level guidance.
