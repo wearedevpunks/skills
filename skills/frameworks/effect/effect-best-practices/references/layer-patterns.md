@@ -1,5 +1,7 @@
 # Layer Patterns
 
+Layers are dependency application. An Effect requirement is like a function parameter: it stays unsatisfied and type-visible until a layer provides it. A good backend keeps this boundary explicit so production and tests use the same composition mechanism.
+
 ## Dependencies in Effect.Service
 
 **Critical rule:** Always declare dependencies in the `dependencies` array of `Effect.Service`. This ensures proper composition and avoids "leaked dependencies" that require manual wiring at usage sites.
@@ -418,6 +420,8 @@ export class UserRepo extends Effect.Service<UserRepo>()("UserRepo", {
 ```
 
 ## Testing Layer Composition
+
+Test layers replace implementations at the service boundary. Prefer this over module mocks because the compiler still checks the service shape, required environment, and error channel.
 
 ```typescript
 // test/setup.ts

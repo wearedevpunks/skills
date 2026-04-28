@@ -2,3 +2,4 @@
 - `framework-skill-portability.md` Framework skills must avoid product-specific workspace names like `packages/api` unless clearly marked as placeholders; reusable skills should speak in terms of backend/app roots and local conventions.
 - `skill-backport-boundaries.md` Backports from product repos often mix portable orchestration logic with app-specific wiki/docs flows; copy the reusable contract, strip product paths, and map internal wrapper names to public skill names instead of mirroring internals verbatim.
 - `create-plan-skill-routing.md` `create-plan` tasks must preserve scoped `AGENTS.md` skill routing in `assigned_skills` so executors load the right skill set.
+- `effect-layer-guidance.md` `effect-backend-structure` is the enforcement point for Effect service/layer dependency guidance: visible requirements, layer-provided implementations, no module mocks.

@@ -115,7 +115,7 @@ it.scoped.each([
 
 ## 7. Test Layer Composition
 
-Use `DefaultWithoutDependencies` or `.Default.pipe(Layer.provide(...))` for test layers.
+Use `DefaultWithoutDependencies` or `.Default.pipe(Layer.provide(...))` for test layers. Replace dependencies by providing alternate layers, not by mocking imports.
 
 ```typescript
 // GOOD
@@ -129,6 +129,11 @@ const TestLayer = Layer.mergeAll(
   MyService.Default,
   MockRepository.Test
 ).pipe(Layer.provide(DatabaseTest))
+```
+
+```typescript
+// BAD
+vi.mock("../repositories/user", () => ({ findById: vi.fn() }))
 ```
 
 ## 8. Coverage Assessment

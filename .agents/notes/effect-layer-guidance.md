@@ -1,0 +1,1 @@
+Effect backend guidance should route dependency-injection concerns through `effect-backend-structure`: keep requirements visible until feature/app layers provide them, prefer `Effect.Service` for business capabilities, reserve `Context.Tag` for runtime infrastructure, and use test layers instead of module mocks.

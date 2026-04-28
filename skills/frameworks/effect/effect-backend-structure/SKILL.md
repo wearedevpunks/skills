@@ -9,15 +9,23 @@ description: Bootstrap and refactor repo-specific Effect backends in `packages/a
 
 Use this skill to keep `packages/api` aligned with this repo's Effect backend architecture. Start with `effect-solutions`, verify against local `opensrc` sources, then place code in the correct level and domain before writing any implementation.
 
+This skill is the enforcement point for the Effect services/layers model:
+
+- dependencies are requirements, not hidden imports
+- services describe capabilities; layers provide implementations
+- app and feature layers compose dependencies once
+- tests swap implementations with test layers, not module mocks
+
 ## Workflow
 
 1. Read `packages/api/AGENTS.md`.
 2. Run the relevant `effect-solutions` guides before coding.
-3. Check the local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
-4. Place code using the level-based root and feature-local domain rules below.
-5. Keep tRPC transport thin and run business logic through Effects.
-6. Add or update colocated `@effect/vitest` tests with test layers for unit coverage and live layers for integration coverage.
-7. Update docs when architecture, contracts, setup, or workflow changed.
+3. Identify each external dependency the change needs and decide whether it is an action requirement, reusable service, repository, integration, or platform layer.
+4. Check the local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
+5. Place code using the level-based root and feature-local domain rules below.
+6. Keep tRPC transport thin and run business logic through Effects.
+7. Add or update colocated `@effect/vitest` tests with test layers for unit coverage and live layers for integration coverage.
+8. Update docs when architecture, contracts, setup, or workflow changed.
 
 ## Required source lookup
 
@@ -103,6 +111,23 @@ Quick rule:
 - "how this reusable mechanic works" -> `services/`
 - "how data is persisted/read" -> `repositories/`
 
+## Services and layers
+
+Model dependencies the way Effect models function parameters: an unsatisfied requirement stays visible in the `Effect` environment until a layer provides it. Do not hide dependencies behind concrete imports, module singletons, or call-site `Effect.provide`.
+
+In this repo:
+
+- use `Effect.Service` for business services, repositories, and reusable capability interfaces
+- use `Context.Tag` only for externally supplied runtime handles or third-party tags, such as worker bindings or library clients
+- declare service dependencies in `dependencies: [Dep.Default]` when the dependency is part of the service's construction contract
+- let actions consume services/repositories through Effect accessors or `yield* Service`; actions should return Effects whose requirements remain visible until the feature or app layer provides them
+- compose feature dependencies in `features/<domain>/layer.ts`
+- compose cross-feature and infrastructure dependencies in `platform/effect/app.ts`
+- use `Layer.mergeAll` for same-level composition and shallow `Layer.provide` / `Layer.provideMerge` for wiring levels together
+- avoid `Effect.provide` inside actions, services, repositories, and procedures except at the final runner/test boundary
+
+Treat the PDF's `Context.Tag` examples as the conceptual model. The repo implementation preference is `Effect.Service` for business capabilities because it preserves the same typed requirement/layer substitution model with less boilerplate.
+
 ## Transport boundary
 
 Keep tRPC thin.
@@ -150,6 +175,7 @@ Unit tests:
 - provide fake leaf services/repos via test layers
 - expose assertions through test-state tags in `tests/support`
 - do not add test-only methods to production services
+- do not use `vi.mock` or path-based module mocks for Effect services; provide a replacement `Layer`
 
 Integration tests:
 
@@ -172,6 +198,8 @@ Before finishing, confirm:
 
 - relevant `effect-solutions` guides were checked
 - `opensrc` sources were checked when needed
+- dependencies are visible as Effect requirements or service dependencies
+- implementations are supplied by layers, not concrete imports or module mocks
 - code landed in `platform / integrations / features`
 - actions own orchestration
 - services are only reusable mechanics

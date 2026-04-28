@@ -259,6 +259,31 @@ export class UserService extends Effect.Service<UserService>()("UserService", {
 }) {}
 ```
 
+`Context.Tag` remains valid for externally supplied infrastructure. The forbidden part is hand-rolling business services with tags when `Effect.Service` should own the capability and its layer contract.
+
+## FORBIDDEN: Module Mocks for Effect Services
+
+```typescript
+// FORBIDDEN
+vi.mock("../repositories/user", () => ({
+    UserRepo: {
+        findById: vi.fn(),
+    },
+}))
+```
+
+**Why:** Path-based mocks hide dependencies from Effect's environment, bypass layer composition, and can drift from the service shape.
+
+**Correct:**
+```typescript
+const UserRepoTest = Layer.succeed(
+    UserRepo,
+    UserRepo.of({
+        findById: (id) => Effect.succeed(Option.some(makeUser({ id }))),
+    }),
+)
+```
+
 ## FORBIDDEN: Ignoring Errors with orDie
 
 ```typescript

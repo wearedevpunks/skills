@@ -55,6 +55,7 @@ See `references/language-server.md` for configuration options and CLI tools.
 |----------|-----|-------|
 | Services | `Effect.Service` with `accessors: true` | `Context.Tag` for business logic |
 | Dependencies | `dependencies: [Dep.Default]` in service | Manual `Layer.provide` at usage sites |
+| Test Doubles | test `Layer`s | `vi.mock` / path-based module mocks |
 | Layers | `Layer.mergeAll` for flat composition | Deeply nested `Layer.provide` chains |
 | Layer Chaining | `Layer.provideMerge` for incremental composition | Multiple `Layer.provide` (creates nested types) |
 | Errors | `Schema.TaggedError` with `message` field | Plain classes or generic Error |
@@ -120,6 +121,8 @@ const MainLive = Layer.mergeAll(UserService.Default, OtherService.Default)
 - Factory patterns where resources are provided externally
 
 See `references/service-patterns.md` for detailed patterns.
+
+**Conceptual rule:** whether a capability is expressed with `Effect.Service` or an infrastructure `Context.Tag`, the dependency must stay visible as an Effect requirement until a layer provides it. Do not smuggle dependencies through concrete imports or module singletons.
 
 ## Error Definition Pattern
 
@@ -334,6 +337,7 @@ const MainLive = DatabaseLive.pipe(
 - **Deduplication**: Layers memoize construction - same service instantiated once. `Effect.provide` creates new instances each call.
 - **TypeScript performance**: Deep `Layer.provide` nesting creates complex recursive types that slow the LSP. `Layer.mergeAll` and `Layer.provideMerge` produce flatter types.
 - **Resource management**: Scoped layers properly share and clean up resources.
+- **Test substitution**: Tests replace capabilities by providing a different layer. Avoid `vi.mock` for Effect services.
 
 See `references/layer-patterns.md` for testing layers, config-dependent layers, and the `layerConfig` pattern.
 

@@ -9,6 +9,8 @@
 3. **Proper dependency declaration** - Dependencies are explicit and type-checked
 4. **Consistent structure** - All services follow the same pattern
 
+The underlying architecture is the same as the classic `Context.Tag` + `Layer` pattern: a service is a typed capability requirement, and a layer supplies the implementation. Keep that requirement visible in the Effect environment or the service `dependencies` array until a layer provides it.
+
 ### Basic Service Definition
 
 ```typescript
@@ -293,3 +295,5 @@ export class UserServiceTest extends Effect.Service<UserService>()("UserService"
     }),
 }) {}
 ```
+
+Do not mock Effect services with `vi.mock`, path-based import rewrites, or mutable module singletons. Tests should provide alternate implementations with `Layer.succeed`, a test `Effect.Service`, or a feature-local `tests/support/layer.ts`.

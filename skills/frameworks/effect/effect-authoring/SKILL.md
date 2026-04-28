@@ -39,6 +39,8 @@ Turn the loaded references into a short implementation checklist for the exact f
 
 For backend Effect work, check for these constraints up front:
 
+- Make dependencies visible as Effect requirements or `Effect.Service` dependencies; do not hide them behind concrete imports
+- Provide implementations with `Layer`s; avoid call-site `Effect.provide` except at runner/test boundaries
 - Use Effect primitives over native patterns where the repo expects them: `Array`, `Match`, `Option`, `Schema`, `Effect.forEach`, `Layer`
 - Avoid `try/catch`, `async/await`, `console.log`, ad-hoc validation, and plain `Error` classes in Effect code
 - Carry branded IDs through boundaries; do not fall back to raw `string` / `number`
@@ -50,6 +52,7 @@ For test work, check for these constraints up front:
 
 - Use `@effect/vitest`, not plain `vitest`
 - Prefer `it.layer(...)` and `it.scoped(...)`
+- Replace Effect services with test layers, not `vi.mock`
 - Test failures with `Effect.either` / tagged errors, not `try/catch`
 
 For UI work, check for these constraints up front:

@@ -85,7 +85,9 @@ const UserInput = z.object({ name: z.string() })
 
 ## 6. Layer.provide Not Effect.provide
 
-Dependencies should be composed via `Layer` in service definitions, not via `Effect.provide` at call sites. Exception: infrastructure bindings in entry points (e.g., `main.ts`).
+Dependencies should be composed via `Layer` in service definitions and layer files, not via `Effect.provide` at call sites. Exception: final runner/test boundaries and infrastructure bindings in entry points.
+
+Keep requirements visible. If a function needs a repository, client, flag service, clock, config, or runtime binding, that need should appear as an Effect environment requirement or an `Effect.Service` dependency until a layer provides it.
 
 ```typescript
 // GOOD

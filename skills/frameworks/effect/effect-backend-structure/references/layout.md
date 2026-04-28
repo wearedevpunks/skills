@@ -45,6 +45,19 @@ Dependency direction:
 - features may depend on other features only when the domain relationship is explicit and stable
 - integrations do not import features
 
+Layer ownership:
+
+- `platform/effect/app.ts`
+  composes the app-wide live layer and provides infrastructure once
+- `platform/effect/request.ts`
+  builds request-scoped services and runtime context only
+- `features/<domain>/layer.ts`
+  composes that domain's action/repository/service requirements
+- `features/<domain>/tests/support/layer.ts`
+  provides fake leaf layers and test-state tags for unit tests
+
+Keep dependency requirements visible until one of these layer files provides them. Do not import live implementations directly inside actions, services, repositories, or routers.
+
 Test layout:
 
 ```text
