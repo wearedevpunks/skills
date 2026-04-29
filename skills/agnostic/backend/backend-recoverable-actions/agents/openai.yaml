@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backend Recoverable Actions"
+  short_description: "Recoverable backend mutation flows"
+  default_prompt: "Use $backend-recoverable-actions for backend action flows that chain multiple dependent operations and need explicit transaction, retry, rollback, compensation, or failure-path testing strategy; pair it with framework-specific recoverability skills when present."

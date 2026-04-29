@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backend Domain Structure"
+  short_description: "Domain-first backend structure"
+  default_prompt: "Use $backend-domain-structure to place backend code in the correct platform, integrations, features, or shared-library layer; pair it with framework-specific backend structure skills when present."

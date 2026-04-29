@@ -1,46 +1,46 @@
-# Repo Cases
+# Effect Flow Examples
 
-Use these current repo flows as grounding examples.
+Use these generic flow shapes as grounding examples.
 
-## `changeRole`
+## Role Change
 
-Current shape:
+Shape:
 
 - preflight membership lookup and role checks
-- external Better Auth role mutation
+- external auth-provider role mutation
 - local audit insert
-- optional local owner-alert insert
+- optional local notification insert
 
-Current risk:
+Risk:
 
-- if the local DB write fails after the Better Auth mutation, the external state already changed
+- if the local DB write fails after the auth-provider mutation, the external state already changed
 
-Target guidance:
+Guidance:
 
-- do not pretend DB rollback covers Better Auth
+- do not pretend DB rollback covers the auth provider
 - force an explicit compensation or durable repair story
 - keep expected recoverable failures typed
 
-## `setMemberLifecycle`
+## Member Lifecycle Update
 
-Current shape:
+Shape:
 
 - preflight member lookup and guard checks
 - member active-state update
 - session revocation
 
-Current risk:
+Risk:
 
-- if later DB work fails, the lifecycle transition can partially apply
+- if later durable work fails, the lifecycle transition can partially apply
 
-Target guidance:
+Guidance:
 
-- make the transaction / step-boundary story explicit
+- make the transaction and step-boundary story explicit
 - default to one transaction boundary for DB-only multi-write groups
 
-## `resolveRequest`
+## Bootstrap and Resolve
 
-Current shape:
+Shape:
 
 - resolve session
 - resolve active member
@@ -48,27 +48,19 @@ Current shape:
 - maybe bootstrap an organization
 - follow-up identity resolution
 
-Current risk:
+Risk:
 
 - bootstrap-related work can succeed and later resolution can still fail or return incomplete state
 
-Target guidance:
+Guidance:
 
 - make recoverable bootstrap sequencing explicit
 - separate preflight, external mutation, and follow-up resolution steps
 - preserve clear failure semantics rather than silently collapsing distinct states
 
-## Why these cases matter
+## Canonical DB-Only Shape
 
-These three examples cover the main flow shapes the skill must steer:
-
-- DB-only transactional groups
-- DB plus Better Auth / external mutation
-- staged bootstrap logic with follow-up reads and validation
-
-## Canonical repo-native shape
-
-Use this as the default shape for a recoverable DB-only multi-step action in `packages/api`:
+Use this as the default shape for a recoverable DB-only multi-step Effect action:
 
 ```ts
 import { SqlClient } from "@effect/sql"
@@ -96,22 +88,15 @@ export const performAction = Effect.fn("Feature.performAction")(function* (input
 })
 ```
 
-For a cross-system action in this repo:
-
-- keep preflight checks before the first durable mutation
-- isolate the DB-only group in its own transaction
-- do not pretend the transaction rolls back Better Auth or another external write
-- add explicit compensation or durable repair handling around the external step
-
 Default test shape:
 
 - unit test with fake repos/services to inject failure at each step
 - integration test proving the DB transaction actually rolls back on later failure
 - explicit assertion for the compensation or repair path when external work is involved
 
-## Canonical cross-system shape
+## Canonical Cross-System Shape
 
-Use this as the default shape for a repo-native action that touches DB, Better Auth, and email:
+Use this as the default shape for an Effect action that touches DB, an auth provider, and email:
 
 ```ts
 import { SqlClient } from "@effect/sql"
@@ -141,10 +126,10 @@ export const performCrossSystemAction = Effect.fn("Feature.performCrossSystemAct
 
     // 3. External writes are outside DB rollback. Handle them explicitly.
     yield* authClient.updateMemberRole(...).pipe(
-      Effect.catchTag("BetterAuthOperationError", (error) =>
+      Effect.catchTag("AuthProviderOperationError", (error) =>
         Effect.fail(
           new CrossSystemRepairRequiredError({
-            message: "Local state committed but Better Auth sync failed.",
+            message: "Local state committed but auth-provider sync failed.",
             cause: error.message,
           }),
         ),
@@ -164,6 +149,6 @@ export const performCrossSystemAction = Effect.fn("Feature.performCrossSystemAct
 What this example is teaching:
 
 - one DB transaction for local atomic writes
-- no claim that DB rollback undoes Better Auth or email
-- explicit typed failure or repair state for Better Auth sync failure
+- no claim that DB rollback undoes auth-provider or email work
+- explicit typed failure or repair state for auth-provider sync failure
 - explicit delivery policy for email instead of pretending it is transactional

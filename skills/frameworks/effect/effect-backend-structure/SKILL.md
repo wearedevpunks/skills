@@ -1,33 +1,39 @@
 ---
 name: effect-backend-structure
-description: Bootstrap and refactor repo-specific Effect backends in `packages/api`. Use when creating or changing Effect services, layers, tRPC procedures, DB integrations, test layers, or initial backend boilerplate. Enforce this repo's `platform / integrations / features` structure, feature-local actions vs services split, `effect-solutions` + `opensrc` source workflow, and `@effect/vitest` unit/integration testing conventions.
+description: |
+  Apply Effect-specific backend structure on top of backend-domain-structure.
+  Use when creating or changing Effect services, layers, actions, repositories,
+  transport adapters, DB integrations, test layers, or backend boilerplate in any
+  Effect backend root. Enforces visible Effect requirements, layer-provided
+  implementations, effect-solutions plus opensrc source lookup, and @effect/vitest
+  testing conventions.
 ---
 
 # Effect Backend Structure
 
-## Overview
+Use this skill with `$backend-domain-structure` for Effect backend code.
 
-Use this skill to keep `packages/api` aligned with this repo's Effect backend architecture. Start with `effect-solutions`, verify against local `opensrc` sources, then place code in the correct level and domain before writing any implementation.
+The agnostic skill owns the layer model:
 
-This skill is the enforcement point for the Effect services/layers model:
+- `platform/`
+- `integrations/`
+- `features/*`
+- shared libraries and packages
 
-- dependencies are requirements, not hidden imports
-- services describe capabilities; layers provide implementations
-- app and feature layers compose dependencies once
-- tests swap implementations with test layers, not module mocks
+This skill adds Effect-specific services, layers, dependency visibility, source lookup, and testing rules.
 
 ## Workflow
 
-1. Read `packages/api/AGENTS.md`.
-2. Run the relevant `effect-solutions` guides before coding.
-3. Identify each external dependency the change needs and decide whether it is an action requirement, reusable service, repository, integration, or platform layer.
-4. Check the local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
-5. Place code using the level-based root and feature-local domain rules below.
-6. Keep tRPC transport thin and run business logic through Effects.
-7. Add or update colocated `@effect/vitest` tests with test layers for unit coverage and live layers for integration coverage.
-8. Update docs when architecture, contracts, setup, or workflow changed.
+1. Identify the backend root from the current repo; do not assume a monorepo path.
+2. Read the nearest relevant `AGENTS.md` files.
+3. Read `$backend-domain-structure` and `references/layout.md`.
+4. Run the relevant `effect-solutions` guides before coding.
+5. Check local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
+6. Place code using the agnostic backend layers plus the Effect rules below.
+7. Keep transport thin and run business logic through Effects.
+8. Add or update colocated `@effect/vitest` tests with test layers for unit coverage and live layers for integration coverage.
 
-## Required source lookup
+## Required Source Lookup
 
 Always consult `effect-solutions` first. Use the smallest relevant set:
 
@@ -37,111 +43,28 @@ Always consult `effect-solutions` first. Use the smallest relevant set:
 - `effect-solutions show error-handling`
 - `effect-solutions show testing`
 
-Use `opensrc` next when the guide is not enough or you need real source context:
+Use `opensrc` next when the guide is not enough:
 
 - `opensrc/repos/github.com/Effect-TS/effect/packages/effect`
 - `opensrc/repos/github.com/Effect-TS/effect/packages/sql`
 - `opensrc/repos/github.com/Effect-TS/effect/packages/sql-drizzle`
 
-For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/repo` to resolve the local checkout path, then inspect there instead of guessing.
+For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/repo`.
 
-## Structure rules
+## Services and Layers
 
-Top-level backend shape:
+- Use `Effect.Service` for business services, repositories, and reusable capability interfaces.
+- Use `Context.Tag` only for externally supplied runtime handles or third-party tags.
+- Declare construction dependencies in `dependencies: [Dep.Default]`.
+- Let actions consume services/repositories through Effect accessors or `yield* Service`.
+- Keep action requirements visible until a feature, app, runner, or test layer provides them.
+- Compose feature dependencies in `features/<domain>/layer.ts` or the local equivalent.
+- Compose cross-feature and infrastructure dependencies in `platform/`.
+- Use `Layer.mergeAll` for same-level composition and shallow `Layer.provide` / `Layer.provideMerge` for wiring levels together.
+- Avoid `Effect.provide` inside actions, services, repositories, and transport adapters except at the final runner/test boundary.
 
-- `platform/`
-  Root Effect composition and transport adapters only.
-- `integrations/`
-  External/provider boundaries only.
-- `features/`
-  Business domains only.
+## Effect Coding Rules
 
-Read [references/layout.md](references/layout.md) for the target tree and dependency direction.
-
-## Placement rules
-
-Put code in `platform/` only when it is cross-domain execution wiring:
-
-- root app layer composition
-- request-scoped layer construction
-- tRPC context and runner
-- router assembly
-
-Put code in `integrations/` only when it wraps an external system or shared provider mechanic:
-
-- Better Auth client
-- DB adapter helpers if they are owned by `packages/api`
-- email, queues, storage, third-party APIs
-
-Do not put product policy in `integrations/`.
-
-Put code in `features/<domain>/` for business behavior. Each feature owns its own:
-
-- `actions/`
-- `models/`
-- `errors.ts`
-- `repositories/`
-- `services/` only when a reusable mechanic actually exists
-- `layer.ts`
-- `router.ts` if the feature exposes transport endpoints
-
-## Actions vs services
-
-Default to actions.
-
-Use `actions/` for:
-
-- orchestration
-- auth checks
-- policy
-- state transitions
-- use cases
-
-Use `services/` only for reusable mechanics consumed by multiple actions, such as:
-
-- provider wrappers already scoped to the feature
-- shared low-level operations
-- capability-style abstractions with stable reuse
-
-Do not create broad god-services just because Effect has services.
-
-Quick rule:
-
-- "what this flow means" -> `actions/`
-- "how this reusable mechanic works" -> `services/`
-- "how data is persisted/read" -> `repositories/`
-
-## Services and layers
-
-Model dependencies the way Effect models function parameters: an unsatisfied requirement stays visible in the `Effect` environment until a layer provides it. Do not hide dependencies behind concrete imports, module singletons, or call-site `Effect.provide`.
-
-In this repo:
-
-- use `Effect.Service` for business services, repositories, and reusable capability interfaces
-- use `Context.Tag` only for externally supplied runtime handles or third-party tags, such as worker bindings or library clients
-- declare service dependencies in `dependencies: [Dep.Default]` when the dependency is part of the service's construction contract
-- let actions consume services/repositories through Effect accessors or `yield* Service`; actions should return Effects whose requirements remain visible until the feature or app layer provides them
-- compose feature dependencies in `features/<domain>/layer.ts`
-- compose cross-feature and infrastructure dependencies in `platform/effect/app.ts`
-- use `Layer.mergeAll` for same-level composition and shallow `Layer.provide` / `Layer.provideMerge` for wiring levels together
-- avoid `Effect.provide` inside actions, services, repositories, and procedures except at the final runner/test boundary
-
-Treat the PDF's `Context.Tag` examples as the conceptual model. The repo implementation preference is `Effect.Service` for business capabilities because it preserves the same typed requirement/layer substitution model with less boilerplate.
-
-## Transport boundary
-
-Keep tRPC thin.
-
-- procedures parse input and call Effects
-- business logic stays in feature actions
-- DB queries never live in procedures
-- Better Auth calls never live in procedures
-- map domain failures to `TRPCError` only at the procedure boundary
-- keep a single shared Effect runner for procedure execution
-
-## Effect coding rules
-
-- Use `Effect.Service` for reusable services.
 - Use `Effect.fn("Domain.action")` for actions and service methods.
 - Use `Schema.TaggedError` for domain failures.
 - Use branded IDs and Effect Schema for domain models.
@@ -149,60 +72,25 @@ Keep tRPC thin.
 - Prefer `catchTag` / `catchTags`, not `catchAll`.
 - Avoid `any`.
 
-## Naming rules
+## Testing Rules
 
-Let the path carry context.
+- Keep tests inside the owning feature or module.
+- Use `@effect/vitest`.
+- Unit tests provide fake leaf services/repos via test layers.
+- Integration tests use live layers and public action or transport boundaries.
+- Expose assertions through test-state tags in `tests/support`.
+- Do not add test-only methods to production services.
+- Do not use module mocks for Effect services; provide a replacement `Layer`.
 
-- prefer `client.ts` under `integrations/auth/`, not `better-auth-gateway.ts`
-- prefer `membership.ts` under `features/auth/repositories/`, not `membership-repository.ts`
-- prefer `change-role.ts` under `features/user-management/actions/`, not `change-member-role-action.ts`
+## Output Checklist
 
-Keep names short unless a shorter name becomes ambiguous inside the folder.
-
-## Testing rules
-
-Keep tests inside the owning feature:
-
-- `features/*/tests/unit/*`
-- `features/*/tests/integration/*`
-- `features/*/tests/support/*`
-
-Use `@effect/vitest`.
-
-Unit tests:
-
-- test actions and guards
-- provide fake leaf services/repos via test layers
-- expose assertions through test-state tags in `tests/support`
-- do not add test-only methods to production services
-- do not use `vi.mock` or path-based module mocks for Effect services; provide a replacement `Layer`
-
-Integration tests:
-
-- use the live app layer
-- keep real Better Auth + DB wiring
-- cover public behavior through the router/action boundary
-- run serially when they share mutable auth/DB state
-
-## Backend boundaries in this repo
-
-- `packages/auth` owns Better Auth config and plugins
-- `packages/db` owns Drizzle schema and Effect DB runtime
-- `packages/api` owns application logic, Effect services/actions, and tRPC procedures
-
-Do not move app business logic into `packages/auth`.
-
-## Output checklist
-
-Before finishing, confirm:
-
+- `$backend-domain-structure` was applied
 - relevant `effect-solutions` guides were checked
 - `opensrc` sources were checked when needed
-- dependencies are visible as Effect requirements or service dependencies
-- implementations are supplied by layers, not concrete imports or module mocks
-- code landed in `platform / integrations / features`
+- dependencies stay visible as Effect requirements or service dependencies
+- implementations are supplied by layers, not hidden imports or module mocks
+- code landed in the correct backend layer
 - actions own orchestration
 - services are only reusable mechanics
-- procedures are thin
-- tests follow unit/integration split with feature-local support layers
-- docs were updated if architecture/setup/contracts changed
+- transport is thin
+- tests follow the unit/integration split with feature-local support layers
