@@ -1,20 +1,20 @@
-# DevPunks Skills
+# Devpunks Skills
 
-Public DevPunks skill library.
+Public Devpunks skill library.
 
-This repo is the public DevPunks skills database and the baseline skill source used by the DevPunks `dp` CLI.
+This repo is the public Devpunks skills database and the baseline skill source used by the Devpunks `dp` CLI.
 
 The CLI vendors this repository as reusable skill content. Keep shareable skill behavior here first, then let the CLI consume it through its normal skills sync/update flow.
 
 ## CLI Entrypoint
 
-The only DevPunks skill users should manually install with the Skills CLI is `dp-cli`:
+The only Devpunks skill users should manually install with the Skills CLI is `dp-cli`:
 
 ```bash
-npx skills add https://github.com/wearedevpunks/skills --skill dp-cli
+npx skills add https://github.com/weareDevpunks/skills --skill dp-cli
 ```
 
-`dp-cli` is the entrypoint for `dp` usage, setup-stage guidance, `dp update`, and the post-command `.devpunks/` artifact flow. Other DevPunks skills are intended to be scaffolded or vendored by the `dp` CLI rather than manually installed one by one.
+`dp-cli` is the entrypoint for `dp` usage, setup-stage guidance, `dp update`, and the post-command `.Devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the `dp` CLI rather than manually installed one by one.
 
 ## Structure
 
@@ -25,5 +25,5 @@ npx skills add https://github.com/wearedevpunks/skills --skill dp-cli
 
 ## Consumers
 
-- CLI and tooling integrations that want DevPunks skills as reusable content
+- CLI and tooling integrations that want Devpunks skills as reusable content
 - future consumers that vendor or read this library directly

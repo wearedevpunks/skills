@@ -25,7 +25,7 @@ Downstream contract:
 
 - a raw requirements discussion
 - an existing messy backlog
-- `requirements-grill` artifacts from `/Users/stefan/Desktop/repos/wearedevpunks-multiplai/.agents/skills/requirements-grill`
+- `requirements-grill` artifacts from `/Users/stefan/Desktop/repos/weareDevpunks-multiplai/.agents/skills/requirements-grill`
 
 When grill artifacts exist, treat them as the highest-signal structured source for backlog derivation.
 

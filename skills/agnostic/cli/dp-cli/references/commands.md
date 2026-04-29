@@ -4,9 +4,9 @@
 
 Use for repo-aware full scaffold setup.
 
-It detects package manifests, resolves packs, writes `.agents/`, harness files, selected skills, prompt specs, lint specs, subagent specs, required tools metadata, and `.devpunks/scaffold-manifest.json`.
+It detects package manifests, resolves packs, writes `.agents/`, harness files, selected skills, prompt specs, lint specs, subagent specs, required tools metadata, and `.Devpunks/scaffold-manifest.json`.
 
-It does not finish all repo-specific authoring. The next agent must use `.devpunks/AGENT-SYSTEM-PROMPT.md` and `.devpunks/specs/**` to generate final scoped guidance and reconcile assets.
+It does not finish all repo-specific authoring. The next agent must use `.Devpunks/AGENT-SYSTEM-PROMPT.md` and `.Devpunks/specs/**` to generate final scoped guidance and reconcile assets.
 
 ## `dp scaffold stage init`
 
@@ -22,12 +22,12 @@ When no backlog-stage packs are available, the command still prints the operator
 
 ## `dp update --check`
 
-Use to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
+Use to preview managed scaffold drift from `.Devpunks/scaffold-manifest.json`.
 
 Report missing, changed, or pack-drift findings. Do not write files.
 
 ## `dp update --write`
 
-Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
+Use to refresh scaffold-managed files recorded in `.Devpunks/scaffold-manifest.json`.
 
 After writing, verify the refreshed files still fit the repo shape and any pack drift is handled intentionally.
