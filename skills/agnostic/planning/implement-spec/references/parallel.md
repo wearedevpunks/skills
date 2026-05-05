@@ -31,18 +31,16 @@ Do not treat worker spawning as the whole job. The orchestration loop is part of
 1. Load the shared lifecycle from `lifecycle.md`.
 2. Record `parallel` under **Execution mode** in `IMPLEMENTATION-NOTES.md`.
 3. Read `.agents/subagents/manifest.mjs` before the first spawn and choose explicit worker templates per task.
-4. In Codex, read [parallel-reasoning.md](parallel-reasoning.md) and set each worker `reasoning_effort` lower than the parent orchestrator.
-5. Read [parallel-orchestration.md](parallel-orchestration.md) and parse `PLAN.md` into a task graph.
-6. Build the current wave from the unblocked tasks only.
-7. Read [parallel-worker-brief.md](parallel-worker-brief.md) and use that contract when spawning workers.
-8. Validate each wave before moving on. Fix failures before the next wave.
-9. Update the plan, notes, and tech debt after every wave.
+4. Read [parallel-orchestration.md](parallel-orchestration.md) and parse `PLAN.md` into a task graph.
+5. Build the current wave from the unblocked tasks only.
+6. Read [parallel-worker-brief.md](parallel-worker-brief.md) and use that contract when spawning workers.
+7. Validate each wave before moving on. Fix failures before the next wave.
+8. Update the plan, notes, and tech debt after every wave.
 
 ## Required evidence
 
 - plan-derived wave selection
 - explicit worker briefs per task
-- explicit Codex worker `reasoning_effort` when running in Codex
 - post-wave review of worker outputs
 - acceptance-criteria coverage plus RED -> GREEN evidence, or explicit non-testable verification
 - task completion only after validation and plan/log updates
