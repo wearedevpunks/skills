@@ -57,7 +57,8 @@ Preserve `$grill-me` behavior:
 - provide a recommended answer with each question
 - if a question can be answered from the codebase, answer it by inspecting instead
 - keep grilling until every plan-shaping branch is resolved enough to plan safely
-- when the user leaves a branch open, record the assumption explicitly in the plan
+- before recording an unresolved question in the plan, ask the user whether to resolve it now or defer it
+- when the user defers a branch, record the assumption or unresolved question explicitly in the plan with its planning impact
 
 ## Decision ledger
 

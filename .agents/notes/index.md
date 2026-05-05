@@ -1,0 +1,1 @@
+- [planning-open-questions](planning-open-questions.md) - Spec/plan skills must resolve user-answerable unknowns before recording Open Questions; create-spec uses grill/backlog sync for material scope changes.

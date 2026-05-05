@@ -33,5 +33,5 @@
 - Derive repo ownership and hosting from git state instead of hardcoding assumptions.
 - If a required tool is unavailable, stop clearly and report the missing dependency.
 - Keep the canonical backlog model aligned with [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md).
-- For every planned task, locate the relevant scoped `AGENTS.md` chain and assign the existing skills that the executor must load before editing.
+- For every planned task, locate the relevant scoped `AGENTS.md` chain, load the relevant skill guidance during planning, and assign the existing skills that the executor must load again before editing.
 - Never start implementation from this skill.

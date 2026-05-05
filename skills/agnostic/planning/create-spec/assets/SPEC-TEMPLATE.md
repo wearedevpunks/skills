@@ -74,7 +74,7 @@ _Optional. Technical discoveries, known system constraints, or early implementat
 
 ## Open Questions
 
-_Unresolved questions that could affect implementation._
+_Unresolved questions that could affect implementation. Before saving, route meaningful spec-affecting unknowns through the requirements-grill phase. Only keep questions here when the user explicitly defers them, the answer requires external validation, or the issue is non-blocking for spec review._
 
 | # | Question | Affects | Owner | Status |
 |---|----------|---------|-------|--------|

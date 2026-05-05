@@ -22,6 +22,8 @@ Include:
 - validation gates per phase when phases exist
 - unresolved questions
 
+`unresolved questions` is not a hiding place for skipped planning. Before saving a plan with unresolved questions, prompt the user to resolve each plan-shaping question that they can reasonably answer now. Keep only deferred, externally blocked, or non-blocking questions, and state why each remains open.
+
 ## Task contract
 
 Every task must include:
@@ -46,6 +48,8 @@ Every task must include:
 Multiple tasks may point to the same story when one story needs several execution steps.
 
 Do not create a new backlog item only because a task boundary exists in the plan.
+
+`assigned_skills` must list the skills used to shape the task during planning, not only skills expected during implementation. Skill guidance should be reflected in the task's boundary, validation, `tdd_target`, and `review_mode`.
 
 ```md
 ### T3: Example task

@@ -4,7 +4,9 @@ Use this reference after discovery and before writing.
 
 ## Goal
 
-Ask only enough to produce a useful, bounded spec. A vague spec creates false confidence.
+Ask only enough to decide whether the spec is ready to draft or needs a bounded `$requirements-grill` phase. A vague spec creates false confidence.
+
+Before writing `Open Questions`, route meaningful spec-affecting unknowns through `grill-phase.md`. Do not silently invent an open-question table as a substitute for requirements work.
 
 ## Priority topics
 
@@ -27,6 +29,8 @@ Surface these as needed:
 - If a fact is ambiguous and matters to the spec, ask directly.
 - Prefer concrete examples over abstract wording.
 - When backlog context exists, ask about cross-story interactions only after reading all child stories first.
+- If multiple or material unknowns remain, stop lightweight questioning and run the grill phase.
+- If a tiny unknown would become an `Open Question`, ask whether the user can resolve it now or wants to defer it.
 
 ## Stop asking when
 
@@ -38,4 +42,10 @@ Surface these as needed:
 - major functional requirements are identifiable
 - key non-goals are explicit
 
-If a branch remains open, capture it as an open question or assumption inside the spec rather than pretending certainty.
+Only leave `Open Questions` in the spec when one of these is true:
+
+- the user explicitly chose to defer the question
+- the answer requires external validation outside the current spec session
+- the question is non-blocking and the spec can still be reviewed honestly
+
+If a branch remains open after the grill phase or lightweight prompt, capture it as an open question or assumption inside the spec rather than pretending certainty. Include the prompt/grill outcome so reviewers know why it remains unresolved.
