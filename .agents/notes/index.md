@@ -1,1 +1,2 @@
 - [planning-open-questions](planning-open-questions.md) - Spec/plan skills must resolve user-answerable unknowns before recording Open Questions; create-spec uses grill/backlog sync for material scope changes.
+- [local-publishing-skill](local-publishing-skill.md) - Publish/sync/baseline workflow skill is local-only under `.agents`, with `.codex` and `.claude` symlinks.
