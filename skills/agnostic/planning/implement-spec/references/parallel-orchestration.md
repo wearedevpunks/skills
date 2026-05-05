@@ -56,6 +56,7 @@ Launch all unblocked tasks in parallel.
 For each unblocked task:
 
 - choose the worker template from `.agents/subagents/manifest.mjs`
+- in Codex, apply the worker `reasoning_effort` policy from [parallel-reasoning.md](parallel-reasoning.md)
 - use the worker-brief contract from [parallel-worker-brief.md](parallel-worker-brief.md)
 - keep the task scope narrow
 - ensure the worker owns only the assigned task and its required validation

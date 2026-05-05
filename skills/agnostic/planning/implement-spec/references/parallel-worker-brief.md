@@ -34,6 +34,8 @@ Each worker brief should require:
 9. running the exact task validation evidence before returning, plus extra plan validation when feasible
 10. updating the plan entry with status, log, touched files, and gotchas before handoff closes
 
+When spawning Codex workers, apply [parallel-reasoning.md](parallel-reasoning.md): `xhigh -> high`, `high -> medium`, `medium -> low`, `low -> low`.
+
 ## Worker output contract
 
 Require the worker to return:
@@ -63,3 +65,4 @@ The parent `implement-spec` run owns:
 - review of worker outputs
 - retry and escalation decisions
 - deciding when the wave is complete
+- the final acceptance audit
