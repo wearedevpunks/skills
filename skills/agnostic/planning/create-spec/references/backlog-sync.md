@@ -1,38 +1,32 @@
 # Backlog Sync
 
-Use this reference after a `$requirements-grill` phase and before final spec drafting.
+Use after `$requirements-grill` and before final spec drafting.
 
-## Goal
+## Trigger
 
-Keep the backlog aligned with grilled requirements so the epic, child stories, and spec describe the same product scope.
-
-## When to Run
-
-Run `$write-backlog` automatically when grill outcomes change any of these:
+Run `$write-backlog` automatically when grill outcomes change:
 
 - the epic/capability boundary
-- child story acceptance signals
-- missing child stories that should exist under the epic
-- stories that should be parked or moved to future scope
-- story ordering, blockers, or native parent/child relationships
-- canonical terms that should appear in epic/story bodies
+- child-story acceptance signals, scope, or canonical terms
+- missing, parked, moved, or future-scope stories
+- story ordering, blockers, or parent/child relationships
 
-Skip backlog sync only when the grill clarified wording that does not change backlog scope, story meaning, or ordering.
+Skip only for wording clarifications that do not change backlog scope, story meaning, or ordering.
 
-## Required Inner Behavior
+## Load
 
-Load and follow:
+Follow:
 
 - `../../../requirements/write-backlog/SKILL.md`
 - `../../../requirements/write-backlog/REFERENCE.md`
 - `../../../requirements/write-backlog/assets/concepts/backlog-model.md`
 
-If grill artifacts exist, `$write-backlog` must read:
+If grill artifacts exist, read:
 
 1. `docs/<topic>-grill-status.md`
 2. `docs/<topic>-grill-log.md`
 
-## Sync Rules
+## Rules
 
 - The parent epic remains the spec anchor.
 - Child stories remain product-facing slices beneath that epic.
@@ -42,11 +36,9 @@ If grill artifacts exist, `$write-backlog` must read:
 - Use native parent/child and `blockedBy` / `blocks` relations when the provider supports them.
 - Do not add implementation details, file paths, TDD targets, validation commands, or worker handoffs to backlog bodies.
 
-## Handoff Into Spec
+## Handoff
 
-After backlog sync:
-
-- read the updated epic and child stories again before drafting
+- reread the updated epic and child stories before drafting
 - incorporate all child-story requirements into the spec
 - add backlog item ids/URLs to spec links when available
 - mention deferred backlog items only as non-goals, future scope, or `Open Questions`
