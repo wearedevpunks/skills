@@ -1,6 +1,6 @@
 ---
 name: docs-maintenance
-description: Ingest a spec folder into the wiki domain layer by extracting and writing flow pages first, then concept pages, then syncing ingest metadata. Secondary: update docs/ when code changes alter architecture, setup, contracts, or operator workflow. Use when a spec is ready to be captured as domain knowledge after review or implementation, or when a code task changes non-obvious behavior that docs/ should reflect.
+description: "Ingest a spec folder into the wiki domain layer by extracting and writing flow pages first, then concept pages, then syncing ingest metadata. Secondary: update docs/ when code changes alter architecture, setup, contracts, or operator workflow. Use when a spec is ready to be captured as domain knowledge after review or implementation, or when a code task changes non-obvious behavior that docs/ should reflect."
 ---
 
 # Docs Maintenance
