@@ -1,6 +1,6 @@
 ---
 name: create-plan
-description: Creates execution-ready `PLAN.md` artifacts by explicitly wrapping `grill-me`, `swarm-planner`, and `tdd` into one planning run. Use when work must be decomposed before coding, especially for reviewed spec workflows, multi-agent execution, branch-scoped delivery, or any task that needs explicit dependencies, backlog items, review gates, and per-task RED targets.
+description: Creates execution-ready `PLAN.md` artifacts by explicitly wrapping `grill-me`, `parallel-research`, `swarm-planner`, and `tdd` into one planning run. Use when work must be decomposed before coding, especially for reviewed spec workflows, multi-agent execution, branch-scoped delivery, or any task that needs explicit dependencies, backlog items, review gates, and per-task RED targets.
 ---
 
 # Create Plan
@@ -10,7 +10,7 @@ description: Creates execution-ready `PLAN.md` artifacts by explicitly wrapping 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
 - **Upstream:** approved `SPEC.md` or explicit planning request
-- **Delegates to:** `$grill-me`, `$swarm-planner`, `$tdd`
+- **Delegates to:** `$grill-me`, `$parallel-research`, `$swarm-planner`, `$tdd`
 - **Downstream:** execution-ready `PLAN.md` for `implement-spec`
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing
 - **Stop conditions:** `PLAN.md` and backlog sync are complete; no implementation started
@@ -18,6 +18,7 @@ description: Creates execution-ready `PLAN.md` artifacts by explicitly wrapping 
 ## Required Inner Skills
 
 - MUST use `$grill-me`
+- MUST consider `$parallel-research` for readonly planning discovery
 - MUST use `$swarm-planner`
 - MUST use `$tdd`
 
@@ -30,12 +31,13 @@ Create a plan first. Never implement code in this skill.
 3. Read `references/grill-phase.md` and run `$grill-me` as an explicit inner phase.
 4. Update a running decision ledger after every answer so the user never has to reconstruct state from memory.
 5. Insert a synthesis checkpoint before the thread gets noisy, then continue only if more ambiguity reduction is still needed.
-6. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-7. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
-8. Read `references/planner-phase.md` and run `$swarm-planner` as an explicit inner phase.
-9. Read `references/tdd-phase.md` and run `$tdd` as an explicit inner phase.
-10. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
-11. Read `references/stop-conditions.md` and stop exactly there.
+6. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
+7. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
+8. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
+9. Read `references/planner-phase.md` and run `$swarm-planner` as an explicit inner phase.
+10. Read `references/tdd-phase.md` and run `$tdd` as an explicit inner phase.
+11. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
+12. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -44,7 +46,7 @@ Create a plan first. Never implement code in this skill.
 1. Derive host, owner, tracker, and scope from repo state instead of assuming them.
 2. Ask only for missing high-impact inputs such as scope, goal, or backlog target.
 3. Every plan-shaping question must use the exact block: `Decision`, `Recommendation`, `Question`, `Why it matters`.
-4. Keep `$grill-me`, `$swarm-planner`, and `$tdd` as visible required inner phases of one planning run.
+4. Keep `$grill-me`, `$parallel-research`, `$swarm-planner`, and `$tdd` as visible inner phases of one planning run; record when `$parallel-research` is used or intentionally skipped because the work is not split-friendly.
 5. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 6. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
 7. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
