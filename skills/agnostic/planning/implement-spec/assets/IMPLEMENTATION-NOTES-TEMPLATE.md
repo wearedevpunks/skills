@@ -28,6 +28,12 @@
 |-----------|--------|-------|
 | | | |
 
+## Manual Review Checklist
+
+| Area | Check | How to perform | Expected result |
+|------|-------|----------------|-----------------|
+| | | | |
+
 ## Pre-existing Issues
 
 - 

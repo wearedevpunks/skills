@@ -126,18 +126,38 @@ Re-read `SPEC.md` acceptance criteria and mark each one:
 
 Record a reason for every unmet or blocked item in `IMPLEMENTATION-NOTES.md`.
 
-## 11. Finalize the spec folder
+## 11. Write the manual review checklist
+
+Before finalization, `IMPLEMENTATION-NOTES.md` must contain `## Manual Review Checklist`.
+
+This section is a user handoff checklist, not an agent completion tracker. Derive it from completed tasks, `review_mode`, `tdd_target`, acceptance criteria, touched public surfaces, deviations, and risky integrations.
+
+Use exactly this table shape:
+
+| Area | Check | How to perform | Expected result |
+|------|-------|----------------|-----------------|
+
+Rules:
+
+- Browser or mixed review tasks must include concrete user flows to try end to end.
+- CLI review tasks must include exact commands, fixtures, or scenarios the user can rerun.
+- Include manual-only checks for product behavior, visual review, integration smoke, tracker/docs review, or anything automation cannot prove.
+- Empty checklist sections are invalid.
+- If no manual review applies, write one explicit row explaining why there is no user-verifiable surface.
+
+## 12. Finalize the spec folder
 
 Before reporting back:
 
 - remove empty sections from `IMPLEMENTATION-NOTES.md`
 - ensure **Execution mode** reflects the mode actually used
 - ensure **Sanity checks** lists only commands actually run
+- ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
 - ensure **Remaining work** matches any unmet or blocked criteria
 - set `SPEC.md` frontmatter `status: implemented`
 - set `PLAN.md` `**Status:** Complete` when that line exists
 
-## 12. Final report shape
+## 13. Final report shape
 
 Summarize:
 
@@ -145,5 +165,6 @@ Summarize:
 - validation results
 - key deviations or surprises
 - acceptance-criteria status
+- manual review checklist
 - blocked tasks needing input
 - whether the spec-linked tech-debt file was created or updated
