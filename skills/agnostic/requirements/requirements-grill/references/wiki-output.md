@@ -14,6 +14,7 @@ Read status first to understand:
 - active and parked branches
 - branch completion
 - current locked direction
+- current glossary, relationships, axioms, and flagged ambiguities
 - remaining non-design validation work
 
 Read log second to extract:
@@ -22,6 +23,7 @@ Read log second to extract:
 - superseded decisions
 - branch closure notes
 - exact canonical terms
+- why glossary or axiom choices changed
 
 ## Ownership
 
@@ -38,6 +40,8 @@ Good wiki targets:
 - product scope
 - user-visible modes and behaviors
 - high-level features
+- canonical domain glossary and relationships
+- domain axioms that constrain future design
 - conversation model
 - lifecycle concepts
 - memory model
@@ -79,7 +83,7 @@ Keep `docs/` as the detailed design record.
 Use `apps/wiki/domains/` for synthesized domain knowledge.
 
 Do not duplicate the full grill log in wiki pages.
-Summarize stable meaning and link back to source docs when useful.
+Summarize stable meaning, glossary, and axioms; link back to source docs when useful.
 
 ## Bookkeeping
 

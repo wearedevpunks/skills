@@ -12,7 +12,7 @@ At the start of a serious grilling session, create or reuse:
 - `docs/<topic>-grill-status.md`
 
 The log is the durable decision record.
-The status file is the current branch dashboard.
+The status file is the current branch dashboard plus the current glossary snapshot.
 
 ## Grill Log Contract
 
@@ -34,6 +34,23 @@ Group related decisions under branch headings.
 
 When the user changes an earlier decision, add a new entry that explicitly supersedes the old one.
 
+Record glossary decisions in the log when terms or axioms are first pinned:
+
+```md
+### Glossary Q<N>
+
+Question:
+<terminology or axiom question>
+
+Accepted answer:
+- Canonical term: **<Term>** — <one-sentence definition>
+- Avoid: <alias>, <alias>
+- Relationship: **<Term>** <relationship> **<Other Term>**
+- Axiom: <domain invariant that should not be re-debated>
+```
+
+Omit unused fields. If a later answer changes the glossary, add a superseding entry instead of rewriting history.
+
 ## Status File Contract
 
 Maintain a compact branch dashboard with:
@@ -43,6 +60,9 @@ Maintain a compact branch dashboard with:
 - locked direction
 - still-open items
 - parked branches
+- glossary snapshot
+- pinned axioms
+- flagged ambiguities
 
 Completion percentages are working signals:
 
@@ -52,12 +72,46 @@ Completion percentages are working signals:
 - `100%`: design closed; remaining work is implementation/tuning
 - `parked`: preserved for later, out of current scope
 
+## Glossary Snapshot Contract
+
+Keep the status file glossary compact and current:
+
+```md
+## Glossary
+
+### Terms
+
+- **<Term>**: <one-sentence definition>
+  Avoid: <alias>, <alias>
+
+### Relationships
+
+- **<Term>** belongs to exactly one **<Other Term>**
+
+### Axioms
+
+- <Domain invariant accepted during the grill>
+
+### Flagged Ambiguities
+
+- "<ambiguous word>" was used to mean both **<Term A>** and **<Term B>**. Resolution: <decision>.
+```
+
+Rules:
+
+- Be opinionated: pick one canonical term.
+- Keep definitions to one sentence.
+- Include only terms meaningful to product/domain experts in this grill.
+- Prefer status-file updates for the current glossary; use log entries for the decision trail.
+- Group terms under subheadings only when clusters are natural.
+- Add a short example dialogue only when it clarifies a boundary that keeps recurring.
+
 ## Branch Closure
 
 When a branch closes:
 
 1. Update the grill log with final accepted decisions.
-2. Update the status file percentage and open items.
+2. Update the status file percentage, open items, glossary snapshot, axioms, and ambiguities.
 3. If the branch changes durable domain/product knowledge, run the wiki-output workflow.
 4. Say exactly what changed and which artifacts were updated.
 

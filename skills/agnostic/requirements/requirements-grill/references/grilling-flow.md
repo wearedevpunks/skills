@@ -27,14 +27,15 @@ Walk the design tree branch by branch until each branch is:
 
 Challenge glossary:
 
-- If a term conflicts with existing specs, docs, or code language, call it out.
-- Propose the canonical term.
-- Make the user choose.
+- If a term conflicts with existing specs, docs, code language, or the grill status glossary, call it out.
+- Propose one canonical term and the aliases to avoid.
+- Make the user choose, then update the glossary sections in the grill artifacts.
 
 Sharpen vague language:
 
 - Identify overloaded words.
-- Replace fuzzy language with explicit states, enum values, ownership boundaries, or lifecycle rules.
+- Replace fuzzy language with explicit terms, states, enum values, ownership boundaries, lifecycle rules, or domain axioms.
+- When the user decides an invariant that should not be re-debated, capture it as an axiom.
 
 Discuss concrete scenarios:
 
@@ -45,6 +46,17 @@ Cross-check with code:
 
 - Verify user claims against local code when possible.
 - Surface contradictions instead of smoothing them over.
+
+## Glossary Discipline
+
+Keep glossary pressure inside the active grill loop:
+
+- Only add project/domain-specific terms; skip generic programming words.
+- Define what the term is in one sentence, not how it is implemented.
+- Record avoided aliases when competing words exist.
+- Record relationships between terms, including cardinality when obvious.
+- Record flagged ambiguities with the resolution that closed them.
+- Treat glossary corrections from the user as authoritative and update the artifacts immediately.
 
 ## Conservative Closure
 
