@@ -1,6 +1,6 @@
 # Flow Pages
 
-Use this reference during Step 4 of `docs-maintenance`.
+Use this reference during Step 4 of `docs-ingest-phase`.
 
 ## Output contract
 

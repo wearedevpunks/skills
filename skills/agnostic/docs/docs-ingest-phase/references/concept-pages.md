@@ -1,6 +1,6 @@
 # Concept Pages
 
-Use this reference during Step 6 of `docs-maintenance`.
+Use this reference during Step 6 of `docs-ingest-phase`.
 
 ## Input expansion
 

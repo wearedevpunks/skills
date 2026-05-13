@@ -29,7 +29,7 @@ Read log second to extract:
 
 `requirements-grill` owns wiki synthesis from grilled requirements.
 
-`docs-maintenance` owns formal spec ingest and ordinary docs upkeep.
+`docs-ingest-phase` owns formal spec ingest and ordinary docs upkeep.
 
 ## What Belongs In Wiki
 

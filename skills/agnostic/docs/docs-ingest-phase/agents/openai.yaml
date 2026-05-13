@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Ingest Phase"
+  short_description: "Wiki ingest plus repo docs maintenance"
+  default_prompt: "Use $docs-ingest-phase to own the wiki ingest pipeline, then keep docs/ human-facing and implementation-grounded when code changes affect durable knowledge."

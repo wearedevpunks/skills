@@ -11,7 +11,7 @@ description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOT
 - **Entrypoint type:** public entrypoint
 - **Upstream:** reviewed spec folder with `SPEC.md` and `PLAN.md`
 - **Delegates to:** `$tdd`, `$simplify`, and internal worker orchestration in parallel mode
-- **Downstream:** `docs-maintenance` when the resulting spec folder should be ingested into domain knowledge
+- **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing reviewed spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
 

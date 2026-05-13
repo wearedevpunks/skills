@@ -1,4 +1,0 @@
-interface:
-  display_name: "Docs Maintenance"
-  short_description: "Wiki ingest plus repo docs maintenance"
-  default_prompt: "Use $docs-maintenance to own the wiki ingest pipeline, then keep docs/ human-facing and implementation-grounded when code changes affect durable knowledge."
