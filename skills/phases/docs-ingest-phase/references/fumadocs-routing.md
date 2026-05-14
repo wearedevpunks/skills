@@ -1,25 +1,17 @@
 # Fumadocs Routing
 
-Use this reference during Step 10 of `docs-ingest-phase`.
+Use this reference when `docs-ingest-phase` updates routed wiki or project docs.
 
-## Source And Projection
+## Canonical Routed Content
 
-`apps/wiki` is both the private Fumadocs app and the canonical wiki source owner. Do not create another wiki, another content-owner layer, or a mirrored docs tree outside this app.
+`apps/wiki` owns the wiki application and its documentation content. Routed MDX pages are the canonical human-facing docs surface:
 
-Canonical source content may remain in:
+- `<wiki-root>/content/docs/wiki`
+- `<wiki-root>/content/docs/project`
 
-- `apps/wiki/domains`
-- `apps/wiki/specs`
-- `apps/wiki/raw`
-- `apps/wiki/index.md`
-- `apps/wiki/log.md`
+Do not create or maintain a separate canonical `domains/` tree for concepts and flows. That split creates drift because one article then has two homes.
 
-Rendered/discoverable pages live under:
-
-- `apps/wiki/content/docs/wiki`
-- `apps/wiki/content/docs/project`
-
-The routed pages are a projection layer. They may summarize, curate, and point back to canonical source files. They should not duplicate large specs, plans, implementation notes, runbooks, or source pages.
+`<wiki-root>/specs`, `<wiki-root>/raw`, `<wiki-root>/index.md`, and `<wiki-root>/log.md` may remain source/input/bookkeeping surfaces. They are not duplicate article trees.
 
 ## Route Boundaries
 
@@ -30,7 +22,7 @@ Use `/docs/wiki` for product/domain knowledge:
 - theory
 - flows
 - glossary
-- docs-ingest-phase concept/flow ingest output
+- docs-ingest-phase concept/flow output
 
 Use `/docs/project` for internal project operations:
 
@@ -43,7 +35,7 @@ Use `/docs/project` for internal project operations:
 - operator/project runbooks
 - useful Linear/grill-derived management context
 
-Docs ingest concepts and flows are abstract/domain-theory outputs. The Fumadocs projection makes those outputs navigable.
+Keep implementation specs and notes linked or summarized. Do not paste large source artifacts into routed pages.
 
 ## Fumadocs Mechanics
 
@@ -71,7 +63,7 @@ Use root folders for the two main surfaces:
 }
 ```
 
-## Access Frontmatter
+## Routed Page Frontmatter
 
 Preserve access-control frontmatter on routed pages:
 
@@ -83,6 +75,17 @@ permission: internal
 ```yaml
 surface: project
 permission: project
+```
+
+Routed ingest pages should also carry durable metadata when useful:
+
+```yaml
+domain: <domain>
+type: concept | flow
+status: proposed | implemented
+source:
+  - apps/wiki/specs/<domain>/<spec>/SPEC.md
+updated: YYYY-MM-DD
 ```
 
 Do not implement full auth unless the repo already has the required auth primitives. When auth exists, prefer a small Fumadocs loader-level filter so restricted files are removed from the input source before page tree/search generation.

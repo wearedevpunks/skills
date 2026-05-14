@@ -17,7 +17,7 @@ Resolve to a full spec folder before continuing. If ambiguous, ask only for the 
 1. Read `SPEC.md`. Stop if missing.
 2. Check `SPEC.md` frontmatter for `ingested: true`; if set, exit with a clear no-op.
 3. Verify `domain:` exists in frontmatter.
-4. Verify `<wiki-root>/domains/<domain>/` exists with a `<domain>.md` index file. If missing, stop and scaffold the domain structure first.
+4. Verify the routed domain root exists under `<wiki-root>/content/docs/wiki/<domain>/` with an `index.mdx` file and `meta.json`. If missing, stop and scaffold the routed domain structure first.
 
 ## Source Read
 
@@ -108,7 +108,7 @@ ingested: true
 last_ingested: YYYY-MM-DD
 ```
 
-Also populate its `links` array with the SPEC link plus every flow and concept page written in this ingest.
+Also populate its `links` array with the SPEC link plus every routed flow and concept page written in this ingest.
 
 Append to `<wiki-root>/log.md` and cap the log at 50 entries:
 
@@ -120,12 +120,12 @@ Append to `<wiki-root>/log.md` and cap the log at 50 entries:
 - Concepts written: <count>
 ```
 
-If new pages were created, update Concepts and Flows counts in `<wiki-root>/index.md`.
+If new pages were created, update Concepts and Flows counts in `<wiki-root>/index.md` when that index tracks counts.
 
 ## Resumability
 
 Output pages are checkpoints:
 
-- existing flow pages with `ingested: true` can be skipped
+- existing routed flow pages with matching source metadata can be skipped
 - missing expected flow pages should be rewritten before concepts
-- existing concept pages with `ingested: true` can be skipped
+- existing routed concept pages with matching source metadata can be skipped
