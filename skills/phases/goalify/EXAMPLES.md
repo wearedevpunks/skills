@@ -2,6 +2,10 @@
 
 Use these as structure, not fixed templates. Keep the generated goal prompt matched to the user context.
 
+Every `/goal` block must be non-empty and at most 4,000 characters. If the
+details cannot fit, make the goal point at a separate file that contains the
+expanded contract.
+
 ## Delivery-Style Goal
 
 ```text
@@ -43,6 +47,8 @@ Progress reports:
 Final report:
 - Changed files, validation evidence, unresolved questions, and follow-up goals if split.
 ```
+
+After returning the fenced block, include its character count.
 
 ## Debugging-Style Goal
 

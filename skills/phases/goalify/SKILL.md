@@ -8,6 +8,10 @@ description: Compile messy intent, handoffs, issues, logs, specs, or notes into 
 `goalify` is a prompt compiler. It produces a `/goal` prompt; it does not run the
 goal unless the user explicitly asks.
 
+Codex goal objectives have a hard platform limit: the text after `/goal` must be
+non-empty and at most 4,000 characters. Longer instructions belong in a file
+that the goal points to; do not emit an over-limit `/goal` block.
+
 ## Use When
 
 - The user asks to "goalify", "write the goal prompt", "prepare a goal", or "turn this into a goal".
@@ -40,6 +44,15 @@ Every generated goal prompt must include:
 - progress-report expectations
 - final-report expectations
 
+Within the 4,000-character hard limit, prefer the official goal-shape fields:
+
+- outcome
+- verification surface
+- constraints
+- boundaries
+- iteration policy
+- blocked stop condition
+
 ## Workflow
 
 1. **Collect context.**
@@ -58,18 +71,23 @@ Every generated goal prompt must include:
    - Use [EXAMPLES.md](EXAMPLES.md) for structure.
    - Include only context the future goal runner needs.
    - Make the prompt self-contained enough to survive compaction.
+   - Keep the full `/goal ...` text at or below 4,000 characters.
+   - Be as descriptive as possible within the 4,000-character limit: preserve concrete paths, constraints, proof, and stop conditions before trimming style or repetition.
+   - Compress only when needed to fit: group files by area, collapse repeated commands, and remove non-execution-critical background before dropping useful detail.
+   - If the real operating contract cannot fit, produce a short `/goal` that points at an existing or user-requested goal file instead of pasting the full contract.
 5. **Review before returning.**
    - Confirm the prompt has one objective and one stopping condition.
    - Confirm it says what to read first.
    - Confirm it tells Codex when to stop early.
    - Confirm validation is explicit, not "make sure it works".
+   - Confirm the fenced `/goal` text is non-empty and no more than 4,000 characters.
 
 ## Output Contract
 
 Return:
 
 1. A ready-to-paste `/goal ...` prompt in a fenced `text` block.
-2. A short note listing any assumptions or missing inputs.
+2. A short note with the character count for the `/goal` text and any assumptions or missing inputs.
 3. No execution, no file edits, no tracker updates, and no commits unless separately requested.
 
 ## Prompt Sections
@@ -90,6 +108,9 @@ Use these headings when they fit:
 
 ## Gotchas
 
+- HARD LIMIT: never output a `/goal` prompt longer than 4,000 characters.
+- Do not treat `/goal` as a spec dump. It is a compact operating contract.
+- If a user asks for a giant goal, preserve the richest useful contract that fits, then point at a file for overflow detail.
 - Do not hardcode project-specific phase families; use the skills/phases named by the context.
 - Do not turn a backlog grab bag into one goal. Split or ask.
 - Do not bury the stopping condition near the end in vague prose.
