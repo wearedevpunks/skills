@@ -12,13 +12,9 @@ It does not finish all repo-specific authoring. The next agent must use `.devpun
 
 Use before boilerplate exists.
 
-It scaffolds requirements-stage assets and prints an operator prompt. Follow that prompt before moving to another stage.
+It scaffolds `requirements-grill`, `write-backlog`, and the initial wiki tree, then prints an operator prompt. Follow that prompt before moving to repo-aware setup.
 
-## `dp scaffold backlog`
-
-Use to inspect or enter the backlog stage.
-
-When no backlog-stage packs are available, the command still prints the operator prompt so the stage boundary is explicit.
+If the generated wiki root does not match the repository layout, move or refactor it before writing specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
 ## `dp update --check`
 
@@ -31,3 +27,9 @@ Report missing, changed, or pack-drift findings. Do not write files.
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
 After writing, verify the refreshed files still fit the repo shape and any pack drift is handled intentionally.
+
+## `dp report`
+
+Use to submit reusable Harness friction for maintainer triage when the control plane and auth are configured.
+
+Reports are for shared Harness/docs/tooling/workflow issues, not the default path for project product backlog.

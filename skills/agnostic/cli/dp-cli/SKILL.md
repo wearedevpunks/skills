@@ -1,6 +1,6 @@
 ---
 name: dp-cli
-description: Operates the Devpunks `dp` CLI and interactively follows scaffold, stage, update, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `dp scaffold`, `dp update`, Devpunks CLI setup, or asks what to do after running a `dp` command.
+description: Operates the Devpunks `dp` CLI and interactively follows scaffold, update, report, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `dp scaffold`, `dp update`, `dp report`, Devpunks CLI setup, or asks what to do after running a `dp` command.
 metadata: {"Devpunks":{"entrypoint":true}}
 ---
 
@@ -13,9 +13,9 @@ The `dp` CLI scaffolds Devpunks agent assets and writes follow-up instructions f
 ```bash
 dp scaffold setup
 dp scaffold init
-dp scaffold backlog
 dp update --check
 dp update --write
+dp report --help
 ```
 
 After any command, read the command output and generated artifacts before acting.
@@ -46,6 +46,14 @@ See [references/commands.md](references/commands.md) for command intent and when
 
 See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `dp scaffold` or `dp update`.
 
+The former backlog scaffold subcommand is not part of current guidance. `dp scaffold init` provides the requirements/backlog skills and initial wiki structure; `dp scaffold setup` provides repo-aware managed scaffold output.
+
+## Scaffold Init
+
+After `dp scaffold init`, expect `.agents/skills/requirements-grill`, `.agents/skills/write-backlog`, and an initial wiki root.
+
+Run the requirements grill before backlog authoring. If the generated wiki root does not match the real repository layout, move or refactor it before creating durable specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
+
 ## Scaffold Setup
 
 After `dp scaffold setup`, expect artifacts such as:
@@ -62,6 +70,8 @@ Read `.devpunks/AGENT-SYSTEM-PROMPT.md` first when present.
 
 Then author or reconcile the final repo files requested by the specs, including prompt files, harness mirrors, lint configuration, and subagent manifests.
 
+Reconcile generated wiki guidance with the real repository layout. Do not assume a newly seeded wiki root is canonical until it matches the project boundary.
+
 Before authoring prompts or plans, identify the detected core libraries whose source behavior matters. Ask the user which ones to prioritize if the choice is not obvious, then run `opensrc path <package>` or `opensrc path owner/repo` only for that focused set.
 
 When lint specs suggest Oxlint or hooks suggest Oxfmt, treat migration as a repo-policy change. Ask before replacing existing ESLint/Prettier/Biome scripts or CI, then update package scripts, task pipelines, editor/docs references, and hooks together.
@@ -73,6 +83,12 @@ After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update sum
 - `--check` reports managed-file drift without writing.
 - `--write` refreshes scaffold-managed assets.
 - pack drift is a setup decision point, not a silent auto-fix.
+
+## Report
+
+Use `dp report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
+
+Do not use reports as the default destination for project product backlog. Report submission requires control-plane configuration and auth.
 
 ## Completion Checklist
 

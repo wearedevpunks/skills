@@ -27,6 +27,7 @@ If a file is missing, continue with the next available artifact and say what was
 After `dp scaffold setup`:
 
 - Generate final root/docs/workspace `AGENTS.md` files from prompt specs.
+- Reconcile any scaffolded wiki root with the real repo layout before writing durable docs.
 - Create sibling `CLAUDE.md` symlink mirrors for those neutral prompt files.
 - Keep `.agents/AGENTS.md` as the shared global prompt source.
 - Keep `.agents/skills/` as the main skill directory; only `.claude/skills` mirrors it.
@@ -36,6 +37,12 @@ After `dp scaffold setup`:
 - Ask which detected core libraries to inspect when source context is broad; then use `opensrc path <package>` or `opensrc path owner/repo` for only the chosen set.
 
 Do not stop after saying the files exist.
+
+After `dp scaffold init`:
+
+- Run `requirements-grill` before `write-backlog`.
+- Treat the seeded wiki root as provisional until it matches the repo layout.
+- Use `dp scaffold setup` only after the repo is ready for repo-aware setup.
 
 ## Reporting
 
