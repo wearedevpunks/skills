@@ -12,6 +12,10 @@ Codex goal objectives have a hard platform limit: the text after `/goal` must be
 non-empty and at most 4,000 characters. Longer instructions belong in a file
 that the goal points to; do not emit an over-limit `/goal` block.
 
+Goal prompts must be short and concise. Do not write a spec, essay, transcript,
+or exhaustive handoff. Write the smallest complete operating contract: direct,
+detailed enough to execute, and straightforward step by step.
+
 ## Use When
 
 - The user asks to "goalify", "write the goal prompt", "prepare a goal", or "turn this into a goal".
@@ -53,6 +57,9 @@ Within the 4,000-character hard limit, prefer the official goal-shape fields:
 - iteration policy
 - blocked stop condition
 
+These criteria are required, but they are not permission to be verbose. Fold
+related details together, delete repetition, and keep each section short.
+
 ## Workflow
 
 1. **Collect context.**
@@ -72,8 +79,10 @@ Within the 4,000-character hard limit, prefer the official goal-shape fields:
    - Include only context the future goal runner needs.
    - Make the prompt self-contained enough to survive compaction.
    - Keep the full `/goal ...` text at or below 4,000 characters.
-   - Be as descriptive as possible within the 4,000-character limit: preserve concrete paths, constraints, proof, and stop conditions before trimming style or repetition.
-   - Compress only when needed to fit: group files by area, collapse repeated commands, and remove non-execution-critical background before dropping useful detail.
+   - Prefer short over maximal. The target is concise and complete, not "as much as fits".
+   - Preserve concrete paths, constraints, proof, and stop conditions before trimming execution detail.
+   - Use terse step-by-step workflow bullets with clear verbs and validation gates.
+   - Compress aggressively: group files by area, collapse repeated commands, delete background, and remove non-execution-critical explanation.
    - If the real operating contract cannot fit, produce a short `/goal` that points at an existing or user-requested goal file instead of pasting the full contract.
 5. **Review before returning.**
    - Confirm the prompt has one objective and one stopping condition.
@@ -81,6 +90,7 @@ Within the 4,000-character hard limit, prefer the official goal-shape fields:
    - Confirm it tells Codex when to stop early.
    - Confirm validation is explicit, not "make sure it works".
    - Confirm the fenced `/goal` text is non-empty and no more than 4,000 characters.
+   - Confirm the prompt is short, direct, and step-by-step; cut any paragraph that merely explains context the runner does not need.
 
 ## Output Contract
 
@@ -109,6 +119,7 @@ Use these headings when they fit:
 ## Gotchas
 
 - HARD LIMIT: never output a `/goal` prompt longer than 4,000 characters.
+- SHORT MEANS SHORT: the goal should feel like a compact command contract, not a plan file.
 - Do not treat `/goal` as a spec dump. It is a compact operating contract.
 - If a user asks for a giant goal, preserve the richest useful contract that fits, then point at a file for overflow detail.
 - Do not hardcode project-specific phase families; use the skills/phases named by the context.
