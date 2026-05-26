@@ -8,11 +8,41 @@ This workflow is always paired with [grilling-flow.md](grilling-flow.md) during 
 
 At the start of a serious grilling session, create or reuse:
 
-- `docs/<topic>-grill-log.md`
-- `docs/<topic>-grill-status.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
+
+Resolve `<wiki-root>` the same way as `docs-ingest-phase`:
+
+- monorepo: `apps/wiki`
+- single-repo: `wiki`
+
+Before writing, read `<wiki-root>/AGENTS.md`. The grilling artifacts live in the routed project wiki because `/docs/project` owns useful grill context and maintenance/project records.
+
+If a legacy `docs/<topic>-grill-log.md` or `docs/<topic>-grill-status.md` exists, treat it as input to move or merge into the routed grilling section. Do not keep updating both locations.
 
 The log is the durable decision record.
 The status file is the current branch dashboard plus the current glossary snapshot.
+
+## Routed Wiki Contract
+
+Grill artifacts are human-facing routed pages. Include frontmatter on new files:
+
+```yaml
+---
+title: "<Topic> Grill Log"
+surface: project
+permission: project
+---
+```
+
+Use `"<Topic> Grill Status"` for the status file title.
+
+After adding or renaming a grill artifact:
+
+- update `<wiki-root>/content/docs/project/grilling/meta.json`
+- create `grilling/index.mdx` if the section is missing
+- append a concise entry to `<wiki-root>/log.md` when the repo maintains one
+- preserve existing frontmatter on existing files
 
 ## Grill Log Contract
 
@@ -113,7 +143,7 @@ When a branch closes:
 1. Update the grill log with final accepted decisions.
 2. Update the status file percentage, open items, glossary snapshot, axioms, and ambiguities.
 3. If the branch changes durable domain/product knowledge, run the wiki-output workflow.
-4. Say exactly what changed and which artifacts were updated.
+4. Say exactly what changed, which routed artifacts were updated, and whether `meta.json` or wiki log bookkeeping changed.
 
 ## Final Handoff
 

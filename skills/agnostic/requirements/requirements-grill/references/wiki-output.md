@@ -6,8 +6,8 @@ Use this reference when closed grill branches should be reflected in `apps/wiki`
 
 Use the grill artifacts as source:
 
-- `docs/<topic>-grill-status.md`
-- `docs/<topic>-grill-log.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md`
 
 Read status first to understand:
 
@@ -78,13 +78,13 @@ Create or update decision pages only when:
 
 ## Boundary
 
-Keep `docs/` as the detailed design record.
+Keep the routed grilling log/status files as the detailed requirements record.
 
-Use routed `apps/wiki/content/docs/project/` pages for synthesized project knowledge.
+Use other routed `<wiki-root>/content/docs/project/` pages for synthesized project knowledge.
 
 Do not create a separate `apps/wiki/domains/` article tree. That duplicates the routed Fumadocs surface and makes later docs ingest choose between competing homes.
 
-Do not duplicate the full grill log in wiki pages.
+Do not duplicate the full grill log into concept, flow, or decision pages.
 Summarize stable meaning, glossary, and axioms; link back to source docs when useful.
 
 ## Bookkeeping

@@ -17,12 +17,12 @@ This skill has three scoped references:
 
 Use active grilling when the user is still iterating on requirements, terminology, tradeoffs, branch closure, or status percentages. During a serious grilling session, load both `grilling-flow` and `artifact-output`; the interview and durable artifacts move together.
 
-Use wiki synthesis when the user asks to persist closed grill decisions into `apps/wiki`, extract high-level flows/concepts, or sync domain knowledge from grill artifacts.
+Use wiki synthesis when the user asks to turn closed grill decisions into high-level routed wiki flows/concepts, or sync domain knowledge from grill artifacts.
 
 Both workflows can happen in one long session, but keep the responsibilities distinct:
 
-- `docs/<topic>-grill-log.md` and `docs/<topic>-grill-status.md` are the detailed requirements and glossary record
-- routed `apps/wiki/content/docs/project/` pages are the synthesized project knowledge surface
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` and `<topic>-grill-status.md` are the detailed requirements and glossary record
+- other routed `<wiki-root>/content/docs/project/` pages are the synthesized project knowledge surface
 - backlog/user-story creation is the next phase after the grill gate, outside this skill's scope
 
 ## Core Behavior
