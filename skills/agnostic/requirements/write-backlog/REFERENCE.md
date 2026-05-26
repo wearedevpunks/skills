@@ -88,6 +88,13 @@ Provider mapping:
 - epic -> parent issue/work item/capability record
 - story -> child issue/sub-issue/work item
 
+monday.com mapping:
+
+- module/milestone -> board group
+- epic/capability -> parent item
+- story -> subitem
+- story ordering -> dependency column when present
+
 Rules:
 
 - every story must be independently understandable
