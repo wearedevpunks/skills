@@ -81,6 +81,7 @@ Create or update decision pages only when:
 Keep the routed grilling log/status files as the detailed requirements record.
 
 Use other routed `<wiki-root>/content/docs/project/` pages for synthesized project knowledge.
+For the default scaffold, that routed project surface is `apps/wiki/content/docs/project/`.
 
 Do not create a separate `apps/wiki/domains/` article tree. That duplicates the routed Fumadocs surface and makes later docs ingest choose between competing homes.
 
