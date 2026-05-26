@@ -80,7 +80,9 @@ Create or update decision pages only when:
 
 Keep `docs/` as the detailed design record.
 
-Use `apps/wiki/domains/` for synthesized domain knowledge.
+Use routed `apps/wiki/content/docs/project/` pages for synthesized project knowledge.
+
+Do not create a separate `apps/wiki/domains/` article tree. That duplicates the routed Fumadocs surface and makes later docs ingest choose between competing homes.
 
 Do not duplicate the full grill log in wiki pages.
 Summarize stable meaning, glossary, and axioms; link back to source docs when useful.

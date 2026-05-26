@@ -1,12 +1,13 @@
 # Fumadocs Routing
 
-Use this reference when `docs-ingest-phase` updates routed wiki or project docs.
+Use this reference when `docs-ingest-phase` updates routed project docs.
 
 ## Canonical Routed Content
 
-`apps/wiki` owns the wiki application and its documentation content. Routed MDX pages are the canonical human-facing docs surface:
+`apps/wiki` owns the wiki application and its documentation content. Routed MDX pages under `content/docs/project` are the canonical human-facing docs surface.
 
-- `<wiki-root>/content/docs/wiki`
+Required route root:
+
 - `<wiki-root>/content/docs/project`
 
 Do not create or maintain a separate canonical `domains/` tree for concepts and flows. That split creates drift because one article then has two homes.
@@ -15,16 +16,7 @@ Do not create or maintain a separate canonical `domains/` tree for concepts and 
 
 ## Route Boundaries
 
-Use `/docs/wiki` for product/domain knowledge:
-
-- usage model
-- concepts
-- theory
-- flows
-- glossary
-- docs-ingest-phase concept/flow output
-
-Use `/docs/project` for internal project operations:
+Use `/docs/project` for:
 
 - specs
 - plans
@@ -34,6 +26,8 @@ Use `/docs/project` for internal project operations:
 - repo guidance
 - operator/project runbooks
 - useful Linear/grill-derived management context
+- project-specific projections
+- docs-ingest-phase concept/flow output
 
 Keep implementation specs and notes linked or summarized. Do not paste large source artifacts into routed pages.
 
@@ -41,20 +35,11 @@ Keep implementation specs and notes linked or summarized. Do not paste large sou
 
 Fumadocs uses file paths to determine route slugs. Examples:
 
-- `content/docs/wiki/index.mdx` -> `/docs/wiki`
-- `content/docs/wiki/cli/index.mdx` -> `/docs/wiki/cli`
 - `content/docs/project/specs/index.mdx` -> `/docs/project/specs`
 
 Each folder with an explicit `meta.json` `pages` array must list every page or child folder that should appear in the page tree. Update `meta.json` whenever pages are added, moved, or removed.
 
-Use root folders for the two main surfaces:
-
-```json
-{
-  "title": "Wiki",
-  "root": true
-}
-```
+Use a root folder for the default project surface:
 
 ```json
 {
@@ -66,11 +51,6 @@ Use root folders for the two main surfaces:
 ## Routed Page Frontmatter
 
 Preserve access-control frontmatter on routed pages:
-
-```yaml
-surface: wiki
-permission: internal
-```
 
 ```yaml
 surface: project

@@ -17,7 +17,9 @@ Resolve to a full spec folder before continuing. If ambiguous, ask only for the 
 1. Read `SPEC.md`. Stop if missing.
 2. Check `SPEC.md` frontmatter for `ingested: true`; if set, exit with a clear no-op.
 3. Verify `domain:` exists in frontmatter.
-4. Verify the routed domain root exists under `<wiki-root>/content/docs/wiki/<domain>/` with an `index.mdx` file and `meta.json`. If missing, stop and scaffold the routed domain structure first.
+4. Resolve the routed output home from `<wiki-root>/AGENTS.md`, existing `content/docs/project/**/meta.json`, and the current page tree.
+   - Use existing `<wiki-root>/content/docs/project/` sections for concise projections and links.
+   - If no clear project route home exists, stop and report the missing route policy. Do not scaffold a second routed docs surface to satisfy this phase.
 
 ## Source Read
 
@@ -70,7 +72,7 @@ If no multi-step sequence exists, record the absence and skip flow writing.
 
 Read [flow-pages.md](flow-pages.md) and apply it to every extracted flow.
 
-Wait for all flow pages to complete before concept writing. If any flow write fails, stop and report the failure so the run can resume cleanly.
+Wait for all flow pages to complete before concept writing. If no suitable project section exists for a flow, skip that flow page and report the route-policy gap. If any required flow write fails, stop and report the failure so the run can resume cleanly.
 
 ## Extract Concepts
 

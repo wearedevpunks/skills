@@ -10,7 +10,7 @@ Use this reference after writing `SPEC.md`.
 | <domain> | [[specs/<domain>/<folder-name>/SPEC]] | Draft |
 ```
 
-2. Add an entry to `apps/wiki/specs/<domain>/<domain>-specs.md` with:
+2. Create or update `apps/wiki/specs/<domain>/<domain>-specs.md` with:
    - the spec name
    - a one-line summary
 

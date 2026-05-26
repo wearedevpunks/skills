@@ -58,10 +58,9 @@ Why: concept pages can cross-link flow pages, so flows must exist first.
 
 Keep the private Fumadocs app discoverable:
 
-- `/docs/wiki` is the canonical routed surface for product/domain knowledge: usage, concepts, theory, flows, glossary, and concept/flow ingest output.
-- `/docs/project` is the canonical routed surface for internal project operations: specs, plans, implementation notes, maintenance logs, decisions, repo guidance, runbooks, and useful management context.
+- `/docs/project` is the routed surface for scaffolded repos. It owns specs, plans, implementation notes, maintenance logs, decisions, repo guidance, runbooks, useful management context, and project-specific projections.
 
-Do not create a second wiki or a separate `domains/` content-owner layer. Routed MDX pages under `content/docs` are the durable human-facing wiki/project pages.
+Do not create a second routed docs surface or a separate `domains/` content-owner layer just because docs ingest ran. Routed MDX pages under `content/docs/project` are the durable human-facing project pages.
 
 ## Output Contract
 
@@ -82,6 +81,7 @@ Always report:
 - Strip or omit `surface` / `permission` frontmatter from routed pages.
 - Proceed to concept writing after a flow write fails.
 - Write canonical concept or flow content under `<wiki-root>/domains/`.
+- Add a second routed docs surface.
 - Create `docs/prd`, `docs/dev`, roadmap, sprint, or backlog-mirror folders.
 - Put agent task instructions inside human-facing docs pages.
 - Leave docs orphaned from `docs/README.md` after adding or renaming them.

@@ -22,7 +22,7 @@ Use wiki synthesis when the user asks to persist closed grill decisions into `ap
 Both workflows can happen in one long session, but keep the responsibilities distinct:
 
 - `docs/<topic>-grill-log.md` and `docs/<topic>-grill-status.md` are the detailed requirements and glossary record
-- `apps/wiki/domains/` is synthesized domain knowledge
+- routed `apps/wiki/content/docs/project/` pages are the synthesized project knowledge surface
 - backlog/user-story creation is the next phase after the grill gate, outside this skill's scope
 
 ## Core Behavior

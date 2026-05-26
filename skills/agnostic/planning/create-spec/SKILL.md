@@ -12,7 +12,7 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Upstream:** new idea, feature request, epic/capability issue, or problem statement
 - **Delegates to:** `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when grill outcomes change epic/story scope
 - **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
-- **Entry conditions:** wiki domain can be resolved, or the user creates one first with `create-wiki-domain`
+- **Entry conditions:** wiki root exists and a primary spec domain or project area can be resolved from existing specs, routed project docs, backlog context, or the user's request
 - **Stop conditions:** `SPEC.md`, wiki index, and wiki log are updated, then wait for user review
 
 This skill creates `SPEC.md` files that stay in the problem space: what to build, who it is for, why it matters, what counts as done, and what is out of scope.
@@ -24,7 +24,7 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 ## Quick start
 
 1. Read `apps/wiki/AGENTS.md` first. Stop if the wiki is not bootstrapped.
-2. Read `references/discovery.md` and orient yourself in the right wiki domain before asking questions.
+2. Read `references/discovery.md` and orient yourself in the right spec domain or project area before asking questions.
 3. When discovery spans independent code paths, docs, backlog items, prior specs, or hypotheses, read and use `$parallel-research` for readonly sidecar coverage before synthesizing.
 4. If backlog context exists, read the parent epic and every child story before asking questions.
 5. If the user did not provide a concrete request, ask for a rough description first.

@@ -30,6 +30,6 @@ After writing, verify the refreshed files still fit the repo shape and any pack 
 
 ## `dp report`
 
-Use to submit reusable Harness friction for maintainer triage when the control plane and auth are configured.
+Use to open reusable Harness friction in the Harness Intelligence GitHub repository. Include `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, and `--steps` whenever they apply so labels and issue body are useful for backoffice triage.
 
 Reports are for shared Harness/docs/tooling/workflow issues, not the default path for project product backlog.

@@ -8,7 +8,7 @@ For each extracted flow:
 
 1. Derive the routed output path:
    - use the domain's existing flow section when one exists
-   - otherwise write to `<wiki-root>/content/docs/wiki/<domain>/<flow-name>.mdx`
+   - write only when an existing project section is a clear fit; otherwise skip the flow page and report the route-policy gap
    - slugify the flow name to kebab-case
 2. Determine status:
    - `proposed` when only `SPEC.md` is present
@@ -33,8 +33,8 @@ Every flow page must include frontmatter:
 ---
 title: <Flow Name>
 description: <one sentence>
-surface: wiki
-permission: internal
+surface: project
+permission: project
 domain: <domain>
 type: flow
 status: proposed | implemented

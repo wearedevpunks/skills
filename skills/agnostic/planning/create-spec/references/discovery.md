@@ -7,14 +7,16 @@ Use this reference before asking clarifying questions.
 1. Read `apps/wiki/AGENTS.md`.
    - Stop if it does not exist. The wiki is not bootstrapped yet.
 2. Read `apps/wiki/index.md`.
-   - Use it as the master map for domains, contracts, and existing specs.
-3. Identify the primary domain.
-   - Prefer the domain whose contract most clearly owns the request.
+   - Use it as the master map for source specs, routed project docs, and recent wiki activity.
+3. Identify the primary spec domain or project area.
+   - Prefer an existing `apps/wiki/specs/<domain>/` directory when one clearly owns the request.
+   - Otherwise infer a concise domain slug from backlog context or the user's request.
    - If multiple domains are involved, pick the primary owner and note cross-domain scope in the spec.
-   - If no domain matches, stop and tell the user to run `/create-wiki-domain <name>` first.
-4. Read the relevant domain contract:
-   - `apps/wiki/domains/<domain>/<domain>-contract.md`
-5. Optionally read related domain concepts or flows when they are obviously relevant.
+   - Do not create `apps/wiki/domains/` just to make discovery work.
+4. Read existing context for that area when present:
+   - `apps/wiki/specs/<domain>/<domain>-specs.md`
+   - `apps/wiki/content/docs/project/**` pages that match the area
+5. Optionally read related routed project pages when they are obviously relevant.
 6. Check for existing overlapping specs in:
    - `apps/wiki/specs/<domain>/<domain>-specs.md`
 7. If backlog context exists, inspect the parent epic/capability and every child story beneath it.

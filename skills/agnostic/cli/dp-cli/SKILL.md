@@ -88,7 +88,7 @@ After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update sum
 
 Use `dp report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
 
-Do not use reports as the default destination for project product backlog. Report submission requires control-plane configuration and auth.
+Do not use reports as the default destination for project product backlog. `dp report` opens GitHub issues in `wearedevpunks/harness-intelligence`; pass `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, and `--steps` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
 
 ## Completion Checklist
 

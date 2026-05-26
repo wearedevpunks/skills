@@ -6,7 +6,7 @@ Use this reference when `docs-ingest-phase` writes concepts into routed wiki doc
 
 For each extracted concept:
 
-1. Read related routed flow pages under `<wiki-root>/content/docs/wiki/<domain>/`.
+1. Read related routed flow pages under the routed output root selected by [fumadocs-routing.md](fumadocs-routing.md), if any exist.
 2. Scan `<wiki-root>/raw/` recursively and collect files where frontmatter `ingested: false` or `ingested` is absent.
 3. Use relevant raw content only as supplementary material. Do not mark raw files as ingested here.
 
@@ -27,7 +27,7 @@ Determine status:
 Derive the routed output path:
 
 1. Use the domain's existing route section if the concept clearly belongs there.
-2. Otherwise write to `<wiki-root>/content/docs/wiki/<domain>/<concept-name>.mdx`.
+2. Write only when an existing project section is a clear fit; otherwise skip the concept page and report the route-policy gap.
 3. Slugify the concept name to kebab-case.
 
 For Harness-style domains, prefer existing topical sections such as `foundations`, `prompt-surfaces`, `skills-and-packs`, `execution-modes`, `validation-and-tools`, and `lifecycle-flows` when they already exist.
@@ -40,8 +40,8 @@ Every concept page must include frontmatter:
 ---
 title: <Concept Name>
 description: <one sentence>
-surface: wiki
-permission: internal
+surface: project
+permission: project
 domain: <domain>
 type: concept
 status: proposed | implemented
