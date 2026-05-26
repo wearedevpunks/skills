@@ -8,6 +8,8 @@ It detects package manifests, resolves packs, writes `.agents/`, harness files, 
 
 It does not finish all repo-specific authoring. The next agent must use `.devpunks/AGENT-SYSTEM-PROMPT.md` and `.devpunks/specs/**` to generate final scoped guidance and reconcile assets.
 
+Use `dp scaffold setup --yes` in non-interactive harnesses. It accepts the resolved default pack selection and skips pack-selection prompts. It does not select optional packs.
+
 ## `dp scaffold init`
 
 Use before boilerplate exists.
@@ -27,6 +29,12 @@ Report missing, changed, or pack-drift findings. Do not write files.
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
 After writing, verify the refreshed files still fit the repo shape and any pack drift is handled intentionally.
+
+## `dp update --yes`
+
+Use in non-interactive harnesses to apply managed scaffold updates without answering the terminal confirmation prompt.
+
+It has the same managed-file apply behavior as `--write`.
 
 ## `dp report`
 

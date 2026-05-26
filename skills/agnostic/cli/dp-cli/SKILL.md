@@ -12,9 +12,11 @@ The `dp` CLI scaffolds Devpunks agent assets and writes follow-up instructions f
 
 ```bash
 dp scaffold setup
+dp scaffold setup --yes
 dp scaffold init
 dp update --check
 dp update --write
+dp update --yes
 dp report --help
 dp upgrade --help
 ```
@@ -73,6 +75,8 @@ Then author or reconcile the final repo files requested by the specs, including 
 
 Reconcile generated wiki guidance with the real repository layout. Do not assume a newly seeded wiki root is canonical until it matches the project boundary.
 
+Use `dp scaffold setup --yes` only when the harness cannot answer interactive prompts. It accepts the resolved default pack selection; it does not add optional packs or resolve repo-policy decisions.
+
 Before authoring prompts or plans, identify the detected core libraries whose source behavior matters. Ask the user which ones to prioritize if the choice is not obvious, then run `opensrc path <package>` or `opensrc path owner/repo` only for that focused set.
 
 When lint specs suggest Oxlint or hooks suggest Oxfmt, treat migration as a repo-policy change. Ask before replacing existing ESLint/Prettier/Biome scripts or CI, then update package scripts, task pipelines, editor/docs references, and hooks together.
@@ -83,6 +87,7 @@ After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update sum
 
 - `--check` reports managed-file drift without writing.
 - `--write` refreshes scaffold-managed assets.
+- `--yes` refreshes scaffold-managed assets without prompting and is the non-interactive apply flag.
 - pack drift is a setup decision point, not a silent auto-fix.
 
 ## Report
