@@ -14,7 +14,7 @@ The only Devpunks skill users should manually install with the Skills CLI is `dp
 npx skills add https://github.com/weareDevpunks/skills --skill dp-cli
 ```
 
-`dp-cli` is the entrypoint for `dp` usage, setup-stage guidance, `dp update`, and the post-command `.Devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the `dp` CLI rather than manually installed one by one.
+`dp-cli` is the entrypoint for `dp` usage, setup-stage guidance, `dp update`, GitHub-backed `dp report`, explicit `dp upgrade`, and the post-command `.Devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the `dp` CLI rather than manually installed one by one.
 
 ## Structure
 

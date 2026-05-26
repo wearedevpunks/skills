@@ -33,3 +33,30 @@ After writing, verify the refreshed files still fit the repo shape and any pack 
 Use to open reusable Harness friction in the Harness Intelligence GitHub repository. Include `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, and `--steps` whenever they apply so labels and issue body are useful for backoffice triage.
 
 Reports are for shared Harness/docs/tooling/workflow issues, not the default path for project product backlog.
+
+Useful classification flags:
+
+- `--type bug|docs|workflow|tooling|other`
+- `--severity low|medium|high`
+- `--area cli|wiki|skill|docs|workflow|backoffice|other`
+- `--skill-pack <name>`
+- `--command <command>`
+- `--expected <text>`
+- `--actual <text>`
+- `--steps <text>`
+- `--labels <comma-separated-labels>`
+
+The report path is GitHub-backed. The CLI creates an issue with `harness-report` metadata and labels, then emits report-submitted telemetry only after issue creation succeeds. Backoffice reads GitHub issues for report triage.
+
+## `dp upgrade`
+
+Use to update the installed CLI executable through its original global package-manager path.
+
+The command checks the selected npm dist-tag, detects Bun, pnpm, npm, or Yarn from the current install path, and runs the corresponding global reinstall command. Use `--tag next` for prerelease channels, `--force` to reinstall the selected tag, and `--json` when automation needs structured output.
+
+`dp upgrade` bypasses minimum-release-age gates for the CLI package:
+
+- Bun uses `--minimum-release-age=0`.
+- npm uses `--min-release-age=0`.
+- pnpm uses `npm_config_minimum_release_age=0`.
+- Yarn uses `YARN_NPM_MINIMAL_AGE_GATE=0`.

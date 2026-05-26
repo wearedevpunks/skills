@@ -44,11 +44,24 @@ After `dp scaffold init`:
 - Treat the seeded wiki root as provisional until it matches the repo layout.
 - Use `dp scaffold setup` only after the repo is ready for repo-aware setup.
 
+After `dp report`:
+
+- Confirm the command created a GitHub issue URL before saying the report was submitted.
+- Include the issue URL, labels, affected command, affected skill pack, and remaining blocker if creation failed.
+- Do not duplicate project product backlog into Harness reports unless maintainers explicitly promote it.
+
+After `dp upgrade`:
+
+- Report whether the CLI upgraded, was already current, could not detect the install manager, or failed while running the package-manager command.
+- Include the package manager and command used when available.
+- If upgrade failed because registry lookup or install-manager detection failed, give the manual reinstall command for Bun, pnpm, npm, or Yarn rather than treating the repo as broken.
+
 ## Reporting
 
 Final reports should say:
 
 - what artifacts were consumed
 - what final files were authored or reconciled
+- report issue URL or upgrade command/result, when relevant
 - what validation ran
 - what remains unresolved, if anything

@@ -1,6 +1,6 @@
 ---
 name: dp-cli
-description: Operates the Devpunks `dp` CLI and interactively follows scaffold, update, report, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `dp scaffold`, `dp update`, `dp report`, Devpunks CLI setup, or asks what to do after running a `dp` command.
+description: Operates the Devpunks `dp` CLI and interactively follows scaffold, update, report, upgrade, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `dp scaffold`, `dp update`, `dp report`, `dp upgrade`, Devpunks CLI setup, or asks what to do after running a `dp` command.
 metadata: {"Devpunks":{"entrypoint":true}}
 ---
 
@@ -16,6 +16,7 @@ dp scaffold init
 dp update --check
 dp update --write
 dp report --help
+dp upgrade --help
 ```
 
 After any command, read the command output and generated artifacts before acting.
@@ -88,7 +89,26 @@ After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update sum
 
 Use `dp report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
 
-Do not use reports as the default destination for project product backlog. `dp report` opens GitHub issues in `wearedevpunks/harness-intelligence`; pass `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, and `--steps` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
+Do not use reports as the default destination for project product backlog. `dp report` opens GitHub issues in `wearedevpunks/harness-intelligence`; pass `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
+
+Reports are GitHub-backed. Backoffice fetches `harness-report` issues from GitHub and treats GitHub state/labels as the triage source of truth. Legacy API-persisted reports are migration/local-smoke context only.
+
+`dp report` emits product telemetry only after the GitHub issue is created. If issue creation fails, do not claim the report was submitted; capture the blocker and suggest the exact GitHub auth/config missing.
+
+## Upgrade
+
+Use `dp upgrade` to update the CLI executable itself. It checks the selected npm dist-tag, detects whether the current global install came from Bun, pnpm, npm, or Yarn, and runs the matching global reinstall command.
+
+Use `--tag next` for prerelease channels and `--force` to reinstall the selected tag even when no newer version is detected.
+
+Upgrade deliberately bypasses package-manager release-age gates for the CLI package so just-published releases can install immediately:
+
+- Bun: `bun add -g @punks/cli@<tag> --minimum-release-age=0`
+- npm: `npm install -g @punks/cli@<tag> --min-release-age=0`
+- pnpm: `npm_config_minimum_release_age=0 pnpm add -g @punks/cli@<tag>`
+- Yarn: `YARN_NPM_MINIMAL_AGE_GATE=0 yarn global add @punks/cli@<tag>`
+
+Startup update checks are advisory and detached. They should not mutate installs during normal command startup; `dp upgrade` is the explicit update path.
 
 ## Completion Checklist
 
