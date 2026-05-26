@@ -40,8 +40,11 @@ Do not stop after saying the files exist.
 
 After `dp scaffold init`:
 
-- Run `requirements-grill` before `write-backlog`.
+- Do not start requirements discovery by default.
+- Inspect the generated skills and seeded wiki root.
 - Treat the seeded wiki root as provisional until it matches the repo layout.
+- Move, rename, or refactor generated init output when needed so it matches the actual repository.
+- Run `requirements-grill` before `write-backlog` only when the user actually asks for requirements or backlog generation.
 - Use `dp scaffold setup` only after the repo is ready for repo-aware setup.
 
 After `dp report`:
