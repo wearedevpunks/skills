@@ -226,24 +226,26 @@ When `create-spec` is given a backlog-backed epic:
 
 ## Provider policy
 
-This skill documents raw provider create payloads only.
+This skill documents raw provider create/setup payloads only.
 
 In scope:
 
 - create issue/work item payload shapes
+- create provider containers needed for the canonical hierarchy
 - required vs optional fields
 - how module/epic/story intent appears at creation time
 
 Out of scope:
 
-- update payloads
-- comment payloads
 - completion-time execution sync
+- comment payloads
+- status churn after backlog creation
 
-If a provider cannot express part of the canonical model in the create payload alone:
+If a provider cannot express part of the canonical model in one create call:
 
 - document the limitation explicitly
-- do not silently reshape the model
+- include the minimal native follow-up call needed to preserve module -> epic -> story
+- do not silently flatten or reshape the model
 
 ## Anti-patterns
 

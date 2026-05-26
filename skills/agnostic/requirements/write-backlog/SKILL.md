@@ -1,6 +1,6 @@
 ---
 name: write-backlog
-description: Turns a large requirements discussion into a canonical backlog hierarchy of module/milestone -> epic/capability -> story and documents provider-specific issue creation payloads. Use when structuring backlog from discovery, breaking requirements into milestones/epics/stories, consuming `requirements-grill` artifacts like `*-grill-log.md` and `*-grill-status.md`, or preparing Linear, GitHub Issues, or Azure DevOps issue creation payloads.
+description: Turns a large requirements discussion into a canonical backlog hierarchy of module/milestone -> epic/capability -> story and documents provider-specific backlog creation payloads. Use when structuring backlog from discovery, breaking requirements into milestones/epics/stories, consuming `requirements-grill` artifacts like `*-grill-log.md` and `*-grill-status.md`, or preparing Linear, GitHub Projects/Issues, or Azure DevOps creation payloads.
 ---
 
 # Write Backlog
@@ -54,7 +54,7 @@ description: Turns a large requirements discussion into a canonical backlog hier
 
 1. Read the provider payload asset:
    - [Linear](assets/providers/linear-create-payload.md)
-   - [GitHub Issues](assets/providers/github-issues-create-payload.md)
+   - [GitHub Projects and Issues](assets/providers/github-projects-create-payload.md)
    - [Azure DevOps](assets/providers/azure-devops-create-payload.md)
 2. Use the raw provider request shape documented there.
 3. Do not invent provider fields from memory when the asset already defines them.
