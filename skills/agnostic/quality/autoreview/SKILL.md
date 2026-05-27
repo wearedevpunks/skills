@@ -1,11 +1,11 @@
 ---
 name: autoreview
-description: Run the OpenClaw structured review helper as the core review closeout workflow. Use when reviewing code, PRs, local diffs, branch ranges, or when review-phase needs its mandatory structured review pass.
+description: Run the OpenClaw structured review helper as the core review runtime. Use when reviewing code, PRs, local diffs, branch ranges, or when review-phase needs its mandatory structured review pass.
 ---
 
 # Autoreview
 
-OpenClaw structured review is the core review workflow. It builds one review
+OpenClaw structured review is the core review runtime. It builds one review
 bundle, runs one selected engine by default, validates structured findings, and
 stops when no accepted/actionable findings remain.
 

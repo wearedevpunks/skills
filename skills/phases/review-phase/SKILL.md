@@ -31,18 +31,22 @@ or validation because delivery owns completion.
 1. Identify the review target: diff, PR, branch range, files, spec, plan, docs, or runtime evidence.
 2. State scope and readonly posture. If scope is ambiguous, ask one clarifying question.
 3. Read local guidance in checked directories, especially relevant `AGENTS.md` files under apps, packages, docs, or nested ownership boundaries.
-4. Identify every scoped skill listed by those `AGENTS.md` prompts for the reviewed paths; those scoped skills are mandatory review standards for that scope.
-5. Activate mandatory review lenses: `autoreview`, `simplify`, and `improve-codebase-architecture`.
+4. Identify every scoped skill listed by those `AGENTS.md` prompts for the reviewed paths; those scoped skills are mandatory review lenses for that scope.
+5. Use `autoreview` as the core review runtime.
+6. Activate mandatory review lenses: `simplify`, `improve-codebase-architecture`, and applicable scoped skills.
+
+## Review Runtime
+
+- `autoreview`: run the OpenClaw structured review helper. This is the core runtime of the review, not a lens.
 
 ## Review Lenses
 
-- `autoreview`: run the OpenClaw structured review helper as the core review workflow.
 - `parallel-research`: fan out independent readonly checks when scope can split by subsystem, risk, or hypothesis.
 - `simplify`: inspect clarity, overcomplexity, unnecessary abstraction, derivable state, naming, and scope creep. Mandatory.
 - `improve-codebase-architecture`: surface architectural friction, shallow modules, poor boundaries, and module-depth opportunities. Mandatory.
 - Scoped local guidance: apply every applicable directory instruction, stack skill, runbook, and ownership rule discovered in checked paths. Mandatory for every reviewed path.
 
-`autoreview`, `simplify`, `improve-codebase-architecture`, and applicable scoped skills are not optional. `parallel-research` remains conditional.
+`simplify`, `improve-codebase-architecture`, and applicable scoped skills are not optional review lenses. `parallel-research` remains conditional.
 
 ## Workflow
 
