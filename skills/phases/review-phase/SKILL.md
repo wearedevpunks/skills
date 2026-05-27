@@ -31,16 +31,18 @@ or validation because delivery owns completion.
 1. Identify the review target: diff, PR, branch range, files, spec, plan, docs, or runtime evidence.
 2. State scope and readonly posture. If scope is ambiguous, ask one clarifying question.
 3. Read local guidance in checked directories, especially relevant `AGENTS.md` files under apps, packages, docs, or nested ownership boundaries.
-4. Choose review lenses and say which are active.
+4. Identify every scoped skill listed by those `AGENTS.md` prompts for the reviewed paths; those scoped skills are mandatory review standards for that scope.
+5. Activate mandatory review lenses: `autoreview`, `simplify`, and `improve-codebase-architecture`.
 
 ## Review Lenses
 
+- `autoreview`: run the OpenClaw structured review helper as the core review workflow.
 - `parallel-research`: fan out independent readonly checks when scope can split by subsystem, risk, or hypothesis.
-- `simplify`: inspect clarity, overcomplexity, unnecessary abstraction, derivable state, naming, and scope creep.
-- `improve-codebase-architecture`: surface architectural friction, shallow modules, poor boundaries, and module-depth opportunities.
-- Scoped local guidance: apply applicable directory instructions, stack skills, runbooks, and ownership rules discovered in checked paths.
+- `simplify`: inspect clarity, overcomplexity, unnecessary abstraction, derivable state, naming, and scope creep. Mandatory.
+- `improve-codebase-architecture`: surface architectural friction, shallow modules, poor boundaries, and module-depth opportunities. Mandatory.
+- Scoped local guidance: apply every applicable directory instruction, stack skill, runbook, and ownership rule discovered in checked paths. Mandatory for every reviewed path.
 
-Use only the lenses that fit the target. Do not perform ceremonial delegation when a local pass is faster and equally reliable.
+`autoreview`, `simplify`, `improve-codebase-architecture`, and applicable scoped skills are not optional. `parallel-research` remains conditional.
 
 ## Workflow
 
@@ -51,17 +53,22 @@ Use only the lenses that fit the target. Do not perform ceremonial delegation wh
 2. Split if useful:
    - use `parallel-research` for independent readonly checks
    - synthesize before reporting; disagreements need evidence, not vote counting
-3. Review findings-first:
+3. Run structured review:
+   - use `autoreview` for the target and capture the exact command
+   - verify each accepted finding manually against source, docs, scoped skills, and dependency contracts
+   - if standalone review finds code changes are needed, report them; if delivery owns fixes, hand them back to delivery and rerun after fixes
+4. Review findings-first:
    - prioritize bugs, regressions, broken contracts, missing validation, unsafe assumptions, and user-facing risks
    - include file and line references when available
    - separate blocking findings from improvements and optional cleanup
-4. Apply clarity and architecture lenses:
+5. Apply mandatory local lenses:
    - use `simplify` to flag unnecessary concepts or complexity
    - use `improve-codebase-architecture` to flag deeper boundary opportunities, usually as follow-up RFC candidates
-5. Validate:
+   - check whether each reviewed path follows the scoped skills named by its nearest `AGENTS.md`
+6. Validate:
    - run readonly checks that match the target when safe: tests, typecheck, lint, build, docs link checks, or focused smoke commands
    - if a check cannot run, state why and the residual risk
-6. Stop:
+7. Stop:
    - standalone mode stops after findings and recommended next actions
    - delivery mode returns findings to `delivery-phase`; delivery decides and performs fixes/debug/docs/validation
 
@@ -79,6 +86,8 @@ Then include:
 
 - open questions or assumptions
 - validation run and result
+- exact autoreview command and clean/accepted-findings result
+- scoped `AGENTS.md` files and mandatory scoped skills checked
 - short summary only after findings
 - whether this was standalone readonly review or delivery-owned review
 
@@ -96,4 +105,5 @@ If there are no findings, say so clearly and still report validation coverage an
 - Do not edit code in standalone mode unless the user explicitly asks after seeing the review scope.
 - Do not use `simplify` as permission to refactor; report simplification opportunities unless delivery owns fixes.
 - Do not flatten scoped `AGENTS.md` guidance into generic advice; quote the concrete constraint that matters.
+- Do not skip scoped skills from `AGENTS.md` prompts. They are part of the review contract, not context flavor.
 - Do not let `delivery-phase` skip this phase just because tests passed.
