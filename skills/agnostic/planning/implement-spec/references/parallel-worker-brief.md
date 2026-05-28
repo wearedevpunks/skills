@@ -32,7 +32,9 @@ Each worker brief should require:
 7. not weakening or removing tests unless requirements changed
 8. implementing only the assigned task scope and satisfying all acceptance criteria
 9. running the exact task validation evidence before returning, plus extra plan validation when feasible
-10. updating the plan entry with status, log, touched files, and gotchas before handoff closes
+10. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
+11. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
+12. updating the plan entry with status, log, touched files, and gotchas before handoff closes
 
 ## Worker output contract
 
@@ -44,7 +46,7 @@ Require the worker to return:
 - verification evidence: RED -> GREEN for testable tasks, or the exact non-testable alternative that was run
 - validation evidence performed
 - validation intentionally deferred
-- anything deferred, blocked, or risky
+- anything blocked or risky, with exact reason and required decision
 
 ## Scope rule
 

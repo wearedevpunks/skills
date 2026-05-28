@@ -62,12 +62,28 @@ Persistent implementation drift belongs in:
 
 `docs/reference/tech-debt/<domain>/<spec>.md`
 
-Use it only for durable drift that should inform later work on the same spec:
+This file is not a dumping ground for avoidable "later" work.
 
-- scoped compromises
-- unresolved gaps
-- pre-existing debt discovered during execution
-- cleanup intentionally deferred by the current spec
+Default rule: resolve debt immediately when it appears.
+
+Forbidden debt language:
+
+- "do this later"
+- "temporary workaround"
+- "future implementation"
+- "follow-up cleanup"
+- vague TODOs without an owner, decision, and blocker
+
+Use the ledger only for debt that cannot be resolved inside the current run because it is outside the active goal, requires a human product/scope decision, or is blocked by an external dependency.
+
+For every ledger entry, record:
+
+- exact debt
+- why it cannot be resolved now
+- decision needed or external blocker
+- owner or next action
+
+If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and run a tiny `$requirements-phase` clarification with one narrow question and a recommended answer. Continue only after the branch is closed, parked explicitly, or converted into an accepted scope change.
 
 Do not create the file when nothing durable must survive the run.
 
@@ -80,7 +96,9 @@ Do not create the file when nothing durable must survive the run.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat every `review_mode` as required validation routing, never optional metadata.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
-- Keep scope discipline. Out-of-scope findings go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
+- Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
+- Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
+- When unclear debt affects the current implementation and the answer is not already in the spec/plan/backlog, pause for a tiny `$requirements-phase` clarification instead of guessing.
 - If backlog sync is part of the run, keep epic and story bodies product-facing.
 - Execution-time backlog sync may use comments, links, native status, and native relations.
 - Never rewrite epic or story bodies with task ids, TDD targets, validation commands, or file lists.
@@ -93,7 +111,8 @@ After each completed task or wave:
 - append a concise execution log in `PLAN.md`
 - record touched files in `PLAN.md`
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
-- update the spec-linked tech-debt file when durable drift appears
+- resolve any in-goal debt before advancing
+- update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
 
 ## 8. Handle blockers honestly
@@ -101,7 +120,7 @@ After each completed task or wave:
 If a task is blocked:
 
 1. record it in `IMPLEMENTATION-NOTES.md`
-2. update the spec-linked tech-debt file when the blocker is durable
+2. update the spec-linked tech-debt file only when the blocker creates durable unresolved debt
 3. skip only tasks truly blocked by it
 4. finish all remaining reachable work
 5. report blocked tasks clearly at the end
@@ -156,6 +175,8 @@ Before reporting back:
 - ensure **Sanity checks** lists only commands actually run
 - ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
 - ensure **Remaining work** matches any unmet or blocked criteria
+- ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
+- ensure every tech-debt ledger entry has exact blocker/decision/owner/next action
 - set `SPEC.md` frontmatter `status: implemented`
 - set `PLAN.md` `**Status:** Complete` when that line exists
 
