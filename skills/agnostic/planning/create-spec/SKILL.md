@@ -10,7 +10,7 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Role:** higher-order spec authoring skill
 - **Entrypoint type:** public entrypoint
 - **Upstream:** new idea, feature request, epic/capability issue, or problem statement
-- **Delegates to:** `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when grill outcomes change epic/story scope
+- **Delegates to:** `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope
 - **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
 - **Entry conditions:** wiki root exists and a primary spec domain or project area can be resolved from existing specs, routed project docs, backlog context, or the user's request
 - **Stop conditions:** `SPEC.md`, wiki index, and wiki log are updated, then wait for user review
@@ -30,7 +30,7 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 5. If the user did not provide a concrete request, ask for a rough description first.
 6. Read `references/questioning.md` and ask only the lightweight clarifying questions needed to identify whether a grill phase is required.
 7. If draft `Open Questions` would affect spec trust, read `references/grill-phase.md` and run a bounded `$requirements-grill` phase before writing.
-8. If the grill changes accepted scope, child stories, deferred scope, or story order, read `references/backlog-sync.md` and run `$write-backlog` to sync the backlog automatically.
+8. If the requested objective, discovery, or grill changes accepted scope, child stories, deferred scope, story wording, or story order, read `references/backlog-sync.md` and run `$write-backlog` to sync the backlog automatically before final drafting.
 9. Read `references/folder-naming.md` to resolve the domain and spec folder path.
 10. Read `assets/SPEC-TEMPLATE.md` and write the spec.
 11. Read `references/spec-quality-bar.md` before saving.
@@ -46,7 +46,7 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 3. Use `$parallel-research` when readonly orientation can be split cleanly across independent evidence sources; keep synthesis and spec decisions local.
 4. When an epic has child stories, harvest and preserve each story's requirements before drafting.
 5. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts.
-6. After a grill phase, use `$write-backlog` automatically when accepted decisions imply backlog changes.
+6. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
 7. Keep the spec free of implementation detail.
 8. Use the template structure exactly, then remove all template scaffolding.
 9. Update wiki bookkeeping in the same run.

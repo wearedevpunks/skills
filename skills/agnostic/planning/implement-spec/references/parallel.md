@@ -1,13 +1,13 @@
 # Parallel Execution
 
-Use this approach when execution should fan out across independent tasks or waves.
+Use this approach only when execution should fan out across independent tasks or waves.
 
 When `implement-spec` chooses `parallel` mode, this reference is the full contract for parallel execution.
 
 ## Parallel contract
 
 - **Mode:** `parallel`
-- **Worker policy:** spawn workers only for currently unblocked work
+- **Worker policy:** spawn multiple workers only for currently unblocked independent work
 - **Execution board:** completed, in progress, unblocked next, blocked, current wave
 
 ## Adoption rule
@@ -24,7 +24,7 @@ That includes:
 6. updating plan logs and execution notes
 7. repeating until all reachable tasks are complete or a real blocker remains
 
-Do not treat worker spawning as the whole job. The orchestration loop is part of this mode.
+Do not treat worker spawning as the whole job. Parallel mode adds multi-worker wave orchestration on top of the default parent validation responsibilities.
 
 ## Quick start
 

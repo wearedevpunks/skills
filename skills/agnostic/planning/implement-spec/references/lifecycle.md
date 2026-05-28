@@ -6,7 +6,7 @@
 
 It routes to one of two approaches:
 
-- `sequential` — one thread, no workers
+- `sequential` — one implementation worker, parent orchestration, parent validation
 - `parallel` — wave-based execution with explicit worker orchestration
 
 Do not recreate wrapper skills for these modes. Keep the routing here and load only the needed mode reference.
@@ -75,6 +75,8 @@ Do not create the file when nothing durable must survive the run.
 
 - Mode is manual. The chosen approach decides the execution path.
 - Do not switch modes mid-run unless the user explicitly redirects.
+- Default to `sequential` when the user does not choose a mode.
+- In `sequential`, keep implementation work inside one worker; the parent coordinates, reviews, validates, and finalizes.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat every `review_mode` as required validation routing, never optional metadata.
 - Keep an operator-visible execution board in the conversation so progress is obvious.

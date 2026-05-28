@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when a reviewed spec already has a `PLAN.md` and execution should proceed either sequentially in one thread or in parallel with explicit worker orchestration.
+description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when a reviewed spec already has a `PLAN.md` and execution should proceed through the default single-worker sequential path or explicit parallel worker waves.
 ---
 
 # Implement Spec
@@ -10,7 +10,7 @@ description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOT
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
 - **Upstream:** reviewed spec folder with `SPEC.md` and `PLAN.md`
-- **Delegates to:** `$tdd`, `$simplify`, and internal worker orchestration in parallel mode
+- **Delegates to:** `$tdd`, `$simplify`, and internal worker orchestration in sequential and parallel modes
 - **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing reviewed spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
@@ -20,6 +20,12 @@ description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOT
 - MUST use `$tdd`
 - MUST use `$simplify`
 Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
+
+## Sequential responsibilities
+
+When `implement-spec` runs in `sequential` mode, it must follow [references/sequential.md](references/sequential.md).
+
+That means `implement-spec` itself owns orchestration and validation, while exactly one implementation worker owns the sequential coding loop. This keeps the parent context small and adds a parent review gate after worker handoff.
 
 ## Parallel responsibilities
 
@@ -39,7 +45,7 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 1. Resolve the target spec folder under `apps/wiki/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
 3. Choose the execution mode explicitly:
-   - Read `references/sequential.md` for one-thread execution.
+   - Read `references/sequential.md` for default single-worker sequential execution.
    - Read `references/parallel.md` for wave-based worker execution.
 4. Record the chosen mode under **Execution mode** in `IMPLEMENTATION-NOTES.md` before coding.
 5. Execute only the chosen mode. Do not mix modes inside one run.
@@ -53,7 +59,8 @@ Choose `sequential` when:
 
 - the user wants single-threaded execution
 - tasks are tightly coupled
-- worker handoff cost would outweigh parallelism
+- parallel worker handoff cost would outweigh parallelism
+- the user did not choose a mode
 
 Choose `parallel` when:
 
@@ -61,7 +68,7 @@ Choose `parallel` when:
 - the plan contains independent waves
 - disjoint write scopes make worker fan-out safe
 
-If the user already chose a mode, honor it. If not, make the smallest safe choice and state it.
+If the user already chose a mode, honor it. If not, choose `sequential` and state that it uses one implementation worker plus parent validation.
 
 ## Advanced features
 
