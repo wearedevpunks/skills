@@ -4,8 +4,12 @@ Use this reference after questioning and before writing the file.
 
 ## Domain resolution
 
-- The spec path is `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
-- Use the exact existing domain directory name from `apps/wiki/specs/` when one clearly applies.
+- The spec path is `<resolved-specs-root>/<domain>/<folder-name>/SPEC.md`.
+- Resolve `<resolved-specs-root>` during discovery:
+  - `apps/wiki/content/docs/project/specs` for routed project wiki repos
+  - `apps/wiki/specs` for legacy source-wiki repos
+  - `docs/specs` when no wiki planning surface exists
+- Use the exact existing domain directory name from `<resolved-specs-root>/` when one clearly applies.
 - If no existing spec domain applies, create a concise kebab-case domain from the request or backlog area.
 - If multiple domains are touched, choose the primary owner and describe the cross-domain aspect in the spec body.
 - Do not create `apps/wiki/domains/` as part of spec authoring.

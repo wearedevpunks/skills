@@ -12,18 +12,18 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Upstream:** new idea, feature request, epic/capability issue, or problem statement
 - **Delegates to:** `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope
 - **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
-- **Entry conditions:** wiki root exists and a primary spec domain or project area can be resolved from existing specs, routed project docs, backlog context, or the user's request
-- **Stop conditions:** `SPEC.md`, wiki index, and wiki log are updated, then wait for user review
+- **Entry conditions:** a planning surface can be resolved from routed wiki docs, legacy wiki specs, existing docs, backlog context, or the user's request
+- **Stop conditions:** `SPEC.md` and any existing planning-surface indexes/logs are updated, then wait for user review
 
 This skill creates `SPEC.md` files that stay in the problem space: what to build, who it is for, why it matters, what counts as done, and what is out of scope.
 
 When backlog context exists, one `SPEC.md` maps to one parent epic/capability issue and must cover the full scope of that epic. If the epic has child stories, the spec must explicitly incorporate and unify the requirements of all of them.
 
-The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
+Resolve the output root from the repo before writing. Prefer `apps/wiki/content/docs/project/specs/<domain>/<folder-name>/SPEC.md`, then legacy `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`, then `docs/specs/<domain>/<folder-name>/SPEC.md`.
 
 ## Quick start
 
-1. Read `apps/wiki/AGENTS.md` first. Stop if the wiki is not bootstrapped.
+1. Resolve the planning surface with `references/discovery.md`; do not block solely because legacy `apps/wiki/AGENTS.md` is absent.
 2. Read `references/discovery.md` and orient yourself in the right spec domain or project area before asking questions.
 3. When discovery spans independent code paths, docs, backlog items, prior specs, or hypotheses, read and use `$parallel-research` for readonly sidecar coverage before synthesizing.
 4. If backlog context exists, read the parent epic and every child story before asking questions.
@@ -34,7 +34,7 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 9. Read `references/folder-naming.md` to resolve the domain and spec folder path.
 10. Read `assets/SPEC-TEMPLATE.md` and write the spec.
 11. Read `references/spec-quality-bar.md` before saving.
-12. Read `references/wiki-bookkeeping.md` to update `index.md`, `<domain>-specs.md`, and `log.md`.
+12. Read `references/wiki-bookkeeping.md` to update the indexes/logs that exist for the resolved planning surface.
 13. Read `references/handoff.md` to choose the next-step recommendation and stop after user review.
 
 ## Workflow
@@ -49,7 +49,7 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 6. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
 7. Keep the spec free of implementation detail.
 8. Use the template structure exactly, then remove all template scaffolding.
-9. Update wiki bookkeeping in the same run.
+9. Update planning-surface bookkeeping in the same run.
 10. Stop after presenting the spec and the recommended next step.
 
 ## Advanced features
@@ -60,6 +60,6 @@ The output lives at `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`.
 - Backlog sync after grilling: see [references/backlog-sync.md](references/backlog-sync.md)
 - Domain and folder naming rules: see [references/folder-naming.md](references/folder-naming.md)
 - Acceptance-criteria and quality bar: see [references/spec-quality-bar.md](references/spec-quality-bar.md)
-- Wiki index and log updates: see [references/wiki-bookkeeping.md](references/wiki-bookkeeping.md)
+- Planning surface index/log updates: see [references/wiki-bookkeeping.md](references/wiki-bookkeeping.md)
 - Review closeout and next-step routing: see [references/handoff.md](references/handoff.md)
 - Canonical backlog model: see [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md)
