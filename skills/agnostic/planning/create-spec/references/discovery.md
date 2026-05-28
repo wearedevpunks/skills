@@ -51,4 +51,4 @@ This is orientation, not deep implementation research.
 - Prefer enough context to ask better questions
 - Do not drift into solution design
 
-If the Agent tool is available, use a subagent for this pass so the main thread stays clean.
+If the Agent tool is available, use the `planning-discovery` subagent for this pass so the main thread stays clean. Its output should be evidence, contradictions, overlapping work, and open questions only; keep synthesis and spec decisions in the parent thread.

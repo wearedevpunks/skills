@@ -27,6 +27,7 @@ Normally do not create or update a formal agent goal. This phase is an interview
 1. Establish phase state.
    - Identify the topic, source artifacts, current backlog target/provider, and any explicit scope boundary.
    - If grill artifacts exist, read status first, then log.
+   - If subagents are available and existing artifacts are long, use `requirements-synthesizer` to compress status/log evidence into accepted, rejected, superseded, parked, and unresolved decisions.
    - State assumptions and known unresolved branches tersely.
 
 2. Route to `requirements-grill` while decisions are open.
@@ -42,6 +43,7 @@ Normally do not create or update a formal agent goal. This phase is an interview
 
 4. Run `write-backlog` only after readiness.
    - Derive modules first, then epics/capabilities, then stories.
+   - If subagents are available, use `backlog-shaper` for draft module/epic/story shape before parent review.
    - Use accepted decisions and locked direction only.
    - Preserve parked scope and unresolved items as deferred notes, not silent backlog content.
    - Sync or draft provider payloads only when the user requested backlog write/sync.

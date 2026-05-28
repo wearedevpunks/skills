@@ -37,6 +37,6 @@ Preserve `$swarm-planner` behavior:
 - parallel execution waves
 - risks and mitigations
 - explicit `assigned_skills` per task from scoped `AGENTS.md`, with task design shaped by those skills
-- a final subagent review for missing deps, ordering issues, edge cases, and holes before yielding
+- a final `plan-reviewer` subagent review for missing deps, ordering issues, edge cases, invalid parallelism, unsafe write overlap, missing RED targets, missing validation, missing `assigned_skills`, and holes before yielding
 
 Do not stop between the grill and planner phases unless a true blocking ambiguity remains.

@@ -9,11 +9,13 @@ description: Turns a large requirements discussion into a canonical backlog hier
 
 1. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
 2. If `requirements-grill` artifacts exist, read `*-grill-status.md` first and `*-grill-log.md` second.
-3. Derive modules first, then epics, then stories.
-4. Make story ordering explicit with native dependency primitives when the provider supports them.
-5. Keep epic and story bodies product-facing.
-6. Read the matching provider payload asset before generating or syncing create payloads.
-7. Stop after the backlog structure and create payload guidance are complete.
+3. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
+4. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
+5. Derive modules first, then epics, then stories.
+6. Make story ordering explicit with native dependency primitives when the provider supports them.
+7. Keep epic and story bodies product-facing.
+8. Read the matching provider payload asset before generating or syncing create payloads.
+9. Stop after the backlog structure and create payload guidance are complete.
 
 ## Workflows
 

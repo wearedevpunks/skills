@@ -10,7 +10,7 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Role:** higher-order spec authoring skill
 - **Entrypoint type:** public entrypoint
 - **Upstream:** new idea, feature request, epic/capability issue, or problem statement
-- **Delegates to:** `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope
+- **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope; `spec-reviewer` for a final readonly quality pass when subagents are available
 - **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
 - **Entry conditions:** a planning surface can be resolved from routed wiki docs, legacy wiki specs, existing docs, backlog context, or the user's request
 - **Stop conditions:** `SPEC.md` and any existing planning-surface indexes/logs are updated, then wait for user review
@@ -34,8 +34,9 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 9. Read `references/folder-naming.md` to resolve the domain and spec folder path.
 10. Read `assets/SPEC-TEMPLATE.md` and write the spec.
 11. Read `references/spec-quality-bar.md` before saving.
-12. Read `references/wiki-bookkeeping.md` to update the indexes/logs that exist for the resolved planning surface.
-13. Read `references/handoff.md` to choose the next-step recommendation and stop after user review.
+12. If subagents are available, use `spec-reviewer` for a readonly pass over the draft before user review.
+13. Read `references/wiki-bookkeeping.md` to update the indexes/logs that exist for the resolved planning surface.
+14. Read `references/handoff.md` to choose the next-step recommendation and stop after user review.
 
 ## Workflow
 
@@ -49,8 +50,9 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 6. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
 7. Keep the spec free of implementation detail.
 8. Use the template structure exactly, then remove all template scaffolding.
-9. Update planning-surface bookkeeping in the same run.
-10. Stop after presenting the spec and the recommended next step.
+9. Use `spec-reviewer` to catch invented requirements, missing constraints, vague acceptance criteria, and contradictions before yielding when subagents are available.
+10. Update planning-surface bookkeeping in the same run.
+11. Stop after presenting the spec and the recommended next step.
 
 ## Advanced features
 
