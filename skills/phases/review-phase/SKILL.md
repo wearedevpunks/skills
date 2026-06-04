@@ -52,6 +52,8 @@ or validation because delivery owns completion.
 
 1. Gather evidence:
    - inspect status, diff/range/PR metadata, tests, docs, and relevant local instructions
+   - for PR review, use the actual PR base branch instead of assuming trunk
+   - when stack metadata is relevant, include `stack status` or prior delivery stack evidence as readonly review evidence
    - prefer primary artifacts over tracker summaries
    - record exact files and commands consulted
 2. Split if useful:
@@ -111,3 +113,4 @@ If there are no findings, say so clearly and still report validation coverage an
 - Do not flatten scoped `AGENTS.md` guidance into generic advice; quote the concrete constraint that matters.
 - Do not skip scoped skills from `AGENTS.md` prompts. They are part of the review contract, not context flavor.
 - Do not let `delivery-phase` skip this phase just because tests passed.
+- Do not run mutating stack commands in review. `review-phase` reports stack evidence only; delivery owns `stack sync`.

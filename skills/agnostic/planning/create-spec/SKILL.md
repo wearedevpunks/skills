@@ -54,6 +54,49 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 10. Update planning-surface bookkeeping in the same run.
 11. Stop after presenting the spec and the recommended next step.
 
+### Dependency readiness and stack intent
+
+When backlog context exists, inspect backlog dependencies before drafting.
+
+- A task-level `depends_on` inside one epic or plan is implementation ordering,
+  not PR stack topology.
+- A backlog dependency between epics/stories is a dependency-readiness gate.
+- If the dependency has an `IMPLEMENTATION-NOTES.md` or equivalent
+  implemented-status artifact, trust it as implemented. Record
+  `No Stack Required` unless another open PR dependency still applies.
+- If no implemented-status artifact exists, use local code evidence or merged PR
+  evidence as fallback proof that the dependency landed.
+- If the dependency is represented by an open parent PR, record
+  `Branch/Base Intent`.
+- If the dependency is neither proven implemented nor represented by an open
+  parent PR, block spec creation and report the missing dependency evidence.
+
+When backlog dependencies exist, add this section to `SPEC.md`:
+
+```md
+## Dependency Readiness
+
+- Status: No Stack Required | Branch/Base Intent | Blocked
+- Dependency: <epic/story/pr/link>
+- Evidence: <implementation notes path | implemented-status artifact | merged PR | parent PR>
+- Reason: <why this status was chosen>
+```
+
+Only for stack-dependent work, also add:
+
+```md
+## Branch/Base Intent
+
+- Parent PR: #123
+- Parent branch: team/name/parent
+- Child branch: team/name/child
+- PR base: team/name/parent
+- Required gate: stack sync --dry-run after PR creation/update
+```
+
+`create-spec` records stack intent only. Do not create, switch, or push git
+branches unless the user explicitly requests branch setup during the spec turn.
+
 ## Advanced features
 
 - Discovery and repo orientation: see [references/discovery.md](references/discovery.md)

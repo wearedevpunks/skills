@@ -55,6 +55,24 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 9. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
 10. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
 
+## Stack-aware branch gate
+
+Before coding, inspect `PLAN.md` for `Branch/Base Intent`.
+
+- If no `Branch/Base Intent` exists, continue with the normal execution flow.
+- If it exists, verify the current branch is the intended child branch based on
+  the intended parent branch, or create/switch to the intended child branch from
+  the intended parent branch before implementation starts.
+- Do not reinterpret intra-epic task dependencies as separate PRs.
+- Default to PR-after-implementation: implement, commit, push, create or update
+  the PR with the recorded base, then run `stack sync --dry-run`.
+- If the dry-run preview is correct and reports pending stack changes, run
+  `stack sync`.
+- Early draft PRs are opt-in only when the user explicitly asks for them.
+- If `stack` is unavailable and `Branch/Base Intent` exists, block the
+  stack-dependent workflow. Missing `stack` does not block independent
+  trunk-based work.
+
 ## Mode selection
 
 Choose `sequential` when:

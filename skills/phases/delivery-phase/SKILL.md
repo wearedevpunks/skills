@@ -55,7 +55,11 @@ into a single coding pass.
 7. **Run docs ingest.**
    - Run `$docs-ingest-phase` when implementation changed product behavior, architecture, setup, operator workflow, docs contracts, or spec domain knowledge.
    - If docs ingest is not needed, record the explicit no-op reason in the final report or delivery notes.
-8. **Close out.**
+8. **Check stack cleanliness.**
+   - Whenever a PR exists, run `stack status` and `stack sync --dry-run`.
+   - If the PR is stack-dependent and dry-run reports pending changes, run `stack sync` before closeout.
+   - Missing `stack` blocks stack-dependent closeout, but not independent trunk-based work.
+9. **Close out.**
    - Report implementation, review result, validation, docs ingest outcome, debt captured, and remaining blockers.
 
 ## Mode And Parallel Rules
@@ -78,5 +82,6 @@ Return a concise delivery report with:
 - **Review:** mandatory `$review-phase` result and remaining findings
 - **Debugging:** skipped with reason, or `$debugging-phase` evidence and result
 - **Validation:** commands, browser checks, smoke tests, or manual scenarios run
+- **Stack:** `stack status` / `stack sync --dry-run` result when a PR exists, plus whether `stack sync` ran
 - **Docs ingest:** `$docs-ingest-phase` run, or explicit no-op reason
 - **Exit:** done, blocked, or split into follow-up debt/debugging goal
