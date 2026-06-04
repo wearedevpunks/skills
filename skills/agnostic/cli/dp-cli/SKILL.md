@@ -94,11 +94,11 @@ After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update sum
 
 Use `dp report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
 
-Do not use reports as the default destination for project product backlog. `dp report` opens GitHub issues in `wearedevpunks/harness-intelligence`; pass `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
+Do not use reports as the default destination for project product backlog. `dp report` submits to the Harness API, which must create or dedupe a GitHub issue in `wearedevpunks/harness-intelligence`; pass `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
 
-Reports are GitHub-backed. Backoffice fetches `harness-report` issues from GitHub and treats GitHub state/labels as the triage source of truth. Legacy API-persisted reports are migration/local-smoke context only.
+Reports are GitHub-backed. Backoffice fetches `harness-report` issues from GitHub and treats GitHub state/labels as the triage source of truth. API persistence is audit/local-smoke context, not a substitute for a returned GitHub URL.
 
-`dp report` emits product telemetry only after the GitHub issue is created. If issue creation fails, do not claim the report was submitted; capture the blocker and suggest the exact GitHub auth/config missing.
+`dp report` emits product telemetry only after the API returns a GitHub issue URL. If issue creation fails or the API stores the report internally without a URL, do not claim the report was submitted; capture the blocker and suggest the exact GitHub/API config missing.
 
 ## Upgrade
 

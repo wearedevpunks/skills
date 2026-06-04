@@ -54,7 +54,7 @@ Useful classification flags:
 - `--steps <text>`
 - `--labels <comma-separated-labels>`
 
-The report path is GitHub-backed. The CLI creates an issue with `harness-report` metadata and labels, then emits report-submitted telemetry only after issue creation succeeds. Backoffice reads GitHub issues for report triage.
+The report path is GitHub-backed. The CLI submits typed context to the Harness API; the API creates or dedupes an issue with `harness-report` metadata and labels, then the CLI emits report-submitted telemetry only after the API returns a GitHub issue URL. Backoffice reads GitHub issues for report triage.
 
 ## `dp upgrade`
 
