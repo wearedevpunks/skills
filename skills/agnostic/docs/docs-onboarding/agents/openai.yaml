@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Onboarding"
+  short_description: "Reconstruct project wiki/spec context"
+  default_prompt: "Use $docs-onboarding to inspect code, docs, and backlog context, build the Project Map, run the targeted requirements grill, then call create-spec to reconstruct evidence-backed specs into the scaffolded wiki."
