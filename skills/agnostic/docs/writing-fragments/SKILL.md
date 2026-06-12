@@ -1,75 +1,76 @@
 ---
 name: writing-fragments
-description: Grilling session that mines the user for fragments — heterogeneous nuggets of writing (claims, vignettes, sharp sentences, half-thoughts) — and appends them to a single document as raw material for a future article. Use when the user wants to develop ideas before imposing structure, or mentions "fragments", "ideate", or "raw material" for writing.
+description: Mines raw writing material into a durable fragments document. Use when developing public-facing docs or articles before structure, when the user mentions fragments, ideation, raw material, claims, examples, or when docs-ingest-phase needs the first public-doc writer stage.
 ---
 
-<what-to-do>
+# Writing Fragments
 
-Run a grilling session that produces fragments. Interview the user relentlessly about whatever they want to write about. Do not impose phases, outlines, or structure — that is explicitly out of scope.
+## Quick Start
 
-As fragments emerge from either side of the conversation, append them to a single markdown file. The user will be editing this file during the session; always re-read it before writing so their edits are preserved.
+Create or update a `fragments.md` file. Capture raw material only: claims, examples, vignettes, sharp sentences, objections, source-backed facts, snippets, and half-thoughts.
 
-If the user did not pass a path, ask once where to save the document, then remember it for the rest of the session.
+Do not impose outline, beats, final page shape, or polished prose yet.
 
-Capture fragments from the very first thing the user says, including the initial prompt.
+## Modes
 
-On first write, put a single H1 at the top with a working title (it can change later) and nothing else — no metadata, no TOC, no date.
+### Standalone Writing
 
-</what-to-do>
+Use this when the user is ideating an article or page interactively.
 
-<supporting-info>
+1. If no output path is provided, ask once where to save the fragments.
+2. Re-read the file before every write.
+3. Append new fragments separated by horizontal rules.
+4. Preserve user edits exactly.
+5. Edit a specific fragment only when the user asks.
 
-## What is a fragment
+Standalone first write:
 
-A fragment is any piece of text that might survive into the final article. It must be _readable by the author_ — the author can tell what it means — but it does not need to define its terms or be comprehensible to a cold reader. The bar is "is this a piece of good writing?", not "is this a self-contained argument?"
-
-Fragments are deliberately heterogeneous. Examples of what could be a fragment:
-
-- A sharp sentence you'd want to deploy somewhere but don't yet know where.
-- A claim with a one-line justification.
-- A vignette: a thing that happened, a code snippet, a scenario, an analogy.
-- A half-thought: "something about how X feels like Y, work this out later."
-- A quote, a piece of dialogue, an overheard line.
-- A list of related observations that hang together by feel.
-- A complaint, a confession, a punchline.
-
-The novelist's diary is the model: years of unstructured noticings that later get mined for raw material. Fragments are noticings.
-
-## File format
-
-```markdown
+```md
 # Working title
 
-A first fragment lives here.
-
-It can be multiple paragraphs. It can include lists, code, quotes — whatever
-shape the fragment naturally takes.
+First fragment.
 
 ---
 
-A second fragment.
-
----
-
-> A quoted line that the user wants to keep around.
-
-A reaction to it.
-
----
-
-- A cluster of related observations
-- That hang together by feel
-- And want to be near each other
+Second fragment.
 ```
 
-Fragments are separated by a horizontal rule (`\n---\n`). No headings inside the body. No tags. No order beyond the order they were added.
+### Docs-Ingest Artifact
 
-## Writing rhythm
+Use this when called by `docs-ingest-phase`.
 
-Append silently. Don't ask permission for each fragment. Mention what you added in passing ("adding that"), but don't interrupt the conversation with save dialogs.
+1. Write to the private writer artifact bundle for the target public page or docs pass.
+2. Use the repo's private docs metadata convention when one exists.
+3. Include traceability: target public page, source change/spec/run, artifact stage, updated date.
+4. Capture source-backed claims and reader-facing raw material.
+5. Link forward to the final public page when known.
 
-Before every write: re-read the file from disk. The user may have edited, reordered, or deleted fragments between turns — preserve their changes. Never overwrite the file; only append (or, if the user asks, edit a specific fragment in place).
+Docs-ingest artifact shape:
 
-The user can say "cut the last one", "rewrite that one sharper", "merge those two" at any time. Treat those as first-class instructions.
+```md
+---
+title: "<Topic> Fragments"
+type: writer-artifact
+artifact: fragments
+target: "<public page path or pending target>"
+source:
+  - "<source path or change>"
+updated: YYYY-MM-DD
+---
 
-</supporting-info>
+# <Topic> Fragments
+
+Fragment text.
+
+---
+
+Another fragment.
+```
+
+## Fragment Rules
+
+- A fragment is readable by the author, not necessarily by a cold reader.
+- Keep fragments heterogeneous: sentence, claim, vignette, quote, complaint, example, code snippet, or clustered observation.
+- Prefer concrete material over abstractions.
+- Do not sort or outline unless the user asks.
+- Do not discard leftovers; later stages decide what survives.

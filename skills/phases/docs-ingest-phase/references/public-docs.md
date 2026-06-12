@@ -54,6 +54,13 @@ writing-fragments
 
 The writer flow does not replace spec ingestion. If a spec or implementation notes need durable capture, run the private spec/project ingest path as well.
 
+When `docs-ingest-phase` orchestrates these skills, call each one in docs-ingest artifact mode:
+
+- `writing-fragments` writes or updates `fragments.md`
+- `writing-beats` reads `fragments.md` and writes or updates `beats.md`
+- `writing-shape` reads `fragments.md` plus `beats.md` and writes or updates `shape.md`
+- `docs-ingest-phase` then writes or merges the final public page from those artifacts
+
 ## Durable Writer Artifacts
 
 Substantial public-doc work must leave durable private writer artifacts:

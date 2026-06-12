@@ -1,18 +1,16 @@
 ---
 name: docs-ingest-phase
-description: Ingest specs and docs-affecting changes into canonical routed wiki/project docs and keep repo docs accurate. Use when a spec is ready for domain capture, when apps/wiki content or Fumadocs navigation changes, or when code changes alter architecture, setup, contracts, or operator workflow.
+description: Ingests specs and docs-affecting changes into canonical private/project docs and public-facing docs. Use when a spec is ready for domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
 ---
 
 # Docs Ingest Phase
 
 ## Contract
 
-- **Role:** higher-order ingest and repo-docs phase
-- **Entrypoint type:** public phase entrypoint
+- **Role:** public phase entrypoint for docs ingest and repo-doc maintenance
 - **Upstream:** reviewed or implemented spec folder, or concrete docs-affecting code changes
 - **Delegates to:** private spec/project ingest, public-doc writer skills, routed page writing, route/navigation bookkeeping
 - **Downstream:** canonical routed public and private docs, durable private writer artifacts, `meta.json` navigation, ingest metadata, wiki log/index updates, and required `docs/` updates
-- **Entry conditions:** resolved spec folder for ingest work, or a concrete docs-affecting code change
 - **Stop conditions:** ingest bookkeeping complete, required docs updates complete, failures reported honestly
 
 ## Use When
@@ -69,16 +67,9 @@ writing-fragments
 
 Run this flow for substantial public-facing page creation or material updates. Small public-doc patches may skip it with an explicit no-op reason.
 
-## Fumadocs Routing
+## Routing
 
-Keep routed docs discoverable:
-
-- Use the repo's existing public-facing docs surfaces for reader-facing product, usage, or domain pages.
-- Use the repo's existing private docs surface for specs, plans, implementation notes, maintenance logs, decisions, repo guidance, runbooks, useful management context, project-specific projections, and durable public-doc writer artifacts.
-
-Do not enforce Harness Intelligence route names such as `/docs/get-started`, `/docs/harness`, `/docs/cli`, `/docs/changelog`, or `/docs/project` in other repos. Treat them as examples from this repo's architecture.
-
-Do not create a second routed docs surface or a separate `domains/` content-owner layer just because docs ingest ran.
+Use the repo's existing public docs surfaces for reader-facing pages and its private docs surface for specs, runbooks, maintenance, project context, and durable writer artifacts. Do not enforce Harness Intelligence route names in other repos. Do not create a second routed docs surface or separate `domains/` owner layer just because docs ingest ran.
 
 ## Output Contract
 
@@ -97,12 +88,9 @@ Always report:
 
 ## Never Do
 
-- Leave new or moved routed pages out of Fumadocs `meta.json`.
-- Strip or omit `surface` / `permission` frontmatter from routed pages.
+- Leave new or moved routed pages out of navigation metadata.
+- Strip access-control frontmatter from routed pages.
 - Proceed to concept writing after a flow write fails.
-- Write canonical concept or flow content under `<wiki-root>/domains/`.
-- Add a second routed docs surface.
-- Create `docs/prd`, `docs/dev`, roadmap, sprint, or backlog-mirror folders.
+- Create duplicate routed docs surfaces, `domains/` owner layers, roadmap mirrors, or backlog mirrors.
 - Put agent task instructions inside human-facing docs pages.
-- Leave docs orphaned from `docs/README.md` after adding or renaming them.
-- Duplicate wiki article content across routed pages and another source tree.
+- Duplicate article content across routed pages and another source tree.

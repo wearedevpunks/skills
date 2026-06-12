@@ -1,52 +1,69 @@
 ---
 name: writing-beats
-description: Shape an article as a journey of beats, choose-your-own-adventure style. The user picks a starting beat from the raw material, you write only that beat, then offer options for where to pivot next, beat by beat, until the article reaches a natural end. Use when the user has raw material and wants to assemble it as a narrative rather than an argument.
+description: Turns fragments or raw material into an ordered journey of reader-facing beats. Use when shaping public docs, articles, guides, or docs-ingest writer artifacts from fragments into a narrative or instructional path.
 ---
 
-<what-to-do>
+# Writing Beats
 
-The user has passed (or will pass) a markdown file of raw material.
+## Quick Start
 
-If the user did not say where to save the article, ask once and remember the path.
+Read the fragment/raw-material file first. Produce beats one move at a time: each beat sets a scene, lands a point, asks a question, introduces an example, or pivots the reader.
 
-Then run a beat-by-beat journey:
+Do not write the final article. Do not choose the full page shape yet.
 
-1. Write 2–3 candidate **starting beats**, drawn from the raw material. Each is a different entry point into the article. Show the user the beats before writing it to the article file. The user picks one. Preview what beats that might lead to once written - as if the user is seeing a little way down the path.
-2. Once the user picks a starting beat, write **only that beat** to the article file. A beat may be one sentence or several paragraphs — whatever that beat naturally is. Stop there.
-3. Re-read the article file from disk. Then offer 2–3 candidate **next beats** — different directions the journey could pivot to from where the article now stands.
-4. Loop steps 2–4 until the article reaches a natural end.
+## Modes
 
-</what-to-do>
+### Standalone Writing
 
-<supporting-info>
+Use this when the user wants to assemble an article interactively.
 
-## What is a beat
+1. Read the raw material end-to-end.
+2. Offer 2-3 candidate starting beats.
+3. After the user picks one, write only that beat.
+4. Re-read the article file before each write.
+5. Offer 2-3 next-beat options.
+6. Repeat until the journey naturally ends.
 
-A beat is one move in the journey. It does one thing — sets a scene, lands a point, asks a question, drops an aside, twists the angle. Then it stops, leaving the reader at a place where the next beat can pivot.
+### Docs-Ingest Artifact
 
-A beat is sized by what it needs:
+Use this when called by `docs-ingest-phase`.
 
-- A single sentence if that's all the move is ("And then nothing happened for three weeks.").
-- A short paragraph if the move needs setup.
-- Multiple paragraphs if the beat is a self-contained vignette, argument, or example.
+1. Read `fragments.md` from the private writer artifact bundle.
+2. Write `beats.md` in the same bundle.
+3. Include traceability: target public page, source change/spec/run, fragments artifact, updated date.
+4. Preserve rejected or parked beats when useful for future passes.
+5. Link forward to the final public page when known.
 
-If a "beat" needs five paragraphs and three subheadings, it's not a beat — it's two beats glued together. Split it.
+Docs-ingest artifact shape:
 
-## Writing one beat
+```md
+---
+title: "<Topic> Beats"
+type: writer-artifact
+artifact: beats
+target: "<public page path or pending target>"
+source:
+  - "fragments.md"
+updated: YYYY-MM-DD
+---
 
-Once a beat is picked, write _that beat only_ to the article file. Do not write the next beat.
+# <Topic> Beats
 
-Pull material from the raw pile to populate the beat. You can paraphrase, split, recombine, or quote. The pile is a quarry.
+## Accepted Beat Path
 
-## Ending the journey
+1. <reader move>
+2. <reader move>
+3. <reader move>
 
-The article ends when the journey is complete — not when the pile is empty. Most piles will have leftover fragments that don't make it in. That is fine; that is the point of having more raw material than you need.
+## Parked Beats
 
-## Writing rhythm
+- <usable later, but not in this pass>
+```
 
-- Append one beat at a time. Never write ahead.
-- Re-read the article file from disk before every write. Preserve user edits absolutely.
-- If the user edits a previous beat substantially, let it change what comes next.
-- If the user says "rewrite that beat" or "go back and try a different beat 3", do it — edit in place, leave the rest alone.
+## Beat Rules
 
-</supporting-info>
+- One beat does one job.
+- Split beats that need several subheadings or multiple unrelated moves.
+- The journey ends when the reader has what the page promised, not when every fragment is used.
+- Pull from the fragment pile freely: paraphrase, split, merge, or quote as needed.
+- Name gaps when the beats need an example, warning, proof, or transition that the fragments do not contain.
