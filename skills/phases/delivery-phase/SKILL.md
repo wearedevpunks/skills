@@ -1,105 +1,50 @@
 ---
 name: delivery-phase
-description: Goal-compatible progressive router for scoped execution from specification through delivery closeout. Use when a user asks to deliver a scoped goal end to end, especially when work should flow through create-spec, create-plan, implement-spec, review, optional debugging, and docs-ingest-phase.
+description: Routes a scoped delivery goal to the next lifecycle phase from current artifacts and evidence. Use when delivering, resuming, or closing a goal that may pass through spec, plan, implementation, review, debugging, docs ingest, and closeout.
 ---
 
 # Delivery Phase
 
-`delivery-phase` owns scoped execution until the goal is either done or honestly
-blocked. It preserves the workflow chain by routing to one phase gate at a time
-instead of compressing implementation into a single coding pass.
+## Quick Start
 
-## Use When
+`delivery-phase` is a reusable phase router.
 
-- The user asks to deliver, execute, finish, close, or carry a scoped goal end to end.
-- A goal needs spec, plan, implementation, review, validation, and docs handling in one wrapper.
-- Existing `SPEC.md` or `PLAN.md` artifacts may be reused, but delivery still needs closeout.
-- The user chooses `parallel: true` or `parallel: false` for implementation mode.
+1. Read [phases/router.md](phases/router.md).
+2. Inspect only enough issue, spec, plan, notes, diff, review, validation, and docs state to choose the current gate.
+3. Load exactly one phase file from `phases/`.
+4. Complete that phase, write the phase outcome, then stop or re-enter `delivery-phase` to route again.
 
-## Do Not Use When
+Completion of one phase does not imply loading the rest of the chain.
 
-- The request is only requirements discovery, planning, review, debugging, or docs ingest.
-- The scope is too vague to name a goal, issue, spec folder, or bounded change.
-- The user explicitly asks not to code or wants a plan/spec only.
-- Runtime evidence points to a broad bug outside the active delivery scope; create a separate debugging or debt goal.
+## Entry Modes
 
-## Contract
+- **Full delivery:** user asks to deliver a bounded goal end to end.
+- **Resume:** user returns after manual spec, plan, implementation, review, debugging, or docs work.
+- **HITL checkpoint:** user wants one phase handled, then a stop for discussion or approval.
+- **Closeout:** user asks to finish evidence, docs, stack, tracker, or PR state after the work is already done.
 
-- **Role:** public scoped-delivery orchestrator
-- **Routes:** create-spec -> create-plan -> implement-spec -> review-phase -> optional debugging-phase -> docs-ingest-phase
-- **Owns:** goal bounds, mode choice, validation, review follow-through, docs ingest outcome, debt capture, blocker reporting
-- **Stop condition:** implemented, reviewed, validated, docs ingest handled, debt captured, or concrete blocker reported
+## Phase Files
 
-## Progressive Disclosure
+- [phases/router.md](phases/router.md): choose the next phase from artifacts and evidence.
+- [phases/spec.md](phases/spec.md): create or repair the reviewed spec.
+- [phases/plan.md](phases/plan.md): create or repair the execution-ready plan.
+- [phases/implement.md](phases/implement.md): execute the accepted plan.
+- [phases/review.md](phases/review.md): run mandatory review and classify findings.
+- [phases/debug.md](phases/debug.md): investigate runtime-evidence failures.
+- [phases/docs-ingest.md](phases/docs-ingest.md): ingest docs-affecting changes or record a no-op.
+- [phases/closeout.md](phases/closeout.md): finish stack, tracker, PR, validation, and final report state.
 
-Do not read or activate child phase skills at delivery start.
+## Router Rules
 
-At delivery start, read only this file and enough repo, tracker, and artifact
-state to choose the current gate. Load a child skill only when entering that
-specific phase. If an existing artifact is fresh and matches the requested
-scope, verify and reuse it instead of loading the creation skill.
+- Do not read phase files other than `router.md` until the router selects them.
+- Do not activate child skills at delivery start.
+- Reuse fresh matching artifacts before loading creation skills.
+- A phase may delegate to `create-spec`, `create-plan`, `implement-spec`, `review-phase`, `debugging-phase`, `docs-ingest-phase`, or `stack` only from its own phase file.
+- After a phase completes, write enough state for future resume. See [references/phase-handoff.md](references/phase-handoff.md).
 
-Gate loading rules:
+## Stop Conditions
 
-- Load `create-spec` only when no reviewed matching `SPEC.md` exists, or the current spec is stale or mismatched.
-- Load `create-plan` only when no execution-ready matching `PLAN.md` exists, or the current plan is stale or mismatched.
-- Load `implement-spec` only after the active plan is accepted as execution-ready.
-- Load `review-phase` only after an implementation run or when delivery starts at the review gate.
-- Load `debugging-phase` only after validation or review produces runtime evidence of a bug.
-- Load `docs-ingest-phase` only when the delivered change affects product behavior, architecture, setup, operator workflow, docs contracts, or spec domain knowledge.
-
-## Workflow
-
-1. **Frame the delivery goal.**
-   - Identify the bounded goal, issue, spec folder, branch, and ownership constraints.
-   - State assumptions, known artifacts, and the validation surface.
-   - If scope is ambiguous, ask before choosing a gate.
-2. **Create or reuse the spec.**
-   - If no reviewed matching `SPEC.md` exists, load and run `create-spec`.
-   - If a spec exists, verify it matches the requested scope before continuing.
-3. **Create or reuse the plan.**
-   - If no execution-ready matching `PLAN.md` exists, load and run `create-plan`.
-   - If a plan exists, verify dependencies, validation gates, assigned skills, and review mode.
-4. **Implement the plan.**
-   - Load and run `implement-spec` with the selected `parallel: true|false` mode.
-   - Keep implementation inside the delivery scope and update required notes/debt artifacts.
-5. **Review every coding run.**
-   - Load and run `review-phase` after `implement-spec` even when tests pass.
-   - Fix in-scope blocking findings before final closeout.
-6. **Debug only runtime-evidence failures.**
-   - Load and run `debugging-phase` only when validation or review produces runtime evidence of a bug.
-   - Patch only inside delivery scope.
-   - If the bug is broader, capture tech debt or open a separate debugging/debt goal.
-7. **Run docs ingest.**
-   - Load and run `docs-ingest-phase` when implementation changed product behavior, architecture, setup, operator workflow, docs contracts, or spec domain knowledge.
-   - If docs ingest is not needed, record the explicit no-op reason in the final report or delivery notes.
-8. **Check stack cleanliness.**
-   - Whenever a PR exists, run `stack status` and `stack sync --dry-run`.
-   - If the PR is stack-dependent and dry-run reports pending changes, run `stack sync` before closeout.
-   - Missing `stack` blocks stack-dependent closeout, but not independent trunk-based work.
-9. **Close out.**
-   - Report implementation, review result, validation, docs ingest outcome, debt captured, and remaining blockers.
-
-## Mode And Parallel Rules
-
-- Preserve `parallel: true|false` through `implement-spec`.
-- If the user chose a mode, honor it.
-- If not, choose the smallest safe mode:
-  - `parallel: false` for tightly coupled work, unclear ownership, or small changes.
-  - `parallel: true` only when the plan has independent waves and disjoint write scopes.
-- Do not let parallel workers expand the delivery scope.
-- Optional `debugging-phase` may use parallel readonly hypothesis research, but speculative parallel fixes are not allowed.
-
-## Output Contract
-
-Return a concise delivery report with:
-
-- **Goal:** scoped outcome delivered or blocker encountered
-- **Mode:** `parallel: true|false` and why
-- **Artifacts:** spec, plan, implementation notes, debt, docs, or tracker links touched
-- **Review:** mandatory `review-phase` result and remaining findings
-- **Debugging:** skipped with reason, or `debugging-phase` evidence and result
-- **Validation:** commands, browser checks, smoke tests, or manual scenarios run
-- **Stack:** `stack status` / `stack sync --dry-run` result when a PR exists, plus whether `stack sync` ran
-- **Docs ingest:** `docs-ingest-phase` run, or explicit no-op reason
-- **Exit:** done, blocked, or split into follow-up debt/debugging goal
+- Selected phase completed and resumable state was written.
+- User requested a HITL checkpoint before the next phase.
+- Router reaches closeout and final evidence is reported.
+- Scope is ambiguous, stale, contradictory, or blocked by missing access.
