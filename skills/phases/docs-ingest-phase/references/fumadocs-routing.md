@@ -1,12 +1,12 @@
 # Fumadocs Routing
 
-Use this reference when `docs-ingest-phase` updates routed project docs.
+Use this reference when `docs-ingest-phase` updates routed Fumadocs docs.
 
 ## Canonical Routed Content
 
-`apps/wiki` owns the wiki application and its documentation content. Routed MDX pages under `content/docs/project` are the canonical human-facing docs surface.
+`apps/wiki` owns the wiki application and its documentation content. Routed MDX pages under `content/docs` are the canonical human-facing docs surface.
 
-Required route root:
+Private route root example from this repo:
 
 - `<wiki-root>/content/docs/project`
 
@@ -16,7 +16,7 @@ Do not create or maintain a separate canonical `domains/` tree for concepts and 
 
 ## Route Boundaries
 
-Use `/docs/project` for:
+Use the repo's private docs route for:
 
 - specs
 - plans
@@ -28,8 +28,11 @@ Use `/docs/project` for:
 - useful Linear/grill-derived management context
 - project-specific projections
 - docs-ingest-phase concept/flow output
+- durable public-doc writer artifacts
 
 Keep implementation specs and notes linked or summarized. Do not paste large source artifacts into routed pages.
+
+Use the repo's public-facing docs routes for reader-facing product, usage, domain, command, changelog, and onboarding pages. Do not enforce this repo's public route names in other repos.
 
 ## Fumadocs Mechanics
 
@@ -61,7 +64,7 @@ Routed ingest pages should also carry durable metadata when useful:
 
 ```yaml
 domain: <domain>
-type: concept | flow
+type: concept | flow | writer-artifact
 status: proposed | implemented
 source:
   - apps/wiki/specs/<domain>/<spec>/SPEC.md
