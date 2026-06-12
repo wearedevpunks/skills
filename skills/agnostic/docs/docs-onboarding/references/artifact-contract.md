@@ -65,4 +65,3 @@ Evidence levels:
 - `Missing`: expected context was not found, and the spec must ask a follow-up.
 
 Reconstructed specs must link back to relevant Project Map sections and onboarding grill decisions.
-

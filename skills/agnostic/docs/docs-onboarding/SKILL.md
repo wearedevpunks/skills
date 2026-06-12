@@ -44,4 +44,3 @@ Persist the Project Map and grill status before developer questions. On resume, 
 - Reconstructed spec history must be evidence-backed.
 - Do not invent implementation notes, rationale, or tech-debt history without supporting artifacts.
 - Backlog mutation is out of scope; use backlog evidence as input only.
-
