@@ -26,6 +26,7 @@ Normally do not create or update a formal agent goal. This phase is an interview
 
 1. Establish phase state.
    - Identify the topic, source artifacts, current backlog target/provider, and any explicit scope boundary.
+   - Scan relevant routed learning artifacts when known behavior, prior bugs, project conventions, or domain facts could affect requirements.
    - If grill artifacts exist, read status first, then log.
    - If subagents are available and existing artifacts are long, use `requirements-synthesizer` to compress status/log evidence into accepted, rejected, superseded, parked, and unresolved decisions.
    - State assumptions and known unresolved branches tersely.

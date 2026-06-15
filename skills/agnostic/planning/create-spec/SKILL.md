@@ -43,16 +43,17 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 ### Default workflow
 
 1. Build orientation first; do not jump straight into writing.
-2. Ask only enough to make the spec crisp, testable, and bounded.
-3. Use `$parallel-research` when readonly orientation can be split cleanly across independent evidence sources; keep synthesis and spec decisions local.
-4. When an epic has child stories, harvest and preserve each story's requirements before drafting.
-5. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts.
-6. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
-7. Keep the spec free of implementation detail.
-8. Use the template structure exactly, then remove all template scaffolding.
-9. Use `spec-reviewer` to catch invented requirements, missing constraints, vague acceptance criteria, and contradictions before yielding when subagents are available.
-10. Update planning-surface bookkeeping in the same run.
-11. Stop after presenting the spec and the recommended next step.
+2. Scan relevant routed learning artifacts when prior bug knowledge, domain behavior, or project conventions could affect the spec.
+3. Ask only enough to make the spec crisp, testable, and bounded.
+4. Use `$parallel-research` when readonly orientation can be split cleanly across independent evidence sources; keep synthesis and spec decisions local.
+5. When an epic has child stories, harvest and preserve each story's requirements before drafting.
+6. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts.
+7. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
+8. Keep the spec free of implementation detail.
+9. Use the template structure exactly, then remove all template scaffolding.
+10. Use `spec-reviewer` to catch invented requirements, missing constraints, vague acceptance criteria, and contradictions before yielding when subagents are available.
+11. Update planning-surface bookkeeping in the same run.
+12. Stop after presenting the spec and the recommended next step.
 
 ### Dependency readiness and stack intent
 

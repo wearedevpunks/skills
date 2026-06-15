@@ -16,6 +16,11 @@ Every worker brief should include:
 - acceptance criteria
 - validation contract
 - `tdd_target`
+- `tdd_status`
+- `red_command`
+- `expected_red_failure`
+- `green_command`
+- `reason_not_testable`
 - `review_mode`
 - relevant risks or constraints from the plan
 
@@ -27,14 +32,16 @@ Each worker brief should require:
 2. reading all relevant files first, then doing targeted codebase research before editing
 3. starting from `tdd_target` and driving the task RED first when it is testable
 4. capturing failing evidence for the expected behavior gap before implementation
-5. recording an explicit `reason_not_testable` plus exact alternative verification when the task is not a good TDD candidate
-6. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
-7. not weakening or removing tests unless requirements changed
-8. implementing only the assigned task scope and satisfying all acceptance criteria
-9. running the exact task validation evidence before returning, plus extra plan validation when feasible
-10. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
-11. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
-12. updating the plan entry with status, log, touched files, and gotchas before handoff closes
+5. recording `red_evidence` and `green_evidence` in the plan before marking behavior-changing tasks complete
+6. recovering code-before-RED by writing the intended public-result RED test and marking `tdd_status: recovered`, not by using `reason_not_testable`
+7. recording an explicit `reason_not_testable` plus exact alternative verification when the task is not a good TDD candidate
+8. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
+9. not weakening or removing tests unless requirements changed
+10. implementing only the assigned task scope and satisfying all acceptance criteria
+11. running the exact task validation evidence before returning, plus extra plan validation when feasible
+12. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
+13. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
+14. updating the plan entry with status, log, touched files, and gotchas before handoff closes
 
 ## Worker output contract
 

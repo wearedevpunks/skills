@@ -30,6 +30,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - Ask one question at a time by default.
 - For every question, provide a recommended answer and the reason for it.
 - Inspect code/docs first when the answer can be found locally.
+- Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
 - Challenge conflicting glossary, vague terms, and hidden tradeoffs immediately.
 - Pin canonical terms, rejected aliases, relationships, and domain axioms as decisions crystallize.
 - Prefer conservative defaults once enough context exists.

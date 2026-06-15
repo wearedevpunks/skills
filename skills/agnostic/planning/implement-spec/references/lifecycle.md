@@ -94,6 +94,10 @@ Do not create the file when nothing durable must survive the run.
 - Default to `sequential` when the user does not choose a mode.
 - In `sequential`, keep implementation work inside one worker; the parent coordinates, reviews, validates, and finalizes.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
+- Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
+- For behavior-changing tasks, do not mark a task complete until real RED and GREEN evidence is recorded in `PLAN.md`.
+- Accept missing RED/GREEN evidence only when the task has an explicit `reason_not_testable` or `tdd_status: not_applicable`.
+- Do not accept `reason_not_testable` for forgotten RED. If code came first, recover by writing the public-result RED test, recording failure, patching to pass, and marking `tdd_status: recovered`.
 - Treat every `review_mode` as required validation routing, never optional metadata.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
 - Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
@@ -110,6 +114,7 @@ After each completed task or wave:
 - update `PLAN.md` status
 - append a concise execution log in `PLAN.md`
 - record touched files in `PLAN.md`
+- fill `red_evidence` and `green_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action

@@ -23,9 +23,12 @@ Use this approach when execution should stay serial while avoiding main-context 
 The worker owns this loop for every task:
 
 1. start from `tdd_target`
-2. validate through the task's public interface
-3. run the task-level validation gate before marking it done
-4. update the execution board before advancing
+2. classify `tdd_status` and honor the task's RED/GREEN contract
+3. for behavior-changing work, run `red_command`, verify `expected_red_failure`, and record `red_evidence` before production edits
+4. patch only enough production code to pass the public behavior
+5. run `green_command`, record `green_evidence`, and only then mark the task done
+6. for non-testable or non-applicable tasks, record `reason_not_testable` plus the exact alternative verification
+7. update the execution board before advancing
 
 The parent owns:
 

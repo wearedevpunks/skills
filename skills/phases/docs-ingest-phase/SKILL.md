@@ -35,10 +35,11 @@ description: Ingests specs and docs-affecting changes into canonical private/pro
    - single-repo: `wiki`
 2. Read `<wiki-root>/AGENTS.md` before touching wiki content.
 3. If ingesting a spec, read [references/wiki-ingest.md](references/wiki-ingest.md).
-4. If creating or materially updating public-facing docs, read [references/public-docs.md](references/public-docs.md).
-5. If updating routed docs or navigation, read [references/fumadocs-routing.md](references/fumadocs-routing.md).
-6. If updating root `docs/`, read [references/repo-docs.md](references/repo-docs.md).
-7. Finish by reporting written pages, writer artifacts, metadata changes, docs updates, validation run, and any no-op reason.
+4. If the change produced durable bug or knowledge learning, read [references/learning-artifacts.md](references/learning-artifacts.md).
+5. If creating or materially updating public-facing docs, read [references/public-docs.md](references/public-docs.md).
+6. If updating routed docs or navigation, read [references/fumadocs-routing.md](references/fumadocs-routing.md).
+7. If updating root `docs/`, read [references/repo-docs.md](references/repo-docs.md).
+8. Finish by reporting written pages, writer artifacts, metadata changes, docs updates, learning outcomes, validation run, and any no-op reason.
 
 ## Wiki Ingest Pipeline
 
@@ -47,6 +48,7 @@ Run this order exactly:
 ```text
 docs-ingest-phase
   -> resolve docs architecture and classify public/private targets
+  -> scoped learning-artifact scan and refresh
   -> routed flow-writing phase
   -> routed concept-writing phase
   -> public-doc writer flow when substantial public-facing docs are created or materially updated
@@ -76,6 +78,7 @@ Use the repo's existing public docs surfaces for reader-facing pages and its pri
 Always report:
 
 - source spec or docs-affecting change processed
+- learning artifacts scanned, written, updated, consolidated, replaced, deleted, marked stale, or intentionally skipped
 - flows written or skipped
 - concepts written or skipped
 - public-doc writer artifacts written or skipped
@@ -92,5 +95,7 @@ Always report:
 - Strip access-control frontmatter from routed pages.
 - Proceed to concept writing after a flow write fails.
 - Create duplicate routed docs surfaces, `domains/` owner layers, roadmap mirrors, or backlog mirrors.
+- Create a separate `docs/solutions/` tree or hidden memory tree for canonical learning.
+- Write memory notes for every learning artifact; memory is only for compact hard-to-discover routing aids.
 - Put agent task instructions inside human-facing docs pages.
 - Duplicate article content across routed pages and another source tree.

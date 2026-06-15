@@ -38,6 +38,7 @@ description: >-
 1. **Classify entry.**
    - Standalone: record the broken behavior, artifact links/paths, reproduction command or manual scenario, expected behavior, and observed behavior.
    - Delivery-internal: cite the validation or review failure that triggered debugging and the delivery scope it belongs to.
+   - Scan relevant routed learning artifacts for prior bugs, known edge cases, prevention notes, or domain behavior before forming hypotheses.
 2. **Set bounds.**
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.

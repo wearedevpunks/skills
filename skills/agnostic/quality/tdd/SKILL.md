@@ -7,6 +7,33 @@ description: Test-driven development with red-green-refactor loop. Use when user
 
 ## Philosophy
 
+## Hard Law
+
+**No production code before RED.** For behavior-changing work, write a failing test through a public interface before editing production code.
+
+This applies to features, bugfixes, risky refactors, and any production-code edit that changes observable behavior.
+
+Allowed escapes:
+
+- docs-only changes
+- formatting-only changes
+- generated-code-only changes
+- config-only changes where no runtime behavior is asserted
+- scaffold/bookkeeping-only changes
+- truly non-testable work with an explicit `reason_not_testable`
+
+`reason_not_testable` cannot cover forgotten RED.
+
+If production code was written first:
+
+1. Stop advancing the slice.
+2. Write the RED test that proves the actual intended public result.
+3. Run it and record real failure evidence.
+4. Patch production code only enough to make that test pass.
+5. Record the task as `tdd_status: recovered`.
+
+If the current code already passes the new test, do not fake RED. Isolate the pre-fix state or revert enough of the slice to observe the failure. If true RED cannot be reconstructed, record the deviation explicitly; do not call the task normally RED/GREEN compliant.
+
 **Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.
 
 **Good tests** are integration-style: they exercise real code paths through public APIs. They describe _what_ the system does, not _how_ it does it. A good test reads like a specification - "user can checkout with valid cart" tells you exactly what capability exists. These tests survive refactors because they don't care about internal structure.
@@ -46,12 +73,14 @@ RIGHT (vertical):
 
 Before writing any code:
 
+- [ ] Decide whether the work is behavior-changing and therefore `tdd_status: required`
 - [ ] Confirm with user what interface changes are needed
 - [ ] Confirm with user which behaviors to test (prioritize)
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
 - [ ] Design interfaces for [testability](interface-design.md)
 - [ ] List the behaviors to test (not implementation steps)
 - [ ] Get user approval on the plan
+- [ ] Record `red_command`, `expected_red_failure`, and `green_command` in the plan before implementation starts
 
 Ask: "What should the public interface look like? Which behaviors are most important to test?"
 
@@ -80,9 +109,11 @@ GREEN: Minimal code to pass → passes
 Rules:
 
 - One test at a time
+- Run and read RED before production code
 - Only enough code to pass current test
 - Don't anticipate future tests
 - Keep tests focused on observable behavior
+- Record `red_evidence` and `green_evidence` before claiming completion
 
 ### 4. Refactor
 

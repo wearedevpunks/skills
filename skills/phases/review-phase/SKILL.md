@@ -65,6 +65,8 @@ or validation because delivery owns completion.
    - if standalone review finds code changes are needed, report them; if delivery owns fixes, hand them back to delivery and rerun after fixes
 4. Review findings-first:
    - prioritize bugs, regressions, broken contracts, missing validation, unsafe assumptions, and user-facing risks
+   - for behavior-changing implementation plans or specs, treat missing RED/GREEN proof as a blocking finding unless the task has an explicit valid `reason_not_testable`
+   - reject `reason_not_testable` when the only reason is forgotten RED; the delivery owner must recover with a public-result RED test and GREEN evidence
    - include file and line references when available
    - separate blocking findings from improvements and optional cleanup
 5. Apply mandatory local lenses:
