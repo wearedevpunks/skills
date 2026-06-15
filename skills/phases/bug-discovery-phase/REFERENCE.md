@@ -107,6 +107,35 @@ branch relevance, runtime-debugging need, false-positive candidacy, resolution
 candidacy, deferral, or blockers. Use ClawPatch statuses only where they match
 the tool's supported values. Do not claim runtime truth from ClawPatch alone.
 
+## Scoring And Routing
+
+Before recommending the next action, rank every important finding with a `0-10`
+score, higher first. Use the score to explain priority, not to imply runtime
+proof.
+
+Include this rationale for each scored finding:
+
+- severity and confidence from ClawPatch, if available
+- whether `clawpatch next` selected or deprioritized it
+- branch relevance to the current checkout, diff, release, PR, or user goal
+- evidence freshness: current report, stale ledger, revalidated, or user-provided
+- current user pain: active runtime symptom, broken workflow, CI failure, or none
+- evidence type: static-only, runtime-suspected, or runtime-proven by external
+  evidence
+- recommended route: `$bug-resolution-phase`, `$debugging-phase`, docs/debt
+  handling, false-positive triage/revalidation, or stop
+
+Suggested policy:
+
+- `8-10`: branch-relevant, high severity/confidence, fresh evidence, or matches
+  current user pain. Route to `$bug-resolution-phase` if the fix target is clear;
+  route to `$debugging-phase` if runtime proof is missing but needed.
+- `5-7`: plausible and relevant, but confidence, freshness, or impact is mixed.
+  Inspect more, revalidate, or defer to docs/debt handling when it is not a bug
+  to fix now.
+- `0-4`: stale, low-confidence, not branch-relevant, duplicate, or likely false
+  positive. Triage/revalidate if useful; otherwise stop.
+
 ## No-Mutation Boundary
 
 Never run these by default in `bug-discovery-phase`:
@@ -131,6 +160,7 @@ The final report must include:
 - provider, model, scope, `--limit`, `--jobs`, report path, and dirty posture
 - command list and whether each command completed
 - relevant finding IDs, status, severity if available, and why they matter
+- score/rationale for each important finding before the recommended next action
 - explicit statement: ClawPatch findings are static-review candidates, not
   proven runtime root causes
 - next recommended phase for each important finding:

@@ -61,7 +61,13 @@ and the full output checklist.
    Markdown reports; for JSON, run `clawpatch report --json > <path>` because
    `--output` writes Markdown. Use `show`, `next`, `triage`, `status`, or
    `revalidate` only for inspection and classification.
-7. **Stop before mutation.** Do not run `fix --finding` or `open-pr` unless the
+7. **Score before recommending.** After report, `next`, and finding inspection,
+   assign each important finding a `0-10` rank score with rationale. Weigh
+   severity, confidence, `clawpatch next` priority, branch relevance, evidence
+   freshness, current user pain or runtime symptoms, and whether evidence is
+   static-only or runtime-proven. Then route to `$bug-resolution-phase`,
+   `$debugging-phase`, docs/debt handling, false-positive triage, or stop.
+8. **Stop before mutation.** Do not run `fix --finding` or `open-pr` unless the
    user gives a new explicit resolution request.
 
 ## Output Contract
@@ -72,6 +78,7 @@ Return:
 - report path and durable ClawPatch ledger/state path
 - commands run and validation status
 - relevant finding IDs, statuses, and branch relevance
+- finding rank score and rationale before the recommended next action
 - warning that findings are static-review candidates, not proven runtime root
   causes
 - next action: inspect selected finding, enter `$bug-resolution-phase`, enter
