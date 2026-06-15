@@ -25,7 +25,7 @@ Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
 
 When `implement-spec` runs in `sequential` mode, it must follow [references/sequential.md](references/sequential.md).
 
-That means `implement-spec` itself owns orchestration and validation, while exactly one implementation worker owns the sequential coding loop. This keeps the parent context small and adds a parent review gate after worker handoff.
+That means `implement-spec` itself owns orchestration and validation, while exactly one implementation worker owns the sequential coding loop. This is a hard gate: do not implement in the parent main thread when worker execution is unavailable. Stop, repair worker routing, or report the blocker.
 
 ## Parallel responsibilities
 
@@ -88,7 +88,7 @@ Choose `parallel` when:
 - the plan contains independent waves
 - disjoint write scopes make worker fan-out safe
 
-If the user already chose a mode, honor it. If not, choose `sequential` and state that it uses one implementation worker plus parent validation.
+If the user already chose a mode, honor it. If not, choose `sequential` and state that it spawns exactly one implementation worker plus parent validation.
 
 ## Advanced features
 

@@ -92,7 +92,8 @@ Do not create the file when nothing durable must survive the run.
 - Mode is manual. The chosen approach decides the execution path.
 - Do not switch modes mid-run unless the user explicitly redirects.
 - Default to `sequential` when the user does not choose a mode.
-- In `sequential`, keep implementation work inside one worker; the parent coordinates, reviews, validates, and finalizes.
+- In `sequential`, keep implementation work inside exactly one worker; the parent coordinates, reviews, validates, and finalizes.
+- If worker execution is unavailable, stop and repair worker routing or report the blocker. Do not implement in the parent main thread.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
 - For behavior-changing tasks, do not mark a task complete until real RED and GREEN evidence is recorded in `PLAN.md`.

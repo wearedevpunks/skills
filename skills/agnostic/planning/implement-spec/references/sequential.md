@@ -8,6 +8,8 @@ Use this approach when execution should stay serial while avoiding main-context 
 - **Worker policy:** spawn exactly one implementation worker
 - **Execution board:** completed, in progress, next, blocked
 
+Hard gate: sequential implementation never runs in the parent main thread. If the worker cannot be spawned or routed, stop and repair the worker guard or report the blocker.
+
 ## Quick start
 
 1. Load the shared lifecycle from `lifecycle.md`.
