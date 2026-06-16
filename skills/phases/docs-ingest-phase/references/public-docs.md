@@ -47,6 +47,7 @@ Run these reusable skills in order:
 
 ```text
 writing-fragments
+  -> present fragments and confirm sufficiency with user
   -> writing-beats
   -> writing-shape
   -> final public page write/merge
@@ -60,6 +61,13 @@ When `docs-ingest-phase` orchestrates these skills, call each one in docs-ingest
 - `writing-beats` reads `fragments.md` and writes or updates `beats.md`
 - `writing-shape` reads `fragments.md` plus `beats.md` and writes or updates `shape.md`
 - `docs-ingest-phase` then writes or merges the final public page from those artifacts
+
+## Fragment Sufficiency Checkpoint
+
+After inspecting existing fragments or generating fresh fragments, present the
+current fragments to the user before running beats or shape. Ask whether they
+are sufficient to continue. If the user says more guidance is needed, ask for
+the missing guidance and revise `fragments.md` before continuing.
 
 ## Durable Writer Artifacts
 

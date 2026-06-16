@@ -1,101 +1,46 @@
 ---
 name: docs-ingest-phase
-description: Ingests specs and docs-affecting changes into canonical private/project docs and public-facing docs. Use when a spec is ready for domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
+description: Routes docs-affecting work into private/internal ingest and public-facing docs paths. Use when specs need durable domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
 ---
 
 # Docs Ingest Phase
 
-## Contract
-
-- **Role:** public phase entrypoint for docs ingest and repo-doc maintenance
-- **Upstream:** reviewed or implemented spec folder, or concrete docs-affecting code changes
-- **Delegates to:** private spec/project ingest, public-doc writer skills, routed page writing, route/navigation bookkeeping
-- **Downstream:** canonical routed public and private docs, durable private writer artifacts, `meta.json` navigation, ingest metadata, wiki log/index updates, and required `docs/` updates
-- **Stop conditions:** ingest bookkeeping complete, required docs updates complete, failures reported honestly
-
-## Use When
-
-- A reviewed or implemented spec folder should become durable routed domain knowledge.
-- Substantial public-facing documentation needs to be created or materially updated.
-- `apps/wiki` content, Fumadocs navigation, `meta.json`, or routed pages change.
-- Code changes alter architecture, setup, contracts, decisions, runbooks, or operator workflow.
-- `delivery-phase` reaches `$docs-ingest-phase` and docs-affecting changes exist.
-
-## Do Not Use When
-
-- The work is still requirements discovery, planning, coding, or review.
-- The target spec is already marked `ingested: true`; report a no-op.
-- The requested docs would document speculative future behavior as current truth.
-- The task would duplicate large specs, plans, implementation notes, or runbooks into wiki/project pages instead of summarizing and linking.
-
 ## Quick Start
 
-1. Resolve `<wiki-root>`:
-   - monorepo: `apps/wiki`
-   - single-repo: `wiki`
-2. Read `<wiki-root>/AGENTS.md` before touching wiki content.
-3. If ingesting a spec, read [references/wiki-ingest.md](references/wiki-ingest.md).
-4. If the change produced durable bug or knowledge learning, read [references/learning-artifacts.md](references/learning-artifacts.md).
-5. If creating or materially updating public-facing docs, read [references/public-docs.md](references/public-docs.md).
-6. If updating routed docs or navigation, read [references/fumadocs-routing.md](references/fumadocs-routing.md).
-7. If updating root `docs/`, read [references/repo-docs.md](references/repo-docs.md).
-8. Finish by reporting written pages, writer artifacts, metadata changes, docs updates, learning outcomes, validation run, and any no-op reason.
+`docs-ingest-phase` is a reusable docs router.
 
-## Wiki Ingest Pipeline
+1. Read [phases/router.md](phases/router.md).
+2. Inspect only enough source, diff, spec, notes, wiki, public docs, and root docs state to choose the current docs path.
+3. Load exactly one phase file from `phases/`.
+4. Complete that path, write the docs-ingest outcome, then stop or re-enter `docs-ingest-phase` to route again.
 
-Run this order exactly:
+Completion of one path does not imply loading the other path.
 
-```text
-docs-ingest-phase
-  -> resolve docs architecture and classify public/private targets
-  -> scoped learning-artifact scan and refresh
-  -> routed flow-writing phase
-  -> routed concept-writing phase
-  -> public-doc writer flow when substantial public-facing docs are created or materially updated
-  -> ingest bookkeeping
-  -> route/navigation bookkeeping
-```
+## Entry Modes
 
-Why: concept pages can cross-link flow pages, so flows must exist first.
+- **Private/internal ingest:** durable capture for specs, project docs, wiki internals, root `docs/`, runbooks, operator workflow, routing metadata, or learning artifacts.
+- **Public docs:** reader-facing product, usage, domain, command, onboarding, or changelog docs.
+- **Mixed docs:** one change needs both private/internal capture and public-facing docs.
+- **No-op check:** determine whether docs ingest is already complete or intentionally unnecessary.
 
-Public-doc writer flow:
+## Phase Files
 
-```text
-writing-fragments
-  -> writing-beats
-  -> writing-shape
-  -> final public page write/merge
-```
+- [phases/router.md](phases/router.md): choose the next docs path from artifacts and audience.
+- [phases/private-internal.md](phases/private-internal.md): ingest specs, project/wiki docs, root docs, routing metadata, and learning artifacts.
+- [phases/public-docs.md](phases/public-docs.md): create or update reader-facing docs through the public writer flow.
 
-Run this flow for substantial public-facing page creation or material updates. Small public-doc patches may skip it with an explicit no-op reason.
+## Router Rules
 
-## Routing
+- Do not read path files other than `router.md` until the router selects them.
+- Classify by audience first: internal/project/operator docs are private/internal; reader/adopter/scaffold-recipient docs are public.
+- Use the repo's existing private and public docs surfaces. Do not create a second routed docs surface or hardcode Harness-specific route names in other repos.
+- If both paths apply, prefer private/internal first when source capture, route policy, metadata, or durable writer artifact location is unresolved.
+- Public docs work that runs the writer flow must include the fragment sufficiency checkpoint from [phases/public-docs.md](phases/public-docs.md).
+- After a path completes, report enough state for future resume: selected path, inputs processed, docs written or skipped, validation, blockers, and next path if any.
 
-Use the repo's existing public docs surfaces for reader-facing pages and its private docs surface for specs, runbooks, maintenance, project context, and durable writer artifacts. Do not enforce Harness Intelligence route names in other repos. Do not create a second routed docs surface or separate `domains/` owner layer just because docs ingest ran.
+## Stop Conditions
 
-## Output Contract
-
-Always report:
-
-- source spec or docs-affecting change processed
-- learning artifacts scanned, written, updated, consolidated, replaced, deleted, marked stale, or intentionally skipped
-- flows written or skipped
-- concepts written or skipped
-- public-doc writer artifacts written or skipped
-- public pages written, merged, or skipped
-- routed pages and `meta.json` updates
-- ingest frontmatter/bookkeeping updates
-- root `docs/` updates, if any
-- validation commands run
-- no-op reasons or blockers
-
-## Never Do
-
-- Leave new or moved routed pages out of navigation metadata.
-- Strip access-control frontmatter from routed pages.
-- Proceed to concept writing after a flow write fails.
-- Create duplicate routed docs surfaces, `domains/` owner layers, roadmap mirrors, or backlog mirrors.
-- Create a separate `docs/solutions/` tree or hidden memory tree for canonical learning.
-- Write memory notes for every learning artifact; memory is only for compact hard-to-discover routing aids.
-- Put agent task instructions inside human-facing docs pages.
-- Duplicate article content across routed pages and another source tree.
+- Selected path completed and its resumable outcome was reported.
+- Router finds no docs-affecting change and reports a no-op reason.
+- Required docs surface, route policy, source artifact, or user guidance is missing.
+- Public fragment sufficiency checkpoint is waiting for the user's answer.
