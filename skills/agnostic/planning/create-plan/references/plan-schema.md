@@ -48,6 +48,7 @@ Every task must include:
 - `reason_not_testable`
 - `red_evidence`
 - `green_evidence`
+- `codebase_design_notes`
 - `review_mode`
 
 `backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
@@ -56,13 +57,15 @@ Multiple tasks may point to the same story when one story needs several executio
 
 Do not create a new backlog item only because a task boundary exists in the plan.
 
-`assigned_skills` must list the skills used to shape the task during planning, not only skills expected during implementation. Skill guidance should be reflected in the task's boundary, validation, `tdd_target`, and `review_mode`.
+`assigned_skills` must list the skills used to shape the task during planning, not only skills expected during implementation. Skill guidance should be reflected in the task's boundary, validation, `tdd_target`, `codebase_design_notes`, and `review_mode`.
 
 For behavior-changing code tasks, `tdd_status` must be `required` and the task must include concrete RED/GREEN commands before implementation starts. For docs-only, formatting-only, generated-code-only, config-only, scaffold/bookkeeping-only, or truly non-testable tasks, record `tdd_status: not_applicable` or `not_testable` with an explicit `reason_not_testable`.
 
 `red_evidence` and `green_evidence` are execution fields. They should be present but blank when the plan is created, then filled by `implement-spec` before the task is marked complete.
 
 `reason_not_testable` cannot be used for "forgot RED." If production code came first, the executor must recover by writing a real public-result RED test, capturing failure evidence, patching to GREEN, and setting `tdd_status: recovered`.
+
+`codebase_design_notes` must name the relevant module interface, seam, adapter, or test surface when the task changes code structure. Use `not_applicable` only when the task has no codebase-design consequence.
 
 ```md
 ### T3: Example task
@@ -86,5 +89,6 @@ For behavior-changing code tasks, `tdd_status` must be `required` and the task m
 - **reason_not_testable**:
 - **red_evidence**:
 - **green_evidence**:
+- **codebase_design_notes**: Interface/seam/adapter/test-surface notes, or not_applicable.
 - **review_mode**: cli | browser | mixed
 ```

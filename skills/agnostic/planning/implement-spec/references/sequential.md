@@ -25,12 +25,13 @@ Hard gate: sequential implementation never runs in the parent main thread. If th
 The worker owns this loop for every task:
 
 1. start from `tdd_target`
-2. classify `tdd_status` and honor the task's RED/GREEN contract
-3. for behavior-changing work, run `red_command`, verify `expected_red_failure`, and record `red_evidence` before production edits
-4. patch only enough production code to pass the public behavior
-5. run `green_command`, record `green_evidence`, and only then mark the task done
-6. for non-testable or non-applicable tasks, record `reason_not_testable` plus the exact alternative verification
-7. update the execution board before advancing
+2. read `codebase_design_notes` and preserve the intended interface, seam, adapter, and test surface unless implementation proves the plan wrong
+3. classify `tdd_status` and honor the task's RED/GREEN contract
+4. for behavior-changing work, run `red_command`, verify `expected_red_failure`, and record `red_evidence` before production edits
+5. patch only enough production code to pass the public behavior
+6. run `green_command`, record `green_evidence`, and only then mark the task done
+7. for non-testable or non-applicable tasks, record `reason_not_testable` plus the exact alternative verification
+8. update the execution board before advancing
 
 The parent owns:
 

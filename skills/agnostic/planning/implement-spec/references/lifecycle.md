@@ -96,6 +96,7 @@ Do not create the file when nothing durable must survive the run.
 - If worker execution is unavailable, stop and repair worker routing or report the blocker. Do not implement in the parent main thread.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
+- Treat `codebase_design_notes` as required design context for code-structure changes. Verify the implemented interface, seam, adapter strategy, and test surface match it, or update the notes with the real decision.
 - For behavior-changing tasks, do not mark a task complete until real RED and GREEN evidence is recorded in `PLAN.md`.
 - Accept missing RED/GREEN evidence only when the task has an explicit `reason_not_testable` or `tdd_status: not_applicable`.
 - Do not accept `reason_not_testable` for forgotten RED. If code came first, recover by writing the public-result RED test, recording failure, patching to pass, and marking `tdd_status: recovered`.
@@ -116,6 +117,7 @@ After each completed task or wave:
 - append a concise execution log in `PLAN.md`
 - record touched files in `PLAN.md`
 - fill `red_evidence` and `green_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
+- fill or reconcile `codebase_design_notes` when module shape, seam placement, adapters, or test surface changed
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action

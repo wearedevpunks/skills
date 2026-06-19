@@ -7,9 +7,11 @@ description: Runs rigorous requirements grilling, pins glossary/axiom decisions,
 
 Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that can feed backlog/user-story creation.
 
+This skill blends the shared `$grilling` primitive with durable artifacts. Use `$grilling` for live interview behavior; use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
+
 This skill has three scoped references:
 
-- Live grilling behavior: see [references/grilling-flow.md](references/grilling-flow.md)
+- Live grilling behavior: use `$grilling`, then see [references/grilling-flow.md](references/grilling-flow.md) for requirements-specific pressure tests
 - Durable grill artifacts: see [references/artifact-output.md](references/artifact-output.md)
 - Wiki synthesis from closed grill branches: see [references/wiki-output.md](references/wiki-output.md)
 

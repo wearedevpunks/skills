@@ -76,8 +76,8 @@ Before writing any code:
 - [ ] Decide whether the work is behavior-changing and therefore `tdd_status: required`
 - [ ] Confirm with user what interface changes are needed
 - [ ] Confirm with user which behaviors to test (prioritize)
-- [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
-- [ ] Design interfaces for [testability](interface-design.md)
+- [ ] Use `$codebase-design` to identify deep modules, seams, adapters, and test surfaces
+- [ ] Design interfaces for testability through the public seam
 - [ ] List the behaviors to test (not implementation steps)
 - [ ] Get user approval on the plan
 - [ ] Record `red_command`, `expected_red_failure`, and `green_command` in the plan before implementation starts

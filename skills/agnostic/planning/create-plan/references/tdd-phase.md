@@ -8,7 +8,7 @@ Preserve `$tdd` behavior:
 
 - classify every task as `tdd_status: required | not_testable | recovered | not_applicable`
 - surface the public interface change and the behavior priority behind the task
-- identify deep-module or testability opportunities while task boundaries are still fluid
+- use `$codebase-design` vocabulary to identify deep-module, seam, adapter, and testability opportunities while task boundaries are still fluid
 - define the first public-interface behavior that should fail before implementation
 - prefer integration-style behavior through public interfaces
 - avoid implementation-detail or private-method testing
@@ -19,6 +19,7 @@ Preserve `$tdd` behavior:
 - require empty `red_evidence` and `green_evidence` fields so implementation can fill proof into the durable plan
 - use `reason_not_testable` only for truly non-testable work, never for forgotten RED
 - for code-before-RED recovery, require the executor to write the intended public-result test, capture real failure, patch to pass, and mark `tdd_status: recovered`
+- record `codebase_design_notes` when interface depth, seam placement, or adapter strategy affects the task shape
 
 ## Execution metadata
 

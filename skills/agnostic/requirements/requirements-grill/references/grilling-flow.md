@@ -6,6 +6,8 @@ This workflow is always paired with [artifact-output.md](artifact-output.md) dur
 
 ## Session Behavior
 
+Use the shared `$grilling` primitive for the interview loop, then apply the requirements-specific pressure tests below.
+
 Interview the user relentlessly about every aspect of the plan until shared understanding exists.
 
 Walk the design tree branch by branch until each branch is:

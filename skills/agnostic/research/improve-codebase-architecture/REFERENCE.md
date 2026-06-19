@@ -2,7 +2,7 @@
 
 ## Dependency Categories
 
-When assessing a candidate for deepening, classify its dependencies:
+When assessing a candidate for deepening, classify its dependencies with `$codebase-design` vocabulary:
 
 ### 1. In-process
 
@@ -16,7 +16,7 @@ Dependencies that have local test stand-ins (e.g., PGLite for Postgres, in-memor
 
 Your own services across a network boundary (microservices, internal APIs). Define a port (interface) at the module boundary. The deep module owns the logic; the transport is injected. Tests use an in-memory adapter. Production uses the real HTTP/gRPC/queue adapter.
 
-Recommendation shape: "Define a shared interface (port), implement an HTTP adapter for production and an in-memory adapter for testing, so the logic can be tested as one deep module even though it's deployed across a network boundary."
+Recommendation shape: "Define a port at the seam, implement an HTTP adapter for production and an in-memory adapter for testing, so the logic can be tested as one deep module even though it is deployed across a network boundary."
 
 ### 4. True external (Mock)
 

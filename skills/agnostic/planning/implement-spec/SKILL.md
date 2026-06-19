@@ -10,7 +10,7 @@ description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOT
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
 - **Upstream:** reviewed spec folder with `SPEC.md` and `PLAN.md`
-- **Delegates to:** `$tdd`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal worker orchestration in sequential and parallel modes
+- **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal worker orchestration in sequential and parallel modes
 - **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing reviewed spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
@@ -18,6 +18,7 @@ description: Implement an approved spec folder while keeping `IMPLEMENTATION-NOT
 ## Required Inner Skills
 
 - MUST use `$tdd`
+- MUST use `$codebase-design`
 - MUST use `$simplify`
 Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
 
@@ -50,10 +51,11 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 4. Record the chosen mode under **Execution mode** in `IMPLEMENTATION-NOTES.md` before coding.
 5. Execute only the chosen mode. Do not mix modes inside one run.
 6. After each completed task or wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and spec-linked tech debt before advancing.
-7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
-8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
-9. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
-10. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+7. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
+8. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
+9. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
+10. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
+11. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
 
 ## Stack-aware branch gate
 

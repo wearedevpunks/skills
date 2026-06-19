@@ -4,9 +4,10 @@
 
 ## Required inner skills
 
-- MUST use `$grill-me`
+- MUST use `$grilling`
 - MUST use `$swarm-planner`
 - MUST use `$tdd`
+- MUST use `$codebase-design`
 - `opensrc` provides source context for installed or external packages
 - scoped `AGENTS.md` files provide per-path skill requirements through `Primary skills here`
 
@@ -34,4 +35,5 @@
 - If a required tool is unavailable, stop clearly and report the missing dependency.
 - Keep the canonical backlog model aligned with [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md).
 - For every planned task, locate the relevant scoped `AGENTS.md` chain, load the relevant skill guidance during planning, and assign the existing skills that the executor must load again before editing.
+- Because the default quality pack is always present, include `$codebase-design` in task shaping when module interfaces, seams, adapters, or test surfaces matter.
 - Never start implementation from this skill.

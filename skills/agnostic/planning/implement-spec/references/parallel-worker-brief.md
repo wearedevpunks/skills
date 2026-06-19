@@ -17,6 +17,7 @@ Every worker brief should include:
 - validation contract
 - `tdd_target`
 - `tdd_status`
+- `codebase_design_notes`
 - `red_command`
 - `expected_red_failure`
 - `green_command`
@@ -31,17 +32,18 @@ Each worker brief should require:
 1. reading the plan and understanding the specific task first
 2. reading all relevant files first, then doing targeted codebase research before editing
 3. starting from `tdd_target` and driving the task RED first when it is testable
-4. capturing failing evidence for the expected behavior gap before implementation
-5. recording `red_evidence` and `green_evidence` in the plan before marking behavior-changing tasks complete
-6. recovering code-before-RED by writing the intended public-result RED test and marking `tdd_status: recovered`, not by using `reason_not_testable`
-7. recording an explicit `reason_not_testable` plus exact alternative verification when the task is not a good TDD candidate
-8. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
-9. not weakening or removing tests unless requirements changed
-10. implementing only the assigned task scope and satisfying all acceptance criteria
-11. running the exact task validation evidence before returning, plus extra plan validation when feasible
-12. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
-13. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
-14. updating the plan entry with status, log, touched files, and gotchas before handoff closes
+4. preserving or explicitly reconciling `codebase_design_notes` for module interface, seam, adapter strategy, and test surface
+5. capturing failing evidence for the expected behavior gap before implementation
+6. recording `red_evidence` and `green_evidence` in the plan before marking behavior-changing tasks complete
+7. recovering code-before-RED by writing the intended public-result RED test and marking `tdd_status: recovered`, not by using `reason_not_testable`
+8. recording an explicit `reason_not_testable` plus exact alternative verification when the task is not a good TDD candidate
+9. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
+10. not weakening or removing tests unless requirements changed
+11. implementing only the assigned task scope and satisfying all acceptance criteria
+12. running the exact task validation evidence before returning, plus extra plan validation when feasible
+13. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
+14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
+15. updating the plan entry with status, log, touched files, and gotchas before handoff closes
 
 ## Worker output contract
 

@@ -51,7 +51,7 @@ Rules:
 
 ## Grill behavior
 
-Preserve `$grill-me` behavior:
+Use `$grilling` behavior:
 
 - ask one question at a time
 - provide a recommended answer with each question
