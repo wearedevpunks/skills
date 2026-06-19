@@ -53,8 +53,10 @@ Create a plan first. Never implement code in this skill.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
 8. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
 9. Normalize every task with stable ids, `depends_on`, `location`, `description`, `validation`, `status`, `log`, `files edited/created`, owning-story backlog references, `assigned_skills`, `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields, `codebase_design_notes`, and `review_mode`.
-10. Keep the saved plan standalone: include situation, issue, solution shape, assumptions, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
-11. Stop after plan creation and backlog sync. Do not implement code or spawn implementation workers.
+10. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
+11. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
+12. For complex work, break the plan into phases with built-in validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
+13. Stop after plan creation and backlog sync. Do not implement code or spawn implementation workers.
 
 ### Stack-aware preservation
 
