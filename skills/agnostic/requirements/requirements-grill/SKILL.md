@@ -1,6 +1,6 @@
 ---
 name: requirements-grill
-description: Runs rigorous requirements grilling, pins glossary/axiom decisions, persists branch decisions, and optionally synthesizes high-level wiki knowledge. Use when the user wants a long design interview, product/architecture requirements discovery, branch-by-branch decision closure, canonical terminology, compaction-safe grill logs/status updates, or wiki synthesis from grilled requirements.
+description: Requirements grilling with durable branch artifacts, glossary/axiom decisions, and optional wiki synthesis. Use when the user wants product or architecture requirements discovery, a long design interview, branch-by-branch decision closure, canonical terminology, compaction-safe grill logs/status updates, or wiki synthesis from closed grill decisions.
 ---
 
 # Requirements Grill

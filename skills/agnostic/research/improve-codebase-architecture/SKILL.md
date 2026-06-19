@@ -1,6 +1,6 @@
 ---
 name: improve-codebase-architecture
-description: Explore a codebase to find architectural improvement opportunities using codebase-design vocabulary. Use when user wants architecture discovery, refactoring opportunities, shallow-module deepening, testability improvement, AI-navigability, or optional grilling of a candidate design.
+description: Improve codebase architecture by discovering module-deepening, seam, testability, and AI-navigability opportunities with codebase-design vocabulary. Use when the user wants architecture discovery, refactoring opportunities, shallow-module deepening, testability improvement, AI-navigability, or optional grilling of a candidate design.
 ---
 
 # Improve Codebase Architecture
@@ -36,6 +36,8 @@ Do not propose final interfaces yet. Ask the user which candidate to explore.
 
 ### 3. User picks a candidate
 
+This step is complete when one candidate is selected, the user accepts your recommendation, or the user stops the exploration.
+
 ### 4. Frame the problem space
 
 Before spawning sub-agents, write a user-facing explanation of the problem space for the chosen candidate:
@@ -70,6 +72,8 @@ Present designs sequentially, then compare them in prose.
 After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated — the user wants a strong read, not just a menu.
 
 ### 6. User picks an interface (or accepts recommendation)
+
+This step is complete when one interface direction is selected, a hybrid is explicitly accepted, or the user stops before handoff.
 
 ### 7. Create the handoff
 

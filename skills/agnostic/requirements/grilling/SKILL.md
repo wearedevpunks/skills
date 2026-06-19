@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Interview the user relentlessly about a plan, requirement, or design. Use when the user wants to stress-test an idea before building, another skill needs a grilling primitive, or the prompt uses grill trigger language.
+description: Grill a plan, requirement, design, or unclear decision through one-question-at-a-time pressure testing. Use when the user asks to grill, stress-test, interrogate, or sharpen an idea before building, or when another skill needs a grilling primitive.
 ---
 
 # Grilling

@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when designing or improving module interfaces, finding deepening opportunities, deciding where a seam goes, making code testable, or when another skill needs codebase-design vocabulary.
+description: Design deep modules with small interfaces, clean seams, adapters, leverage, locality, and testable boundaries. Use when designing or improving module interfaces, finding deepening opportunities, deciding where a seam goes, making code testable, or when another skill needs codebase-design vocabulary.
 ---
 
 # Codebase Design
