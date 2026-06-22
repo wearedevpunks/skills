@@ -5,16 +5,19 @@ description: Compile messy intent, handoffs, issues, logs, specs, or notes into 
 
 # Goalify
 
-`goalify` is a prompt compiler. It produces a `/goal` prompt; it does not run the
-goal unless the user explicitly asks.
+`goalify` helps Codex write its own goal. It turns messy intent into a concise
+`/goal` prompt that the future goal-running agent can adopt as its operating
+contract.
+
+It produces a prompt only. Do not run the goal unless the user separately asks.
 
 Codex goal objectives have a hard platform limit: the text after `/goal` must be
 non-empty and at most 4,000 characters. Longer instructions belong in a file
 that the goal points to; do not emit an over-limit `/goal` block.
 
-Goal prompts must be short and concise. Do not write a spec, essay, transcript,
-or exhaustive handoff. Write the smallest complete operating contract: direct,
-detailed enough to execute, and straightforward step by step.
+Goal prompts must be concise. Do not write a spec, essay, transcript, or
+handoff. Write the smallest complete contract: one objective, bounded context,
+clear workflow, explicit proof, and stop conditions.
 
 ## Use When
 
@@ -48,7 +51,7 @@ Every generated goal prompt must include:
 - progress-report expectations
 - final-report expectations
 
-Within the 4,000-character hard limit, prefer the official goal-shape fields:
+Within the 4,000-character hard limit, prefer these goal-shape fields:
 
 - outcome
 - verification surface
@@ -68,6 +71,8 @@ related details together, delete repetition, and keep each section short.
    - If sources conflict, prefer repo/spec/log evidence over stale summaries.
 2. **Normalize the objective.**
    - Reduce the request to one durable objective.
+   - Phrase it as the future agent's own objective, not as a message about the
+     user, the compiler, or the handoff.
    - Keep adjacent wishes as non-goals, follow-ups, or blocker conditions.
    - If one objective cannot be named, ask one clarifying question instead of drafting.
 3. **Define proof.**
@@ -76,21 +81,25 @@ related details together, delete repetition, and keep each section short.
    - If proof is manual, state the exact human-verifiable scenario.
 4. **Compile the prompt.**
    - Use [EXAMPLES.md](EXAMPLES.md) for structure.
-   - Include only context the future goal runner needs.
+   - Speak directly to the future goal-running agent: "Your objective is..."
+   - Include only context the future agent needs to act independently.
    - Make the prompt self-contained enough to survive compaction.
    - Keep the full `/goal ...` text at or below 4,000 characters.
    - Prefer short over maximal. The target is concise and complete, not "as much as fits".
    - Preserve concrete paths, constraints, proof, and stop conditions before trimming execution detail.
    - Use terse step-by-step workflow bullets with clear verbs and validation gates.
    - Compress aggressively: group files by area, collapse repeated commands, delete background, and remove non-execution-critical explanation.
-   - If the real operating contract cannot fit, produce a short `/goal` that points at an existing or user-requested goal file instead of pasting the full contract.
+   - If the real contract cannot fit, produce a short `/goal` that points at an
+     existing or user-requested goal file instead of pasting the full contract.
 5. **Review before returning.**
    - Confirm the prompt has one objective and one stopping condition.
    - Confirm it says what to read first.
    - Confirm it tells Codex when to stop early.
    - Confirm validation is explicit, not "make sure it works".
    - Confirm the fenced `/goal` text is non-empty and no more than 4,000 characters.
-   - Confirm the prompt is short, direct, and step-by-step; cut any paragraph that merely explains context the runner does not need.
+   - Confirm the prompt reads like the future agent's own operating contract.
+   - Confirm the prompt is short, direct, and step-by-step; cut any paragraph
+     that merely explains context the runner does not need.
 
 ## Output Contract
 
