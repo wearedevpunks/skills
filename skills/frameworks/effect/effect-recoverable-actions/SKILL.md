@@ -1,6 +1,10 @@
 ---
 name: effect-recoverable-actions
-description: Design recoverable Effect backend flows with transactions, retries, rollback, compensation, and failure-path tests. Use with backend-recoverable-actions when Effect flows chain DB writes and external calls.
+description: |
+  Apply Effect-specific recoverability guidance on top of backend-recoverable-actions.
+  Use when an Effect backend flow chains dependent operations, especially DB writes
+  plus external calls, and needs transaction, retry, rollback, compensation, or
+  failure-path testing strategy. Do not use for simple single-step reads or writes.
 ---
 
 # Effect Recoverable Actions

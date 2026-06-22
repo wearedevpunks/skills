@@ -1,6 +1,13 @@
 ---
 name: turborepo
-description: Configure and debug Turborepo monorepos. Use when working on turbo.json, package tasks, dependsOn, caching, remote cache, filters, affected runs, CI optimization, environment variables, internal packages, or apps/packages boundaries.
+description: |
+  Turborepo monorepo build system guidance. Triggers on: turbo.json, task pipelines,
+  dependsOn, caching, remote cache, the "turbo" CLI, --filter, --affected, CI optimization, environment
+  variables, internal packages, monorepo structure/best practices, and boundaries.
+
+  Use when user: configures tasks/workflows/pipelines, creates packages, sets up
+  monorepo, shares code between apps, runs changed/affected packages, debugs cache,
+  or has apps/packages directories.
 metadata:
   version: 2.8.15-canary.3
 ---
