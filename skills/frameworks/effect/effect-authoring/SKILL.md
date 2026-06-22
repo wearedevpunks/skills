@@ -1,10 +1,6 @@
 ---
 name: effect-authoring
-description: >-
-  Use when asked to plan, write, build, fix, refactor, or review Effect-TS
-  code. Apply before editing so the first implementation follows repo
-  conventions for Effect primitives, branded IDs, observability, error design,
-  `@effect/vitest`, and Effect-Atom, especially in `packages/api`.
+description: Write or review Effect-TS code with repo conventions for services, layers, schemas, errors, observability, @effect/vitest, and Effect-Atom. Use before editing Effect backend, test, or UI Effect-Atom code.
 ---
 
 # Effect-TS Authoring Guide

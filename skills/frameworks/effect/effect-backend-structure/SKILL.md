@@ -1,12 +1,6 @@
 ---
 name: effect-backend-structure
-description: |
-  Apply Effect-specific backend structure on top of backend-domain-structure.
-  Use when creating or changing Effect services, layers, actions, repositories,
-  transport adapters, DB integrations, test layers, or backend boilerplate in any
-  Effect backend root. Enforces visible Effect requirements, layer-provided
-  implementations, effect-solutions plus opensrc source lookup, and @effect/vitest
-  testing conventions.
+description: Structure Effect backend code with services, layers, actions, repositories, transport adapters, DB integrations, and test layers. Use with backend-domain-structure when creating or changing Effect backend roots.
 ---
 
 # Effect Backend Structure
