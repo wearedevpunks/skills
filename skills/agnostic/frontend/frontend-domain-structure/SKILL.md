@@ -1,6 +1,11 @@
 ---
 name: frontend-domain-structure
-description: Organize frontend applications into domain-first layers with thin framework composition entrypoints, user-facing features, app-local modules, and shared libraries. Use when creating or refactoring frontend code, replacing flat component folders, or reviewing frontend import boundaries.
+description: |
+  Organize frontend applications into domain-first layers with thin framework composition entrypoints,
+  user-facing features, reusable app-local modules, and shared libraries. Use when creating or
+  refactoring frontend code, replacing flat components/hooks/lib/utils folders, deciding whether code
+  belongs in framework composition, features/, modules/, or shared packages, or reviewing frontend
+  import boundaries across React, Vue, Svelte, Solid, or other UI frameworks.
 ---
 
 # Frontend Domain Structure

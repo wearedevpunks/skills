@@ -1,6 +1,10 @@
 ---
 name: backend-domain-structure
-description: Organize backend code into domain-first layers with thin transport entrypoints, platform composition, integrations, and feature-owned behavior. Use when creating or refactoring backend services, API routes, repositories, providers, test layout, or import boundaries.
+description: |
+  Organize backend code into domain-first layers with thin transport entrypoints,
+  platform composition, external integrations, and feature-owned business behavior.
+  Use when creating or refactoring backend services, API routes, repositories,
+  providers, test layout, or import boundaries across backend frameworks.
 ---
 
 # Backend Domain Structure

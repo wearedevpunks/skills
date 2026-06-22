@@ -1,6 +1,8 @@
 ---
 name: swarm-planner
-description: Plan dependency-aware implementation work for explicit parallel multi-agent execution. Use only when the user or another skill explicitly invokes swarm planning for safe worker fan-out.
+description: >
+  [EXPLICIT INVOCATION ONLY] Creates dependency-aware implementation plans optimized for parallel
+  multi-agent execution.
 metadata:
   invocation: explicit-only
 ---

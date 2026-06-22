@@ -1,6 +1,10 @@
 ---
 name: bug-resolution-phase
-description: Resolve selected ClawPatch findings through classification, bounded fixes, triage, docs/debt routing, and revalidation. Use when the user selects a ClawPatch finding, asks for ClawPatch-backed bug resolution, or gives a tightly bounded finding batch.
+description: >-
+  Resolves selected ClawPatch findings through classification, bounded fixes,
+  triage, docs/debt routing, and revalidation. Use when the user selects a
+  ClawPatch finding, asks for ClawPatch-backed bug resolution, or gives a
+  tightly bounded finding batch for sequential or parallel handling.
 ---
 
 # Bug Resolution Phase

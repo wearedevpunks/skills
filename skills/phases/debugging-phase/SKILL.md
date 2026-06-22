@@ -1,6 +1,10 @@
 ---
 name: debugging-phase
-description: Run a standalone or delivery-scoped runtime-evidence debugging phase. Use when the user reports broken behavior, failing smoke checks, logs, recordings, runtime symptoms, or asks to debug a delivery-scoped failure.
+description: >-
+  Runs a standalone runtime-evidence debugging phase, or a scoped debugging
+  phase inside delivery when validation or review finds runtime failure. Use
+  when the user reports broken behavior, failing smoke checks, logs,
+  recordings, runtime symptoms, or asks to debug a delivery-scoped failure.
 ---
 
 # Debugging Phase

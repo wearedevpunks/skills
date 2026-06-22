@@ -1,6 +1,9 @@
 ---
 name: bug-discovery-phase
-description: Run AFK ClawPatch bug discovery, reporting, and triage without source mutation. Use when the user asks for ClawPatch discovery, broad bug discovery, bug lifecycle triage, finding ledgers, AFK bug review, or durable bug reports.
+description: >-
+  Runs AFK ClawPatch bug discovery, reporting, and triage without source
+  mutation. Use when the user asks for ClawPatch discovery, broad bug discovery,
+  bug lifecycle triage, finding ledgers, AFK bug review, or durable bug reports.
 ---
 
 # Bug Discovery Phase

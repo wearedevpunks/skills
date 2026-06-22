@@ -1,6 +1,10 @@
 ---
 name: debug-agent
-description: Debug runtime behavior with evidence from logs, repros, traces, screenshots, and instrumentation. Use when the user reports a bug, unexpected behavior, failing smoke check, or asks to debug an issue before patching.
+description: >-
+  Systematic evidence-based debugging using runtime logs. Generates hypotheses,
+  instruments code with NDJSON logs, guides reproduction, analyzes log evidence,
+  and iterates until root cause is proven with cited log lines. Use when the
+  user reports a bug, unexpected behavior, or asks to debug an issue.
 ---
 
 # Debug Mode
