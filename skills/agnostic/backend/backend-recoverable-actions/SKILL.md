@@ -1,10 +1,6 @@
 ---
 name: backend-recoverable-actions
-description: |
-  Design recoverable backend action flows for multi-step mutations with explicit
-  transaction, retry, rollback, compensation, and failure-path testing strategy.
-  Use when backend work chains dependent writes, DB changes plus external side
-  effects, durable repair flows, or review of partial-failure risk.
+description: Design recoverable backend action flows for multi-step mutations with explicit transaction, retry, rollback, compensation, and failure-path testing strategy. Use when backend work chains dependent writes, database changes plus external side effects, durable repair flows, or partial-failure reviews.
 ---
 
 # Backend Recoverable Actions
