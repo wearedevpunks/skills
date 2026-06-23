@@ -19,7 +19,7 @@ Include:
 - parallel execution waves
 - testing strategy
 - risks and mitigations
-- validation gates per phase when phases exist
+- validation gates per `Tn` task and dependency wave
 - unresolved questions
 
 `unresolved questions` is not a hiding place for skipped planning. Before saving a plan with unresolved questions, prompt the user to resolve each plan-shaping question that they can reasonably answer now. Keep only deferred, externally blocked, or non-blocking questions, and state why each remains open.

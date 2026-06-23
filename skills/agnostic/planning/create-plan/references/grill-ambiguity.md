@@ -1,6 +1,6 @@
-# Grill Phase
+# Grill Ambiguity
 
-Use this reference for the ambiguity-reduction phase.
+Use this reference to reduce ambiguity before building the swarm graph.
 
 ## Goal
 
@@ -28,7 +28,7 @@ Ask only for missing high-impact inputs:
 
 Before the first question, keep the current state obvious:
 
-- current phase
+- current graph step
 - locked decisions
 - open decisions
 - next step

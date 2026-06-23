@@ -1,6 +1,6 @@
-# TDD Phase
+# TDD Shaping
 
-Use this reference for the `$tdd` shaping phase across execution tasks.
+Use this reference to apply `$tdd` shaping across the swarm graph's `Tn` tasks.
 
 ## TDD shaping rules
 

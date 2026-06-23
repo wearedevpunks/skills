@@ -11,15 +11,15 @@
 - `opensrc` provides source context for installed or external packages
 - scoped `AGENTS.md` files provide per-path skill requirements through `Primary skills here`
 
-## Phase map
+## Graph map
 
 1. Read current repo state and derive as much context as possible before asking.
-2. Run the ambiguity-reduction phase:
-   - see [references/grill-phase.md](references/grill-phase.md)
-3. Run the task-graph phase:
-   - see [references/planner-phase.md](references/planner-phase.md)
-4. Run the TDD shaping phase:
-   - see [references/tdd-phase.md](references/tdd-phase.md)
+2. Reduce ambiguity before task synthesis:
+   - see [references/grill-ambiguity.md](references/grill-ambiguity.md)
+3. Build the swarm graph of `Tn` tasks:
+   - see [references/planner-task-graph.md](references/planner-task-graph.md)
+4. Attach TDD shaping to each `Tn` task:
+   - see [references/tdd-shaping.md](references/tdd-shaping.md)
 5. Normalize the saved plan using:
    - [references/plan-schema.md](references/plan-schema.md)
 6. Sync backlog items using:
