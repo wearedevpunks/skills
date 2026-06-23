@@ -13,6 +13,25 @@ Default to one finding. Accept a batch only when the user bounds it and the find
 
 Do not turn a broad report into an automatic repair campaign. If the request is ambiguous, ask for the finding ID or batch boundary.
 
+## Scope Policy
+
+Default to the smallest certain target around the selected finding:
+
+- open PR changes
+- highlighted diff
+- supplied code portions
+- named files, paths, packages, apps, domains, or features
+
+Use a full-codebase scan only when no PR is open and no certain domain, portion,
+or path is provided, or when the user explicitly asks for full-codebase
+resolution.
+
+Pass the bounded scope into every ClawPatch command, reviewer prompt, or
+explicit ClawPatch patch attempt that accepts path, diff, file, feature,
+package, or scope guidance. Normal Harness/Codex edits must stay inside the
+same bounded scope unless source inspection proves a directly required support
+change.
+
 ## Useful ClawPatch Commands
 
 Use commands like these for context and state:

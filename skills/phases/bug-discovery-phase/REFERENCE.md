@@ -1,5 +1,22 @@
 # Bug Discovery Phase Reference
 
+## Scope Policy
+
+Default to the smallest certain target:
+
+- open PR changes
+- highlighted diff
+- supplied code portions
+- named files, paths, packages, apps, domains, or features
+
+Use a full-codebase scan only when no PR is open and no certain domain, portion,
+or path is provided, or when the user explicitly asks for full-codebase
+discovery.
+
+Pass the bounded scope into every ClawPatch command or reviewer prompt that
+accepts path, diff, file, feature, package, or scope guidance. Do not let
+ClawPatch default to repo-wide review when a bounded target exists.
+
 ## Preflight Record
 
 Before running ClawPatch, write down the run contract in the conversation, goal
