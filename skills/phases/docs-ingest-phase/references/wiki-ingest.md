@@ -6,11 +6,12 @@ Use this reference when `docs-ingest-phase` receives a spec folder, domain/spec 
 
 Accept any of:
 
+- `<wiki-root>/content/docs/project/specs/<domain>/<spec>/`
 - `<wiki-root>/specs/<domain>/<spec>/`
 - a domain name plus spec name
 - an explicit `SPEC.md` path
 
-Resolve to a full spec folder before continuing. If ambiguous, ask only for the missing folder.
+Resolve routed `content/docs/project/specs` folders first, then legacy root `specs` folders. If ambiguous, ask only for the missing folder.
 
 ## Guard
 

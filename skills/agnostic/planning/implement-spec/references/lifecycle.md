@@ -13,9 +13,11 @@ Do not recreate wrapper skills for these modes. Keep the routing here and load o
 
 ## 1. Require an existing reviewed spec folder
 
-Execution must stay grounded in:
+Execution must stay grounded in the first matching spec folder:
 
-`apps/wiki/specs/<domain>/<spec>/`
+1. `apps/wiki/content/docs/project/specs/<domain>/<spec>/`
+2. `apps/wiki/specs/<domain>/<spec>/`
+3. `docs/specs/<domain>/<spec>/`
 
 Required files:
 
@@ -41,9 +43,9 @@ Normalize to the containing spec folder before doing any work.
 Read, in this order:
 
 1. `apps/wiki/AGENTS.md`
-2. `apps/wiki/specs/<domain>/<spec>/SPEC.md`
-3. `apps/wiki/specs/<domain>/<spec>/PLAN.md`
-4. `apps/wiki/specs/<domain>/<spec>/IMPLEMENTATION-NOTES.md` if present
+2. `<resolved-spec-folder>/SPEC.md`
+3. `<resolved-spec-folder>/PLAN.md`
+4. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
 5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
 
 If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.
