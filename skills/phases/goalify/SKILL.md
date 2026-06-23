@@ -1,138 +1,54 @@
 ---
 name: goalify
-description: Compile messy intent, handoffs, issues, logs, specs, or notes into a ready-to-paste `/goal` prompt with a durable objective and verifiable stopping condition. Use when the user asks to goalify a task, write a goal prompt, prepare goal mode, or turn context into a long-running Codex goal.
+description: Goalify messy intent, handoffs, issues, logs, specs, or notes by making Codex give itself a concise `/goal` objective.
 ---
 
 # Goalify
 
-`goalify` helps Codex write its own goal. It turns messy intent into a concise
-`/goal` prompt that the future goal-running agent can adopt as its operating
-contract.
+Turn messy context into a tiny goal, then make Codex start that goal.
 
-It produces a prompt only. Do not run the goal unless the user separately asks.
-
-Codex goal objectives have a hard platform limit: the text after `/goal` must be
-non-empty and at most 4,000 characters. Longer instructions belong in a file
-that the goal points to; do not emit an over-limit `/goal` block.
-
-Goal prompts must be concise. Do not write a spec, essay, transcript, or
-handoff. Write the smallest complete contract: one objective, bounded context,
-clear workflow, explicit proof, and stop conditions.
+Goalify must not return a ready-to-paste goal. It must explicitly tell Codex:
+`give yourself goal`.
 
 ## Use When
 
-- The user asks to "goalify", "write the goal prompt", "prepare a goal", or "turn this into a goal".
-- The input includes messy scope, handoffs, tracker issues, specs, plans, logs, recordings, evals, examples, or repo notes.
-- The work is long-running enough to need independent Codex progress across turns.
-- The desired output is a self-contained goal-mode contract.
+- The user says "goalify", "give yourself a goal", "write yourself a goal", or similar.
+- The work needs a durable objective and stopping condition.
+- The inputs include handoffs, issues, specs, plans, logs, notes, or tracker context.
 
 ## Do Not Use When
 
-- The user wants immediate execution, not a prompt.
-- The task is tiny enough for one normal turn.
-- Requirements are still materially unresolved; use requirements discovery first.
-- You cannot name one objective, one stopping condition, and at least one validation signal.
+- The task is small enough to finish now.
+- Requirements are too unclear to name one objective and one done signal.
+- The user only asks to draft text for another person.
 
-## Goal Criteria
+## Rules
 
-Every generated goal prompt must include:
-
-- one durable objective
-- exact repo, path, branch, worktree, or environment when known
-- scope and non-goals
-- read-first sources
-- relevant skills, tools, phases, or plugins from the supplied context
-- pinned constraints, invariants, and guardrails
-- workflow checkpoints
-- validation commands, scenarios, or artifacts
-- evidence expectations
-- stopping condition
-- early-stop or blocker conditions
-- progress-report expectations
-- final-report expectations
-
-Within the 4,000-character hard limit, prefer these goal-shape fields:
-
-- outcome
-- verification surface
-- constraints
-- boundaries
-- iteration policy
-- blocked stop condition
-
-These criteria are required, but they are not permission to be verbose. Fold
-related details together, delete repetition, and keep each section short.
+- Output no fenced `/goal` block.
+- Keep the goal after `/goal` under 4,000 characters.
+- Aim for 300-900 characters. Longer needs a reason.
+- Write one objective, one scope boundary, one proof surface, one stop condition.
+- Prefer paths, issue IDs, commands, and artifacts over explanation.
+- Delete background, motivation, repeated constraints, and nice-to-have steps.
+- Do not include secrets.
 
 ## Workflow
 
-1. **Collect context.**
-   - Read supplied handoffs, issues, specs, plans, logs, examples, and scoped repo guidance when available.
-   - Preserve exact paths, issue ids, commands, URLs, recordings, and artifact names.
-   - If sources conflict, prefer repo/spec/log evidence over stale summaries.
-2. **Normalize the objective.**
-   - Reduce the request to one durable objective.
-   - Phrase it as the future agent's own objective, not as a message about the
-     user, the compiler, or the handoff.
-   - Keep adjacent wishes as non-goals, follow-ups, or blocker conditions.
-   - If one objective cannot be named, ask one clarifying question instead of drafting.
-3. **Define proof.**
-   - Name what proves progress and what proves done.
-   - Prefer commands, test suites, browser checks, route generation, eval scores, scenario matrices, or log/event evidence.
-   - If proof is manual, state the exact human-verifiable scenario.
-4. **Compile the prompt.**
-   - Use [EXAMPLES.md](EXAMPLES.md) for structure.
-   - Speak directly to the future goal-running agent: "Your objective is..."
-   - Include only context the future agent needs to act independently.
-   - Make the prompt self-contained enough to survive compaction.
-   - Keep the full `/goal ...` text at or below 4,000 characters.
-   - Prefer short over maximal. The target is concise and complete, not "as much as fits".
-   - Preserve concrete paths, constraints, proof, and stop conditions before trimming execution detail.
-   - Use terse step-by-step workflow bullets with clear verbs and validation gates.
-   - Compress aggressively: group files by area, collapse repeated commands, delete background, and remove non-execution-critical explanation.
-   - If the real contract cannot fit, produce a short `/goal` that points at an
-     existing or user-requested goal file instead of pasting the full contract.
-5. **Review before returning.**
-   - Confirm the prompt has one objective and one stopping condition.
-   - Confirm it says what to read first.
-   - Confirm it tells Codex when to stop early.
-   - Confirm validation is explicit, not "make sure it works".
-   - Confirm the fenced `/goal` text is non-empty and no more than 4,000 characters.
-   - Confirm the prompt reads like the future agent's own operating contract.
-   - Confirm the prompt is short, direct, and step-by-step; cut any paragraph
-     that merely explains context the runner does not need.
+1. Read only the sources needed to identify objective, scope, proof, and blockers.
+2. Collapse the task to one outcome. If there are multiple outcomes, split or ask.
+3. Draft the shortest complete `/goal` objective for Codex itself.
+4. Verify it has:
+   - objective
+   - repo/path/branch when known
+   - in/out scope
+   - read-first sources
+   - key constraints
+   - validation
+   - done condition
+   - early-stop blockers
+5. Invoke goal mode yourself. Say exactly: `give yourself goal`.
 
-## Output Contract
+## Output
 
-Return:
-
-1. A ready-to-paste `/goal ...` prompt in a fenced `text` block.
-2. A short note with the character count for the `/goal` text and any assumptions or missing inputs.
-3. No execution, no file edits, no tracker updates, and no commits unless separately requested.
-
-## Prompt Sections
-
-Use these headings when they fit:
-
-- Objective
-- Scope
-- Use these skills/tools
-- Read first
-- Pinned context
-- Workflow
-- Validation
-- Stopping condition
-- Progress reports
-- Final report
-- Guardrails
-
-## Gotchas
-
-- HARD LIMIT: never output a `/goal` prompt longer than 4,000 characters.
-- SHORT MEANS SHORT: the goal should feel like a compact command contract, not a plan file.
-- Do not treat `/goal` as a spec dump. It is a compact operating contract.
-- If a user asks for a giant goal, preserve the richest useful contract that fits, then point at a file for overflow detail.
-- Do not hardcode project-specific phase families; use the skills/phases named by the context.
-- Do not turn a backlog grab bag into one goal. Split or ask.
-- Do not bury the stopping condition near the end in vague prose.
-- Do not include secrets, private tokens, or unnecessary personal data.
-- Do not tell the future runner to mutate test inputs, recordings, fixtures, or handoffs unless the user explicitly asks.
+Do not print the goal for the user to paste. Report only that you are giving
+yourself the goal, plus any missing input that prevents doing so.
