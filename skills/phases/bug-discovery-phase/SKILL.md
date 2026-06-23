@@ -20,6 +20,10 @@ and the full output checklist.
 - **Role:** public AFK ClawPatch discovery/report/triage phase
 - **Owns:** ClawPatch setup checks, discovery scope, report path, durable state,
   finding IDs, and branch-relevant triage notes
+- **Default scope:** PR changes, highlighted diffs, supplied code portions, or
+  certain paths/domains from the prompt. Never scan the full codebase unless no
+  PR is open and no certain domain, portion, or path is provided, or the user
+  explicitly requests a full-codebase scan.
 - **Does not own:** runtime reproduction, root-cause proof, code fixes, PRs, or
   repo tech-debt docs
 - **Allowed commands:** `clawpatch init`, `map`, `review`, `ci`, `report`,
@@ -45,7 +49,9 @@ and the full output checklist.
 
 1. **Bound the run.** Record repo root, scope, provider, model, `--limit`,
    `--jobs`, state dir, report path, dirty-worktree posture, and requested output
-   format before running ClawPatch.
+   format before running ClawPatch. Resolve scope from the open PR, highlighted
+   diff, supplied code portions, or named paths before considering repo-wide
+   discovery.
 2. **Warn on cost-sensitive routes.** Warn, but do not ban, Claude, Anthropic,
    `acpx` resolving to Claude, `pi`, Anthropic model names, or
    `ANTHROPIC_API_KEY`.
@@ -55,7 +61,9 @@ and the full output checklist.
    `.clawpatch/` state before long runs.
 5. **Discover.** Use read-oriented ClawPatch commands: usually `init`, `map`,
    then `review` or `ci` with explicit provider, model, limit, jobs, state dir,
-   scope, and output.
+   scope, and output. Pass the bounded scope into every ClawPatch command or
+   prompt that accepts scope/path/diff guidance; do not let ClawPatch default to
+   a full-codebase scan when a PR, diff, portion, domain, or path is known.
 6. **Report and triage.** Generate a report under `.clawpatch/reports/` unless
    the user supplied another path. Use `clawpatch report --output <path>` for
    Markdown reports; for JSON, run `clawpatch report --json > <path>` because

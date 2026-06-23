@@ -13,6 +13,10 @@ description: >-
 
 - **Role:** public ClawPatch selected-finding resolution phase
 - **Scope:** one selected finding by default; bounded batch only when explicitly tied by root cause, owned files, validation path, or contract/test gap
+- **Default scan boundary:** PR changes, highlighted diffs, supplied code
+  portions, or certain paths/domains around the selected finding. Never scan the
+  full codebase unless no PR is open and no certain domain, portion, or path is
+  provided, or the user explicitly requests a full-codebase scan.
 - **Primary input:** ClawPatch finding ID plus report or `.clawpatch/` state path when available
 - **Uses ClawPatch for:** finding context, report linkage, triage/history, optional dry-run inspection, revalidation
 - **Does not use by default:** `clawpatch fix --finding`, `clawpatch open-pr --patch`
@@ -38,15 +42,20 @@ description: >-
 1. Read the selected finding with `clawpatch show --finding <id>` and, when
    useful, `clawpatch report`. Use `report --output <path>` for Markdown or
    `report --json > <path>` for JSON.
-2. Capture finding ID, report path, source evidence, affected files, claimed behavior, and current ClawPatch status.
+2. Capture finding ID, report path, source evidence, affected files, claimed
+   behavior, current ClawPatch status, and the bounded review/patch scope.
 3. Classify each finding as `resolve-now`, `needs-runtime-debugging`, `tech-debt`, `false-positive`, or `blocked`.
 4. Execute the classification route:
-   - `resolve-now`: patch through normal Harness/Codex edits, then test and revalidate.
+   - `resolve-now`: patch through normal Harness/Codex edits within the bounded
+     scope, then test and revalidate.
    - `needs-runtime-debugging`: route into `$debugging-phase` with the finding context as input artifact.
    - `tech-debt`: after classification, run `$docs-ingest-phase` to create or update durable debt/docs context.
    - `false-positive`: run `clawpatch triage --finding <id> --status <status> --note <reason>`.
    - `blocked`: record blocker, missing evidence, and next human action.
-5. Finish with centralized verification and `clawpatch revalidate --finding <id>` or a triage/status update.
+5. Finish with centralized verification and `clawpatch revalidate --finding <id>`
+   or a triage/status update. Pass the bounded scope into every ClawPatch
+   command or explicit ClawPatch patch attempt that accepts scope/path/diff
+   guidance.
 
 ## Parallel Rules
 

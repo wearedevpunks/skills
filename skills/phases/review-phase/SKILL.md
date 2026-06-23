@@ -29,15 +29,22 @@ or validation because delivery owns completion.
 ## Entry Contract
 
 1. Identify the review target: diff, PR, branch range, files, spec, plan, docs, or runtime evidence.
-2. State scope and readonly posture. If scope is ambiguous, ask one clarifying question.
-3. Read local guidance in checked directories, especially relevant `AGENTS.md` files under apps, packages, docs, or nested ownership boundaries.
-4. Identify every scoped skill listed by those `AGENTS.md` prompts for the reviewed paths; those scoped skills are mandatory review lenses for that scope.
-5. Use `autoreview` as the core review runtime.
-6. Activate mandatory review lenses: `simplify`, `improve-codebase-architecture`, and applicable scoped skills.
+2. Default scope to PR changes, highlighted diffs, supplied code portions, or
+   certain paths/domains from the prompt. Never scan the full codebase unless no
+   PR is open and no certain domain, portion, or path is provided, or the user
+   explicitly requests a full-codebase scan.
+3. State scope and readonly posture. If scope is ambiguous, ask one clarifying question.
+4. Read local guidance in checked directories, especially relevant `AGENTS.md` files under apps, packages, docs, or nested ownership boundaries.
+5. Identify every scoped skill listed by those `AGENTS.md` prompts for the reviewed paths; those scoped skills are mandatory review lenses for that scope.
+6. Use `autoreview` as the core review runtime.
+7. Activate mandatory review lenses: `simplify`, `improve-codebase-architecture`, and applicable scoped skills.
 
 ## Review Runtime
 
 - `autoreview`: run the OpenClaw structured review helper. This is the core runtime of the review, not a lens.
+- Pass the exact bounded review target into `autoreview`: PR base/head,
+  highlighted diff, supplied code portion, branch range, or named paths. Do not
+  run `autoreview` against the full codebase when a bounded target exists.
 
 ## Review Lenses
 
@@ -60,7 +67,7 @@ or validation because delivery owns completion.
    - use `parallel-research` for independent readonly checks
    - synthesize before reporting; disagreements need evidence, not vote counting
 3. Run structured review:
-   - use `autoreview` for the target and capture the exact command
+   - use `autoreview` for the bounded target and capture the exact command
    - verify each accepted finding manually against source, docs, scoped skills, and dependency contracts
    - if standalone review finds code changes are needed, report them; if delivery owns fixes, hand them back to delivery and rerun after fixes
 4. Review findings-first:
