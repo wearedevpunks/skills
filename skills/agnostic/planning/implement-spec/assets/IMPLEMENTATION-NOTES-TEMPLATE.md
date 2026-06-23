@@ -22,6 +22,12 @@
 |------|--------|-------|
 | | | |
 
+## UI Evidence Links
+
+| Surface | Viewport | Before | After | Notes |
+|---------|----------|--------|-------|-------|
+| | | | | |
+
 ## Acceptance Criteria Status
 
 | Criterion | Status | Notes |

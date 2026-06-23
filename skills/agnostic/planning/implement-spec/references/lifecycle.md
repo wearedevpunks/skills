@@ -55,6 +55,7 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 - Create `IMPLEMENTATION-NOTES.md` from the template when missing.
 - Append or refine when it already exists.
 - Keep it current during the run, not only at the end.
+- For UI implementation changes, load [ui-screenshot-evidence.md](ui-screenshot-evidence.md) and keep `## UI Evidence Links` current.
 
 ## 5. Prepare the tech-debt ledger
 
@@ -119,6 +120,7 @@ After each completed task or wave:
 - fill `red_evidence` and `green_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
 - fill or reconcile `codebase_design_notes` when module shape, seam placement, adapters, or test surface changed
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
+- for UI implementation changes, record durable before/after screenshot asset links in `IMPLEMENTATION-NOTES.md`
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
@@ -144,6 +146,8 @@ Use the task `review_mode`:
 - `mixed`: both
 
 If running inside a worktree and `portless` is available, prefer it for server-based validation to avoid port conflicts.
+
+For UI implementation changes, runtime validation must also follow [ui-screenshot-evidence.md](ui-screenshot-evidence.md).
 
 ## 10. Verify acceptance criteria
 
@@ -181,12 +185,14 @@ Before reporting back:
 - remove empty sections from `IMPLEMENTATION-NOTES.md`
 - ensure **Execution mode** reflects the mode actually used
 - ensure **Sanity checks** lists only commands actually run
+- ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
 - ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
 - ensure every tech-debt ledger entry has exact blocker/decision/owner/next action
 - set `SPEC.md` frontmatter `status: implemented`
 - set `PLAN.md` `**Status:** Complete` when that line exists
+- ensure the PR body, PR comment, or PR-ready handoff snippet includes the same UI evidence links when UI changed
 
 ## 13. Final report shape
 

@@ -55,7 +55,8 @@ That means `implement-spec` itself owns all of the following in parallel mode:
 8. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 9. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
 10. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
-11. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+11. For UI implementation changes, follow [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md) to preserve before/after evidence and PR-ready asset links.
+12. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
 
 ## Stack-aware branch gate
 
@@ -95,6 +96,7 @@ If the user already chose a mode, honor it. If not, choose `sequential` and stat
 ## Advanced features
 
 - Shared lifecycle, notes contract, tech-debt rules, acceptance audit, finalization: see [references/lifecycle.md](references/lifecycle.md)
+- UI before/after screenshot evidence and PR handoff links: see [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md)
 - Sequential execution specifics: see [references/sequential.md](references/sequential.md)
 - Parallel execution specifics: see [references/parallel.md](references/parallel.md)
 - Parallel plan parsing and wave construction: see [references/parallel-orchestration.md](references/parallel-orchestration.md)

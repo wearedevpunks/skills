@@ -24,6 +24,7 @@ Every worker brief should include:
 - `reason_not_testable`
 - `review_mode`
 - relevant risks or constraints from the plan
+- UI screenshot evidence requirements from [ui-screenshot-evidence.md](ui-screenshot-evidence.md) when the task changes UI
 
 ## Required instructions
 
@@ -43,7 +44,8 @@ Each worker brief should require:
 12. running the exact task validation evidence before returning, plus extra plan validation when feasible
 13. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
 14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
-15. updating the plan entry with status, log, touched files, and gotchas before handoff closes
+15. capturing and linking durable before/after screenshot evidence when the task changes UI
+16. updating the plan entry with status, log, touched files, and gotchas before handoff closes
 
 ## Worker output contract
 
@@ -54,6 +56,7 @@ Require the worker to return:
 - how the acceptance criteria are satisfied
 - verification evidence: RED -> GREEN for testable tasks, or the exact non-testable alternative that was run
 - validation evidence performed
+- durable UI before/after screenshot links when UI changed
 - validation intentionally deferred
 - anything blocked or risky, with exact reason and required decision
 
