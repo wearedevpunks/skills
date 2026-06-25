@@ -14,8 +14,10 @@ description: Turns a large requirements discussion into a canonical backlog hier
 5. Derive modules first, then epics, then stories.
 6. Make story ordering explicit with native dependency primitives when the provider supports them.
 7. Keep epic and story bodies product-facing.
-8. Read the matching provider payload asset before generating or syncing create payloads.
-9. Stop after the backlog structure and create payload guidance are complete.
+8. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
+9. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
+10. Read the matching provider payload asset before generating or syncing create payloads.
+11. Stop after the backlog structure and create payload guidance are complete.
 
 ## Workflows
 
@@ -61,6 +63,13 @@ description: Turns a large requirements discussion into a canonical backlog hier
    - [monday.com](assets/providers/monday-create-payload.md)
 2. Use the raw provider request shape documented there.
 3. Do not invent provider fields from memory when the asset already defines them.
+
+### Approved visual artifacts
+
+1. Treat approved artifact links as backlog source evidence, not execution detail.
+2. Attach approved visuals to the backlog item when the provider supports durable attachments.
+3. If backlog attachments are unavailable, size-limited, or visibility-mismatched, use `repo-asset-management` for repo-provider durable links.
+4. Include fallback links in epic/story bodies only as product-facing acceptance context.
 
 ## Advanced features
 

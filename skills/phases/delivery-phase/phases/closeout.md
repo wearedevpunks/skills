@@ -11,6 +11,7 @@ docs ingest or no-op, and validation are complete.
 - Report review result and whether findings remain.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.
+- For UI changes, verify the PR body, PR comment, or PR-ready handoff includes durable before/after `UI Evidence` links.
 - When a PR exists, run `stack status` and `stack sync --dry-run`.
 - If the PR is stack-dependent and dry-run reports pending changes, run
   `stack sync` before closeout.
@@ -30,4 +31,5 @@ Return a concise delivery report with:
 - docs ingest
 - stack
 - tracker or PR state
+- UI Evidence state when user-visible UI changed
 - exit: done, blocked, or split into follow-up

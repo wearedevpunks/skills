@@ -28,6 +28,12 @@
 |---------|----------|--------|-------|-------|
 | | | | | |
 
+## Visual Evidence Acceptance Map
+
+| Source | Backlog attachment or fallback | PR-ready before/after evidence |
+|--------|--------------------------------|--------------------------------|
+| | | |
+
 ## Acceptance Criteria Status
 
 | Criterion | Status | Notes |

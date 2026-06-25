@@ -11,8 +11,9 @@ description: Routes a scoped delivery goal to the next lifecycle phase from curr
 
 1. Read [phases/router.md](phases/router.md).
 2. Inspect only enough issue, spec, plan, notes, diff, review, validation, and docs state to choose the current gate.
-3. Load exactly one phase file from `phases/`.
-4. Complete that phase, write the phase outcome, then stop or re-enter `delivery-phase` to route again.
+3. If approved artifact links or UI Evidence links are present, carry them as routing evidence.
+4. Load exactly one phase file from `phases/`.
+5. Complete that phase, write the phase outcome, then stop or re-enter `delivery-phase` to route again.
 
 Completion of one phase does not imply loading the rest of the chain.
 

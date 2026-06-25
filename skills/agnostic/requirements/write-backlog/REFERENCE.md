@@ -120,6 +120,7 @@ Story bodies may include:
 - acceptance signals
 - non-goals
 - links
+- approved artifact links or durable visual asset links when they are acceptance context
 
 Do not put these in epic or story bodies:
 
@@ -247,6 +248,7 @@ Out of scope:
 - completion-time execution sync
 - comment payloads
 - status churn after backlog creation
+- provider-specific asset upload commands; use `repo-asset-management` for backlog attachments and repo-provider fallback links
 
 If a provider cannot express part of the canonical model in one create call:
 
