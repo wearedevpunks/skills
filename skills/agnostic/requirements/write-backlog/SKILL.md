@@ -12,12 +12,17 @@ description: Turns a large requirements discussion into a canonical backlog hier
 3. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
 4. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
 5. Derive modules first, then epics, then stories.
-6. Make story ordering explicit with native dependency primitives when the provider supports them.
-7. Keep epic and story bodies product-facing.
-8. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
-9. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
-10. Read the matching provider payload asset before generating or syncing create payloads.
-11. Stop after the backlog structure and create payload guidance are complete.
+6. Apply the item-count rule before finalizing the hierarchy.
+7. Make story ordering explicit with native dependency primitives when the provider supports them.
+8. Keep epic and story bodies product-facing.
+9. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
+10. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
+11. Read the matching provider payload asset before generating or syncing create payloads.
+12. Stop after the backlog structure and create payload guidance are complete.
+
+## Item-count rule
+
+Within durable modules, produce the fewest epics and stories that preserve all accepted requirements. Split only when merging would lose a distinct product outcome, acceptance signal, dependency, provider boundary, or future `SPEC.md` boundary; otherwise fold requirements into the existing item body as scope, constraints, or acceptance signals.
 
 ## Workflows
 
