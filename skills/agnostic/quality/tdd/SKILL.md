@@ -34,7 +34,7 @@ If the current code already passes the new test, do not fake RED. Isolate the pr
 
 **Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.
 
-**High-signal tests** move one semantic level above the change. Verify durable behavior through the nearest public seam: CLI, HTTP route, component interaction, exported API, or persisted contract. Assert exact strings, snapshots, and low-level shapes only when they are stable contracts. For regressions, encode the product/capability invariant that should always hold, not a bug-scar tombstone.
+For assertion choices, use [high-signal-tests.md](high-signal-tests.md): move tests one semantic level above the change and verify durable behavior through the nearest public seam.
 
 **Good tests** are integration-style: they exercise real code paths through public APIs. They describe _what_ the system does, not _how_ it does it. A good test reads like a specification - "user can checkout with valid cart" tells you exactly what capability exists. These tests survive refactors because they don't care about internal structure.
 
@@ -132,6 +132,7 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 ```
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
+[ ] Assertions preserve the product/capability invariant
 [ ] Test would survive internal refactor
 [ ] Code is minimal for this test
 [ ] No speculative features added
