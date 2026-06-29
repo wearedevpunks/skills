@@ -28,9 +28,10 @@ Load [REFERENCE.md](REFERENCE.md) before running ClawPatch.
 
 ## Steps
 
-1. Bound the run: repo, scope, provider, model, limit, jobs, state dir, report
-   path, dirty posture, and output format.
-2. Warn on cost-sensitive provider routes; keep provider/model explicit.
+1. Bound the run: repo, scope, provider/model default or explicit override,
+   limit, jobs, state dir, report path, dirty posture, and output format.
+2. Use the current agent/launcher provider by default; add provider/model
+   flags only when the user selected a ClawPatch override.
 3. Inspect readiness with `doctor`, `status`, and existing `.clawpatch/` state.
 4. Run discovery and report generation within the bounded scope.
 5. Inspect important findings, rank them `0-10`, and route each to resolution,
@@ -39,5 +40,6 @@ Load [REFERENCE.md](REFERENCE.md) before running ClawPatch.
 
 ## Output
 
-Return scope, provider/model, limit/jobs, report and state paths, commands run,
-finding IDs/statuses, rank rationale, static-review caveat, and next action.
+Return scope, provider/model default or override, limit/jobs, report and state
+paths, commands run, finding IDs/statuses, rank rationale, static-review caveat,
+and next action.

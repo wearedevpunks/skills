@@ -33,7 +33,8 @@ Load [REFERENCE.md](REFERENCE.md) before classifying or patching.
 1. Read the selected finding with `clawpatch show` and recover report/state
    context when useful.
 2. Capture finding ID, report/state path, evidence, affected files, claimed
-   behavior, current status, and bounded scope.
+   behavior, current status, bounded scope, and provider/model default or
+   explicit override when ClawPatch commands need it.
 3. Classify as `resolve-now`, `needs-runtime-debugging`, `tech-debt`,
    `false-positive`, or `blocked`.
 4. Execute that route within scope.
@@ -44,4 +45,5 @@ Load [REFERENCE.md](REFERENCE.md) before classifying or patching.
 ## Output
 
 Return mode, finding IDs, report/state paths, classification, route, changes,
-ClawPatch commands/state, verification, artifacts, caveats, and next action.
+ClawPatch commands/state including provider/model default or override,
+verification, artifacts, caveats, and next action.

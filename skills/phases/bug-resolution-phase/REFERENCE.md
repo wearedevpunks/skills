@@ -45,6 +45,10 @@ clawpatch revalidate --root "$REPO" --state-dir "$REPO/.clawpatch" --finding "$F
 clawpatch fix --root "$REPO" --state-dir "$REPO/.clawpatch" --finding "$FINDING_ID" --dry-run
 ```
 
+These commands inherit the current agent/launcher provider by default. Add
+`--provider` and `--model` only when the user explicitly selected a ClawPatch
+override for resolution or revalidation.
+
 `clawpatch report` renders the current finding ledger for context. Use it to
 recover report context when a resolution goal starts from only a finding ID or
 state directory. `--output <path>` writes Markdown. `--json` writes JSON to

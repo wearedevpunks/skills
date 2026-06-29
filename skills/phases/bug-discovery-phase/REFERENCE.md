@@ -25,8 +25,8 @@ handoff, or local run notes:
 ```text
 repo root: <absolute path>
 scope: <whole repo | path | feature/project selector>
-provider: <codex|acpx|grok|opencode|pi|mock|mock-fail>
-model: <model name or unset>
+provider: <automatic current agent/launcher default | explicit override>
+model: <automatic default | explicit override | unset>
 limit: <number or unset>
 jobs: <number or unset>
 state dir: <repo>/.clawpatch/
@@ -36,50 +36,55 @@ output format: markdown file | markdown stdout | json stdout redirected to file
 ```
 
 This record is part of the phase contract. Do it before launching any long AFK
-review so the user can understand cost, scope, state, and replay boundaries.
+review so the user can understand scope, provider inheritance or override,
+state, and replay boundaries.
 
-## Provider Warnings
+## Provider Defaults And Overrides
 
-Warn, but do not block, when any of these are true:
+Default to the current agent or launcher provider. Do not ask the user to choose
+a ClawPatch provider/model before discovery just to make the route explicit.
+Codex should launch the Codex-backed default, Claude should launch the
+Claude-backed default, and other launchers should inherit their configured
+default.
 
-- provider is `pi`
-- provider is `acpx` and the model or ACP config resolves to Claude
-- provider, model, config, or environment mentions `claude`, `anthropic`, or an
-  Anthropic model family such as `claude-3`, `claude-3.5`, `claude-3-7`,
-  `claude-sonnet`, `claude-opus`, or `claude-haiku`
-- `ANTHROPIC_API_KEY` is set
+Record provider/model as:
 
-Use wording like:
+- `automatic current agent/launcher default` when no override was selected
+- `explicit override: <provider>` and, when selected, `<model>` when the user
+  chose a ClawPatch route
 
-```text
-Provider warning: this run appears to use Claude/Anthropic or another metered
-route. That is allowed, but confirm the provider/model/cost boundary before
-leaving it AFK. I will make the provider explicit in every generated command.
-```
-
-Do not imply Anthropic routes are banned. The operator chooses the route.
+Only add `--provider` or `--model` in generated commands when the user selected
+an override. Do not add duplicated no-op notes about provider pricing.
 
 ## Command Rules
 
-Use explicit provider flags in generated ClawPatch commands. Add `--model` when
-the model is known. Keep `--root`, `--state-dir`, `--limit`, `--jobs`, and
-`--output` visible when they matter.
+Let generated ClawPatch commands inherit the current agent/launcher provider by
+default. Keep `--root`, `--state-dir`, `--limit`, `--jobs`, and `--output`
+visible when they matter.
 
 Prefer repo-local state:
 
 ```sh
-clawpatch doctor --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --model "$MODEL"
+clawpatch doctor --root "$REPO" --state-dir "$REPO/.clawpatch"
 clawpatch status --root "$REPO" --state-dir "$REPO/.clawpatch" --plain
 clawpatch init --root "$REPO" --state-dir "$REPO/.clawpatch"
-clawpatch map --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --model "$MODEL"
+clawpatch map --root "$REPO" --state-dir "$REPO/.clawpatch"
 ```
 
 For discovery, use `review` for normal AFK review and `ci` when the user wants
 CI-shaped discovery:
 
 ```sh
+clawpatch review --root "$REPO" --state-dir "$REPO/.clawpatch" --limit "$LIMIT" --jobs "$JOBS"
+clawpatch ci --root "$REPO" --state-dir "$REPO/.clawpatch" --limit "$LIMIT" --jobs "$JOBS" --output "$REPORT"
+```
+
+When the user explicitly selects a ClawPatch provider/model override, add only
+the selected flags:
+
+```sh
+clawpatch review --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --limit "$LIMIT" --jobs "$JOBS"
 clawpatch review --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --model "$MODEL" --limit "$LIMIT" --jobs "$JOBS"
-clawpatch ci --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --model "$MODEL" --limit "$LIMIT" --jobs "$JOBS" --output "$REPORT"
 ```
 
 Use `--include-dirty` only when the user wants current uncommitted work included
@@ -116,7 +121,7 @@ is performed:
 
 ```sh
 clawpatch triage --root "$REPO" --state-dir "$REPO/.clawpatch" --finding "$FINDING_ID" --status "$STATUS"
-clawpatch revalidate --root "$REPO" --state-dir "$REPO/.clawpatch" --provider "$PROVIDER" --model "$MODEL" --finding "$FINDING_ID" --plain
+clawpatch revalidate --root "$REPO" --state-dir "$REPO/.clawpatch" --finding "$FINDING_ID" --plain
 ```
 
 Discovery classification should reflect what was learned from static review:
@@ -174,7 +179,8 @@ The final report must include:
 - report path, usually `.clawpatch/reports/<run>.md`; if JSON was requested,
   include the redirected JSON artifact path separately
 - durable ledger/state path, usually `.clawpatch/`
-- provider, model, scope, `--limit`, `--jobs`, report path, and dirty posture
+- provider/model default or explicit override, scope, `--limit`, `--jobs`,
+  report path, and dirty posture
 - command list and whether each command completed
 - relevant finding IDs, status, severity if available, and why they matter
 - score/rationale for each important finding before the recommended next action
