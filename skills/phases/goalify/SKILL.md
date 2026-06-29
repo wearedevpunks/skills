@@ -1,54 +1,65 @@
 ---
 name: goalify
-description: Goalify messy intent, handoffs, issues, logs, specs, or notes by making Codex give itself a concise `/goal` objective.
+description: Goalify messy intent into a very lean `/goal` contract, activate it immediately, and continue execution under that goal.
 ---
 
 # Goalify
 
-Turn messy context into a tiny goal, then make Codex start that goal.
+`goalify` writes the smallest operating contract a goal-running Codex can adopt,
+then activates it immediately. It is a compiler, not a spec, handoff, or plan
+dump.
 
-Goalify must not return a ready-to-paste goal. It must explicitly tell Codex:
-`give yourself goal`.
+Be very lean. Target the shortest contract that can run without re-asking.
+Hard limit: text after `/goal` must be non-empty and <= 4,000 characters. If
+detail will not fit, point at a file instead of pasting overflow.
 
-## Use When
+## Activation
 
-- The user says "goalify", "give yourself a goal", "write yourself a goal", or similar.
-- The work needs a durable objective and stopping condition.
-- The inputs include handoffs, issues, specs, plans, logs, notes, or tracker context.
+- Always activate spot on: write the goal, activate it with the available goal
+  tool, then continue execution under that active goal.
+- If the task is tiny, unresolved, or lacks one objective, proof signal, and
+  stop condition, ask one clarifying question.
+- If activation is unavailable, return the ready `/goal ...` prompt and name
+  that blocker.
 
-## Do Not Use When
+## Goal Contract
 
-- The task is small enough to finish now.
-- Requirements are too unclear to name one objective and one done signal.
-- The user only asks to draft text for another person.
+Include only what the runner needs:
 
-## Rules
+- one durable objective
+- read-first refs: exact paths, issues, URLs, logs, artifacts
+- boundaries: scope, non-goals, constraints, guardrails
+- terse workflow checkpoints with named skills/tools/phases from context
+- proof: commands, scenarios, artifacts, logs, or other done evidence
+- stop: done condition, early-stop blocker, final report expectation
 
-- Output no fenced `/goal` block.
-- Keep the goal after `/goal` under 4,000 characters.
-- Aim for 300-900 characters. Longer needs a reason.
-- Write one objective, one scope boundary, one proof surface, one stop condition.
-- Prefer paths, issue IDs, commands, and artifacts over explanation.
-- Delete background, motivation, repeated constraints, and nice-to-have steps.
-- Do not include secrets.
+Cut background, section catalogs, and repeated rationale. Preserve concrete
+paths, commands, ids, URLs, artifacts, and invariants.
 
 ## Workflow
 
-1. Read only the sources needed to identify objective, scope, proof, and blockers.
-2. Collapse the task to one outcome. If there are multiple outcomes, split or ask.
-3. Draft the shortest complete `/goal` objective for Codex itself.
-4. Verify it has:
-   - objective
-   - repo/path/branch when known
-   - in/out scope
-   - read-first sources
-   - key constraints
-   - validation
-   - done condition
-   - early-stop blockers
-5. Invoke goal mode yourself. Say exactly: `give yourself goal`.
+1. Read supplied handoffs, specs, issues, logs, examples, and scoped repo
+   guidance. Prefer current repo/spec/log evidence over summaries.
+2. Reduce to one objective. Move adjacent wishes to boundaries, follow-ups, or
+   blockers.
+3. Write a direct, pointer-heavy `/goal` contract. Use [EXAMPLES.md](EXAMPLES.md)
+   only if structure is needed.
+4. Check: one objective, explicit proof, stop/blocker conditions, no secrets, no
+   vague "make it work", <= 4,000 characters.
+5. Activate immediately. Report objective, proof surface, assumptions, and
+   missing inputs, then execute.
 
-## Output
+## Fallback Output
 
-Do not print the goal for the user to paste. Report only that you are giving
-yourself the goal, plus any missing input that prevents doing so.
+Use only when activation cannot run:
+
+1. fenced `text` block with the ready `/goal ...` prompt
+2. character count
+3. activation blocker
+
+## Gotchas
+
+- Do not turn a backlog grab bag into one goal; split or ask.
+- Do not hardcode project-specific phase families; use the context provided.
+- Do not tell the runner to mutate fixtures, recordings, handoffs, or test
+  inputs unless the user explicitly asks.
