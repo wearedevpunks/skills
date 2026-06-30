@@ -35,7 +35,7 @@ For PR review, use the actual PR base branch. Do not assume trunk.
 
 ## Runtime And Lenses
 
-Start review flow with `mattpocock-review`. It pins the fixed point, discovers
+Start review flow with `review`. It pins the fixed point, discovers
 Spec and Standards sources, carries baseline code smells, and keeps Standards
 findings separate from Spec findings. Use that frame for delegated review
 prompts, `autoreview` context, and final aggregation.
@@ -46,7 +46,7 @@ skills, and dependency contracts.
 
 Mandatory lenses:
 
-- `mattpocock-review`: two-axis Standards versus Spec wrapper, fixed diff, and
+- `review`: two-axis Standards versus Spec wrapper, fixed diff, and
   separate aggregation.
 - `simplify`: clarity, avoidable complexity, unnecessary abstraction, derivable
   state, naming, and scope creep.
