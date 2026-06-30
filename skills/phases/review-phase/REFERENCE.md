@@ -75,6 +75,31 @@ a blocking finding unless the task has an explicit valid `reason_not_testable`.
 Reject `reason_not_testable` when the only reason is forgotten RED; the delivery
 owner must recover with public-result RED and GREEN evidence.
 
+## Requirements Grill Wrapper Review
+
+When reviewed spec, plan, phase, or wrapper claims to use
+`requirements-grill` or design-phase grill, review that wrapper against
+the `requirements-grill` inner flow, not just its outer handoff.
+
+Check:
+
+- Serious grill sessions pair `references/grilling-flow.md` with
+  `references/artifact-output.md`.
+- Routed grill log/status artifacts are created or updated when grilling
+  decisions, branches, parked scope, percentages, glossary, axioms, or
+  ambiguities change.
+- Glossary, axiom, and status updates preserve current meaning while the
+  log records accepted decisions and superseded decisions.
+- Added or renamed wiki grill artifacts update routed metadata/bookkeeping:
+  `content/docs/project/grilling/meta.json`, section index when missing,
+  and wiki `log.md` when the repo maintains one.
+- Downstream handoff evidence exists as applicable: wiki synthesis,
+  backlog/user stories, spec, or phase handoff carrying closed decisions
+  and parked/open branches.
+
+Missing inner-flow or durable-artifact evidence is a review finding when
+the wrapper promised grill behavior.
+
 ## Findings Policy
 
 Prioritize bugs, regressions, broken contracts, missing validation, unsafe

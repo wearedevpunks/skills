@@ -27,6 +27,8 @@ Load [REFERENCE.md](REFERENCE.md) before running review tools. Start with
 - Apply relevant `AGENTS.md` guidance and scoped skills for reviewed paths.
 - Use `review` as the review-flow wrapper; keep axes separate.
 - Use `autoreview` as the core structured review runtime.
+- If target claims `requirements-grill` or design-phase grill, inspect
+  `requirements-grill` inner flow and durable-artifact evidence.
 
 ## Steps
 
@@ -38,7 +40,7 @@ Load [REFERENCE.md](REFERENCE.md) before running review tools. Start with
    and prepare separate Standards/Spec review prompts.
 5. Run `autoreview` on the bounded target and manually verify accepted findings.
 6. Apply mandatory lenses: `simplify`, `improve-codebase-architecture`, and
-   applicable scoped skills.
+   applicable scoped skills, claimed grill-wrapper checks.
 7. Run safe readonly validation that matches the target.
 8. Report findings-first; standalone mode stops, delivery mode returns findings
    to the owning phase.
