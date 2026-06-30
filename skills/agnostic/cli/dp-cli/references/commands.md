@@ -18,7 +18,7 @@ It scaffolds `requirements-grill`, `write-backlog`, and the initial wiki tree, t
 
 If the generated wiki root does not match the repository layout, move or refactor it before writing specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
-After init, the agent must reconcile pre-existing skills. The command does not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`; exact name/id overlap keeps HI baseline active, non-overlaps stay exposed through mirrors or symlinks, and `dp report` carries semantic overlap or baseline integration proposals.
+After init, the agent must reconcile pre-existing skills. The command does not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present; exact name/id overlap keeps HI baseline active, non-overlaps stay exposed through mirrors or symlinks, and `dp report` carries semantic overlap or baseline integration proposals.
 
 ## `dp update --check`
 

@@ -57,7 +57,7 @@ After `dp scaffold init`, expect `.agents/skills/requirements-grill`, `.agents/s
 
 Run the requirements grill before backlog authoring. If the generated wiki root does not match the real repository layout, move or refactor it before creating durable specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
-Pre-existing skills are reconciled by the follow-up agent, not by the command. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. Exact canonical directory id/name overlap keeps the HI baseline skill active: archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors. Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `dp report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there, not command runtime.
+Pre-existing skills are reconciled by the follow-up agent, not by the command. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact canonical directory id/name overlap keeps the HI baseline skill active: archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors. Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `dp report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there, not command runtime.
 
 ## Scaffold Setup
 
@@ -77,7 +77,7 @@ Then author or reconcile the final repo files requested by the specs, including 
 
 Reconcile generated wiki guidance with the real repository layout. Do not assume a newly seeded wiki root is canonical until it matches the project boundary.
 
-Reconcile pre-existing repo skills from the same homes as `dp scaffold init`: `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. Commands do not detect overlap. Exact name/id overlap keeps the HI baseline skill active; archive local evidence under `.devpunks/replaced-skills/<skill-id>/...` and remove active local copies or mirrors. Non-overlapping local skills remain repo-owned guidance and should stay exposed through harness mirrors or symlinks. Suggest `dp report` for archived local knowledge that should influence the shared baseline.
+Reconcile pre-existing repo skills from the same homes as `dp scaffold init`: `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. Commands do not detect overlap. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact name/id overlap keeps the HI baseline skill active; archive local evidence under `.devpunks/replaced-skills/<skill-id>/...` and remove active local copies or mirrors. Non-overlapping local skills remain repo-owned guidance and should stay exposed through harness mirrors or symlinks. Suggest `dp report` for archived local knowledge that should influence the shared baseline.
 
 Use `dp scaffold setup --yes` only when the harness cannot answer interactive prompts. It accepts the resolved default pack selection; it does not add optional packs or resolve repo-policy decisions.
 
@@ -95,7 +95,7 @@ After `dp update` or `dp update --check`, inspect `.devpunks/scaffold-manifest.j
 - drift output can include changelog summaries; use them to explain why update/upgrade matters.
 - pack drift is a setup decision point, not a silent auto-fix.
 
-Apply the same pre-existing skill policy after update: the command does not detect overlap, the agent checks `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`, exact name/id overlap keeps HI baseline active, non-overlaps remain mirrored, and `dp report` carries semantic overlap or baseline integration proposals.
+Apply the same pre-existing skill policy after update: the command does not detect overlap, the agent checks `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present, exact name/id overlap keeps HI baseline active, non-overlaps remain mirrored, and `dp report` carries semantic overlap or baseline integration proposals.
 
 ## Report
 
