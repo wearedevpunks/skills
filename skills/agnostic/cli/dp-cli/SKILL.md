@@ -14,7 +14,6 @@ The `dp` CLI scaffolds Devpunks agent assets and writes follow-up instructions f
 dp scaffold setup
 dp scaffold setup --yes
 dp scaffold init
-dp check
 dp update --check
 dp update --write
 dp update --yes
@@ -48,7 +47,7 @@ Do not ask for trivial file reads, validation commands, or direct execution of a
 
 See [references/commands.md](references/commands.md) for command intent and when to use each command.
 
-See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `dp scaffold`, `dp check`, or `dp update`.
+See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `dp scaffold` or `dp update`.
 
 The former backlog scaffold subcommand is not part of current guidance. `dp scaffold init` provides the requirements/backlog skills and initial wiki structure; `dp scaffold setup` provides repo-aware managed scaffold output.
 
@@ -86,19 +85,9 @@ Before authoring prompts or plans, identify the detected core libraries whose so
 
 When lint specs suggest Oxlint or hooks suggest Oxfmt, treat migration as a repo-policy change. Ask before replacing existing ESLint/Prettier/Biome scripts or CI, then update package scripts, task pipelines, editor/docs references, and hooks together.
 
-## Check
-
-Run `dp check` at session start when `.devpunks/` exists or a scaffold/update warning appears. `dp check` is read-only; it reports CLI, baseline, managed-file, and pack drift without mutating project files.
-
-Use `.devpunks/settings.json` pins as project authority: `cliVersion` records the CLI version that last wrote accepted project assets; `baselineVersion` records the scaffold baseline version last written.
-
-If `dp check` warns about CLI or baseline drift before work starts, summarize relevant changelog lines, ask whether to remediate before proceeding, and do not silently continue on stale guidance.
-
-When user accepts remediation, run it in a subagent: `dp upgrade` for CLI drift, `dp update --write` or `dp update --yes` for scaffold/baseline drift. Parent agent reviews the diff and resumes only after worker result is reconciled.
-
 ## Update
 
-After `dp update`, inspect `.devpunks/scaffold-manifest.json` and the update summary.
+After `dp update` or `dp update --check`, inspect `.devpunks/scaffold-manifest.json` and the update summary.
 
 - `--check` reports managed-file drift without writing.
 - `--write` refreshes scaffold-managed assets.

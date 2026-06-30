@@ -20,19 +20,11 @@ If the generated wiki root does not match the repository layout, move or refacto
 
 After init, the agent must reconcile pre-existing skills. The command does not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`; exact name/id overlap keeps HI baseline active, non-overlaps stay exposed through mirrors or symlinks, and `dp report` carries semantic overlap or baseline integration proposals.
 
-## `dp check`
-
-Use at session start when `.devpunks/` exists. read-only drift gate for CLI version, scaffold baseline, managed files, and pack selection.
-
-Reads `.devpunks/settings.json` pins: `cliVersion` is CLI version that last wrote accepted project assets; `baselineVersion` is scaffold baseline version last written.
-
-Reports drift warnings and relevant changelog summaries before work starts. If remediation accepted, use a subagent: `dp upgrade` for CLI drift, `dp update --write` or `dp update --yes` for scaffold/baseline drift.
-
 ## `dp update --check`
 
-Use to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
+Use at session start when `.devpunks/` exists or to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
 
-Report missing, changed, baseline, or pack-drift findings. Do not write files.
+Report CLI, baseline, missing, changed, or pack-drift findings. Do not write files. If remediation is accepted, use a subagent for `dp upgrade`, `dp update --write`, or `dp update --yes`.
 
 ## `dp update --write`
 

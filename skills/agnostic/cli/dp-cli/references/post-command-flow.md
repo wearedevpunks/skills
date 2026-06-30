@@ -44,19 +44,10 @@ After `dp scaffold setup`:
 
 Do not stop after saying the files exist.
 
-After `dp check`:
-
-- Treat output as read-only session-start gate.
-- If CLI or baseline drift found, summarize relevant changelog lines before doing project work.
-- Ask whether to remediate now. If accepted, mandatory remediation runs in subagent.
-- Use `dp upgrade` for CLI drift.
-- Use `dp update --write` or `dp update --yes` for scaffold/baseline drift.
-- Parent reviews refreshed files, settings pins, and changelog summary before continuing.
-
-After `dp update`:
+After `dp update --check` or `dp update`:
 
 - Inspect `.devpunks/scaffold-manifest.json` and `.devpunks/settings.json`.
-- Confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
+- For write modes, confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
 - Verify refreshed files still fit repo shape; handle pack drift intentionally.
 - Apply the same pre-existing skill reconciliation policy as scaffold setup. `dp update` does not detect overlaps; the agent checks the skill homes, keeps HI baseline active for exact name/id overlaps, preserves non-overlaps through mirrors, and uses `dp report` for semantic overlap or baseline integration proposals.
 
