@@ -18,17 +18,25 @@ It scaffolds `requirements-grill`, `write-backlog`, and the initial wiki tree, t
 
 If the generated wiki root does not match the repository layout, move or refactor it before writing specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
+## `dp check`
+
+Use at session start when `.devpunks/` exists. read-only drift gate for CLI version, scaffold baseline, managed files, and pack selection.
+
+Reads `.devpunks/settings.json` pins: `cliVersion` is CLI version that last wrote accepted project assets; `baselineVersion` is scaffold baseline version last written.
+
+Reports drift warnings and relevant changelog summaries before work starts. If remediation accepted, use a subagent: `dp upgrade` for CLI drift, `dp update --write` or `dp update --yes` for scaffold/baseline drift.
+
 ## `dp update --check`
 
 Use to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
 
-Report missing, changed, or pack-drift findings. Do not write files.
+Report missing, changed, baseline, or pack-drift findings. Do not write files.
 
 ## `dp update --write`
 
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
-After writing, verify the refreshed files still fit the repo shape and any pack drift is handled intentionally.
+After writing, verify the refreshed files still fit the repo shape and any baseline or pack drift is handled intentionally.
 
 ## `dp update --yes`
 

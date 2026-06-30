@@ -8,7 +8,8 @@ When `.devpunks/` exists, read in this order:
 2. `.devpunks/AGENT-HANDOFF.md`
 3. `.devpunks/scaffold-manifest.json`
 4. `.devpunks/required-tools.json`
-5. `.devpunks/specs/**`
+5. `.devpunks/settings.json`
+6. `.devpunks/specs/**`
 
 If a file is missing, continue with the next available artifact and say what was missing.
 
@@ -21,6 +22,8 @@ If a file is missing, continue with the next available artifact and say what was
 - `.devpunks/specs/prompts/**`: instructions for final prompt files, not final prompt bodies.
 - `.devpunks/specs/lint/**`: lint asset selection and starter config guidance.
 - `.devpunks/specs/subagents/**`: desired subagent manifest shape.
+
+- `.devpunks/settings.json`: project-local `cliVersion` and `baselineVersion` pins from last accepted scaffold-writing command.
 
 ## Required Follow-Through
 
@@ -37,6 +40,21 @@ After `dp scaffold setup`:
 - Ask which detected core libraries to inspect when source context is broad; then use `opensrc path <package>` or `opensrc path owner/repo` for only the chosen set.
 
 Do not stop after saying the files exist.
+
+After `dp check`:
+
+- Treat output as read-only session-start gate.
+- If CLI or baseline drift found, summarize relevant changelog lines before doing project work.
+- Ask whether to remediate now. If accepted, mandatory remediation runs in subagent.
+- Use `dp upgrade` for CLI drift.
+- Use `dp update --write` or `dp update --yes` for scaffold/baseline drift.
+- Parent reviews refreshed files, settings pins, and changelog summary before continuing.
+
+After `dp update`:
+
+- Inspect `.devpunks/scaffold-manifest.json` and `.devpunks/settings.json`.
+- Confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
+- Verify refreshed files still fit repo shape; handle pack drift intentionally.
 
 After `dp scaffold init`:
 
