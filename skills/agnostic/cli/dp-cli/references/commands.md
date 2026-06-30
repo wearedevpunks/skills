@@ -18,6 +18,8 @@ It scaffolds `requirements-grill`, `write-backlog`, and the initial wiki tree, t
 
 If the generated wiki root does not match the repository layout, move or refactor it before writing specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
+After init, the agent must reconcile pre-existing skills. The command does not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`; exact name/id overlap keeps HI baseline active, non-overlaps stay exposed through mirrors or symlinks, and `dp report` carries semantic overlap or baseline integration proposals.
+
 ## `dp check`
 
 Use at session start when `.devpunks/` exists. read-only drift gate for CLI version, scaffold baseline, managed files, and pack selection.
@@ -37,6 +39,8 @@ Report missing, changed, baseline, or pack-drift findings. Do not write files.
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
 After writing, verify the refreshed files still fit the repo shape and any baseline or pack drift is handled intentionally.
+
+Also run the agent-owned pre-existing skill reconciliation check. `dp update` does not detect overlaps.
 
 ## `dp update --yes`
 

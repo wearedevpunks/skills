@@ -31,6 +31,9 @@ After `dp scaffold setup`:
 
 - Generate final root/docs/workspace `AGENTS.md` files from prompt specs.
 - Reconcile any scaffolded wiki root with the real repo layout before writing durable docs.
+- Reconcile pre-existing skills yourself; commands do not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`.
+- Exact canonical directory id/name overlap keeps the HI baseline skill active. Archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors.
+- Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `dp report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there.
 - Create sibling `CLAUDE.md` symlink mirrors for those neutral prompt files.
 - Keep `.agents/AGENTS.md` as the shared global prompt source.
 - Keep `.agents/skills/` as the main skill directory; only `.claude/skills` mirrors it.
@@ -55,11 +58,13 @@ After `dp update`:
 - Inspect `.devpunks/scaffold-manifest.json` and `.devpunks/settings.json`.
 - Confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
 - Verify refreshed files still fit repo shape; handle pack drift intentionally.
+- Apply the same pre-existing skill reconciliation policy as scaffold setup. `dp update` does not detect overlaps; the agent checks the skill homes, keeps HI baseline active for exact name/id overlaps, preserves non-overlaps through mirrors, and uses `dp report` for semantic overlap or baseline integration proposals.
 
 After `dp scaffold init`:
 
 - Do not start requirements discovery by default.
 - Inspect the generated skills and seeded wiki root.
+- Reconcile pre-existing skills yourself using `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`; the command did not detect overlap.
 - Treat the seeded wiki root as provisional until it matches the repo layout.
 - Move, rename, or refactor generated init output when needed so it matches the actual repository.
 - Run `requirements-grill` before `write-backlog` only when the user actually asks for requirements or backlog generation.
