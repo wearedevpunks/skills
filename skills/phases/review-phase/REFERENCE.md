@@ -35,12 +35,19 @@ For PR review, use the actual PR base branch. Do not assume trunk.
 
 ## Runtime And Lenses
 
-`autoreview` is the core structured review runtime. Capture the exact command
-and manually verify accepted findings against source, docs, scoped skills, and
-dependency contracts.
+Start review flow with `mattpocock-review`. It pins the fixed point, discovers
+Spec and Standards sources, carries baseline code smells, and keeps Standards
+findings separate from Spec findings. Use that frame for delegated review
+prompts, `autoreview` context, and final aggregation.
+
+`autoreview` remains the core structured review runtime. Capture the exact
+command and manually verify accepted findings against source, docs, scoped
+skills, and dependency contracts.
 
 Mandatory lenses:
 
+- `mattpocock-review`: two-axis Standards versus Spec wrapper, fixed diff, and
+  separate aggregation.
 - `simplify`: clarity, avoidable complexity, unnecessary abstraction, derivable
   state, naming, and scope creep.
 - `improve-codebase-architecture`: boundary friction, shallow modules, module
@@ -98,6 +105,7 @@ Then include:
 - open questions or assumptions
 - validation run and result
 - exact `autoreview` command and clean/accepted-findings result
+- fixed point, Spec source or skipped reason, Standards sources
 - scoped `AGENTS.md` files and mandatory scoped skills checked
 - short summary after findings
 - mode: standalone readonly review or delivery-owned review
