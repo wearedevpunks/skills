@@ -25,7 +25,9 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 - Pass raw artifacts, paths, errors, or files.
 - Do not leak your preferred answer, suspected fix, or private conclusions unless the task truly requires them.
-- Ask for findings, evidence, and file references.
+- Ask for findings, evidence, primary-source citations, and file references.
+- Prefer owning sources: official docs, source code, specs, and first-party APIs.
+- Treat secondary write-ups as leads, not proof.
 - For validation passes, make the prompt look like a normal user request, not a hidden test of the skill.
 
 ## Run In Parallel
@@ -39,6 +41,7 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 - Compare outputs against the repo, docs, or other primary artifacts.
 - Resolve disagreements with evidence, not majority vote.
+- Follow important claims back to their owning source before relying on them.
 - Extract the few facts that matter, then decide locally.
 - Close agents that are no longer needed.
 
@@ -62,7 +65,7 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 Return:
 - what each subagent covered
-- the evidence worth trusting
+- the evidence worth trusting, with claim-level source citations
 - conflicts or uncertainty
 - the synthesized conclusion
 - the next local action
