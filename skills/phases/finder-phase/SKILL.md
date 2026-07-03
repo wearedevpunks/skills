@@ -42,7 +42,7 @@ Use this before `requirements-phase` when the work is too big and too foggy to g
 
 - Frontier lifecycle: [references/frontier-lifecycle.md](references/frontier-lifecycle.md)
 - Root routing: [references/root-routing.md](references/root-routing.md)
-- Backlog taxonomy and provider materialization: [../../agnostic/requirements/write-backlog/SKILL.md](../../agnostic/requirements/write-backlog/SKILL.md)
+- Backlog taxonomy and provider materialization: use the `write-backlog` skill.
 
 ## Completion Criteria
 
