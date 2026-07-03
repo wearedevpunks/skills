@@ -1,5 +1,27 @@
 # Write Backlog Examples
 
+## From wayfinder route to backlog
+
+Input route:
+
+> Loose idea: partner onboarding is important, but the module boundary and first implementation capability are still foggy.
+
+Output shape:
+
+- Root item: `fog` — `Clarify partner onboarding frontier`
+- Later module / milestone: `Partner onboarding`
+- Learning items:
+  - `grilling` — `Choose partner invitation authority model`
+  - `research` — `Inspect existing auth and access control seams`
+  - `prototype` — `Validate invitation review screen shape`
+- Accepted implementation item:
+  - `epic` — `Partner invitation lifecycle`
+  - `story` — `Operator invites a partner contact`
+
+Closure rule:
+
+- Close `grilling`, `research`, and `prototype` with answer, accepted direction, artifacts or evidence, and created or updated epics/stories before delivery starts.
+
 ## From discussion to backlog
 
 Input:

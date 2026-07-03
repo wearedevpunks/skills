@@ -1,4 +1,110 @@
-# Epic And Story Shape
+# Backlog Item Body Shape
+
+## Shared rules
+
+Keep every backlog item body product-facing and kind-appropriate.
+
+All bodies may include durable source links, accepted evidence, and closure notes. Do not include execution plans, file-level implementation notes, or validation commands.
+
+## Fog body
+
+Use a short root-level body.
+
+Recommended sections:
+
+```md
+## Frontier
+
+[What is real but still unclear]
+
+## Why This Is Fog
+
+- ...
+
+## Suspected Directions
+
+- ...
+
+## Next Route
+
+- `grilling` | `research` | `prototype` | `epic`
+```
+
+Fog bodies must not define child tickets or delivery scope.
+
+## Grilling body
+
+Recommended sections:
+
+```md
+## Decision
+
+[The human decision to close]
+
+## Context
+
+- ...
+
+## Options
+
+- ...
+
+## Closure
+
+Answer:
+Accepted direction:
+Artifacts:
+Created or updated implementation items:
+```
+
+## Research body
+
+Recommended sections:
+
+```md
+## Question
+
+[The fact to establish]
+
+## Evidence Sources
+
+- ...
+
+## Answer Criteria
+
+- ...
+
+## Closure
+
+Answer:
+Evidence:
+Accepted direction:
+Created or updated implementation items:
+```
+
+## Prototype body
+
+Recommended sections:
+
+```md
+## Learning Goal
+
+[What the artifact must teach]
+
+## Artifact Expectations
+
+- ...
+
+## Result Signal
+
+- ...
+
+## Closure
+
+Artifacts:
+Accepted direction:
+Created or updated implementation items:
+```
 
 ## Epic body
 
@@ -54,7 +160,7 @@ Recommended sections:
 
 ## Body anti-patterns
 
-Do not put these in epic or story bodies:
+Do not put these in backlog bodies:
 
 - `Plan task: T123`
 - `TDD target`

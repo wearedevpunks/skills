@@ -30,7 +30,12 @@ Azure DevOps creates work items with a JSON Patch document.
   {
     "op": "add",
     "path": "/fields/System.Tags",
-    "value": "workflow;review"
+    "value": "workflow;review;kind:story"
+  },
+  {
+    "op": "add",
+    "path": "/fields/Custom.DevpunksKind",
+    "value": "story"
   }
 ]
 ```
@@ -49,15 +54,36 @@ Azure DevOps creates work items with a JSON Patch document.
 - `/fields/System.Tags`
 - `/fields/System.AreaPath`
 - `/fields/System.IterationPath`
+- `/fields/Custom.DevpunksKind`
+
+## Kind storage
+
+Canonical `kind` storage is a custom picklist field such as `Custom.DevpunksKind`.
+
+Allowed values:
+
+- `fog`
+- `grilling`
+- `research`
+- `prototype`
+- `epic`
+- `story`
+
+Use Work Item Type for provider structure, not canonical Harness kind. Tags may mirror kind for search compatibility, but `Custom.DevpunksKind` is the source when it exists.
 
 ## Repo mapping
 
+- fog -> root-level work item with `Custom.DevpunksKind = fog`
 - module -> area/iteration or team-specific planning container
-- epic -> work item type chosen by your process, often `Epic` or `Feature`
-- story -> work item type chosen by your process, often `User Story`, `Product Backlog Item`, or `Task`
+- grilling -> module/milestone-scoped work item with `Custom.DevpunksKind = grilling`
+- research -> module/milestone-scoped work item with `Custom.DevpunksKind = research`
+- prototype -> module/milestone-scoped work item with `Custom.DevpunksKind = prototype`
+- epic -> work item type chosen by your process, often `Epic` or `Feature`, with `Custom.DevpunksKind = epic`
+- story -> child work item chosen by your process, often `User Story`, `Product Backlog Item`, or `Task`, with `Custom.DevpunksKind = story`
 
 ## Notes
 
 - Azure DevOps create requests are process-dependent. The exact work item type names available in `{type}` depend on the project template and process.
 - This asset documents the raw create payload shape, not a universal field catalog for every process.
+- If `Custom.DevpunksKind` does not exist, create a project/process custom picklist field before backlog sync or record the provider setup blocker.
 - Parent/child and dependency relations may require additional relation operations or follow-up requests depending on your process conventions. Keep those separate from the minimal create-only contract documented here.

@@ -48,11 +48,26 @@ mutation CreateBacklogProject($ownerId: ID!, $repositoryId: ID!, $title: String!
 
 Expected Project fields:
 
-- `Level`: single-select values `Epic`, `Story`
+- `Kind`: Project custom single-select field named `Kind` with values `fog`, `grilling`, `research`, `prototype`, `epic`, `story`
 - `Module/Milestone`: text or single-select
 - `Epic`: text, storing the epic issue number/title for story rows
 
 Create missing fields with `createProjectV2Field`; set values with `updateProjectV2ItemFieldValue`.
+
+## Kind storage
+
+Canonical `kind` storage is the Project custom single-select field named `Kind`.
+
+Allowed values:
+
+- `fog`
+- `grilling`
+- `research`
+- `prototype`
+- `epic`
+- `story`
+
+Avoid GitHub Issue Type as the default kind storage. Issue types are organization-level and better for broad org taxonomy. Labels may mirror kind for compatibility, but `Kind` is canonical when the Project field exists.
 
 ## Create missing milestones
 
@@ -85,6 +100,26 @@ Required field:
 
 For GraphQL issue creation, use the returned milestone node ID as `milestoneId`.
 For REST issue creation, use the returned milestone number as `milestone`.
+
+## Create a fog issue
+
+Use a root-level issue for fog. Add it to the Project V2 at creation time. Do not assign it to an epic parent.
+
+After creation, set Project fields:
+
+- `Kind = fog`
+- `Module/Milestone` empty or root/backlog value
+
+## Create grilling, research, or prototype issues
+
+Use first-class issues in the matching module/milestone. These are not child stories unless the provider explicitly needs a parent for visibility.
+
+After creation, set Project fields:
+
+- `Kind = grilling`, `Kind = research`, or `Kind = prototype`
+- `Module/Milestone = <module title>`
+
+Closure notes for these issues must name the answer, accepted direction, artifacts or evidence, and created or updated epics/stories.
 
 ## Create an epic issue
 
@@ -125,7 +160,7 @@ Epic body ownership:
 
 After creation, set Project fields:
 
-- `Level = Epic`
+- `Kind = epic`
 - `Module/Milestone = <module title>`
 
 ## Create story issues
@@ -171,7 +206,7 @@ Story body ownership:
 
 After creation, set Project fields:
 
-- `Level = Story`
+- `Kind = story`
 - `Module/Milestone = <module title>`
 - `Epic = <epic issue number/title>`
 
@@ -212,10 +247,11 @@ mutation AddBlockedBy($issueId: ID!, $blockingIssueId: ID!) {
 2. Resolve Project V2 by title; create it if absent.
 3. Resolve or create Project fields.
 4. Resolve or create repository milestones for modules.
-5. Create epic parent issues with `projectV2Ids` and `milestoneId`.
-6. Create story child issues with `parentIssueId`, `projectV2Ids`, and `milestoneId`.
-7. Set Project field values for level/module/epic grouping.
-8. Add native issue dependencies for real story blockers.
+5. Create root fog issues when the route remains root-level.
+6. Create grilling, research, prototype, or epic issues with `projectV2Ids` and `milestoneId`.
+7. Create story child issues with `parentIssueId`, `projectV2Ids`, and `milestoneId`.
+8. Set Project field values for kind/module/epic grouping.
+9. Add native issue dependencies for real story blockers.
 
 ## Notes
 

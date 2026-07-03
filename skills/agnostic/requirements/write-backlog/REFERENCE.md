@@ -4,17 +4,24 @@
 
 `write-backlog` is the canonical backlog-authoring skill for this repo.
 
-It turns a large requirements discussion into:
+It turns wayfinder routes, requirements discussions, grill artifacts, and accepted decisions into first-class backlog items.
 
-- modules
-- epics
-- stories
-- native ordering relations
+Supported `kind` values:
+
+- `fog`
+- `grilling`
+- `research`
+- `prototype`
+- `epic`
+- `story`
 
 It does not write specs, plans, or execution handoffs.
 
 Downstream contract:
 
+- every supported `kind` is visible, assignable, searchable, linkable, and closeable in the target provider
+- `fog` is root-level only
+- concrete `grilling`, `research`, `prototype`, `epic`, and `story` items live under a module/milestone
 - one epic maps to one future `SPEC.md`
 - child stories remain the product-facing slices beneath that epic
 - `PLAN.md` later decomposes execution without replacing the backlog model
@@ -26,6 +33,8 @@ Downstream contract:
 - a raw requirements discussion
 - an existing messy backlog
 - `requirements-grill` artifacts from `/Users/stefan/Desktop/repos/weareDevpunks-multiplai/.agents/skills/requirements-grill`
+- `wayfinder` or `finder-phase` route decisions
+- accepted research, prototype, or grilling closure notes
 
 When grill artifacts exist, treat them as the highest-signal structured source for backlog derivation.
 
@@ -76,36 +85,81 @@ If the grill is still materially open:
 
 ## Canonical model
 
-Use this hierarchy:
+Use this model:
 
-- module
-- epic
-- story
+```text
+Backlog root
+  fog
+  module/milestone
+    grilling
+    research
+    prototype
+    epic
+      story
+```
 
 Provider mapping:
 
+- kind -> provider-native single-value kind storage where available
+- fog -> root-level issue/work item/item
 - module -> milestone or provider-equivalent grouping
-- epic -> parent issue/work item/capability record
-- story -> child issue/sub-issue/work item
+- grilling/research/prototype -> module/milestone-scoped issue/work item/item
+- epic -> module/milestone-scoped parent issue/work item/capability record
+- story -> child issue/sub-issue/work item under an epic
 
 monday.com mapping:
 
+- fog -> root/backlog group item or root planning group item
 - module/milestone -> board group
+- grilling/research/prototype -> parent item in a module group
 - epic/capability -> parent item
 - story -> subitem
 - story ordering -> dependency column when present
 
 Rules:
 
-- every story must be independently understandable
-- every story must describe product behavior, not implementation chores
+- every supported kind must be a first-class backlog item
+- `kind` is separate from workflow state, module grouping, and parent/child hierarchy
+- `fog` must not have child tickets by default
+- concrete non-fog items must first choose or create a module/milestone
+- `grilling`, `research`, and `prototype` must close into accepted decisions before they create or update implementation epics/stories
+- every story must be independently understandable and product-facing
 - one epic may contain multiple stories
 - one epic maps to one future `SPEC.md`
 - one story does not imply one future `SPEC.md`
 
 ## Body ownership
 
-Backlog bodies stay product-facing.
+Backlog bodies stay product-facing and kind-appropriate.
+
+Fog bodies may include:
+
+- unclear frontier
+- why it is not yet module-scoped
+- suspected modules or outcomes
+- next route candidates
+
+Grilling bodies may include:
+
+- decision question
+- context
+- options
+- branch/artifact links
+- closure note with accepted answer and downstream items
+
+Research bodies may include:
+
+- research question
+- evidence sources
+- answer criteria
+- closure note with evidence and downstream items
+
+Prototype bodies may include:
+
+- learning goal
+- artifact expectations
+- acceptance signal for the prototype result
+- closure note with artifact links and downstream items
 
 Epic bodies may include:
 
@@ -122,7 +176,7 @@ Story bodies may include:
 - links
 - approved artifact links or durable visual asset links when they are acceptance context
 
-Do not put these in epic or story bodies:
+Do not put these in backlog bodies:
 
 - plan task ids
 - TDD targets
@@ -145,13 +199,24 @@ Avoid:
 - fake ordering labels when native blockers exist
 - using plan tasks as backlog children
 
-## Derivation workflow
+## Kind selection workflow
 
-### 1. Derive modules
+### 1. Decide whether the frontier is still fog
 
-Split the requirements discussion into durable capability groups that would still make sense if implementation order changed.
+Use `fog` when the work is real but not yet sharp enough to choose a module/milestone or concrete learning/implementation ticket.
 
-Good module:
+Do not use `fog` as:
+
+- a parent for research or grilling tickets
+- delivery scope
+- a `SPEC.md` anchor
+- an execution container
+
+### 2. Derive modules
+
+For concrete non-fog work, split the discussion into durable capability groups that would still make sense if implementation order changed.
+
+Good module/milestone:
 
 - intake and review
 - account lifecycle
@@ -162,7 +227,17 @@ Bad module:
 - backend foundation
 - frontend polish
 
-### 2. Derive epics
+### 3. Derive learning items
+
+Use these before implementation scope is accepted:
+
+- `grilling`: the blocker is a human decision.
+- `research`: readonly investigation can answer it.
+- `prototype`: artifact-driven learning is needed.
+
+Each item must live under a module/milestone and close with an accepted decision note before changing epics/stories.
+
+### 4. Derive epics
 
 Within each module, create epics/capabilities that will later justify one coherent spec.
 
@@ -176,7 +251,7 @@ Bad epic:
 - database schema
 - API routes
 
-### 3. Derive stories
+### 5. Derive stories
 
 Break each epic into stories only when the slice is product-facing and independently observable.
 
@@ -190,7 +265,7 @@ Bad story:
 - add column and router
 - create mutation and form hook
 
-### 4. Add native order
+### 6. Add native order
 
 Only add blockers when one story truly depends on another story outcome.
 
@@ -223,6 +298,17 @@ Do not:
 - treat partially closed branches as committed epic scope by default
 - ignore canonical terminology captured in the grill log
 
+## Closure and handoff
+
+For `grilling`, `research`, and `prototype`, closure notes must include:
+
+- answer
+- accepted direction
+- artifacts or evidence
+- created or updated epics/stories
+
+Do not create or update implementation `epic` or `story` items from unresolved learning work.
+
 ## Handoff to `create-spec`
 
 When `create-spec` is given a backlog-backed epic:
@@ -234,13 +320,14 @@ When `create-spec` is given a backlog-backed epic:
 
 ## Provider policy
 
-This skill documents raw provider create/setup payloads only.
+This skill documents raw provider create/setup payloads and provider-native kind storage.
 
 In scope:
 
 - create issue/work item payload shapes
 - create provider containers needed for the canonical hierarchy
 - required vs optional fields
+- how `kind` appears at creation time
 - how module/epic/story intent appears at creation time
 
 Out of scope:

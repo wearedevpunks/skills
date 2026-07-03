@@ -1,16 +1,82 @@
 # Backlog Model
 
-## Canonical hierarchy
+## Canonical model
 
-- module
-- epic
-- story
+```text
+Backlog root
+  fog
+  module/milestone
+    grilling
+    research
+    prototype
+    epic
+      story
+```
 
 Provider mapping:
 
+- kind -> provider-native single-value kind storage where available
+- fog -> root-level first-class backlog item
 - module -> milestone or equivalent grouping
-- epic -> parent issue / capability item
-- story -> child issue / sub-issue / child work item
+- grilling -> module/milestone-scoped first-class decision item
+- research -> module/milestone-scoped first-class investigation item
+- prototype -> module/milestone-scoped first-class learning item
+- epic -> module/milestone-scoped parent issue / capability item
+- story -> child issue / sub-issue / child work item under an epic
+
+Every supported kind must be visible, assignable, searchable, linkable, and closeable in the target provider.
+
+## Kind contract
+
+`kind` values:
+
+- `fog`
+- `grilling`
+- `research`
+- `prototype`
+- `epic`
+- `story`
+
+`kind` is separate from:
+
+- workflow state
+- module/milestone grouping
+- parent/child hierarchy
+- provider issue type, unless the provider requires that type for structure
+
+Labels and tags may mirror `kind`, but they are not canonical when a provider-native field exists.
+
+## Fog contract
+
+One fog item:
+
+- lives at the backlog root
+- tracks a real but not-yet-sharp area of uncertainty
+- anticipates future modules, tickets, epics, and stories
+
+One fog item must not:
+
+- be delivery-eligible
+- be a `SPEC.md` anchor
+- become an execution container
+- own child tickets by default
+
+Sharpening fog first chooses or creates a module/milestone, then creates concrete non-fog items there.
+
+## Learning item contract
+
+`grilling`, `research`, and `prototype` items:
+
+- live under a module/milestone
+- represent decision, investigation, or artifact-learning work
+- close before implementation scope changes
+
+Closure notes include:
+
+- answer
+- accepted direction
+- artifacts or evidence
+- created or updated epics/stories
 
 ## Ownership boundaries
 
@@ -31,6 +97,7 @@ One epic must not:
 - become an execution board
 - duplicate the whole future `PLAN.md`
 - be reduced to a pure label/container with no capability meaning
+- absorb unresolved grilling, research, or prototype work as if it were accepted scope
 
 ## Story contract
 
