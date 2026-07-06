@@ -1,13 +1,16 @@
 ---
 name: goalify
-description: Goalify messy intent into a very lean `/goal` contract, activate it immediately, and continue execution under that goal.
+description: Goalify messy intent by writing a very lean `/goal`, activating it immediately with the available goal tool, and continuing the user's task under that active goal.
 ---
 
 # Goalify
 
 `goalify` writes the smallest operating contract a goal-running Codex can adopt,
-then activates it immediately. It is a compiler, not a spec, handoff, or plan
-dump.
+activates it immediately, then keeps working. It is a compiler, not a spec,
+handoff, or plan dump.
+
+Invocation is permission to activate now. Do not stop at printing a `/goal`
+prompt or reporting the contract when a goal tool is available.
 
 Be very lean. Target the shortest contract that can run without re-asking.
 Hard limit: text after `/goal` must be non-empty and <= 4,000 characters. If
@@ -15,8 +18,8 @@ detail will not fit, point at a file instead of pasting overflow.
 
 ## Activation
 
-- Always activate spot on: write the goal, activate it with the available goal
-  tool, then continue execution under that active goal.
+- Always activate spot on: write the goal, call the available goal activation
+  tool immediately, then continue the user's task under that active goal.
 - If the task is tiny, unresolved, or lacks one objective, proof signal, and
   stop condition, ask one clarifying question.
 - If activation is unavailable, return the ready `/goal ...` prompt and name
@@ -46,8 +49,8 @@ paths, commands, ids, URLs, artifacts, and invariants.
    only if structure is needed.
 4. Check: one objective, explicit proof, stop/blocker conditions, no secrets, no
    vague "make it work", <= 4,000 characters.
-5. Activate immediately. Report objective, proof surface, assumptions, and
-   missing inputs, then execute.
+5. Activate immediately. After activation succeeds, continue execution; report
+   only what helps the active task move forward.
 
 ## Fallback Output
 
