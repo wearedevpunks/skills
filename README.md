@@ -21,6 +21,7 @@ npx skills add https://github.com/weareDevpunks/skills --skill dp-cli
 - `skills/agnostic/*` holds cross-stack packs like planning, research, frontend, docs, quality, and subagents
 - `skills/phases/*` holds lifecycle phase packs like requirements, delivery, debugging, review, docs ingest, and debt resolution
 - `skills/frameworks/*` holds stack-specific packs like Better Auth, Effect, Elysia, Next.js, tRPC, and Turborepo
+- `skills/misc/*` holds focused operational workflows that do not belong to a stack or lifecycle phase
 - each skill still owns its own `SKILL.md` plus any local references, templates, scripts, or helper assets
 - some pack semantics overlap; physical grouping follows the main domain owner, so shared packs can reuse the same skill family
 
