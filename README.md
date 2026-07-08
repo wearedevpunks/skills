@@ -2,19 +2,19 @@
 
 Public Devpunks skill library.
 
-This repo is the public Devpunks skills database and the baseline skill source used by the Devpunks `dp` CLI.
+This repo is the public Devpunks skills database and the baseline skill source used by the Harness Intelligence CLI.
 
 The CLI vendors this repository as reusable skill content. Keep shareable skill behavior here first, then let the CLI consume it through its normal skills sync/update flow.
 
 ## CLI Entrypoint
 
-The only Devpunks skill users should manually install with the Skills CLI is `dp-cli`:
+The only Harness Intelligence CLI skill users should manually install with the Skills CLI is `dp-cli`:
 
 ```bash
 npx skills add https://github.com/weareDevpunks/skills --skill dp-cli
 ```
 
-`dp-cli` is the entrypoint for `dp` usage, setup-stage guidance, `dp update`, GitHub-backed `dp report`, explicit `dp upgrade`, and the post-command `.Devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the `dp` CLI rather than manually installed one by one.
+`dp-cli` is the entrypoint for `hi`/`hint` usage, setup-stage guidance, `hi update`, GitHub-backed `hi report`, explicit `hi upgrade`, and the post-command `.devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the CLI rather than manually installed one by one.
 
 ## Structure
 

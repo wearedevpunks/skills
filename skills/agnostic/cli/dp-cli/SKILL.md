@@ -1,24 +1,26 @@
 ---
 name: dp-cli
-description: Operates the Devpunks `dp` CLI and interactively follows scaffold, update, report, upgrade, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `dp scaffold`, `dp update`, `dp report`, `dp upgrade`, Devpunks CLI setup, or asks what to do after running a `dp` command.
-metadata: {"Devpunks":{"entrypoint":true}}
+description: Operates the Harness Intelligence CLI (`hi`, alias `hint`) and interactively follows scaffold, update, report, upgrade, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `hi scaffold`, `hi update`, `hi report`, `hi upgrade`, `hint`, or asks what to do after running a Harness CLI command.
+metadata: {"Harness Intelligence":{"entrypoint":true}}
 ---
 
-# DP CLI
+# dp-cli
 
-The `dp` CLI scaffolds Devpunks agent assets and writes follow-up instructions for the next agent.
+The `dp-cli` skill operates the Harness Intelligence CLI. The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
 
 ## Quick Start
 
 ```bash
-dp scaffold setup
-dp scaffold setup --yes
-dp scaffold init
-dp update --check
-dp update --write
-dp update --yes
-dp report --help
-dp upgrade --help
+hi --help
+hint --help
+hi scaffold setup
+hi scaffold setup --yes
+hi scaffold init
+hi update --check
+hi update --write
+hi update --yes
+hi report --help
+hi upgrade --help
 ```
 
 After any command, read the command output and generated artifacts before acting.
@@ -47,21 +49,21 @@ Do not ask for trivial file reads, validation commands, or direct execution of a
 
 See [references/commands.md](references/commands.md) for command intent and when to use each command.
 
-See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `dp scaffold` or `dp update`.
+See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `hi scaffold` or `hi update`.
 
-The former backlog scaffold subcommand is not part of current guidance. `dp scaffold init` provides the requirements/backlog skills and initial wiki structure; `dp scaffold setup` provides repo-aware managed scaffold output.
+The former backlog scaffold subcommand is not part of current guidance. `hi scaffold init` provides the requirements/backlog skills and initial wiki structure; `hi scaffold setup` provides repo-aware managed scaffold output.
 
 ## Scaffold Init
 
-After `dp scaffold init`, expect `.agents/skills/requirements-grill`, `.agents/skills/write-backlog`, and an initial wiki root.
+After `hi scaffold init`, expect `.agents/skills/requirements-grill`, `.agents/skills/write-backlog`, and an initial wiki root.
 
 Run the requirements grill before backlog authoring. If the generated wiki root does not match the real repository layout, move or refactor it before creating durable specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
 
-Pre-existing skills are reconciled by the follow-up agent, not by the command. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact canonical directory id/name overlap keeps the HI baseline skill active: archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors. Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `dp report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there, not command runtime.
+Pre-existing skills are reconciled by the follow-up agent, not by the command. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact canonical directory id/name overlap keeps the HI baseline skill active: archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors. Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `hi report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there, not command runtime.
 
 ## Scaffold Setup
 
-After `dp scaffold setup`, expect artifacts such as:
+After `hi scaffold setup`, expect artifacts such as:
 
 - `.devpunks/AGENT-SYSTEM-PROMPT.md`
 - `.devpunks/AGENT-HANDOFF.md`
@@ -77,9 +79,9 @@ Then author or reconcile the final repo files requested by the specs, including 
 
 Reconcile generated wiki guidance with the real repository layout. Do not assume a newly seeded wiki root is canonical until it matches the project boundary.
 
-Reconcile pre-existing repo skills from the same homes as `dp scaffold init`: `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. Commands do not detect overlap. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact name/id overlap keeps the HI baseline skill active; archive local evidence under `.devpunks/replaced-skills/<skill-id>/...` and remove active local copies or mirrors. Non-overlapping local skills remain repo-owned guidance and should stay exposed through harness mirrors or symlinks. Suggest `dp report` for archived local knowledge that should influence the shared baseline.
+Reconcile pre-existing repo skills from the same homes as `hi scaffold init`: `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. Commands do not detect overlap. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence. Exact name/id overlap keeps the HI baseline skill active; archive local evidence under `.devpunks/replaced-skills/<skill-id>/...` and remove active local copies or mirrors. Non-overlapping local skills remain repo-owned guidance and should stay exposed through harness mirrors or symlinks. Suggest `hi report` for archived local knowledge that should influence the shared baseline.
 
-Use `dp scaffold setup --yes` only when the harness cannot answer interactive prompts. It accepts the resolved default pack selection; it does not add optional packs or resolve repo-policy decisions.
+Use `hi scaffold setup --yes` only when the harness cannot answer interactive prompts. It accepts the resolved default pack selection; it does not add optional packs or resolve repo-policy decisions.
 
 Before authoring prompts or plans, identify the detected core libraries whose source behavior matters. Ask the user which ones to prioritize if the choice is not obvious, then run `opensrc path <package>` or `opensrc path owner/repo` only for that focused set.
 
@@ -87,7 +89,7 @@ When lint specs suggest Oxlint or hooks suggest Oxfmt, treat migration as a repo
 
 ## Update
 
-After `dp update` or `dp update --check`, inspect `.devpunks/scaffold-manifest.json` and the update summary.
+After `hi update` or `hi update --check`, inspect `.devpunks/scaffold-manifest.json` and the update summary.
 
 - `--check` reports managed-file drift without writing.
 - `--write` refreshes scaffold-managed assets.
@@ -95,21 +97,21 @@ After `dp update` or `dp update --check`, inspect `.devpunks/scaffold-manifest.j
 - drift output can include changelog summaries; use them to explain why update/upgrade matters.
 - pack drift is a setup decision point, not a silent auto-fix.
 
-Apply the same pre-existing skill policy after update: the command does not detect overlap, the agent checks `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present, exact name/id overlap keeps HI baseline active, non-overlaps remain mirrored, and `dp report` carries semantic overlap or baseline integration proposals.
+Apply the same pre-existing skill policy after update: the command does not detect overlap, the agent checks `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present, exact name/id overlap keeps HI baseline active, non-overlaps remain mirrored, and `hi report` carries semantic overlap or baseline integration proposals.
 
 ## Report
 
-Use `dp report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
+Use `hi report` when reusable Harness friction should enter maintainer triage: stale generated guidance, confusing CLI output, missing docs, broken setup, or shared tooling issues.
 
-Do not use reports as the default destination for project product backlog. `dp report` submits to the Harness API, which must create or dedupe a GitHub issue in `wearedevpunks/harness-intelligence`; pass `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
+Do not use reports as the default destination for project product backlog. `hi report` submits to the Harness API, which must create or dedupe a GitHub issue in `wearedevpunks/harness-intelligence`; pass `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` so maintainers can triage the issue from GitHub/backoffice without replaying the whole session.
 
 Reports are GitHub-backed. Backoffice fetches `harness-report` issues from GitHub and treats GitHub state/labels as the triage source of truth. API persistence is audit/local-smoke context, not a substitute for a returned GitHub URL.
 
-`dp report` emits product telemetry only after the API returns a GitHub issue URL. If issue creation fails or the API stores the report internally without a URL, do not claim the report was submitted; capture the blocker and suggest the exact GitHub/API config missing.
+`hi report` emits product telemetry only after the API returns a GitHub issue URL. If issue creation fails or the API stores the report internally without a URL, do not claim the report was submitted; capture the blocker and suggest the exact GitHub/API config missing.
 
 ## Upgrade
 
-Use `dp upgrade` to update the CLI executable itself. It checks the selected npm dist-tag, detects whether the current global install came from Bun, pnpm, npm, or Yarn, and runs the matching global reinstall command.
+Use `hi upgrade` to update the CLI executable itself. It checks the selected npm dist-tag, detects whether the current global install came from Bun, pnpm, npm, or Yarn, and runs the matching global reinstall command.
 
 Use `--tag next` for prerelease channels and `--force` to reinstall the selected tag even when no newer version is detected.
 
@@ -120,7 +122,7 @@ Upgrade deliberately bypasses package-manager release-age gates for the CLI pack
 - pnpm: `npm_config_minimum_release_age=0 pnpm add -g @punks/cli@<tag>`
 - Yarn: `YARN_NPM_MINIMAL_AGE_GATE=0 yarn global add @punks/cli@<tag>`
 
-Startup update checks are advisory and detached. They should not mutate installs during normal command startup; `dp upgrade` is the explicit update path.
+Startup update checks are advisory and detached. They should not mutate installs during normal command startup; `hi upgrade` is the explicit update path.
 
 ## Completion Checklist
 

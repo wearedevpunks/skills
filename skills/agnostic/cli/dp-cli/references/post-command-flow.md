@@ -27,13 +27,13 @@ If a file is missing, continue with the next available artifact and say what was
 
 ## Required Follow-Through
 
-After `dp scaffold setup`:
+After `hi scaffold setup`:
 
 - Generate final root/docs/workspace `AGENTS.md` files from prompt specs.
 - Reconcile any scaffolded wiki root with the real repo layout before writing durable docs.
 - Reconcile pre-existing skills yourself; commands do not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence.
 - Exact canonical directory id/name overlap keeps the HI baseline skill active. Archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors.
-- Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `dp report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there.
+- Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `hi report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there.
 - Create sibling `CLAUDE.md` symlink mirrors for those neutral prompt files.
 - Keep `.agents/AGENTS.md` as the shared global prompt source.
 - Keep `.agents/skills/` as the main skill directory; only `.claude/skills` mirrors it.
@@ -44,14 +44,14 @@ After `dp scaffold setup`:
 
 Do not stop after saying the files exist.
 
-After `dp update --check` or `dp update`:
+After `hi update --check` or `hi update`:
 
 - Inspect `.devpunks/scaffold-manifest.json` and `.devpunks/settings.json`.
 - For write modes, confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
 - Verify refreshed files still fit repo shape; handle pack drift intentionally.
-- Apply the same pre-existing skill reconciliation policy as scaffold setup. `dp update` does not detect overlaps; the agent checks the skill homes and `.devpunks/pre-existing-skills` when present, keeps HI baseline active for exact name/id overlaps, preserves non-overlaps through mirrors, and uses `dp report` for semantic overlap or baseline integration proposals.
+- Apply the same pre-existing skill reconciliation policy as scaffold setup. `hi update` does not detect overlaps; the agent checks the skill homes and `.devpunks/pre-existing-skills` when present, keeps HI baseline active for exact name/id overlaps, preserves non-overlaps through mirrors, and uses `hi report` for semantic overlap or baseline integration proposals.
 
-After `dp scaffold init`:
+After `hi scaffold init`:
 
 - Do not start requirements discovery by default.
 - Inspect the generated skills and seeded wiki root.
@@ -59,15 +59,15 @@ After `dp scaffold init`:
 - Treat the seeded wiki root as provisional until it matches the repo layout.
 - Move, rename, or refactor generated init output when needed so it matches the actual repository.
 - Run `requirements-grill` before `write-backlog` only when the user actually asks for requirements or backlog generation.
-- Use `dp scaffold setup` only after the repo is ready for repo-aware setup.
+- Use `hi scaffold setup` only after the repo is ready for repo-aware setup.
 
-After `dp report`:
+After `hi report`:
 
 - Confirm the command created a GitHub issue URL before saying the report was submitted.
 - Include the issue URL, labels, affected command, affected skill pack, and remaining blocker if creation failed.
 - Do not duplicate project product backlog into Harness reports unless maintainers explicitly promote it.
 
-After `dp upgrade`:
+After `hi upgrade`:
 
 - Report whether the CLI upgraded, was already current, could not detect the install manager, or failed while running the package-manager command.
 - Include the package manager and command used when available.

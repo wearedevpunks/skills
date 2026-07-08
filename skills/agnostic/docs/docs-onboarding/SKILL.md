@@ -1,11 +1,11 @@
 ---
 name: docs-onboarding
-description: Onboard an existing project into a scaffolded Harness wiki by inspecting code, docs, and backlog context, building a Project Map, running a targeted requirements grill, and calling create-spec to reconstruct evidence-backed specs. Use immediately after dp scaffold init when the generated prompt says to activate docs-onboarding, or when an existing repository needs initial wiki/spec context reconstructed from current sources.
+description: Onboard an existing project into a scaffolded Harness wiki by inspecting code, docs, and backlog context, building a Project Map, running a targeted requirements grill, and calling create-spec to reconstruct evidence-backed specs. Use immediately after hi scaffold init when the generated prompt says to activate docs-onboarding, or when an existing repository needs initial wiki/spec context reconstructed from current sources.
 ---
 
 # Docs Onboarding
 
-Use this skill to turn an existing repository into initial Harness wiki context after `dp scaffold init`.
+Use this skill to turn an existing repository into initial Harness wiki context after `hi scaffold init`.
 
 ## Workflow
 
