@@ -8,13 +8,13 @@ The CLI vendors this repository as reusable skill content. Keep shareable skill 
 
 ## CLI Entrypoint
 
-The only Harness Intelligence CLI skill users should manually install with the Skills CLI is `dp-cli`:
+The only Harness Intelligence CLI skill users should manually install with the Skills CLI is `hi-cli`:
 
 ```bash
-npx skills add https://github.com/weareDevpunks/skills --skill dp-cli
+skills add https://github.com/wearedevpunks/skills/tree/main/skills/agnostic/cli/hi-cli --skill hi-cli --global --yes
 ```
 
-`dp-cli` is the entrypoint for `hi`/`hint` usage, setup-stage guidance, `hi update`, GitHub-backed `hi report`, explicit `hi upgrade`, and the post-command `.devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the CLI rather than manually installed one by one.
+`hi-cli` is the entrypoint for `hi`/`hint` usage, setup-stage guidance, `hi update`, GitHub-backed `hi report`, explicit `hi upgrade`, and the post-command `.devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the CLI rather than manually installed one by one.
 
 ## Structure
 

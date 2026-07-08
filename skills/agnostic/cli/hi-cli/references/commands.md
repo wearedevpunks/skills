@@ -1,4 +1,4 @@
-# dp-cli Commands
+# hi-cli Commands
 
 The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
 

@@ -1,12 +1,12 @@
 ---
-name: dp-cli
+name: hi-cli
 description: Operates the Harness Intelligence CLI (`hi`, alias `hint`) and interactively follows scaffold, update, report, upgrade, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `hi scaffold`, `hi update`, `hi report`, `hi upgrade`, `hint`, or asks what to do after running a Harness CLI command.
 metadata: {"Harness Intelligence":{"entrypoint":true}}
 ---
 
-# dp-cli
+# hi-cli
 
-The `dp-cli` skill operates the Harness Intelligence CLI. The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
+The `hi-cli` skill operates the Harness Intelligence CLI. The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
 
 ## Quick Start
 
