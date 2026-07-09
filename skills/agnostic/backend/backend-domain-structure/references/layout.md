@@ -15,6 +15,17 @@ Prefer this shape inside the backend root:
 
 The backend root may be an app folder, package folder, service folder, or workspace package. Derive it from the current repo.
 
+## Layer Classifier
+
+Classify by responsibility before naming files or moving code.
+
+- Transport/app composition: app creation, route registration, server start, middleware assembly, request context, top-level dependency wiring, and composition modules.
+- Feature/product domains: use cases, policy, ports/contracts, protocols/interfaces, repositories, feature transport adapters, and public entrypoints for one product domain.
+- Platform/framework concerns: framework modules, runtime context, request lifecycle, common middleware, config loading, and process adapters.
+- Infrastructure/integrations: external SDKs, provider adapters, queues, email, storage, billing, search, analytics, and third-party API mechanics.
+- Database persistence: queries, persistence model mapping, migrations, transaction helpers, and database client adapters.
+- Pure domain models/events: identifiers, value objects, invariants, domain events, and data shapes without framework, transport, container, or persistence imports.
+
 ## Layer Meanings
 
 ### `platform/`
@@ -29,6 +40,7 @@ Good fits:
 - router assembly
 - dependency graph assembly
 - process/runtime adapters
+- framework modules and middleware shared by multiple features
 
 Bad fits:
 
@@ -36,6 +48,7 @@ Bad fits:
 - feature orchestration
 - direct provider details that belong to an integration
 - persistence queries that belong to repositories
+- pure domain models or events
 
 ### `integrations/`
 
@@ -50,6 +63,8 @@ Good fits:
 - provider-specific error mapping
 
 Do not put product policy in `integrations/`. An integration says how to talk to a system; a feature decides why and when.
+
+Infrastructure implements feature ports/contracts or shared platform contracts. It should not import feature internals unless the project has an explicit adapter registration convention.
 
 ### `features/<domain>/`
 
@@ -67,6 +82,8 @@ Common local folders:
 - `router.ts`, `controller.ts`, or equivalent transport adapter when the feature exposes endpoints
 
 Feature domains own use cases, policy, persistence contracts, and public behavior.
+
+Keep pure domain models, events, identifiers, and invariants free of transport, framework, container, and database imports.
 
 ## Actions vs Services
 
@@ -94,6 +111,8 @@ Use `repositories/` for:
 - query composition
 - persistence model mapping
 
+Database code stays behind repositories or persistence adapters. Actions and services should depend on repository contracts, not raw database clients or query builders, unless the existing stack has a narrow equivalent boundary.
+
 Quick rule:
 
 - "what this flow means" -> `actions/`
@@ -118,18 +137,45 @@ Business logic, external side effects, and DB queries should not live directly i
 
 Prefer this direction:
 
-- `platform -> features -> integrations -> external systems`
-- `features -> shared libraries`
-- `integrations -> shared libraries`
+- transport/app composition -> features
+- platform composition -> features
+- features -> platform contracts
+- features -> integrations or infrastructure through ports/contracts
+- features -> shared domain libraries
+- integrations/infrastructure -> external systems
+- integrations/infrastructure -> shared libraries
 
 Avoid:
 
 - `integrations -> features`
+- lower layers importing route files, app creation, server start, or root composition
 - shared libraries importing app-local code
 - transport files importing many low-level helpers instead of one feature entrypoint
 - feature domains reaching into another feature's internals
+- database code leaking above repositories or persistence adapters
+- lazy imports used to hide dependency cycles
 
 Features may depend on other features only when the domain relationship is explicit, stable, and exposed through a public feature entrypoint.
+
+## Dependency Injection
+
+Composition roots own container wiring.
+
+- Build containers, layers, modules, or dependency graphs in root composition or feature composition files.
+- Pass protocols, interfaces, contracts, or concrete adapters into business logic.
+- Keep domain models, events, actions, policies, and repository contracts free of container lookups.
+- Treat lazy imports as a smell when they avoid a cycle instead of fixing import direction.
+- Keep test wiring in test support or feature composition helpers, not inside production domain logic.
+
+## Public Boundaries
+
+Feature modules or package roots should expose deliberate public API.
+
+- Export services, actions, ports/contracts, protocols/interfaces, adapters, events, errors, and named types meant for other layers.
+- Keep internal helpers, provider details, persistence models, and transport plumbing private.
+- Prefer stable named types at cross-layer boundaries over inline anonymous shapes.
+- Remove compatibility aliases after clean refactors; do not leave stale names as a second API.
+- Cross-feature calls should use public feature entrypoints, not internal files.
 
 ## Testing Layout
 
@@ -165,3 +211,15 @@ Avoid a distant package-root `tests/` folder unless the project already has a st
 - Are services reusable mechanics rather than use-case buckets?
 - Are tests colocated with the owning domain?
 - Are imports flowing one way without layer inversions?
+- Does the composition root own container wiring?
+- Are domain models/events free of framework, transport, container, and persistence imports?
+- Do public feature modules or package roots expose only deliberate services/contracts and stable named types?
+- Were compatibility aliases and stale symbols removed after moves?
+
+## Validation Prompts
+
+- Run architecture/import-boundary tests if the repo has them.
+- Run focused compile, type, or test checks for the touched backend root.
+- Grep for stale symbols, old paths, and compatibility aliases after moves.
+- Inspect module import direction from route/app composition down through features and infrastructure.
+- Check import cycles; do not silence them with local or lazy imports.
