@@ -2,6 +2,3 @@ interface:
   display_name: "Docs Ingest Phase"
   short_description: "Routes private/internal ingest and public docs updates"
   default_prompt: "Use $docs-ingest-phase to route docs-affecting work between private/internal ingest and public docs. For public docs, present fragments and ask whether they are sufficient before beats, shape, or final writing."
-
-policy:
-  allow_implicit_invocation: false

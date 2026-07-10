@@ -1,7 +1,6 @@
 ---
 name: delivery-phase
 description: Routes a scoped delivery goal to the next lifecycle phase from current artifacts and evidence. Use when delivering, resuming, or closing a goal that may pass through spec, plan, implementation, review, debugging, docs ingest, and closeout.
-disable-model-invocation: true
 ---
 
 # Delivery Phase

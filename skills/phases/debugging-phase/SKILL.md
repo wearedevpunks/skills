@@ -5,7 +5,6 @@ description: >-
   phase inside delivery when validation or review finds runtime failure. Use
   when the user reports broken behavior, failing smoke checks, logs,
   recordings, runtime symptoms, or asks to debug a delivery-scoped failure.
-disable-model-invocation: true
 ---
 
 # Debugging Phase

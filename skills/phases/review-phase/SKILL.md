@@ -5,7 +5,6 @@ description: >-
   delegated lenses, artifacts, and validation. Use for review-only goals,
   manual reviews, PRs, merged branches, external edits, suspicious code, or the
   mandatory review wrapper inside delivery-phase.
-disable-model-invocation: true
 ---
 
 # Review Phase
