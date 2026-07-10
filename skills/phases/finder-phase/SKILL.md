@@ -1,6 +1,7 @@
 ---
 name: finder-phase
 description: Route loose oversized foggy work before requirements or delivery. Use when an idea is too large for one agent session, wrapped in fog, or needs backlog-native frontier shaping before requirements-phase.
+disable-model-invocation: true
 ---
 
 # Finder Phase

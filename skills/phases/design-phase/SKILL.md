@@ -1,6 +1,7 @@
 ---
 name: design-phase
 description: Routes product design work through evidence intake, lean grill, prototype, approval, backlog, and delivery handoff.
+disable-model-invocation: true
 ---
 
 # Design Phase

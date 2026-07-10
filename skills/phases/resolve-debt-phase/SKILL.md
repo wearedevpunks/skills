@@ -1,6 +1,7 @@
 ---
 name: resolve-debt-phase
 description: Resolves one candidate or accepted tech debt item through validation, resolution spec creation, delivery, and closeout. Use when the user asks to resolve a tech debt entry, process a debt candidate, or continue from a canonical `docs/reference/tech-debt/<domain>/<spec>/<debt-slug>.md` artifact.
+disable-model-invocation: true
 ---
 
 # Resolve Debt Phase

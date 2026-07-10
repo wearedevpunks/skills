@@ -1,6 +1,7 @@
 ---
 name: docs-ingest-phase
 description: Routes docs-affecting work into private/internal ingest and public-facing docs paths. Use when specs need durable domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
+disable-model-invocation: true
 ---
 
 # Docs Ingest Phase

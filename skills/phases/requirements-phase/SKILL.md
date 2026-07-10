@@ -1,6 +1,7 @@
 ---
 name: requirements-phase
 description: Orchestrates the human-centric requirements phase from ambiguity through requirements-grill artifacts into backlog shape. Use when the user asks to run a requirements phase, move from discovery to backlog, close requirement branches, decide whether backlog writing is ready, or coordinate requirements-grill with write-backlog.
+disable-model-invocation: true
 ---
 
 # Requirements Phase

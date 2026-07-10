@@ -4,6 +4,7 @@ description: >-
   Runs AFK ClawPatch bug discovery, reporting, and triage without source
   mutation. Use for ClawPatch discovery, broad bug discovery, bug lifecycle
   triage, finding ledgers, AFK bug review, or durable bug reports.
+disable-model-invocation: true
 ---
 
 # Bug Discovery Phase

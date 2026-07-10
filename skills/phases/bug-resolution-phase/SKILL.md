@@ -5,6 +5,7 @@ description: >-
   triage, docs/debt routing, and revalidation. Use when the user selects a
   ClawPatch finding, asks for ClawPatch-backed bug resolution, or gives a
   tightly bounded finding batch.
+disable-model-invocation: true
 ---
 
 # Bug Resolution Phase
