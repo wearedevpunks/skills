@@ -12,8 +12,9 @@ disable-model-invocation: true
 - **Scope:** one candidate or accepted debt item, never generic debt management
 - **Canonical input:** `docs/reference/tech-debt/<domain>/<spec>/<debt-slug>.md`
 - **Source of truth:** debt file; backlog mirrors are secondary and may be stale
-- **Delegates to:** `$parallel-research` for independent readonly checks; `$create-spec` or equivalent spec workflow for accepted debt; `$delivery-phase` for implementation
-- **Stop conditions:** draft decision requested, accepted item handed to delivery, resolved item no-oped, or completed item marked resolved with links
+- **Delegates to:** `$parallel-research` for independent readonly checks; `$create-spec` or equivalent spec workflow for accepted debt
+- **Manual delivery handoff:** accepted debt presents a bounded brief for explicit user invocation of `$delivery-phase`
+- **Stop conditions:** draft decision requested, accepted item waiting for explicit user `$delivery-phase` invocation, resolved item no-oped, or completed item marked resolved with links
 
 ## Use When
 
@@ -55,8 +56,8 @@ Move the one accepted item toward delivery.
 
 1. Create or update a debt-resolution spec tied to the original domain/spec and debt slug.
 2. The resolution spec must state the initial debt, why it matters, the bounded fix, non-goals, acceptance checks, and closeout requirements.
-3. Run `$delivery-phase` against that resolution spec.
-4. Keep implementation work scoped to resolving the accepted item, not adjacent cleanup.
+3. Build and present a delivery brief naming the resolution spec, bounded fix, acceptance checks, closeout requirements, and implementation scope.
+4. Tell the user to invoke `$delivery-phase` explicitly with that brief, then stop without loading or running it.
 
 ### `resolved`
 
@@ -83,6 +84,6 @@ Always report:
 
 - debt file path and status before/after
 - evidence inspected or validation performed
-- decision requested for `draft`, handoff/result for `accepted`, or no-op reason for `resolved`
+- decision requested for `draft`, manual `$delivery-phase` handoff or returned delivery result for `accepted`, or no-op reason for `resolved`
 - resolution spec and implementation notes links when present
 - backlog mirror sync outcome when available

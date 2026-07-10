@@ -1,6 +1,6 @@
 # Delivery Handoff Phase
 
-Activate `delivery-phase` with approved design context.
+Prepare approved design context for explicit user invocation of `$delivery-phase`.
 
 ## Prerequisite
 
@@ -12,18 +12,18 @@ Fresh backlog ids plus approved artifact set links.
 2. Include frontend taste skills expected during implementation: `design-taste-frontend`, `gpt-taste`, and relevant web/mobile image or prototype context.
 3. Include browser or screenshot validation expectations.
 4. Include before/after PR evidence guidance and require durable links through `repo-asset-management`.
-5. Load `delivery-phase` and start it with this brief.
+5. Present the delivery brief, tell the user to invoke `$delivery-phase` explicitly with it, and stop.
 
 ## Rules
 
-- `delivery-handoff` starts `delivery-phase`; it is not a passive recommendation.
+- `delivery-handoff` does not load or start `delivery-phase`; only the user can invoke it explicitly.
 - Do not re-open design approval during delivery unless artifacts are stale or contradicted.
 - Local temp files and transient browser URLs are not final evidence.
 
 ## Output
 
-- Delivery activation brief.
+- Delivery handoff brief.
 - Backlog ids.
 - Approved artifact links.
 - Before/after evidence expectations.
-- Phase handoff with next route: active `delivery-phase`.
+- Phase handoff with next action: explicit user invocation of `$delivery-phase`.
