@@ -7,20 +7,22 @@ description: Materialize canonical backlog kinds into provider-native items. Use
 
 ## Quick start
 
-1. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
-2. If `requirements-grill` artifacts exist, read `*-grill-status.md` first and `*-grill-log.md` second.
-3. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
-4. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
-5. Derive the item kind first: `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
-6. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items under a module/milestone.
-7. Preserve delivery semantics: epics anchor future `SPEC.md`; stories remain product-facing children of epics.
-8. Apply the item-count rule before finalizing implementation epics/stories.
-9. Make story ordering explicit with native dependency primitives when the provider supports them.
-10. Keep all item bodies product-facing and appropriate to their kind.
-11. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
-12. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
-13. Read the matching provider payload asset before generating or syncing create payloads.
-14. Stop after the backlog structure and create payload guidance are complete.
+1. Before any provider materialization, read `.devpunks/settings.json` and resolve the destination from `backlogProvider` plus `backlogProjectUrl`.
+2. If either setting is missing, or `backlogProjectUrl` is not an absolute HTTP(S) URL, stop and ask the operator to run `hi ensure`. Do not discover or guess a backlog destination.
+3. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
+4. If `requirements-grill` artifacts exist, read `*-grill-status.md` first and `*-grill-log.md` second.
+5. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
+6. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
+7. Derive the item kind first: `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
+8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items under a module/milestone.
+9. Preserve delivery semantics: epics anchor future `SPEC.md`; stories remain product-facing children of epics.
+10. Apply the item-count rule before finalizing implementation epics/stories.
+11. Make story ordering explicit with native dependency primitives when the provider supports them.
+12. Keep all item bodies product-facing and appropriate to their kind.
+13. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
+14. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
+15. Read the matching provider payload asset before generating or syncing create payloads.
+16. Stop after the backlog structure and create payload guidance are complete.
 
 ## Item-count rule
 
