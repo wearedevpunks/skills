@@ -7,15 +7,15 @@ Use `secrets <group> <leaf> --help` as the live authority when an installed vers
 Node.js 22.14 or newer is required for the npm package.
 
 ```bash
-npm install --global @punks/secrets@next
-npx @punks/secrets@next --help
+npm install --global @punks/secrets
+npx @punks/secrets --help
 secrets --version
 secrets --help
 secrets --completions bash|zsh|fish|sh
 secrets --log-level all|trace|debug|info|warn|warning|error|fatal|none <command>
 ```
 
-The npm `latest` tag still points to `0.1.0-beta.0`, so use `@punks/secrets@next` for the current/default install. An untagged `@punks/secrets` install becomes appropriate after stable 1.0 is published. A release executable from GitHub is standalone; verify it against the release `SHA256SUMS` before use.
+The untagged package installs the current stable release. Use `@punks/secrets@next` only when an explicit prerelease-testing policy requires it. A release executable from GitHub is standalone; verify it against the release `SHA256SUMS` before use.
 
 Global flags are `--help` (`-h`), `--version` (`-v`), `--completions`, and `--log-level`. Put a log-level flag before the command when debugging, for example `secrets --log-level debug files list production`.
 
