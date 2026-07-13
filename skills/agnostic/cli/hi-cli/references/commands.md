@@ -72,3 +72,21 @@ The command checks the selected npm dist-tag, detects Bun, pnpm, npm, or Yarn fr
 - npm uses `--min-release-age=0`.
 - pnpm uses `npm_config_minimum_release_age=0`.
 - Yarn uses `YARN_NPM_MINIMAL_AGE_GATE=0`.
+
+## `hi operator status`
+
+Use to report global and project `hi-cli` installations plus legacy `dp-cli` installations without changing them.
+
+## `hi operator install`
+
+Use to install `hi-cli` when absent. Report both scopes and reload or reactivate `$hi-cli` after success.
+
+## `hi operator update`
+
+Use to update every detected global or project `hi-cli` installation. Verify each detected copy and reload or reactivate `$hi-cli` after success.
+
+## `hi operator migrate`
+
+Use to install or update `hi-cli`, then remove detected legacy `dp-cli` installations. Verify every affected scope and reload or reactivate `$hi-cli` after success.
+
+`hi skills rename` is a deprecated compatibility alias for `hi operator migrate`.

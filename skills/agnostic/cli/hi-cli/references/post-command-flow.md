@@ -2,7 +2,7 @@
 
 ## 1. Classify the Result
 
-Capture the command, mode, summary, and paths changed by this run. Choose one branch: scaffold setup, scaffold init, update, report, or upgrade.
+Capture the command, mode, summary, and paths changed by this run. Choose one branch: scaffold setup, scaffold init, update, report, upgrade, or operator skill.
 
 Existing `.devpunks/` artifacts describe project state. Their existence does not make them current work. Read an artifact only when the active branch or a changed category below points to it.
 
@@ -90,11 +90,27 @@ Confirm that the command returned a GitHub issue URL before saying the report wa
 
 Report whether the CLI upgraded, was current, could not detect its install manager, or failed. Include the package manager and command when available. For registry or install-manager failure, give the matching manual reinstall command instead of treating the repo as broken.
 
+### Operator Skill
+
+Classify `hi operator status`, `install`, `update`, or `migrate` from the command result only. `hi skills rename` is a deprecated compatibility alias for `hi operator migrate` and follows this same branch.
+
+Never read `.devpunks/` artifacts or inspect project files for this branch. Do not scan skill homes, run scaffold or update checks, generate prompts, or delegate again.
+
+Report `hi-cli` and legacy `dp-cli` state for both global and project scopes:
+
+- `status`: report detected installations without changing them
+- `install`: verify the resulting `hi-cli` installation
+- `update`: verify every detected `hi-cli` copy updated successfully
+- `migrate`: verify `hi-cli` was installed or updated in every affected scope and every detected legacy `dp-cli` copy was removed
+
+If any action partially fails, return the exact failed Skills CLI command from the command result. After successful `install`, `update`, or `migrate`, tell the agent to reload or reactivate `$hi-cli` before relying on its instructions.
+
 ## 3. Complete the Branch
 
 - scaffold setup/init: applicable generated instructions are reconciled into final repo outputs; targeted validation ran; unresolved policy choices are named
 - update: only changed categories were handled; the required drift gate is clean, or its remaining findings are reported
 - report: a GitHub issue URL or exact submission blocker is returned
 - upgrade: install manager, command, and outcome are returned
+- operator skill: global and project states are returned; requested actions are verified or the exact failed Skills CLI command is returned; reload/reactivation is requested after successful mutation
 
 Report only artifacts consumed for the active branch, final files changed, validation run, and unresolved items.

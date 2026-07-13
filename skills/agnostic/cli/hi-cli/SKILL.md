@@ -1,6 +1,6 @@
 ---
 name: hi-cli
-description: Operates the Harness Intelligence CLI (`hi`, alias `hint`) and interactively follows scaffold, update, report, upgrade, and post-command handoff artifacts through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `hi scaffold`, `hi update`, `hi report`, `hi upgrade`, `hint`, or asks what to do after running a Harness CLI command.
+description: Operates the Harness Intelligence CLI (`hi`, alias `hint`) and interactively follows scaffold, update, report, upgrade, operator-skill, and post-command handoff flows through to completion. Use when a repo contains `.devpunks/` output, when the user mentions `hi scaffold`, `hi update`, `hi report`, `hi upgrade`, `hi operator`, `hint`, or asks what to do after running a Harness CLI command.
 metadata: {"Harness Intelligence":{"entrypoint":true}}
 ---
 
@@ -21,6 +21,8 @@ hi update --write
 hi update --yes
 hi report --help
 hi upgrade --help
+hi operator status
+hi operator update
 ```
 
 After any command, classify the command result before reading artifacts or acting.
@@ -30,6 +32,8 @@ After any command, classify the command result before reading artifacts or actin
 For scaffold init/setup, generated `.devpunks/` artifacts are an active work queue. Follow the scaffold branch through repo-specific authoring and validation.
 
 For update, artifact existence is not a trigger. Route only from the current command summary and changed paths. Do not reopen standing specs, regenerate prompts or subagents, scan every skill home, or repeat setup work unless the current update changed the corresponding input.
+
+For `hi operator`, inspect only the command result. Never read `.devpunks/` or run scaffold follow-through. See [references/post-command-flow.md](references/post-command-flow.md) for the full operator-skill completion rules.
 
 An assigned execution worker runs its bounded command and reports the result. It does not delegate or launch another execution agent.
 
@@ -125,6 +129,12 @@ Upgrade deliberately bypasses package-manager release-age gates for the CLI pack
 - Yarn: `YARN_NPM_MINIMAL_AGE_GATE=0 yarn global add @punks/cli@<tag>`
 
 Startup update checks are advisory and detached. They should not mutate installs during normal command startup; `hi upgrade` is the explicit update path.
+
+## Operator Skill
+
+Use `hi operator status|install|update|migrate` to manage the separately installed `hi-cli` operator skill. `hi skills rename` remains a deprecated compatibility alias for `hi operator migrate`.
+
+This flow is separate from CLI executable upgrade and project scaffold update. Follow the operator-skill branch in [references/post-command-flow.md](references/post-command-flow.md).
 
 ## Completion
 
