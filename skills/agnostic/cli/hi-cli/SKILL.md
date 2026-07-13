@@ -23,13 +23,15 @@ hi report --help
 hi upgrade --help
 ```
 
-After any command, read the command output and generated artifacts before acting.
+After any command, classify the command result before reading artifacts or acting.
 
 ## Core Rule
 
-`.devpunks/` is an active work queue.
+For scaffold init/setup, generated `.devpunks/` artifacts are an active work queue. Follow the scaffold branch through repo-specific authoring and validation.
 
-Do not summarize the generated files and stop. Read the handoff, execute the specs, reconcile generated assets, and report only remaining unresolved items.
+For update, artifact existence is not a trigger. Route only from the current command summary and changed paths. Do not reopen standing specs, regenerate prompts or subagents, scan every skill home, or repeat setup work unless the current update changed the corresponding input.
+
+An assigned execution worker runs its bounded command and reports the result. It does not delegate or launch another execution agent.
 
 ## Interactive Rule
 
@@ -49,7 +51,7 @@ Do not ask for trivial file reads, validation commands, or direct execution of a
 
 See [references/commands.md](references/commands.md) for command intent and when to use each command.
 
-See [references/post-command-flow.md](references/post-command-flow.md) for the required agent flow after `hi scaffold` or `hi update`.
+See [references/post-command-flow.md](references/post-command-flow.md) for the command-specific read order, update routing table, and completion gates.
 
 The former backlog scaffold subcommand is not part of current guidance. `hi scaffold init` provides the requirements/backlog skills and initial wiki structure; `hi scaffold setup` provides repo-aware managed scaffold output.
 
@@ -89,15 +91,15 @@ When lint specs suggest Oxlint or hooks suggest Oxfmt, treat migration as a repo
 
 ## Update
 
-After `hi update` or `hi update --check`, inspect `.devpunks/scaffold-manifest.json` and the update summary.
+After `hi update` or `hi update --check`, classify the update summary and changed paths before opening generated artifacts.
 
 - `--check` reports managed-file drift without writing.
 - `--write` refreshes scaffold-managed assets.
 - `--yes` refreshes scaffold-managed assets without prompting and is the non-interactive apply flag.
 - drift output can include changelog summaries; use them to explain why update/upgrade matters.
-- pack drift is a setup decision point, not a silent auto-fix.
+- auto-accepted default or detected pack additions follow their affected changed categories only; optional, removal, policy, or surface-shape drift can require a setup decision.
 
-Apply the same pre-existing skill policy after update: the command does not detect overlap, the agent checks `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present, exact name/id overlap keeps HI baseline active, non-overlaps remain mirrored, and `hi report` carries semantic overlap or baseline integration proposals.
+Use the update decision table and completion gate in [references/post-command-flow.md](references/post-command-flow.md).
 
 ## Report
 
@@ -124,11 +126,6 @@ Upgrade deliberately bypasses package-manager release-age gates for the CLI pack
 
 Startup update checks are advisory and detached. They should not mutate installs during normal command startup; `hi upgrade` is the explicit update path.
 
-## Completion Checklist
+## Completion
 
-- `.devpunks/AGENT-SYSTEM-PROMPT.md` was followed or consciously superseded.
-- `.devpunks/specs/**` items were implemented or listed as unresolved.
-- required tools were checked when `.devpunks/required-tools.json` exists.
-- final prompt files and harness mirrors match the handoff contract.
-- subagent manifests were reconciled when specs exist.
-- user decisions were requested for policy-level choices instead of guessed silently.
+Use the branch-specific completion criteria in [references/post-command-flow.md](references/post-command-flow.md). Do not substitute an existence-based checklist.

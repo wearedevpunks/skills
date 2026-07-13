@@ -1,8 +1,16 @@
 # Post-Command Flow
 
-## Read Order
+## 1. Classify the Result
 
-When `.devpunks/` exists, read in this order:
+Capture the command, mode, summary, and paths changed by this run. Choose one branch: scaffold setup, scaffold init, update, report, or upgrade.
+
+Existing `.devpunks/` artifacts describe project state. Their existence does not make them current work. Read an artifact only when the active branch or a changed category below points to it.
+
+## 2. Read the Active Branch
+
+### Scaffold Setup
+
+Read available artifacts in this order:
 
 1. `.devpunks/AGENT-SYSTEM-PROMPT.md`
 2. `.devpunks/AGENT-HANDOFF.md`
@@ -11,74 +19,82 @@ When `.devpunks/` exists, read in this order:
 5. `.devpunks/settings.json`
 6. `.devpunks/specs/**`
 
-If a file is missing, continue with the next available artifact and say what was missing.
+If an expected artifact is missing, continue and report it.
 
-## Artifact Meaning
+Artifact meanings:
 
-- `.devpunks/AGENT-SYSTEM-PROMPT.md`: paste-ready instructions for the next agent.
-- `.devpunks/AGENT-HANDOFF.md`: human-readable scaffold summary and required follow-up.
-- `.devpunks/scaffold-manifest.json`: source of truth for managed files and update behavior.
-- `.devpunks/required-tools.json`: tools implied by selected skills.
-- `.devpunks/specs/prompts/**`: instructions for final prompt files, not final prompt bodies.
-- `.devpunks/specs/lint/**`: lint asset selection and starter config guidance.
-- `.devpunks/specs/subagents/**`: desired subagent manifest shape.
+- `AGENT-SYSTEM-PROMPT.md`: next-agent instructions
+- `AGENT-HANDOFF.md`: scaffold summary and follow-up
+- `scaffold-manifest.json`: managed-file and update authority
+- `required-tools.json`: tools implied by selected skills
+- `settings.json`: accepted CLI and baseline pins
+- `specs/prompts/**`: instructions for final prompts, not prompt bodies
+- `specs/lint/**`: lint selection and starter guidance
+- `specs/subagents/**`: desired subagent manifest shape
 
-- `.devpunks/settings.json`: project-local `cliVersion` and `baselineVersion` pins from last accepted scaffold-writing command.
+Then:
 
-## Required Follow-Through
+- author the requested root, docs, and workspace guidance plus sibling `CLAUDE.md` symlink mirrors
+- keep `.agents/AGENTS.md` as shared global prompt source and `.agents/skills/` as the main skill directory; only `.claude/skills` mirrors it
+- reconcile the seeded wiki with the real repo boundary before durable docs are written
+- inspect pre-existing skill homes and `.devpunks/pre-existing-skills` when present; keep the HI baseline active for exact IDs, archive replaced evidence, preserve non-overlaps through mirrors, and use `hi report` for semantic overlap
+- reconcile `.agents/subagents/manifest.mjs` with its prompt and generated spec
+- implement applicable lint specs; ask before replacing lint or format policy, scripts, CI, hooks, or docs
+- ask which detected core libraries matter when source context is broad, then inspect only that set
 
-After `hi scaffold setup`:
+Do not stop because generated files exist. Finish applicable repo-authored outputs and validation.
 
-- Generate final root/docs/workspace `AGENTS.md` files from prompt specs.
-- Reconcile any scaffolded wiki root with the real repo layout before writing durable docs.
-- Reconcile pre-existing skills yourself; commands do not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`. If `.devpunks/pre-existing-skills` exists, inspect it as blind pre-command evidence.
-- Exact canonical directory id/name overlap keeps the HI baseline skill active. Archive local evidence under `.devpunks/replaced-skills/<skill-id>/...`, then remove active local copies or mirrors.
-- Preserve non-overlapping local skills and expose them through harness mirrors or symlinks. Use `hi report` when archived local knowledge should be proposed for HI baseline integration; semantic overlap belongs there.
-- Create sibling `CLAUDE.md` symlink mirrors for those neutral prompt files.
-- Keep `.agents/AGENTS.md` as the shared global prompt source.
-- Keep `.agents/skills/` as the main skill directory; only `.claude/skills` mirrors it.
-- Reconcile `.agents/subagents/manifest.mjs` with both `.agents/subagents/manifest.prompt.md` and `.devpunks/specs/subagents/manifest-spec.json`.
-- Use lint specs to produce or update the repo's real lint config when requested.
-- Ask before replacing existing lint/format tooling with Oxlint/Oxfmt. If approved, update scripts, CI/task pipelines, hooks, and docs together.
-- Ask which detected core libraries to inspect when source context is broad; then use `opensrc path <package>` or `opensrc path owner/repo` for only the chosen set.
+### Scaffold Init
 
-Do not stop after saying the files exist.
+- inspect the generated requirements skills and seeded wiki root
+- reconcile pre-existing skills with the same exact-ID policy as setup
+- treat the wiki root as provisional and move or refactor it to match the repo
+- do not start requirements discovery by default
+- run `requirements-grill` before `write-backlog` only when the user asks for requirements or backlog generation
+- use `hi scaffold setup` only when the repo is ready for repo-aware setup
 
-After `hi update --check` or `hi update`:
+### Update
 
-- Inspect `.devpunks/scaffold-manifest.json` and `.devpunks/settings.json`.
-- For write modes, confirm `cliVersion` and `baselineVersion` reflect accepted project authority after writes.
-- Verify refreshed files still fit repo shape; handle pack drift intentionally.
-- Apply the same pre-existing skill reconciliation policy as scaffold setup. `hi update` does not detect overlaps; the agent checks the skill homes and `.devpunks/pre-existing-skills` when present, keeps HI baseline active for exact name/id overlaps, preserves non-overlaps through mirrors, and uses `hi report` for semantic overlap or baseline integration proposals.
+Read the command summary before any generated artifact. If it reports no diff, report success and stop.
 
-After `hi scaffold init`:
+For a diff, classify only paths changed or flagged by this run. If the summary is insufficient, read the matching manifest entries. Read settings only for pin changes. Read a prompt, handoff, tool list, or spec only when its own category changed.
 
-- Do not start requirements discovery by default.
-- Inspect the generated skills and seeded wiki root.
-- Reconcile pre-existing skills yourself using `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, and `.opencode/skills`; inspect `.devpunks/pre-existing-skills` when present; the command did not detect overlap.
-- Treat the seeded wiki root as provisional until it matches the repo layout.
-- Move, rename, or refactor generated init output when needed so it matches the actual repository.
-- Run `requirements-grill` before `write-backlog` only when the user actually asks for requirements or backlog generation.
-- Use `hi scaffold setup` only after the repo is ready for repo-aware setup.
+Apply every matching row:
 
-After `hi report`:
+| Changed category | Required follow-through |
+| --- | --- |
+| Settings or manifest pins only | Confirm accepted pins. The standard fresh drift gate below is the only follow-through. |
+| Skill content; IDs unchanged | Inspect affected skills and active mirrors only. Preserve repo-owned edits. Do not scan every skill home or touch prompts, subagents, packs, or wiki. |
+| Skill added, removed, or renamed | Reconcile affected IDs and their mirrors. Inspect overlap evidence only for those IDs. |
+| `local-edited` conflict | Inspect the flagged path and its relevant snapshot/evidence. Preserve local intent; ask only when project and baseline intent conflict. |
+| Missing or stale path | Confirm the named recreation or deletion and its direct references. Do not audit unrelated managed files. |
+| Prompt spec or prompt input | Reconcile only affected prompt scopes and their mirrors. |
+| Subagent contract input | Reconcile only the generated and final subagent manifests. Do not spawn agents merely to perform reconciliation. |
+| Lint, hook, or script input | Validate the affected config or command. Ask before changing project policy. |
+| Required tools | Check only added, changed, or failed tools. |
+| Source-guide content | Inspect only affected guide files. Do not run `opensrc` unless the user's current task requires that library's source. |
+| Wiki input | Reconcile affected routes or documents against the real repo boundary, then run route- or runtime-targeted validation. |
+| Auto-accepted default or detected pack addition | Follow only the other changed categories caused by that addition. Do not ask or rerun setup. |
+| Optional pack addition, pack removal, policy change, surface reshape, or explicit unresolved setup decision | Ask for the required decision. Run full setup follow-through only when the accepted decision requires repo-authored final outputs. |
+| First adoption or missing/corrupt final output | Run the applicable scaffold setup follow-through. |
 
-- Confirm the command created a GitHub issue URL before saying the report was submitted.
-- Include the issue URL, labels, affected command, affected skill pack, and remaining blocker if creation failed.
-- Do not duplicate project product backlog into Harness reports unless maintainers explicitly promote it.
+After write modes, run targeted validation for the affected category and one fresh `hi check --json` drift gate. Do not rerun `hi update` merely because an earlier command mentioned a possible version race. Rerun once only when `hi check --json` detects new CLI or baseline drift; then run the final `hi check --json` gate.
 
-After `hi upgrade`:
+For `hi update --check`, report the classified preview without writing. A clean preview is complete.
 
-- Report whether the CLI upgraded, was already current, could not detect the install manager, or failed while running the package-manager command.
-- Include the package manager and command used when available.
-- If upgrade failed because registry lookup or install-manager detection failed, give the manual reinstall command for Bun, pnpm, npm, or Yarn rather than treating the repo as broken.
+### Report
 
-## Reporting
+Confirm that the command returned a GitHub issue URL before saying the report was submitted. Return the URL, labels, command, skill pack, and any blocker. Do not duplicate project backlog into Harness reports unless maintainers explicitly promote it.
 
-Final reports should say:
+### Upgrade
 
-- what artifacts were consumed
-- what final files were authored or reconciled
-- report issue URL or upgrade command/result, when relevant
-- what validation ran
-- what remains unresolved, if anything
+Report whether the CLI upgraded, was current, could not detect its install manager, or failed. Include the package manager and command when available. For registry or install-manager failure, give the matching manual reinstall command instead of treating the repo as broken.
+
+## 3. Complete the Branch
+
+- scaffold setup/init: applicable generated instructions are reconciled into final repo outputs; targeted validation ran; unresolved policy choices are named
+- update: only changed categories were handled; the required drift gate is clean, or its remaining findings are reported
+- report: a GitHub issue URL or exact submission blocker is returned
+- upgrade: install manager, command, and outcome are returned
+
+Report only artifacts consumed for the active branch, final files changed, validation run, and unresolved items.

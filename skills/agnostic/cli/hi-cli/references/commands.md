@@ -26,21 +26,19 @@ After init, the agent must reconcile pre-existing skills. The command does not d
 
 Use at session start when `.devpunks/` exists or to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
 
-Report CLI, baseline, missing, changed, or pack-drift findings. Do not write files. If remediation is accepted, use a subagent for `hi upgrade`, `hi update --write`, or `hi update --yes`.
+Report CLI, baseline, missing, changed, or pack-drift findings. Do not write files. If remediation is accepted, the parent may assign one bounded execution worker for `hi upgrade`, `hi update --write`, or `hi update --yes` under the core execution rule.
 
 ## `hi update --write`
 
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
-After writing, verify the refreshed files still fit the repo shape and any baseline or pack drift is handled intentionally.
-
-Also run the agent-owned pre-existing skill reconciliation check. `hi update` does not detect overlaps.
+After writing, follow only the matching update branches in [post-command-flow.md](post-command-flow.md).
 
 ## `hi update --yes`
 
 Use in non-interactive harnesses to apply managed scaffold updates without answering the terminal confirmation prompt.
 
-It has the same managed-file apply behavior as `--write`.
+It has the same managed-file apply behavior and branch-sensitive follow-through as `--write`.
 
 ## `hi report`
 
