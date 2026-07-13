@@ -6,15 +6,16 @@ This repo is the public Devpunks skills database and the baseline skill source u
 
 The CLI vendors this repository as reusable skill content. Keep shareable skill behavior here first, then let the CLI consume it through its normal skills sync/update flow.
 
-## CLI Entrypoint
+## CLI Entrypoints
 
-The only Harness Intelligence CLI skill users should manually install with the Skills CLI is `hi-cli`:
+The CLI skills users should manually install with the Skills CLI are `hi-cli` and `secrets-cli`:
 
 ```bash
 skills add https://github.com/wearedevpunks/skills/tree/main/skills/agnostic/cli/hi-cli --skill hi-cli --global --yes
+npx skills add https://github.com/wearedevpunks/skills/tree/main/skills/misc/secrets-cli --skill secrets-cli --global --yes
 ```
 
-`hi-cli` is the entrypoint for `hi`/`hint` usage, setup-stage guidance, `hi update`, GitHub-backed `hi report`, explicit `hi upgrade`, and the post-command `.devpunks/` artifact flow. Other Devpunks skills are intended to be scaffolded or vendored by the CLI rather than manually installed one by one.
+`hi-cli` is the entrypoint for `hi`/`hint` usage, setup-stage guidance, `hi update`, GitHub-backed `hi report`, explicit `hi upgrade`, and the post-command `.devpunks/` artifact flow. `secrets-cli` is the required operator skill for the `secrets` executable. Other Devpunks skills are intended to be scaffolded or vendored by the CLI rather than manually installed one by one.
 
 ## Structure
 
