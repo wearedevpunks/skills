@@ -40,6 +40,7 @@ Avoid:
 
 ## Self-review before saving
 
+- ensure frontmatter has a non-empty string `title`, especially for specs saved directly in routed Fumadocs trees
 - remove all template scaffolding
 - remove empty or irrelevant sections
 - ensure the document reads cleanly with no ghost instructions
