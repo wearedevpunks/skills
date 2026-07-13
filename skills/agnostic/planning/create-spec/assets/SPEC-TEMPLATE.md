@@ -1,4 +1,5 @@
 ---
+title: "[Title]"
 domain:
 type: spec
 status: draft
