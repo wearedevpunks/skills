@@ -4,12 +4,12 @@
 
 ```bash
 node --version
-npm install --global @punks/secrets@next
+npm install --global @punks/secrets
 secrets --version
 secrets --help
 ```
 
-Use `npx @punks/secrets@next --help` for a one-off run. The npm `latest` tag still points to `0.1.0-beta.0`, so `@next` is the current/default install until stable 1.0 is published; after that publication, use untagged `@punks/secrets`. Do not assume the local CLI matches this manual; inspect leaf help when syntax is in doubt.
+Use `npx @punks/secrets --help` for a one-off run. Use `@punks/secrets@next` only when an explicit prerelease-testing policy requires it. Do not assume the local CLI matches this manual; inspect leaf help when syntax is in doubt.
 
 ## Authenticate
 
