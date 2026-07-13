@@ -23,8 +23,13 @@ Every worker brief should include:
 - `green_command`
 - `reason_not_testable`
 - `review_mode`
+- `runtime_validation`
+- `runtime_target`
+- `runtime_evidence`
+- `runtime_cleanup`
 - relevant risks or constraints from the plan
 - UI screenshot evidence requirements from [ui-screenshot-evidence.md](ui-screenshot-evidence.md) when the task changes UI
+- supported-runtime evidence requirements from [runtime-product-validation.md](runtime-product-validation.md) when `runtime_validation: required`
 
 ## Required instructions
 
@@ -46,6 +51,7 @@ Each worker brief should require:
 14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
 15. capturing and linking durable before/after screenshot evidence when the task changes UI
 16. updating the plan entry with status, log, touched files, and gotchas before handoff closes
+17. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
 
 ## Worker output contract
 
@@ -57,6 +63,7 @@ Require the worker to return:
 - verification evidence: RED -> GREEN for testable tasks, or the exact non-testable alternative that was run
 - validation evidence performed
 - durable UI before/after screenshot links when UI changed
+- required runtime-validation scenario, observed evidence, cleanup result, or exact blocker
 - validation intentionally deferred
 - anything blocked or risky, with exact reason and required decision
 

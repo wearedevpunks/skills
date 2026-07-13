@@ -28,6 +28,12 @@
 |---------|----------|--------|-------|-------|
 | | | | | |
 
+## Runtime Validation Evidence
+
+| Task | Scenario and target | Public action | Correlation or provenance | Expected result | Observed result and durable evidence | Cleanup | Status or exact blocker |
+|------|---------------------|---------------|---------------------------|-----------------|--------------------------------------|---------|-------------------------|
+| | | | | | | | |
+
 ## Visual Evidence Acceptance Map
 
 | Source | Backlog attachment or fallback | PR-ready before/after evidence |

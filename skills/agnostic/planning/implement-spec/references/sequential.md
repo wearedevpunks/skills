@@ -15,11 +15,12 @@ Hard gate: sequential implementation never runs in the parent main thread. If th
 1. Load the shared lifecycle from `lifecycle.md`.
 2. Record `sequential` under **Execution mode** in `IMPLEMENTATION-NOTES.md`.
 3. Read `.agents/subagents/manifest.mjs` when present and choose the best specialist for the whole sequential implementation.
-4. Spawn one worker with the full spec folder, plan, lifecycle rules, required skills, task order, and update obligations.
+4. Spawn one worker with the full spec folder, plan, lifecycle rules, required skills, task order, update obligations, and each task's `runtime_validation`, `runtime_target`, `runtime_evidence`, and `runtime_cleanup` fields.
 5. If any assigned task changes UI, include the screenshot evidence contract from [ui-screenshot-evidence.md](ui-screenshot-evidence.md) in the worker brief.
-6. Require the worker to execute one task at a time in dependency order.
-7. After worker handoff, review the diff, plan updates, notes, and validation evidence before finalization.
-8. Run any parent-level acceptance or smoke checks needed to trust the worker output.
+6. If any assigned task requires runtime validation, include [runtime-product-validation.md](runtime-product-validation.md) in the worker brief.
+7. Require the worker to execute one task at a time in dependency order.
+8. After worker handoff, review the diff, plan updates, notes, and validation evidence before finalization.
+9. Run any parent-level acceptance or smoke checks needed to trust the worker output.
 
 ## Task loop
 
@@ -33,7 +34,8 @@ The worker owns this loop for every task:
 6. run `green_command`, record `green_evidence`, and only then mark the task done
 7. for non-testable or non-applicable tasks, record `reason_not_testable` plus the exact alternative verification
 8. for UI implementation changes, capture and link durable before/after screenshot evidence
-9. update the execution board before advancing
+9. for `runtime_validation: required`, follow the disclosed runtime validation reference and record conclusive evidence before completion; an exact blocker leaves the task blocked
+10. update the execution board before advancing
 
 The parent owns:
 

@@ -58,6 +58,7 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 - Append or refine when it already exists.
 - Keep it current during the run, not only at the end.
 - For UI implementation changes, load [ui-screenshot-evidence.md](ui-screenshot-evidence.md) and keep `## UI Evidence Links` current.
+- For tasks with `runtime_validation: required`, load [runtime-product-validation.md](runtime-product-validation.md) and keep `## Runtime Validation Evidence` current.
 
 ## 5. Prepare the tech-debt ledger
 
@@ -104,6 +105,9 @@ Do not create the file when nothing durable must survive the run.
 - Accept missing RED/GREEN evidence only when the task has an explicit `reason_not_testable` or `tdd_status: not_applicable`.
 - Do not accept `reason_not_testable` for forgotten RED. If code came first, recover by writing the public-result RED test, recording failure, patching to pass, and marking `tdd_status: recovered`.
 - Treat every `review_mode` as required validation routing, never optional metadata.
+- Treat `runtime_validation`, `runtime_target`, `runtime_evidence`, and `runtime_cleanup` as a task completion contract orthogonal to `review_mode`.
+- When `runtime_validation: required`, do not mark the task complete until the supported runtime has conclusive public-entrypoint-first evidence recorded under `## Runtime Validation Evidence`.
+- An exact runtime blocker is an honest blocked result, not completion. Record it and keep the affected task and acceptance criterion blocked.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
 - Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
@@ -123,6 +127,7 @@ After each completed task or wave:
 - fill or reconcile `codebase_design_notes` when module shape, seam placement, adapters, or test surface changed
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - for UI implementation changes, record durable before/after screenshot asset links in `IMPLEMENTATION-NOTES.md`
+- for required runtime validation, record the scenario, public action, correlation or provenance ids, observed result, durable evidence, cleanup, and status or exact blocker in `IMPLEMENTATION-NOTES.md`
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
@@ -151,6 +156,8 @@ If running inside a worktree and `portless` is available, prefer it for server-b
 
 For UI implementation changes, runtime validation must also follow [ui-screenshot-evidence.md](ui-screenshot-evidence.md).
 
+For every task with `runtime_validation: required`, follow [runtime-product-validation.md](runtime-product-validation.md). Automated checks alone do not satisfy this gate.
+
 ## 10. Verify acceptance criteria
 
 Re-read `SPEC.md` acceptance criteria and mark each one:
@@ -160,6 +167,8 @@ Re-read `SPEC.md` acceptance criteria and mark each one:
 - blocked
 
 Record a reason for every unmet or blocked item in `IMPLEMENTATION-NOTES.md`.
+
+Acceptance that depends on required runtime validation is `met` only when its recorded evidence is conclusive. An exact blocker makes it `blocked`.
 
 ## 11. Write the manual review checklist
 
@@ -188,6 +197,7 @@ Before reporting back:
 - ensure **Execution mode** reflects the mode actually used
 - ensure **Sanity checks** lists only commands actually run
 - ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
+- ensure **Runtime Validation Evidence** contains conclusive proof for every required task, or an exact blocker with the task and acceptance criterion still marked blocked
 - ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
@@ -204,6 +214,7 @@ Summarize:
 - validation results
 - key deviations or surprises
 - acceptance-criteria status
+- runtime-validation evidence and exact blockers
 - manual review checklist
 - blocked tasks needing input
 - whether the spec-linked tech-debt file was created or updated

@@ -50,6 +50,10 @@ Every task must include:
 - `green_evidence`
 - `codebase_design_notes`
 - `review_mode`
+- `runtime_validation`
+- `runtime_target`
+- `runtime_evidence`
+- `runtime_cleanup`
 
 `backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
 
@@ -66,6 +70,16 @@ For behavior-changing code tasks, `tdd_status` must be `required` and the task m
 `reason_not_testable` cannot be used for "forgot RED." If production code came first, the executor must recover by writing a real public-result RED test, capturing failure evidence, patching to GREEN, and setting `tdd_status: recovered`.
 
 `codebase_design_notes` must name the relevant module interface, seam, adapter, or test surface when the task changes code structure. Use `not_applicable` only when the task has no codebase-design consequence.
+
+`runtime_validation` must be `required` when acceptance crosses a process or infrastructure boundary that automated checks or mocks cannot faithfully prove, including workers, queues, persistence, providers, tracing, deployment wiring, or similar runtime integration. Otherwise use `not_required`.
+
+When runtime validation is required:
+
+- `runtime_target` names the supported running product surface.
+- `runtime_evidence` names the externally visible result and durable side effect or diagnostic proof required.
+- `runtime_cleanup` defines the provenance identifiers and owned-resource cleanup expectation.
+
+Use `not_applicable` for the other runtime fields when `runtime_validation: not_required`. Runtime validation is orthogonal to `review_mode`; a `cli`, `browser`, or `mixed` task may still require it. Execution mechanics are disclosed in [../../implement-spec/references/runtime-product-validation.md](../../implement-spec/references/runtime-product-validation.md).
 
 ```md
 ### T3: Example task
@@ -91,4 +105,8 @@ For behavior-changing code tasks, `tdd_status` must be `required` and the task m
 - **green_evidence**:
 - **codebase_design_notes**: Interface/seam/adapter/test-surface notes, or not_applicable.
 - **review_mode**: cli | browser | mixed
+- **runtime_validation**: required | not_required
+- **runtime_target**: Supported local API and background worker.
+- **runtime_evidence**: Public response plus correlated persisted state and worker completion.
+- **runtime_cleanup**: Tag fixtures with a unique run id; remove only resources carrying that id.
 ```

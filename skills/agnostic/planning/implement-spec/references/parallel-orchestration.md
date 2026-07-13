@@ -29,6 +29,10 @@ For each task, extract:
   - validation
   - `tdd_target`
   - `review_mode`
+  - `runtime_validation`
+  - `runtime_target`
+  - `runtime_evidence`
+  - `runtime_cleanup`
   - backlog metadata when present
   - related tasks or plan-level constraints when they materially shape execution
 
@@ -89,6 +93,7 @@ A task is complete only when all of the following are true:
 - acceptance criteria are satisfied, not only partially implemented
 - RED -> GREEN evidence exists for testable tasks, or an explicit `reason_not_testable` plus exact alternative verification exists
 - validation evidence matches the task contract
+- required runtime validation has conclusive evidence recorded, or the task remains blocked with an exact blocker
 - `PLAN.md` reflects the completed status and execution log
 - touched files are recorded
 - any non-obvious deviations are reflected in `IMPLEMENTATION-NOTES.md`
