@@ -94,7 +94,7 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **backlog_item_id**: CP-128
 - **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-story
 - **relation_mode**: native | body-links
-- **assigned_skills**: [`effect-authoring`, `effect-best-practices`, `tdd`]
+- **assigned_skills**: [`effect-authoring`, `effect`, `tdd`]
 - **tdd_status**: required
 - **tdd_target**: First failing public behavior to implement.
 - **red_command**: Exact command expected to fail before implementation.

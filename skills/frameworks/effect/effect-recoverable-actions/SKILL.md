@@ -9,7 +9,7 @@ description: |
 
 # Effect Recoverable Actions
 
-Use this skill with `$backend-recoverable-actions`, `$effect-backend-structure`, and `$effect-best-practices`.
+Use this skill with `$backend-recoverable-actions`, `$effect-backend-structure`, and `$effect`.
 
 The agnostic skill owns the recovery model:
 
