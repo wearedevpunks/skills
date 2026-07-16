@@ -7,3 +7,5 @@ Imported from [`kitlangton/skills`](https://github.com/kitlangton/skills/tree/30
 ```
 
 The adjacent `LICENSE` is the upstream MIT license retained with this skill.
+
+Devpunks adds the `EFFECT_ATOM.md` and `OBSERVABILITY.md` references plus their Branch Chooser pointers.
