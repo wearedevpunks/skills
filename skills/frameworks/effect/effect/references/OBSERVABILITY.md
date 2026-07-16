@@ -1,40 +1,15 @@
-# OTEL / Observability Patterns Checklist
+# Observability Patterns
 
-## 1. Effect.fn With Trace Names
-
-`Effect.fn` replaces the pattern where an arrow function wraps `Effect.gen`. It does NOT apply to bare `Effect.gen` calls without a wrapping function. It also does NOT apply in `.test.ts` files.
-
-```typescript
-// BAD — arrow function wrapping Effect.gen, should use Effect.fn
-const findById = (productId: ProductId) => Effect.gen(function* () {
-  // no trace name, anonymous span
-})
-
-// GOOD — Effect.fn replaces the arrow function wrapper
-const findById = Effect.fn("ProductRepository.findById")(function* (
-  productId: ProductId,
-  organizationId: OrganizationId
-) {
-  yield* Effect.annotateCurrentSpan("productId", productId)
-  // ...
-})
-
-// FINE — bare Effect.gen without wrapping function, no Effect.fn needed
-yield* Effect.gen(function* () {
-  const user = yield* UserService
-  // inline composition, not a named function
-})
-```
-
-### Naming Convention
+## 1. Span Names
 
 Follow `ServiceName.methodName` format consistently:
+
 - `UserService.findById`
 - `PaywallRepository.create`
 - `CampaignService.createTrigger`
 - `OrgResolver.resolveProjectAccess`
 
-## 2. annotateCurrentSpan With Essential Data
+## 2. Annotate Spans With Essential Data
 
 Annotate spans with entity IDs and key business values. Don't over-annotate with internal state or step-by-step progress.
 
