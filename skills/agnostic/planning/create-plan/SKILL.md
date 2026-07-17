@@ -30,15 +30,16 @@ Create a plan first. Never implement code in this skill.
 1. Read repo, git, existing plan, and backlog context before asking questions.
 2. Keep a visible planning control panel in the conversation: locked decisions, open decisions, current graph step, and next step.
 3. Read `references/grill-ambiguity.md` and run `$grilling` as explicit ambiguity reduction.
-4. Update a running decision ledger after every answer so the user never has to reconstruct state from memory.
-5. Insert a synthesis checkpoint before the thread gets noisy, then continue only if more ambiguity reduction is still needed.
-6. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
-7. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-8. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
-9. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
-10. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-11. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
-12. Read `references/stop-conditions.md` and stop exactly there.
+4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
+5. After a whole response set is processed, emit any synthesis checkpoint required by `references/grill-ambiguity.md`.
+6. When the `$grilling` frontier is empty, obtain explicit confirmation of shared understanding before plan synthesis or backlog sync.
+7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
+8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
+9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
+10. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
+11. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
+12. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
+13. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -46,7 +47,7 @@ Create a plan first. Never implement code in this skill.
 
 1. Derive host, owner, tracker, and scope from repo state instead of assuming them.
 2. Ask only for missing high-impact inputs such as scope, goal, or backlog target.
-3. Every plan-shaping question must use the exact block: `Decision`, `Recommendation`, `Question`, `Why it matters`.
+3. Every plan-shaping question in each `$grilling` round must use the exact block: `Decision`, `Recommendation`, `Question`, `Why it matters`.
 4. Keep `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, and `$codebase-design` as visible inputs to one planning run; record when `$parallel-research`, `planning-discovery`, or `plan-reviewer` is used or intentionally skipped because the work is not split-friendly or subagents are unavailable.
 5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.

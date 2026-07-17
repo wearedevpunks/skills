@@ -6,24 +6,18 @@ This workflow is always paired with [artifact-output.md](artifact-output.md) dur
 
 ## Session Behavior
 
-Use the shared `$grilling` primitive for the interview loop, then apply the requirements-specific pressure tests below.
-
-Interview the user relentlessly about every aspect of the plan until shared understanding exists.
-
-Walk the design tree branch by branch until each branch is:
-
-- closed
-- parked
-- explicitly deferred
+Use the shared `$grilling` primitive as the sole scheduling and traversal contract, then apply the requirements-specific pressure tests below.
 
 ## Questioning Rules
 
-- Ask one question at a time by default.
-- Always include a recommended answer.
-- Explain why the recommendation is preferred.
+- Apply the requirements question contract to every question in a `$grilling` round: include a recommended answer and explain why it is preferred.
 - If multiple interpretations exist, force a precise choice.
 - When the answer can be found in code/docs, inspect first instead of asking.
 - When the user authorizes auto-pinning, close obvious defaults without needless extra questions.
+
+## Round Artifact Integration
+
+At each `$grilling` round boundary, apply the [round persistence contract](artifact-output.md#round-persistence-contract). A partial response set resolves only the supplied stable question ids; omitted ids stay unanswered. When the artifact records an empty frontier, obtain explicit shared-understanding confirmation before any downstream transition.
 
 ## Pressure Tests
 

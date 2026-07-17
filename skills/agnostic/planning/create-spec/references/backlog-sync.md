@@ -25,8 +25,8 @@ Follow:
 
 If grill artifacts exist, read:
 
-1. `docs/<topic>-grill-status.md`
-2. `docs/<topic>-grill-log.md`
+1. `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
+2. `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md`
 
 ## Rules
 
