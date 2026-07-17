@@ -6,18 +6,11 @@ This workflow is always paired with [artifact-output.md](artifact-output.md) dur
 
 ## Session Behavior
 
-Use the shared `$grilling` primitive as the sole scheduling and traversal contract, then apply the requirements-specific pressure tests below.
-
-## Questioning Rules
-
-- Apply the requirements question contract to every question in a `$grilling` round: include a recommended answer and explain why it is preferred.
-- If multiple interpretations exist, force a precise choice.
-- When the answer can be found in code/docs, inspect first instead of asking.
-- When the user authorizes auto-pinning, close obvious defaults without needless extra questions.
+Use the shared `$grilling` primitive as the sole scheduling and traversal contract, then apply the requirements-specific pressure tests below. When the user authorizes auto-pinning, record obvious defaults without needless extra questions.
 
 ## Round Artifact Integration
 
-At each `$grilling` round boundary, apply the [round persistence contract](artifact-output.md#round-persistence-contract). A partial response set resolves only the supplied stable question ids; omitted ids stay unanswered. When the artifact records an empty frontier, obtain explicit shared-understanding confirmation before any downstream transition.
+At each `$grilling` round boundary, apply the [round persistence contract](artifact-output.md#round-persistence-contract). A partial response set resolves only the supplied stable question ids; omitted ids stay unanswered. Persist `$grilling` completion in the artifact's shared-understanding confirmation field before any downstream transition.
 
 ## Pressure Tests
 

@@ -179,14 +179,3 @@ When a branch closes:
 3. Confirm no unanswered item or pending shared-understanding confirmation is represented as `100%`.
 4. If the branch changes durable domain/product knowledge, run the wiki-output workflow.
 5. Say exactly what changed, which routed artifacts were updated, and whether `meta.json` or wiki log bookkeeping changed.
-
-## Final Handoff
-
-At the end, report:
-
-- branch percentages
-- parked branches
-- remaining non-design validation work
-- recommended next planning direction
-
-If all active branches are `100%`, say the requirements grill is done and the likely next direction is backlog/user-story creation. Do not take that downstream action until shared understanding is explicitly confirmed.

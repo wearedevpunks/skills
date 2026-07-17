@@ -34,5 +34,4 @@ Default to one branch per user-visible page or flow. Use section-level branches 
 - Rejected or superseded constraints.
 - Open conflicts or parked scope.
 - Artifact intent per scope unit.
-- When the `$grilling` frontier is empty, explicit user confirmation of shared understanding before transition.
-- After confirmation, phase handoff with next route: prototype.
+- After `$requirements-grill` completes, phase handoff with next route: prototype.

@@ -87,7 +87,7 @@ For every ledger entry, record:
 - decision needed or external blocker
 - owner or next action
 
-If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and run a tiny `$requirements-phase` clarification with one narrow question and a recommended answer. Continue only after the branch is closed, parked explicitly, or converted into an accepted scope change.
+If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and run a tiny `$requirements-phase` clarification. Resume execution from its recorded outcome, applying any accepted scope change before continuing.
 
 Do not create the file when nothing durable must survive the run.
 

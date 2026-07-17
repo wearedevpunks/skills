@@ -29,20 +29,16 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 ## Core Behavior
 
-- Use `$grilling` as the single source of truth for question scheduling and design-tree traversal.
-- For every question in a round, provide a recommended answer and the reason for it.
-- Inspect code/docs first when the answer can be found locally.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
 - Challenge conflicting glossary, vague terms, and hidden tradeoffs immediately.
 - Pin canonical terms, rejected aliases, relationships, and domain axioms as decisions crystallize.
 - Prefer conservative defaults once enough context exists.
-- If the user authorizes auto-pinning defaults, close obvious remaining decisions without needless extra questions.
+- If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.
 - Apply the round persistence contract in `artifact-output` alongside `$grilling`.
-- When the frontier is empty, request explicit confirmation of shared understanding before any downstream action.
 
 ## Handoff
 
 At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
 
-Only after the frontier is empty and the user confirms shared understanding may all active branches be `100%`. Then say the requirements grill is done and the likely next direction is backlog/user-story creation.
+After `$grilling` completes, say the requirements grill is done and give the likely next direction, usually backlog/user-story creation.
