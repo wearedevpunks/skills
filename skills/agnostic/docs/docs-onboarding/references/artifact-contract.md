@@ -25,6 +25,8 @@ Write and maintain:
 - `<wiki-root>/content/docs/project/onboarding/onboarding-grill-status.md`
 - `<wiki-root>/content/docs/project/onboarding/onboarding-grill-log.md`
 
+In the onboarding status, persist the current round/frontier, stable question ids and prerequisites, unanswered items, and shared-understanding confirmation before `create-spec` runs.
+
 Create or update:
 
 - `<wiki-root>/content/docs/project/onboarding/index.mdx`
@@ -46,7 +48,7 @@ Do not grill every low-risk current-state fact. Carry those into `create-spec` a
 
 ## Reconstructed Specs
 
-After grill closure, call `create-spec`.
+After grill closure and recorded shared-understanding confirmation, call `create-spec`.
 
 Group reconstructed specs:
 

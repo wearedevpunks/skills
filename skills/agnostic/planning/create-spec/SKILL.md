@@ -29,7 +29,7 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 4. If backlog context exists, read the parent epic and every child story before asking questions.
 5. If the user did not provide a concrete request, ask for a rough description first.
 6. Read `references/questioning.md` and ask only the lightweight clarifying questions needed to identify whether a grill phase is required.
-7. If draft `Open Questions` would affect spec trust, read `references/grill-phase.md` and run a bounded `$requirements-grill` phase before writing.
+7. If draft `Open Questions` would affect spec trust, read `references/grill-phase.md`, run a bounded `$requirements-grill` phase, and obtain explicit shared-understanding confirmation before backlog sync or spec drafting.
 8. If the requested objective, discovery, or grill changes accepted scope, child stories, deferred scope, story wording, or story order, read `references/backlog-sync.md` and run `$write-backlog` to sync the backlog automatically before final drafting.
 9. Read `references/folder-naming.md` to resolve the domain and spec folder path.
 10. Read `assets/SPEC-TEMPLATE.md` and write the spec.
@@ -47,7 +47,7 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 3. Ask only enough to make the spec crisp, testable, and bounded.
 4. Use `$parallel-research` when readonly orientation can be split cleanly across independent evidence sources; keep synthesis and spec decisions local.
 5. When an epic has child stories, harvest and preserve each story's requirements before drafting.
-6. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts.
+6. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts, and do not proceed to backlog or spec action until the empty-frontier shared-understanding gate is confirmed.
 7. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
 8. Keep the spec free of implementation detail.
 9. Use the template structure exactly, then remove all template scaffolding.

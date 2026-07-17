@@ -35,7 +35,7 @@ Before the first question, keep the current state obvious:
 
 ## Question-block contract
 
-Every plan-shaping question must contain exactly these headings, in this order:
+Every plan-shaping question in a `$grilling` round must contain exactly these headings, in this order:
 
 - `Decision`
 - `Recommendation`
@@ -51,18 +51,17 @@ Rules:
 
 ## Grill behavior
 
-Use `$grilling` behavior:
+Use `$grilling` as the sole question-scheduling and traversal behavior. This wrapper adds only plan-specific handling:
 
-- ask one question at a time
-- provide a recommended answer with each question
+- apply the question-block contract to each question
 - if a question can be answered from the codebase, answer it by inspecting instead
-- keep grilling until every plan-shaping branch is resolved enough to plan safely
 - before recording an unresolved question in the plan, ask the user whether to resolve it now or defer it
 - when the user defers a branch, record the assumption or unresolved question explicitly in the plan with its planning impact
+- when the frontier is empty, obtain explicit confirmation of shared understanding before synthesizing the task graph, writing `PLAN.md`, or syncing backlog
 
 ## Decision ledger
 
-After every user answer, restate:
+After each response set, process every answer individually and restate:
 
 - decisions locked
 - assumptions made
@@ -72,16 +71,9 @@ This ledger must stay visible both in the conversation and in the saved plan art
 
 ## Synthesis checkpoints
 
-Emit a checkpoint summary when either condition is hit:
+After a whole response set is processed and the decision ledger is updated, emit a checkpoint when either condition is met:
 
 - five plan-shaping decisions have been resolved since the last checkpoint
-- the planning exchange has become long enough that the user could reasonably lose orientation
+- the planning exchange is long enough that the user could lose orientation
 
-A checkpoint must summarize:
-
-- current situation
-- decisions locked so far
-- open decisions still blocking the plan
-- whether more questions are actually needed
-
-If ambiguity is already low enough, stop asking questions and move to plan synthesis.
+Summarize the current situation, locked decisions, open planning blockers, and whether more ambiguity reduction is needed. This checkpoint reports plan-wrapper state only; `$grilling` remains the sole source of frontier scheduling and traversal.

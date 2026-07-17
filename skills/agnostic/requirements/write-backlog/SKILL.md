@@ -10,7 +10,7 @@ description: Materialize canonical backlog kinds into provider-native items. Use
 1. Before any provider materialization, read `.devpunks/settings.json` and resolve the destination from `backlogProvider` plus `backlogProjectUrl`.
 2. If either setting is missing, or `backlogProjectUrl` is not an absolute HTTP(S) URL, stop and ask the operator to run `hi ensure`. Do not discover or guess a backlog destination.
 3. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
-4. If `requirements-grill` artifacts exist, read `*-grill-status.md` first and `*-grill-log.md` second.
+4. If `requirements-grill` artifacts exist, read `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md` first and `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` second.
 5. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
 6. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
 7. Derive the item kind first: `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
@@ -54,8 +54,8 @@ Every supported kind is a first-class provider backlog item that is visible, ass
 
 ### From `requirements-grill` artifacts
 
-1. Read `docs/<topic>-grill-status.md` first.
-2. Read `docs/<topic>-grill-log.md` second.
+1. Read `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md` first.
+2. Read `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` second.
 3. Use the status file to identify:
    - active branches
    - branch completion

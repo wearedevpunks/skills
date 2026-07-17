@@ -18,7 +18,7 @@ Use this skill to turn an existing repository into initial Harness wiki context 
    - If either lane is missing or inaccessible, ask the developer for the backlog location or access path before assuming no backlog exists.
 4. Build and persist the Project Map before asking developer questions.
 5. Run a targeted `requirements-grill` against the Project Map.
-6. After grill closure, call `create-spec` to reconstruct evidence-backed specs.
+6. After grill closure and recorded shared-understanding confirmation, call `create-spec` to reconstruct evidence-backed specs.
 
 For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).
 

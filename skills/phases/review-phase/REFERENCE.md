@@ -85,6 +85,13 @@ Check:
 
 - Serious grill sessions pair `references/grilling-flow.md` with
   `references/artifact-output.md`.
+- Before each round is yielded, it is persisted with stable question ids,
+  prerequisites, and the current frontier, with a stable mapping between live
+  questions and the routed log/status artifacts.
+- Each response set is processed answer by answer; partially answered rounds
+  preserve omitted questions as unanswered and carry them forward.
+- Status is updated after each response set, and no branch reaches `100%`
+  while unanswered items or shared-understanding confirmation remain.
 - Routed grill log/status artifacts are created or updated when grilling
   decisions, branches, parked scope, percentages, glossary, axioms, or
   ambiguities change.
@@ -96,6 +103,8 @@ Check:
 - Downstream handoff evidence exists as applicable: wiki synthesis,
   backlog/user stories, spec, or phase handoff carrying closed decisions
   and parked/open branches.
+- Explicit shared-understanding confirmation is recorded before downstream
+  backlog, plan, spec, or prototype action.
 
 Missing inner-flow or durable-artifact evidence is a review finding when
 the wrapper promised grill behavior.

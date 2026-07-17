@@ -42,8 +42,8 @@ When grill artifacts exist, treat them as the highest-signal structured source f
 
 Expected inputs:
 
-- `docs/<topic>-grill-status.md`
-- `docs/<topic>-grill-log.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
+- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md`
 
 Read order:
 

@@ -34,12 +34,13 @@ Normally do not create or update a formal agent goal. This phase is an interview
 
 2. Route to `requirements-grill` while decisions are open.
    - Let `requirements-grill` own HITL interviewing.
-   - Ask one question at a time with a recommended answer and why.
+   - Let `$grilling` own question scheduling and traversal; apply the requirements recommendation-and-reason contract to every question it asks.
    - Turn ambiguity into named branches, branch percentages, accepted decisions, rejected/superseded decisions, glossary entries, axioms, and parked scope.
    - Do not write backlog while major branches remain open unless the user explicitly parks them.
 
 3. Decide backlog readiness.
-   - Backlog-ready means active branches are closed enough for module/epic/story shaping, and unresolved branches are either non-blocking, explicitly parked, or recorded as follow-up scope.
+   - Backlog-ready means the `$grilling` frontier is empty, the user explicitly confirmed shared understanding, active branches are closed enough for module/epic/story shaping, and unresolved branches are either non-blocking, explicitly parked, or recorded as follow-up scope.
+   - If the frontier is empty but confirmation is missing, request confirmation before backlog shaping or writing.
    - If not ready, continue grilling or report the exact blocker branches.
    - If ready, hand off to `write-backlog`.
 
