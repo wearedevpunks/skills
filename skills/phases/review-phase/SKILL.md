@@ -27,8 +27,9 @@ Load [REFERENCE.md](REFERENCE.md) before running review tools. Start with
 - Apply relevant `AGENTS.md` guidance and scoped skills for reviewed paths.
 - Use `review` as the review-flow wrapper; keep axes separate.
 - Use `autoreview` as the core structured review runtime.
-- If target claims `requirements-grill` or design-phase grill, inspect
-  `requirements-grill` inner flow and durable-artifact evidence.
+- If target claims `requirements-grill` or design-phase grill, inspect shared
+  interview behavior against `$grilling` and durable-artifact evidence against
+  the `requirements-grill` inner flow.
 
 ## Steps
 

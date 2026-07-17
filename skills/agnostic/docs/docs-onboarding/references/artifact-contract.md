@@ -25,7 +25,7 @@ Write and maintain:
 - `<wiki-root>/content/docs/project/onboarding/onboarding-grill-status.md`
 - `<wiki-root>/content/docs/project/onboarding/onboarding-grill-log.md`
 
-In the onboarding status, persist the current round/frontier, stable question ids and prerequisites, unanswered items, and shared-understanding confirmation before `create-spec` runs.
+In the onboarding status, persist the current round/frontier, stable question ids and prerequisites, unanswered items, and shared-understanding confirmation.
 
 Create or update:
 
@@ -47,8 +47,6 @@ The targeted grill can close when every blocking contradiction, missing backlog 
 Do not grill every low-risk current-state fact. Carry those into `create-spec` as `Inferred`.
 
 ## Reconstructed Specs
-
-After grill closure and recorded shared-understanding confirmation, call `create-spec`.
 
 Group reconstructed specs:
 

@@ -21,11 +21,7 @@ Follow:
 
 ## Rules
 
-- Let `$requirements-grill` delegate question scheduling and traversal to `$grilling`; do not define a local interview cadence.
-- Apply the requirements recommendation-and-reason contract to every question.
-- Inspect repo/docs/backlog first when the answer can be found locally.
-- Force precise choices when multiple interpretations exist.
-- Close, park, or explicitly defer each branch.
+- Follow `$grilling` through `$requirements-grill`; do not define a local interview cadence.
 
 ## Artifacts
 
@@ -43,6 +39,4 @@ Tiny clarification-only runs do not need durable grill artifacts.
 - explicitly deferred branches become `Open Questions`
 - external-validation branches become `Open Questions` with owner/status
 - accepted scope changes must flow through `backlog-sync.md` before final spec drafting
-- when the frontier is empty, the user must explicitly confirm shared understanding before backlog sync or spec drafting
-
-Do not write the spec until each discovered branch is closed, parked, or explicitly deferred.
+- after `$requirements-grill` completes, proceed to backlog sync or spec drafting

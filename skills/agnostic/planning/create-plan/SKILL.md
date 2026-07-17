@@ -32,7 +32,7 @@ Create a plan first. Never implement code in this skill.
 3. Read `references/grill-ambiguity.md` and run `$grilling` as explicit ambiguity reduction.
 4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
 5. After a whole response set is processed, emit any synthesis checkpoint required by `references/grill-ambiguity.md`.
-6. When the `$grilling` frontier is empty, obtain explicit confirmation of shared understanding before plan synthesis or backlog sync.
+6. After `$grilling` completes, continue to plan synthesis; backlog sync remains step 12.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
 9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.

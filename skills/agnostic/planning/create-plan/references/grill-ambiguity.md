@@ -42,32 +42,19 @@ Every plan-shaping question in a `$grilling` round must contain exactly these he
 - `Question`
 - `Why it matters`
 
-Rules:
-
-- never replace the `Question` line with only a recommendation
-- never emit an empty or implied question
-- if the block is malformed, regenerate it before continuing
-- keep the recommendation concise and opinionated
+If the block is malformed, regenerate it before continuing.
 
 ## Grill behavior
 
 Use `$grilling` as the sole question-scheduling and traversal behavior. This wrapper adds only plan-specific handling:
 
 - apply the question-block contract to each question
-- if a question can be answered from the codebase, answer it by inspecting instead
-- before recording an unresolved question in the plan, ask the user whether to resolve it now or defer it
-- when the user defers a branch, record the assumption or unresolved question explicitly in the plan with its planning impact
-- when the frontier is empty, obtain explicit confirmation of shared understanding before synthesizing the task graph, writing `PLAN.md`, or syncing backlog
+- record a question as unresolved in the plan only when `$grilling` leaves it deferred
+- record its assumption or planning impact explicitly
 
 ## Decision ledger
 
-After each response set, process every answer individually and restate:
-
-- decisions locked
-- assumptions made
-- still-open decisions
-
-This ledger must stay visible both in the conversation and in the saved plan artifact.
+After each response set, process every answer individually and update the planning decision ledger from the current `$grilling` state. Keep this ledger visible both in the conversation and in the saved plan artifact.
 
 ## Synthesis checkpoints
 
