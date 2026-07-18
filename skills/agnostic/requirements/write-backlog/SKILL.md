@@ -14,10 +14,10 @@ description: Materialize canonical backlog kinds into provider-native items. Use
 5. If subagents are available and the source material is large, use `requirements-synthesizer` to compress accepted, rejected, superseded, parked, and unresolved decisions.
 6. If subagents are available, use `backlog-shaper` for a draft module/epic/story hierarchy; keep final backlog judgment in the parent thread.
 7. Derive the item kind first: `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
-8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items under a module/milestone.
+8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items in a capability module. Keep capability grouping separate from execution milestones.
 9. Preserve delivery semantics: epics anchor future `SPEC.md`; stories remain product-facing children of epics.
 10. Apply the item-count rule before finalizing implementation epics/stories.
-11. Make story ordering explicit with native dependency primitives when the provider supports them.
+11. Make story ordering explicit with native dependency primitives when the provider supports them. Derive chronological execution milestones from those dependencies using the order contract in the backlog model.
 12. Keep all item bodies product-facing and appropriate to their kind.
 13. When approved design/prototype artifacts are source material, preserve approved artifact context and durable links in the relevant backlog items.
 14. For visual assets, use `repo-asset-management`: prefer backlog attachments first, then repo-provider fallback links when attachments are unavailable or unsuitable.
@@ -26,17 +26,17 @@ description: Materialize canonical backlog kinds into provider-native items. Use
 
 ## Item-count rule
 
-Within durable modules, produce the fewest epics and stories that preserve all accepted requirements. Split only when merging would lose a distinct product outcome, acceptance signal, dependency, provider boundary, or future `SPEC.md` boundary; otherwise fold requirements into the existing item body as scope, constraints, or acceptance signals.
+Within durable capability modules, produce the fewest epics and stories that preserve all accepted requirements. Split only when merging would lose a distinct product outcome, acceptance signal, dependency, provider boundary, or future `SPEC.md` boundary; otherwise fold requirements into the existing item body as scope, constraints, or acceptance signals.
 
 ## Kind taxonomy
 
 Every supported kind is a first-class provider backlog item that is visible, assignable, searchable, linkable, and closeable.
 
 - `fog`: root-level uncertainty; not delivery-eligible, not a `SPEC.md` anchor, and not an execution container.
-- `grilling`: module/milestone-scoped human decision work.
-- `research`: module/milestone-scoped readonly fact-finding.
-- `prototype`: module/milestone-scoped artifact or experiment learning.
-- `epic`: module/milestone-scoped accepted implementation capability; anchors one future `SPEC.md`.
+- `grilling`: capability-module-scoped human decision work.
+- `research`: capability-module-scoped readonly fact-finding.
+- `prototype`: capability-module-scoped artifact or experiment learning.
+- `epic`: capability-module-scoped accepted implementation capability; anchors one future `SPEC.md`.
 - `story`: product-facing accepted implementation slice under one epic.
 
 `grilling`, `research`, and `prototype` close with an accepted decision note naming the answer, accepted direction, artifacts or evidence, and created or updated epics/stories.
@@ -45,12 +45,12 @@ Every supported kind is a first-class provider backlog item that is visible, ass
 
 ### From a large requirements discussion
 
-1. Normalize the input into durable modules.
-2. Turn each module into a milestone or provider-equivalent container.
+1. Normalize the input into durable capability modules.
+2. Store capability grouping separately from chronological execution milestones.
 3. Create learning or uncertainty items when scope is not yet accepted.
 4. Create epic/capability items only when implementation scope is accepted enough to map to one future `SPEC.md`.
 5. Break each epic into independently observable child stories.
-6. Add native blockers between stories when order matters.
+6. Add native blockers between stories when order matters, then derive chronological milestones from the blocker DAG.
 
 ### From `requirements-grill` artifacts
 
@@ -74,7 +74,7 @@ Every supported kind is a first-class provider backlog item that is visible, ass
 
 1. Read the current hierarchy and item bodies first.
 2. Collapse technical chores back into product-facing stories when possible.
-3. Rebuild root fog plus module/milestone -> concrete item structure.
+3. Rebuild root fog plus capability module -> concrete item structure, then recompute chronological milestones from native blockers.
 4. Keep execution detail out of backlog bodies.
 
 ### Provider payload selection
