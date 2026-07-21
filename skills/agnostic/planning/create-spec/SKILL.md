@@ -11,7 +11,6 @@ description: Create a SPEC.md file for a new feature, product, or system using t
 - **Entrypoint type:** public entrypoint
 - **Upstream:** new idea, feature request, epic/capability issue, or problem statement
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope; `spec-reviewer` for a final readonly quality pass when subagents are available
-- **Downstream:** reviewed `SPEC.md`, then usually `create-plan` or `implement-spec`
 - **Entry conditions:** a planning surface can be resolved from routed wiki docs, legacy wiki specs, existing docs, backlog context, or the user's request
 - **Stop conditions:** `SPEC.md` and any existing planning-surface indexes/logs are updated, then wait for user review
 
@@ -36,7 +35,7 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 11. Read `references/spec-quality-bar.md` before saving.
 12. If subagents are available, use `spec-reviewer` for a readonly pass over the draft before user review.
 13. Read `references/wiki-bookkeeping.md` to update the indexes/logs that exist for the resolved planning surface.
-14. Read `references/handoff.md` to choose the next-step recommendation and stop after user review.
+14. Present the completed spec for user review, then stop.
 
 ## Workflow
 
@@ -53,7 +52,7 @@ Resolve the output root from the repo before writing. Prefer `apps/wiki/content/
 9. Use the template structure exactly, then remove all template scaffolding.
 10. Use `spec-reviewer` to catch invented requirements, missing constraints, vague acceptance criteria, and contradictions before yielding when subagents are available.
 11. Update planning-surface bookkeeping in the same run.
-12. Stop after presenting the spec and the recommended next step.
+12. Present the completed spec for user review, then stop.
 
 ### Dependency readiness and stack intent
 
@@ -107,5 +106,4 @@ branches unless the user explicitly requests branch setup during the spec turn.
 - Domain and folder naming rules: see [references/folder-naming.md](references/folder-naming.md)
 - Acceptance-criteria and quality bar: see [references/spec-quality-bar.md](references/spec-quality-bar.md)
 - Planning surface index/log updates: see [references/wiki-bookkeeping.md](references/wiki-bookkeeping.md)
-- Review closeout and next-step routing: see [references/handoff.md](references/handoff.md)
 - Canonical backlog model: see [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md)
