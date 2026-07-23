@@ -7,11 +7,12 @@ description: |
   Effect backend root. Enforces visible Effect requirements, layer-provided
   implementations, effect-solutions plus opensrc source lookup, and @effect/vitest
   testing conventions.
+compatibility: Requires Effect v4. Examples are reviewed against the version documented in this repository.
 ---
 
 # Effect Backend Structure
 
-Use this skill with `$backend-domain-structure` for Effect backend code.
+Use this skill with `$backend-domain-structure` and `$effect` for Effect backend code. `$effect` owns Effect v4 API guidance.
 
 The agnostic skill owns the layer model:
 
@@ -26,7 +27,7 @@ This skill adds Effect-specific services, layers, dependency visibility, source 
 
 1. Identify the backend root from the current repo; do not assume a monorepo path.
 2. Read the nearest relevant `AGENTS.md` files.
-3. Read `$backend-domain-structure` and `references/layout.md`.
+3. Read `$backend-domain-structure`, `$effect`, and `references/layout.md`.
 4. Run the relevant `effect-solutions` guides before coding.
 5. Check local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
 6. Place code using the agnostic backend layers plus the Effect rules below.
@@ -45,17 +46,15 @@ Always consult `effect-solutions` first. Use the smallest relevant set:
 
 Use `opensrc` next when the guide is not enough:
 
-- `opensrc/repos/github.com/Effect-TS/effect/packages/effect`
-- `opensrc/repos/github.com/Effect-TS/effect/packages/sql`
-- `opensrc/repos/github.com/Effect-TS/effect/packages/sql-drizzle`
+- Run `opensrc path Effect-TS/effect`.
+- Inspect `packages/effect`, `packages/sql`, or `packages/sql-drizzle` in that checkout.
 
 For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/repo`.
 
 ## Services and Layers
 
-- Use `Effect.Service` for business services, repositories, and reusable capability interfaces.
-- Use `Context.Tag` only for externally supplied runtime handles or third-party tags.
-- Declare construction dependencies in `dependencies: [Dep.Default]`.
+- Define business services, repositories, and reusable capability interfaces with `Context.Service`.
+- Build implementations with layers and return values through `Service.of(...)`.
 - Let actions consume services/repositories through Effect accessors or `yield* Service`.
 - Keep action requirements visible until a feature, app, runner, or test layer provides them.
 - Compose feature dependencies in `features/<domain>/layer.ts` or the local equivalent.
