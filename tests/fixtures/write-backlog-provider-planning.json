@@ -1,0 +1,36 @@
+[
+  {
+    "provider": "github",
+    "document": "assets/providers/github-projects-create-payload.md",
+    "capabilityGrouping": "Project V2 Capability module field",
+    "executionMilestone": "repository milestone",
+    "evidence": [
+      "Project V2 custom single-select field named `Capability module`",
+      "repository milestones named `M1`",
+      "addBlockedBy"
+    ]
+  },
+  {
+    "provider": "azure-devops",
+    "document": "assets/providers/azure-devops-create-payload.md",
+    "capabilityGrouping": "System.AreaPath",
+    "executionMilestone": "System.IterationPath",
+    "evidence": [
+      "`/fields/System.AreaPath`",
+      "`/fields/System.IterationPath`",
+      "`System.LinkTypes.Dependency-Reverse`"
+    ]
+  },
+  {
+    "provider": "monday",
+    "document": "assets/providers/monday-create-payload.md",
+    "capabilityGrouping": "board group",
+    "executionMilestone": "Execution milestone column",
+    "evidence": [
+      "board group",
+      "`Execution milestone`",
+      "dependency column",
+      "same-board dependency"
+    ]
+  }
+]

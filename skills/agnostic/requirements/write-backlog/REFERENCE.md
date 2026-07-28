@@ -21,7 +21,8 @@ Downstream contract:
 
 - every supported `kind` is visible, assignable, searchable, linkable, and closeable in the target provider
 - `fog` is root-level only
-- concrete `grilling`, `research`, `prototype`, `epic`, and `story` items live under a module/milestone
+- concrete `grilling`, `research`, `prototype`, `epic`, and `story` items live under a capability module
+- chronological execution milestones are derived separately from native blockers
 - one epic maps to one future `SPEC.md`
 - child stories remain the product-facing slices beneath that epic
 - `PLAN.md` later decomposes execution without replacing the backlog model
@@ -90,28 +91,33 @@ Use this model:
 ```text
 Backlog root
   fog
-  module/milestone
+  capability module
     grilling
     research
     prototype
     epic
       story
+
+Execution milestones
+  M1 -> M2 -> M3 ...
 ```
 
 Provider mapping:
 
 - kind -> provider-native single-value kind storage where available
 - fog -> root-level issue/work item/item
-- module -> milestone or provider-equivalent grouping
-- grilling/research/prototype -> module/milestone-scoped issue/work item/item
-- epic -> module/milestone-scoped parent issue/work item/capability record
+- capability module -> durable provider grouping independent from chronology
+- execution milestone -> dependency-derived chronological wave
+- grilling/research/prototype -> capability-module-scoped issue/work item/item
+- epic -> capability-module-scoped parent issue/work item/capability record
 - story -> child issue/sub-issue/work item under an epic
 
 monday.com mapping:
 
 - fog -> root/backlog group item or root planning group item
-- module/milestone -> board group
-- grilling/research/prototype -> parent item in a module group
+- capability module -> board group
+- execution milestone -> separate Status or Dropdown column derived from dependencies
+- grilling/research/prototype -> parent item in a capability group
 - epic/capability -> parent item
 - story -> subitem
 - story ordering -> dependency column when present
@@ -119,9 +125,9 @@ monday.com mapping:
 Rules:
 
 - every supported kind must be a first-class backlog item
-- `kind` is separate from workflow state, module grouping, and parent/child hierarchy
+- `kind` is separate from workflow state, capability grouping, execution milestone, and parent/child hierarchy
 - `fog` must not have child tickets by default
-- concrete non-fog items must first choose or create a module/milestone
+- concrete non-fog items must first choose or create a capability module
 - `grilling`, `research`, and `prototype` must close into accepted decisions before they create or update implementation epics/stories
 - every story must be independently understandable and product-facing
 - one epic may contain multiple stories
@@ -187,7 +193,7 @@ Do not put these in backlog bodies:
 
 ## Ordering rules
 
-Implementation order belongs in the backlog only through native dependency primitives when supported.
+Implementation order belongs in the backlog only through native dependency primitives when supported. Capability grouping never determines chronology. Derive `M1`, `M2`, and later execution milestones with the DAG algorithm in [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md), then store them in the provider mechanism documented by the matching payload asset.
 
 Preferred order signal:
 
@@ -203,7 +209,7 @@ Avoid:
 
 ### 1. Decide whether the frontier is still fog
 
-Use `fog` when the work is real but not yet sharp enough to choose a module/milestone or concrete learning/implementation ticket.
+Use `fog` when the work is real but not yet sharp enough to choose a capability module or concrete learning/implementation ticket.
 
 Do not use `fog` as:
 
@@ -216,7 +222,7 @@ Do not use `fog` as:
 
 For concrete non-fog work, split the discussion into durable capability groups that would still make sense if implementation order changed.
 
-Good module/milestone:
+Good capability module:
 
 - intake and review
 - account lifecycle
@@ -235,7 +241,7 @@ Use these before implementation scope is accepted:
 - `research`: readonly investigation can answer it.
 - `prototype`: artifact-driven learning is needed.
 
-Each item must live under a module/milestone and close with an accepted decision note before changing epics/stories.
+Each item must live under a capability module and close with an accepted decision note before changing epics/stories.
 
 ### 4. Derive epics
 
