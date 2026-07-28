@@ -133,12 +133,14 @@ Do not encode story order only in prose when the provider can store it natively.
 
 Capability modules and execution milestones are independent. Modules are durable capability groups. Milestones are chronological execution waves and must be recomputed from native blocker relations. Capability membership, parent/child hierarchy, and existing milestone assignment do not create dependency edges or determine milestone assignment.
 
+Milestone-eligible items are selected concrete non-fog work: `grilling`, `research`, `prototype`, `epic`, and `story`. Fog has no execution milestone until sharpening produces concrete items. Capability-module metadata is grouping, not an execution item.
+
 Before materialization:
 
-1. Build one directed edge from each blocker to the item it blocks across the full selected scope.
+1. Build one directed edge from each blocker to the item it blocks across the full selected milestone-eligible scope.
 2. Stop materialization on a missing blocker target or cycle.
-3. Assign every item with no blockers to `M1`.
-4. Assign every other item to `M(1 + max(milestone number of each blocker))`.
+3. Assign every selected milestone-eligible item with no blockers to `M1`.
+4. Assign every other selected milestone-eligible item to `M(1 + max(milestone number of each blocker))`.
 5. Validate every blocker is in a strictly earlier milestone than the item it blocks.
 
 Items with the same derived number can proceed in parallel and share a milestone, including items from different capability modules. One capability module can span multiple milestones. Native `blockedBy` / `blocks` relations remain authoritative; recompute milestone assignment and numbering whenever those relations change.
