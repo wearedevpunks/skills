@@ -2,91 +2,76 @@
 
 The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
 
-## `hi scaffold setup`
+## `hi init`
 
-Use for repo-aware full scaffold setup.
+Use before repo-aware setup. It seeds docs onboarding, requirements/backlog/spec skills, and the initial wiki structure.
 
-It detects package manifests, resolves packs, writes `.agents/`, harness files, selected skills, prompt specs, lint specs, subagent specs, required tools metadata, and `.devpunks/scaffold-manifest.json`.
+Activate `$docs-onboarding` after the command. Reconcile a generated wiki root with the real repository layout before writing durable specs or routed docs.
 
-It does not finish all repo-specific authoring. The next agent must use `.devpunks/AGENT-SYSTEM-PROMPT.md` and `.devpunks/specs/**` to generate final scoped guidance and reconcile assets.
+## `hi scaffold`
 
-Use `hi scaffold setup --yes` in non-interactive harnesses. It accepts the resolved default pack selection and skips pack-selection prompts. It does not select optional packs.
+Use for repo-aware AI setup. It detects the repository, resolves packs, and writes managed `.agents/`, `.devpunks/`, skill, prompt, lint, subagent, tool, and scaffold-manifest assets.
 
-## `hi scaffold init`
+The command does not finish repo-specific authoring. Reconcile its generated instructions with the real repository. Use `hi scaffold --yes` only when a non-interactive harness must accept the resolved default pack selection; it does not select optional packs or resolve policy choices.
 
-Use before boilerplate exists.
+## `hi check`
 
-It scaffolds `requirements-grill`, `write-backlog`, and the initial wiki tree, then prints an operator prompt. Follow that prompt before moving to repo-aware setup.
+Use as the preferred read-only drift command. It checks managed scaffold, baseline, and CLI drift without writing files.
 
-If the generated wiki root does not match the repository layout, move or refactor it before writing specs, plans, or routed docs. Monorepos usually use `apps/wiki`; single-repo layouts usually use `wiki`.
+Report the current findings. A clean result needs no update follow-through.
 
-After init, the agent must reconcile pre-existing skills. The command does not detect overlap. Inspect `.agents/skills`, `.claude/skills`, `.codex/skills`, `.cursor/skills`, `.opencode/skills`, and `.devpunks/pre-existing-skills` when present; exact name/id overlap keeps HI baseline active, non-overlaps stay exposed through mirrors or symlinks, and `hi report` carries semantic overlap or baseline integration proposals.
+## `hi ensure`
 
-## `hi update --check`
+Use to reconfigure repository manager, backlog provider, asset provider, and backlog project URL settings in an existing Harness setup.
 
-Use at session start when `.devpunks/` exists or to preview managed scaffold drift from `.devpunks/scaffold-manifest.json`.
+It does not install, repair, validate, or refresh external tools. Use `hi tools ensure` for tools.
 
-Report CLI, baseline, missing, changed, or pack-drift findings. Do not write files. If remediation is accepted, the parent may assign one bounded execution worker for `hi upgrade`, `hi update --write`, or `hi update --yes` under the core execution rule.
-
-## `hi update --write`
+## `hi update`
 
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
-After writing, follow only the matching update branches in [post-command-flow.md](post-command-flow.md).
+- `--write` applies accepted managed-file updates.
+- `--yes` applies them non-interactively.
+- `--check` remains a supported compatibility preview, but prefer `hi check` for read-only drift inspection.
 
-## `hi update --yes`
+After a write, follow only the changed categories in [post-command-flow.md](post-command-flow.md).
 
-Use in non-interactive harnesses to apply managed scaffold updates without answering the terminal confirmation prompt.
+## `hi tools ensure`
 
-It has the same managed-file apply behavior and branch-sensitive follow-through as `--write`.
+Use to refresh external Harness tool requirements.
+
+This command may mutate global or external tool installations. It refreshes every auto-managed required tool through the verified baseline's trusted latest target, even when the installed version already satisfies setup minimums. Manual platform CLIs such as `gh`, `az`, and `glab` are validation-only; the command does not upgrade them.
+
+Report each failed tool with the exact failed command or recovery guidance from the result. Do not convert a tool failure into scaffold or settings work.
 
 ## `hi report`
 
-Use to open reusable Harness friction in the Harness Intelligence GitHub repository. Include `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, and `--steps` whenever they apply so labels and issue body are useful for backoffice triage.
+Use to submit reusable Harness friction for GitHub-backed maintainer triage. Reports are for shared Harness, docs, tooling, skill, or workflow issues, not ordinary project backlog.
 
-Reports are for shared Harness/docs/tooling/workflow issues, not the default path for project product backlog.
-
-Useful classification flags:
-
-- `--type bug|docs|workflow|tooling|other`
-- `--severity low|medium|high`
-- `--area cli|wiki|skill|docs|workflow|backoffice|other`
-- `--skill-pack <name>`
-- `--command <command>`
-- `--expected <text>`
-- `--actual <text>`
-- `--steps <text>`
-- `--labels <comma-separated-labels>`
-
-The report path is GitHub-backed. The CLI submits typed context to the Harness API; the API creates or dedupes an issue with `harness-report` metadata and labels, then the CLI emits report-submitted telemetry only after the API returns a GitHub issue URL. Backoffice reads GitHub issues for report triage.
+Include `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` when applicable. Success requires a returned GitHub issue URL.
 
 ## `hi upgrade`
 
-Use to update the installed CLI executable through its original global package-manager path.
+Use to update the installed CLI executable through its detected global package manager. Use `--tag next` for prerelease channels, `--force` to reinstall the selected tag, and `--json` for structured output.
 
-The command checks the selected npm dist-tag, detects Bun, pnpm, npm, or Yarn from the current install path, and runs the corresponding global reinstall command. Use `--tag next` for prerelease channels, `--force` to reinstall the selected tag, and `--json` when automation needs structured output.
-
-`hi upgrade` bypasses minimum-release-age gates for the CLI package:
-
-- Bun uses `--minimum-release-age=0`.
-- npm uses `--min-release-age=0`.
-- pnpm uses `npm_config_minimum_release_age=0`.
-- Yarn uses `YARN_NPM_MINIMAL_AGE_GATE=0`.
+The command bypasses package-manager minimum-release-age gates for the selected CLI release. Startup update checks remain advisory and do not replace `hi upgrade`.
 
 ## `hi operator status`
 
-Use to report global and project `hi-cli` installations plus legacy `dp-cli` installations without changing them.
+Report global and project `hi-cli` installations plus legacy `dp-cli` installations without changing them.
 
 ## `hi operator install`
 
-Use to install `hi-cli` when absent. Report both scopes and reload or reactivate `$hi-cli` after success.
+Install the frozen `hi-cli` target when absent and verify the resulting global copy.
 
 ## `hi operator update`
 
-Use to update every detected global or project `hi-cli` installation. Verify each detected copy and reload or reactivate `$hi-cli` after success.
+Update and verify every detected global or project `hi-cli` copy.
 
 ## `hi operator migrate`
 
-Use to install or update `hi-cli`, then remove detected legacy `dp-cli` installations. Verify every affected scope and reload or reactivate `$hi-cli` after success.
+Verify replacement `hi-cli` copies before removing detected legacy `dp-cli` copies.
+
+Operator writes require Skills CLI 1.5.20 or newer. After successful install, update, or migration, reload or reactivate `$hi-cli` before relying on its instructions.
 
 `hi skills rename` is a deprecated compatibility alias for `hi operator migrate`.
