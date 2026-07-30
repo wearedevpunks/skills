@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit CI/CD Security"
+  short_description: "Audit CI/CD trust boundaries and pipeline risks"
+  default_prompt: "Use $audit-cicd-security to audit this repository CI/CD security in read-only mode."
