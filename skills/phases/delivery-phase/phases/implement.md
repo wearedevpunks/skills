@@ -9,10 +9,9 @@ Load `implement-spec` only after this phase is selected.
 
 ## Rules
 
-- Preserve the plan's `parallel: true` or `parallel: false` mode.
-- If no mode exists, choose the smallest safe mode:
-  - `parallel: false` for coupled or small changes.
-  - `parallel: true` only for independent waves with disjoint write scopes.
+- Preserve the plan's dependencies, owned paths, validation gates, and wave boundaries.
+- Launch every currently unblocked task in the active wave through a scoped worker.
+- Run workers concurrently when their owned paths are disjoint; dependency and ownership constraints may produce a one-worker wave.
 - Keep changes inside the active delivery scope.
 - Parent orchestration owns shared notes and final validation evidence.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.

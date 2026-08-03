@@ -5,7 +5,7 @@ until this router selects one.
 
 ## Inputs To Inspect
 
-- User request and explicit mode: full delivery, resume, HITL checkpoint, or closeout.
+- User request and entry intent: full delivery, resume, HITL checkpoint, or closeout.
 - Tracker item, issue, PR, branch, or spec folder named by the user.
 - Existing `SPEC.md`, `PLAN.md`, implementation notes, review output, debug evidence, docs ingest notes, stack state, and validation evidence.
 - Relevant repo guidance only when needed to identify ownership or validation surface.
@@ -16,7 +16,7 @@ until this router selects one.
 2. If no reviewed matching spec exists, load [spec.md](spec.md).
 3. If the spec exists but is stale, contradictory, or missing required child-story scope, load [spec.md](spec.md).
 4. If no execution-ready matching plan exists, load [plan.md](plan.md).
-5. If the plan exists but lacks dependencies, validation gates, owned paths, or mode choice, load [plan.md](plan.md).
+5. If the plan exists but lacks dependencies, owned paths, validation gates, or wave boundaries, load [plan.md](plan.md).
 6. If accepted plan work is incomplete, load [implement.md](implement.md).
 7. If implementation exists but mandatory review is missing or stale, load [review.md](review.md).
 8. If review found in-scope non-runtime blockers, route back to [implement.md](implement.md).

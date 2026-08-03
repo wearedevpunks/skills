@@ -1,4 +1,4 @@
-# Parallel Orchestration
+# Worker-Wave Orchestration
 
 Use this reference to run the full parallel orchestration loop inside `implement-spec`.
 
@@ -22,6 +22,8 @@ For each task, extract:
 
 - task id and task name
 - `depends_on`
+- owned paths
+- wave boundary
 - full content needed for execution:
   - location
   - description
@@ -47,11 +49,12 @@ If a task subset was requested:
 
 A task is unblocked only when all ids in its `depends_on` list are complete.
 
-For the current wave:
+For the current recorded wave boundary:
 
 - collect every unblocked task
 - exclude already-complete tasks
 - exclude tasks blocked by failed prerequisites
+- verify worker write scopes are disjoint
 
 Launch all unblocked tasks in parallel.
 
@@ -61,8 +64,8 @@ For each unblocked task:
 
 - choose the worker template from `.agents/subagents/manifest.mjs`
 - use the worker-brief contract from [parallel-worker-brief.md](parallel-worker-brief.md)
-- keep the task scope narrow
-- ensure the worker owns only the assigned task and its required validation
+- assign the task's owned paths
+- assign its validation gates
 
 ## Step 5: Review and validate the wave
 

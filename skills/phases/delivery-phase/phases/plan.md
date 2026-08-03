@@ -11,17 +11,16 @@ Load `create-plan` only after this phase is selected.
 
 - Verify the spec still matches the requested goal.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
-- Require owned paths, dependencies, execution order, validation gates, and review mode.
-- Choose sequential or parallel implementation mode from the plan shape.
+- Require dependencies, owned paths, validation gates, review routing, and explicit wave boundaries.
+- Group independent tasks with disjoint write scopes into the same wave.
 
 ## Completion State
 
 Write or verify:
 
 - execution-ready `PLAN.md`
-- phase/wave boundaries
+- dependencies, owned paths, and wave boundaries
 - validation commands or manual scenarios
-- mode choice: `parallel: true` or `parallel: false`
 - planned review and docs-ingest expectations
 
 Then stop or re-enter `delivery-phase` for routing.

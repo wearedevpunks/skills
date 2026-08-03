@@ -4,12 +4,7 @@
 
 `implement-spec` is the only public execution entrypoint.
 
-It routes to one of two approaches:
-
-- `sequential` — one implementation worker, parent orchestration, parent validation
-- `parallel` — wave-based execution with explicit worker orchestration
-
-Do not recreate wrapper skills for these modes. Keep the routing here and load only the needed mode reference.
+Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for the wave loop and keep shared lifecycle rules here.
 
 ## 1. Require an existing reviewed spec folder
 
@@ -93,11 +88,11 @@ Do not create the file when nothing durable must survive the run.
 
 ## 6. Shared execution invariants
 
-- Mode is manual. The chosen approach decides the execution path.
-- Do not switch modes mid-run unless the user explicitly redirects.
-- Default to `sequential` when the user does not choose a mode.
-- In `sequential`, keep implementation work inside exactly one worker; the parent coordinates, reviews, validates, and finalizes.
-- If worker execution is unavailable, stop and repair worker routing or report the blocker. Do not implement in the parent main thread.
+- Require every planned task to declare dependencies, owned paths, validation gates, and a wave boundary.
+- Build each wave from tasks whose dependencies are complete and whose write scopes are disjoint.
+- Workers own implementation changes. The parent coordinates, reviews, validates, updates shared artifacts, and finalizes.
+- A wave may contain one worker when dependencies or owned paths leave one task unblocked.
+- Worker routing must be available before implementation begins; otherwise repair it or report the blocker.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
 - Treat `codebase_design_notes` as required design context for code-structure changes. Verify the implemented interface, seam, adapter strategy, and test surface match it, or update the notes with the real decision.
@@ -116,9 +111,9 @@ Do not create the file when nothing durable must survive the run.
 - Execution-time backlog sync may use comments, links, native status, and native relations.
 - Never rewrite epic or story bodies with task ids, TDD targets, validation commands, or file lists.
 
-## 7. Shared upkeep after each completed unit
+## 7. Shared upkeep after each completed wave
 
-After each completed task or wave:
+After each completed wave:
 
 - update `PLAN.md` status
 - append a concise execution log in `PLAN.md`
@@ -194,7 +189,6 @@ Rules:
 Before reporting back:
 
 - remove empty sections from `IMPLEMENTATION-NOTES.md`
-- ensure **Execution mode** reflects the mode actually used
 - ensure **Sanity checks** lists only commands actually run
 - ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
 - ensure **Runtime Validation Evidence** contains conclusive proof for every required task, or an exact blocker with the task and acceptance criterion still marked blocked
