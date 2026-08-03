@@ -1,4 +1,4 @@
-# Parallel Worker Brief
+# Wave Worker Brief
 
 Use this reference when spawning a worker for one task in a parallel wave.
 
@@ -10,11 +10,13 @@ Every worker brief should include:
 - relevant goals or overview from the plan
 - task id and task name
 - task dependencies
+- wave boundary
+- owned paths
 - related tasks when they matter
 - file locations
 - full description
 - acceptance criteria
-- validation contract
+- validation gates
 - `tdd_target`
 - `tdd_status`
 - `codebase_design_notes`

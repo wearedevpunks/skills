@@ -12,8 +12,7 @@ Use this reference when deciding whether a phase is complete enough to skip.
 ## Plan Complete
 
 - `PLAN.md` exists and matches the spec.
-- Tasks have order, dependencies, owned paths, and validation gates.
-- Mode is explicit or derivable: `parallel: true` or `parallel: false`.
+- Tasks have dependencies, owned paths, validation gates, and wave boundaries.
 
 ## Implementation Complete
 
