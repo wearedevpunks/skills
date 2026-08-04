@@ -12,7 +12,9 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 1. Confirm the task is readonly.
 2. Confirm the work can be split into independent questions or areas.
 3. Keep the immediate blocking step local. Delegate only sidecar work that can run in parallel.
-4. Skip this skill for code writing, patching, rebases, commits, or tightly coupled debugging that needs one continuous thread.
+4. Skip this skill for source or code mutation, patching, rebases, unrelated
+   writes, or tightly coupled debugging that needs one continuous thread. The
+   one retained durable-report commit allowed below does not trigger this skip.
 5. Default to response-only output. Use the optional durable mode only when the
    user or calling phase needs reusable primary evidence; then read
    [DURABLE-REPORT.md](DURABLE-REPORT.md).
