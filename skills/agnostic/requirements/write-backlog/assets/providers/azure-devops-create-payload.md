@@ -13,9 +13,19 @@ Official source:
   - `Content-Type: application/json-patch+json`
   - `Authorization: Bearer <TOKEN>`
 
+## Preflight before creation
+
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in Azure DevOps. A failed preflight writes nothing.
+
 ## Raw request body
 
 Azure DevOps creates work items with a JSON Patch document.
+
+## Update existing decision tickets
+
+Use a JSON Patch update against the existing work-item URL for claim, release, and resolve after reading its revision, assignee, and state and rejecting a conflicting claim. Include a revision `test` operation when supported. Resolution sets the configured terminal state and records the immutable resolution pointer in history or description. Return the updated work-item id and URL to Finder.
+
+The example includes `Custom.DevpunksKind` only to show an explicitly configured adapter field. Omit that operation when the project configuration does not name such a field.
 
 ```json
 [
@@ -63,9 +73,13 @@ Azure DevOps creates work items with a JSON Patch document.
 - `/fields/System.IterationPath`
 - `/fields/Custom.DevpunksKind`
 
-## Kind storage
+## Provider classification
 
-Canonical `kind` storage is a custom picklist field such as `Custom.DevpunksKind`.
+Classification examples assume explicit configuration.
+
+Inspect configured provider metadata before choosing a representation. An adapter-specific custom picklist field such as `Custom.DevpunksKind` may represent the direct backlog concepts.
+
+Only when explicitly configured to use that field, include it in JSON Patch payloads. If it is absent, record a setup blocker; do not create custom fields by default.
 
 Allowed values:
 
@@ -76,7 +90,37 @@ Allowed values:
 - `epic`
 - `story`
 
-Use Work Item Type for provider structure, not canonical Harness kind. Tags may mirror kind for search compatibility, but `Custom.DevpunksKind` is the source when it exists.
+Use Work Item Type for provider structure. A configured custom field or tags may represent classification for this adapter; neither is required by the shared model.
+
+Fallback order:
+
+1. configured custom field
+2. existing Work Item Type or tag that exactly preserves the direct concept
+3. stable title prefix such as `[story]`
+
+If process policy permits none of these, fail preflight. Do not create custom fields or tags implicitly.
+
+## Delivery body contracts
+
+Epic body ownership:
+
+- outcome
+- scope and cross-story constraints
+- child story list
+- immutable spec link
+- accepted artifact links when relevant
+
+Story body ownership:
+
+- outcome
+- source `US-###`
+- covered `AC-###`
+- demonstration
+- non-goals and dependencies
+- immutable spec link
+- accepted artifact links
+
+Render these sections in `System.Description`; do not substitute a mutable local spec path.
 
 ## Repo mapping
 
@@ -99,13 +143,11 @@ Do not encode execution waves in Area Path. One area can span multiple iteration
 
 Use `/fields/System.IterationPath` for chronological `M1`, `M2`, and later execution waves only when the project has matching iteration nodes. Derive assignments from native Predecessor links:
 
-1. Create selected concrete non-fog work items and parent/child hierarchy without an execution iteration.
-2. Add each blocker as a Predecessor relation on the blocked item using `System.LinkTypes.Dependency-Reverse`.
-3. Stop on a missing blocker target or dependency cycle.
-4. Assign blocker-free work items to `M1`.
-5. Assign every other work item to `M(1 + max(iteration number of each predecessor))`.
-6. Create or resolve the matching iteration nodes and patch `/fields/System.IterationPath` on every selected milestone-eligible work item.
-7. Verify every predecessor is in a strictly earlier iteration.
+1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
+2. Derive blocker-free work items as `M1`; derive every other item as `M(1 + max(iteration number of each predecessor))`.
+3. Verify every predecessor is in a strictly earlier iteration and that Azure DevOps can represent the complete hierarchy and graph.
+4. Only after preflight passes, create work items, map planned keys to provider ids, and add each blocker with `System.LinkTypes.Dependency-Reverse`.
+5. Create or resolve the verified iteration nodes and patch `/fields/System.IterationPath` on every selected milestone-eligible item.
 
 Capability Area Path, parent/child hierarchy, and current Iteration Path never create dependency edges. Recompute iteration assignment whenever Predecessor relations change.
 
@@ -125,5 +167,5 @@ Apply the derived iteration with a follow-up JSON Patch operation:
 
 - Azure DevOps create requests are process-dependent. The exact work item type names available in `{type}` depend on the project template and process.
 - This asset documents the raw create payload shape, not a universal field catalog for every process.
-- If `Custom.DevpunksKind` does not exist, create a project/process custom picklist field before backlog sync or record the provider setup blocker.
+- If an explicitly configured custom field does not exist, record the provider setup blocker. Do not create it by default.
 - Parent/child and dependency relations require relation operations or follow-up requests. Keep those separate from the minimal create-only body, then derive Iteration Path only after the dependency graph is complete.

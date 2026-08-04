@@ -1,6 +1,8 @@
 # Learning Artifacts
 
-Use this reference when `docs-ingest-phase` receives a spec, implementation, bugfix, debugging result, review result, or operator workflow change that produced durable learning.
+Use this reference when `docs-ingest-phase` receives a spec, implementation,
+bugfix, debugging result, review result, durable research report, or operator
+workflow change that produced durable learning.
 
 ## Purpose
 
@@ -15,6 +17,7 @@ Run a scoped scan around the current ingest's:
 - component
 - referenced files
 - source spec or implementation notes
+- research report identified by immutable commit SHA and path
 
 Do not run broad repository archaeology by default.
 
@@ -61,6 +64,10 @@ Before writing a new learning artifact, check existing routed learning pages in 
 - `mark_stale`: accuracy is ambiguous or needs a human decision
 
 Record the outcome in the ingest report.
+
+For a research report, keep the report as primary evidence and project only
+reusable knowledge. Use the normal `keep`, `update`, `consolidate`, `replace`,
+or `mark_stale` outcomes; do not convert unresolved product choices into facts.
 
 ## Future-Use Hooks
 

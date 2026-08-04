@@ -1,89 +1,41 @@
 # Write Backlog Examples
 
-## From wayfinder route to backlog
-
-Input route:
-
-> Loose idea: partner onboarding is important, but the module boundary and first implementation capability are still foggy.
-
-Output shape:
-
-- Root item: `fog` — `Clarify partner onboarding frontier`
-- Later module / milestone: `Partner onboarding`
-- Learning items:
-  - `grilling` — `Choose partner invitation authority model`
-  - `research` — `Inspect existing auth and access control seams`
-  - `prototype` — `Validate invitation review screen shape`
-- Accepted implementation item:
-  - `epic` — `Partner invitation lifecycle`
-  - `story` — `Operator invites a partner contact`
-
-Closure rule:
-
-- Close `grilling`, `research`, and `prototype` with answer, accepted direction, artifacts or evidence, and created or updated epics/stories before delivery starts.
-
-## From discussion to backlog
+## Agent-ready spec projection
 
 Input:
 
-> We need a workflow module for intake and review. Coordinators should capture submissions, reviewers should assess and route them, reassignment should preserve context, and archived records must remain visible for auditing.
+```yaml
+readiness: agent-ready
+```
 
-Output shape:
+- immutable spec link: `<repository-url>/blob/<commit>/SPEC.md`
+- `US-001`: Team lead restores ownership of an unassigned submission.
+- `AC-001` — `Covers: US-001`: Reassignment preserves notes and evidence.
+- `AC-002` — `Covers: US-001`: The new owner sees the submission in their queue.
 
-- Module / milestone: `Intake and review`
-- Epic: `Submission lifecycle management`
-- Stories:
-  - Coordinator creates a new submission from external intake
-  - Reviewer updates notes and attached evidence
-  - Reviewer views the full submission timeline
-  - Lead reassigns ownership to another reviewer
-  - Lead manages unassigned submissions
-  - Lead imports historical submissions
-  - System marks submissions unassigned when a reviewer is deactivated
+Output:
 
-Native order:
+- capability module: `Intake and review`
+- epic: `Submission lifecycle management`, linked to the immutable spec
+- story: `Lead restores ownership of an unassigned submission`
+  - source: `US-001`
+  - covers: `AC-001`, `AC-002`
+  - demonstration: reassign one unassigned submission and observe preserved evidence plus the new owner's queue
 
-- `Lead manages unassigned submissions` is blocked by:
-  - `Lead reassigns ownership to another reviewer`
-  - `Lead imports historical submissions`
-  - `System marks submissions unassigned when a reviewer is deactivated`
+This is a vertical tracer bullet: one agent can deliver and demonstrate the product outcome without splitting database, API, UI, and tests into separate backlog stories.
 
-## From `requirements-grill` artifacts to backlog
+## Blocker graph
 
-Input artifacts:
+- `US-002 / Lead manages the unassigned queue` is blocked by `US-001 / Lead restores ownership`.
+- Both targets exist and the graph is acyclic.
+- `US-001` is assigned `M1`; `US-002` is assigned `M2`.
 
-- `docs/submission-lifecycle-grill-status.md`
-- `docs/submission-lifecycle-grill-log.md`
+If a blocker target is missing or the graph cycles, write nothing.
 
-Read status first:
+## Pre-spec intake resolution
 
-- branch `ownership-transfer` = `100%`
-- branch `unassigned-queue` = `100%`
-- branch `historical-import` = `100%`
-- branch `deactivation-handling` = `100%`
-- recommended next direction = backlog/user-story creation
+An earlier `prototype` item established the review-screen direction. Resolve that intake item with its verdict plus the immutable spec link. Create a separate epic projection. Do not relabel or silently promote the prototype item into the epic.
 
-Read log second:
+## Invalid input
 
-- accepted decisions define ownership visibility, unassigned handling, and import behavior
-- superseded decisions are ignored in favor of the latest locked answer
-
-Output shape:
-
-- Module / milestone: `Intake and review`
-- Epic: `Submission lifecycle management`
-- Stories:
-  - Lead reassigns ownership to another reviewer
-  - Lead manages unassigned submissions
-  - Lead imports historical submissions
-  - System marks submissions unassigned when a reviewer is deactivated
-
-## Story-shape reminder
-
-Good story:
-
-`As a team lead, I want to view and manage unassigned submissions so I can restore ownership quickly without losing context`
-
-Bad story:
-
-`Add queue table and reassignment mutation`
+If readiness is absent, `AC-001` lacks `Covers: US-###`, a story is not demonstrable, or provider hierarchy cannot represent the required projection, return every gap before any mutation.

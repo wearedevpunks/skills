@@ -4,7 +4,7 @@ Produce the user-requested artifact type.
 
 ## Delegation
 
-Activate `$prototype` for prototype artifacts from this phase only.
+For prototype artifacts inside an active design workflow, activate the lean `prototype` primitive directly. Standalone `prototype-phase` remains a Finder route for claim, verdict, retention, and frontier reconciliation.
 
 ## Steps
 

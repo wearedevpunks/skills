@@ -8,7 +8,7 @@ route/navigation metadata, durable learning, and writer artifact placement.
 Read only the references that match the selected work:
 
 - Spec or implementation-note ingest: [../references/wiki-ingest.md](../references/wiki-ingest.md)
-- Durable bug or knowledge learning: [../references/learning-artifacts.md](../references/learning-artifacts.md)
+- Durable bug, knowledge, or research-report learning: [../references/learning-artifacts.md](../references/learning-artifacts.md)
 - Routed wiki pages or navigation metadata: [../references/fumadocs-routing.md](../references/fumadocs-routing.md)
 - Root `docs/` maintenance: [../references/repo-docs.md](../references/repo-docs.md)
 
@@ -19,6 +19,8 @@ Read only the references that match the selected work:
    - single-repo: `wiki`
 2. Read `<wiki-root>/AGENTS.md` before touching wiki content.
 3. Classify every target as private/internal or public by audience.
+   - A durable research report identified by immutable commit SHA and path is
+     primary learning evidence; preserve that source pointer during projection.
 4. For private/internal ingest, run the required reference workflows in this order:
    - scoped learning-artifact scan and refresh
    - routed flow-writing phase

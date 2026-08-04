@@ -13,6 +13,12 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 2. Confirm the work can be split into independent questions or areas.
 3. Keep the immediate blocking step local. Delegate only sidecar work that can run in parallel.
 4. Skip this skill for code writing, patching, rebases, commits, or tightly coupled debugging that needs one continuous thread.
+5. Default to response-only output. Use the optional durable mode only when the
+   user or calling phase needs reusable primary evidence; then read
+   [DURABLE-REPORT.md](DURABLE-REPORT.md).
+   Research lanes remain readonly. Only the coordinator or one designated
+   consolidator may write and commit exactly one report after synthesis.
+   The writer must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
 
 ## Split Cleanly
 
@@ -41,7 +47,7 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 - Compare outputs against the repo, docs, or other primary artifacts.
 - Resolve disagreements with evidence, not majority vote.
-- Follow important claims back to their owning source before relying on them.
+- Follow every retained factual claim back to its primary source.
 - Extract the few facts that matter, then decide locally.
 - Close agents that are no longer needed.
 
@@ -69,3 +75,4 @@ Return:
 - conflicts or uncertainty
 - the synthesized conclusion
 - the next local action
+- durable report immutable SHA, path, and verified retention reference, when durable mode was selected

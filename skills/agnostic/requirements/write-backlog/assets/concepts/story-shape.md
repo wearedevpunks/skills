@@ -2,7 +2,7 @@
 
 ## Shared rules
 
-Keep every backlog item body product-facing and kind-appropriate.
+Keep every backlog item body product-facing and appropriate to its direct classification.
 
 All bodies may include durable source links, accepted evidence, and closure notes. Do not include execution plans, file-level implementation notes, or validation commands.
 
@@ -27,7 +27,7 @@ Recommended sections:
 
 ## Next Route
 
-- `grilling` | `research` | `prototype` | `epic`
+- `grilling` | `research` | `prototype` | Finder reconciliation
 ```
 
 Fog bodies must not define child tickets or delivery scope.
@@ -52,9 +52,10 @@ Recommended sections:
 ## Closure
 
 Answer:
-Accepted direction:
 Artifacts:
-Created or updated implementation items:
+Observations:
+Open decisions:
+Resolution pointer:
 ```
 
 ## Research body
@@ -78,8 +79,9 @@ Recommended sections:
 
 Answer:
 Evidence:
-Accepted direction:
-Created or updated implementation items:
+Observations:
+Open decisions:
+Resolution pointer:
 ```
 
 ## Prototype body
@@ -102,8 +104,9 @@ Recommended sections:
 ## Closure
 
 Artifacts:
-Accepted direction:
-Created or updated implementation items:
+Observations:
+Open decisions:
+Resolution pointer:
 ```
 
 ## Epic body
@@ -125,9 +128,9 @@ Recommended sections:
 
 - ...
 
-## Links
+## Authority
 
-- `SPEC.md` once it exists
+- Immutable spec: ...
 ```
 
 Epic bodies may summarize the capability boundary, but should not re-copy every child story verbatim once the child stories exist.
@@ -143,10 +146,17 @@ Recommended sections:
 
 [What this story enables]
 
-## Acceptance signals
+## Source stories
 
-- [ ] ...
-- [ ] ...
+- `US-###`
+
+## Acceptance criteria
+
+- `AC-###`
+
+## Demonstration
+
+[One end-to-end observable result]
 
 ## Non-goals
 
@@ -155,7 +165,7 @@ Recommended sections:
 ## Links
 
 - Parent epic
-- `SPEC.md` once it exists and matters
+- Immutable spec
 ```
 
 ## Body anti-patterns

@@ -5,7 +5,7 @@ description: Requirements grilling with durable branch artifacts, glossary/axiom
 
 # Requirements Grill
 
-Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that can feed backlog/user-story creation.
+Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-spec` can compile after closure.
 
 This skill blends the shared `$grilling` primitive with durable artifacts. Use `$grilling` for live interview behavior; use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
 
@@ -25,7 +25,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 - `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` and `<topic>-grill-status.md` are the detailed requirements and glossary record
 - other routed `<wiki-root>/content/docs/project/` pages are the synthesized project knowledge surface
-- backlog/user-story creation is the next phase after the grill gate, outside this skill's scope
+- closed shared understanding routes to `create-spec`; backlog projection is later and outside this skill's scope
 
 ## Core Behavior
 
@@ -41,4 +41,4 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
 
-After `$grilling` completes, say the requirements grill is done and give the likely next direction, usually backlog/user-story creation.
+After `$grilling` completes with shared understanding and all branches closed or explicitly parked, hand the durable grill artifacts to `create-spec`. If the frontier remains open, return to Wayfinder instead of implying backlog readiness.

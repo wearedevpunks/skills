@@ -1,6 +1,6 @@
 ---
 name: docs-onboarding
-description: Onboard an existing project into a scaffolded Harness wiki by inspecting code, docs, and backlog context, building a Project Map, running a targeted requirements grill, and calling create-spec to reconstruct evidence-backed specs. Use immediately after hi scaffold init when the generated prompt says to activate docs-onboarding, or when an existing repository needs initial wiki/spec context reconstructed from current sources.
+description: Onboard an existing project into a scaffolded Harness wiki by inspecting code, docs, and backlog context, building a Project Map, closing a targeted requirements grill, compiling specs, then projecting them to the backlog. Use immediately after hi scaffold init or when an existing repository needs initial wiki/spec context reconstructed.
 ---
 
 # Docs Onboarding
@@ -18,7 +18,8 @@ Use this skill to turn an existing repository into initial Harness wiki context 
    - If either lane is missing or inaccessible, ask the developer for the backlog location or access path before assuming no backlog exists.
 4. Build and persist the Project Map before asking developer questions.
 5. Run a targeted `requirements-grill` against the Project Map.
-6. After `$requirements-grill` completes, call `create-spec` to reconstruct evidence-backed specs.
+6. Compile confirmed grill decisions with `create-spec`. It writes agent-ready specs only when its readiness contract passes; preserve `spec-not-ready` gaps upstream.
+7. Only after each spec is written and exposed at a verified stable blob URL, activate `write-backlog` to project it into provider-native delivery items.
 
 For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).
 
@@ -43,4 +44,4 @@ Persist the Project Map and grill status before developer questions. On resume, 
 - Code can prove observed behavior, not original intent.
 - Reconstructed spec history must be evidence-backed.
 - Do not invent implementation notes, rationale, or tech-debt history without supporting artifacts.
-- Backlog mutation is out of scope; use backlog evidence as input only.
+- Never mutate backlog before a spec is written and agent-ready.
