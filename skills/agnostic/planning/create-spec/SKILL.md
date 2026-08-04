@@ -47,3 +47,5 @@ and accepted implementation or testing decisions.
   choreography does not.
 - `readiness: agent-ready` is sufficient downstream. Do not add a review or
   approval stop; pause only for a user-requested HITL checkpoint.
+- Compiler state is `compiled`. Human approval, when explicitly requested, is a
+  separate optional action and is never inferred or stamped by this compiler.

@@ -109,6 +109,17 @@ test("finder keeps fog broad until it graduates to a precise question", () => {
   );
 });
 
+test("wayfinder separates capability placement from execution chronology", () => {
+  const primitive = read("skills/agnostic/planning/wayfinder/SKILL.md");
+  const frontier = read(
+    "skills/phases/finder-phase/references/frontier-lifecycle.md",
+  );
+  const all = `${primitive}\n${frontier}`;
+  assert.match(all, /capability module/i);
+  assert.match(all, /execution milestones.{0,160}blocker-derived chronology/is);
+  assert.doesNotMatch(all, /module\/milestone/i);
+});
+
 test("finder routes physical claim and resolution mutation through write-backlog", () => {
   const convergence = read(
     "skills/phases/finder-phase/references/convergence.md",
@@ -157,6 +168,16 @@ test("research parent enforces one durable report writer", () => {
     research,
     /only the coordinator or one designated\s+consolidator may write and commit exactly one report/i,
   );
+});
+
+test("parallel research durable retention commit does not trigger its skip rule", () => {
+  const research = read(
+    "skills/agnostic/research/parallel-research/SKILL.md",
+  );
+  assert.match(research, /skip.{0,200}source or code mutation/is);
+  assert.match(research, /skip.{0,200}unrelated\s+writes/is);
+  assert.match(research, /one retained durable-report commit/i);
+  assert.doesNotMatch(research, /skip this skill[^.]*\bcommits\b/i);
 });
 
 test("durable research is remotely retained before immutable handoff", () => {
@@ -225,6 +246,38 @@ test("agent-ready compiler output is sufficient for downstream delivery", () => 
   assert.match(router, /HITL checkpoint is explicit user control/i);
   assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
   assert.doesNotMatch(all, /no reviewed matching spec/i);
+});
+
+test("spec compiler records neutral compiler state without human approval", () => {
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
+  const template = read(
+    "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
+  );
+  const bookkeeping = read(
+    "skills/agnostic/planning/create-spec/references/wiki-bookkeeping.md",
+  );
+  assert.match(template, /status: compiled/u);
+  assert.match(template, /readiness: agent-ready/u);
+  assert.match(bookkeeping, /Compiled/u);
+  assert.match(createSpec, /human approval.{0,160}separate optional action/is);
+  assert.doesNotMatch(`${template}\n${bookkeeping}`, /Approved|status: approved/u);
+});
+
+test("create-plan produces worker ownership and wave fields", () => {
+  const skill = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const schema = read(
+    "skills/agnostic/planning/create-plan/references/plan-schema.md",
+  );
+  const reviewer = read(
+    "skills/agnostic/planning/create-plan/references/planner-task-graph.md",
+  );
+  assert.match(skill, /`owned_paths`/u);
+  assert.match(skill, /`wave_boundary`/u);
+  assert.match(schema, /Every task must include:[\s\S]*`owned_paths`[\s\S]*`wave_boundary`/u);
+  assert.match(schema, /\*\*owned_paths\*\*:/u);
+  assert.match(schema, /\*\*wave_boundary\*\*:/u);
+  assert.match(reviewer, /missing\s+`owned_paths`/u);
+  assert.match(reviewer, /missing\s+`wave_boundary`/u);
 });
 
 test("spec compiler rejects incomplete dependency and story coverage", () => {

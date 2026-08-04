@@ -20,26 +20,26 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 
 ### Grilling
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when a human decision must close ambiguity.
 - Closes with an accepted decision note before implementation scope changes.
 
 ### Research
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when readonly investigation can answer the unknown.
 - Closes with answer and immutable evidence. Wayfinder, not research, selects
   any product direction.
 
 ### Prototype
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when learning needs an artifact, experiment, or throwaway proof.
 - Closes with a human verdict and immutable artifact/verdict evidence.
 
 ### Epic
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Accepted implementation capability.
 - Is a post-spec delivery projection.
 
@@ -52,8 +52,10 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 ## Transition Rules
 
 - Sharpening `fog` derives a precise question, chooses or creates a
-  module/milestone, then creates a concrete `grilling`, `research`, or
+  capability module, then creates a concrete `grilling`, `research`, or
   `prototype` item there.
+- Execution milestones are separately blocker-derived chronology; they do not
+  determine capability placement.
 - `grilling`, `research`, and `prototype` do not become implementation scope silently.
 - Resolution records for `grilling`, `research`, and `prototype` include:
   - answer

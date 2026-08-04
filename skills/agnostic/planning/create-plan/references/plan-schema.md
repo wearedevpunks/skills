@@ -31,6 +31,8 @@ Every task must include:
 - stable task id
 - `depends_on`
 - `location`
+- `owned_paths`
+- `wave_boundary`
 - `description`
 - `validation`
 - `status`
@@ -56,6 +58,12 @@ Every task must include:
 - `runtime_cleanup`
 
 `backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
+
+`owned_paths` lists the exact write scope assigned to the task. Tasks in the
+same wave must have disjoint `owned_paths`.
+
+`wave_boundary` names the explicit execution wave derived from completed
+dependencies and disjoint ownership, for example `W1`.
 
 Multiple tasks may point to the same story when one story needs several execution steps.
 
@@ -86,6 +94,8 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 
 - **depends_on**: [T1, T2]
 - **location**: src/example.ts
+- **owned_paths**: [src/example.ts, tests/example.test.ts]
+- **wave_boundary**: W2
 - **description**: Implement the task behavior.
 - **validation**: Public-interface behavior that proves completion.
 - **status**: Planned

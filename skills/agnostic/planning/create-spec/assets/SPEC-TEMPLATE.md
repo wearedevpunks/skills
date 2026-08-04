@@ -2,7 +2,7 @@
 title: "[Title]"
 domain:
 type: spec
-status: approved
+status: compiled
 readiness: agent-ready
 links: []
 created: YYYY-MM-DD

@@ -20,7 +20,7 @@ payloads, create specs, plan implementation, or own backlog schema.
    - Treat docs, specs, grill logs, and notes as evidence, not the living map.
 
 3. Classify the next item.
-   - `fog`: root-level uncertainty; no module or execution shape is clear yet.
+   - `fog`: root-level uncertainty; no capability module or execution shape is clear yet.
    - `grilling`: a human decision must close ambiguity.
    - `research`: readonly investigation can answer the unknown.
    - `prototype`: learning requires an artifact or experiment.
@@ -29,8 +29,10 @@ payloads, create specs, plan implementation, or own backlog schema.
 
 4. Choose placement.
    - Keep `fog` at the backlog root.
-   - For every non-fog item, choose or propose a module/milestone first.
+   - For every non-fog item, choose or propose a capability module first.
    - Keep stories under epics.
+   - Execution milestones are separately blocker-derived chronology; they do
+     not determine capability placement.
 
 5. Return a route.
    - State the selected concept, placement, evidence, unresolved questions, and recommended next skill.
