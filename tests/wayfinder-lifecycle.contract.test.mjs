@@ -308,6 +308,50 @@ test("implement-spec routes explicit dual execution modes without implicit fan-o
   assert.doesNotMatch(parallel, /Every `implement-spec` run executes through plan-derived worker waves/u);
 });
 
+test("delivery implementation honors the selected execution mode", () => {
+  const phase = read("skills/phases/delivery-phase/phases/implement.md");
+  assert.match(phase, /read the selected `Execution Mode`/i);
+  assert.match(
+    phase,
+    /`sequential`.{0,160}entire task loop.{0,160}exactly one implementation\s+worker/is,
+  );
+  assert.match(phase, /parent.{0,160}parent validation/is);
+  assert.match(
+    phase,
+    /only explicitly selected `parallel`.{0,240}safe disjoint tasks.{0,240}waves/is,
+  );
+  assert.doesNotMatch(phase, /^\s*- Launch every currently unblocked task/mu);
+});
+
+test("spec compiler serializes dependency and branch-base decisions", () => {
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
+  const readiness = read(
+    "skills/agnostic/planning/create-spec/references/readiness.md",
+  );
+  const quality = read(
+    "skills/agnostic/planning/create-spec/references/spec-quality-bar.md",
+  );
+  const template = read(
+    "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
+  );
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+
+  for (const document of [createSpec, readiness, quality, template]) {
+    assert.match(document, /Dependency Readiness/u);
+    assert.match(document, /Branch\/Base Intent/u);
+  }
+  assert.match(template, /dependency.{0,160}evidence/is);
+  assert.match(template, /parent.{0,160}base.{0,160}constraint/is);
+  assert.match(template, /No Stack Required/u);
+  assert.match(template, /Not applicable/u);
+  assert.match(createPlan, /Preserve `No Stack Required` or `Ready`/u);
+  assert.match(createPlan, /`Blocked` is invalid agent-ready input/u);
+  assert.match(
+    createPlan,
+    /If `Branch\/Base Intent` is not `Not applicable`/u,
+  );
+});
+
 test("spec compiler rejects incomplete dependency and story coverage", () => {
   const readiness = read(
     "skills/agnostic/planning/create-spec/references/readiness.md",

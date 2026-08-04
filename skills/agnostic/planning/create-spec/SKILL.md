@@ -13,7 +13,8 @@ no questions, runs no local grill, and performs no backlog mutation.
 
 Accept confirmed user decisions and their evidence: grill status/logs, research
 reports, prototype verdicts, ADRs, glossary, axioms, constraints, system facts,
-and accepted implementation or testing decisions.
+accepted implementation or testing decisions, dependency evidence, and accepted
+parent/base constraints.
 
 ## Steps
 
@@ -22,7 +23,8 @@ and accepted implementation or testing decisions.
    required is missing, return one atomic `spec-not-ready` result and write no
    partial `SPEC.md`.
 3. Compile [SPEC-TEMPLATE.md](assets/SPEC-TEMPLATE.md). Preserve only confirmed
-   decisions; never invent closure.
+   decisions; never invent closure. Serialize `Dependency Readiness` and
+   `Branch/Base Intent` using the readiness contract.
 4. Apply [spec-quality-bar.md](references/spec-quality-bar.md).
 5. Update existing planning-surface indexes through
    [wiki-bookkeeping.md](references/wiki-bookkeeping.md).
@@ -45,6 +47,8 @@ and accepted implementation or testing decisions.
   receives only the verified stable blob URL.
 - Accepted technical and testing decisions belong in the spec. Detailed task
   choreography does not.
+- `Dependency Readiness` and `Branch/Base Intent` preserve accepted dependency
+  evidence and parent/base constraints for `create-plan`.
 - `readiness: agent-ready` is sufficient downstream. Do not add a review or
   approval stop; pause only for a user-requested HITL checkpoint.
 - Compiler state is `compiled`. Human approval, when explicitly requested, is a

@@ -26,6 +26,16 @@ updated: YYYY-MM-DD
 
 ## Constraints
 
+## Dependency Readiness
+
+_Write `No Stack Required` when no dependency exists. Otherwise write `Ready`
+and list each dependency with immutable landing or branch/base evidence._
+
+## Branch/Base Intent
+
+_When accepted intent exists, record the intended parent and base, child branch
+constraint, and supporting evidence. Otherwise write `Not applicable`._
+
 ## Accepted Technical Decisions
 
 ## Accepted Testing Decisions
