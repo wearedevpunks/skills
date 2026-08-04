@@ -69,15 +69,14 @@ Create a plan first. Never implement code in this skill.
 If `SPEC.md` contains `Dependency Readiness` or `Branch/Base Intent`, copy those
 sections into `PLAN.md` and validate that they are internally consistent.
 
-- Preserve the exact dependency status: `No Stack Required`,
-  `Branch/Base Intent`, or `Blocked`.
+- Preserve `No Stack Required` or `Ready` plus its dependency evidence.
 - Do not decide stack topology in `create-plan`.
 - Do not convert task-level `depends_on` into stacked PRs. Intra-epic task
   dependencies stay inside one PR and only control implementation order.
-- If `Dependency Readiness` is `Blocked`, stop planning and report the blocker
-  instead of producing an execution-ready plan.
-- If `Branch/Base Intent` exists, make implementation tasks reference that
-  branch/base intent as an execution constraint.
+- `Blocked` is invalid agent-ready input. Stop planning and report the stale or
+  contradictory spec instead of producing an execution-ready plan.
+- If `Branch/Base Intent` is not `Not applicable`, make implementation tasks
+  reference that intent as an execution constraint.
 
 ### Review modes
 

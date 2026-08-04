@@ -8,7 +8,7 @@ The spec lives in the problem space.
 
 - include what, who, why, user stories, acceptance criteria, non-goals,
   constraints, accepted technical/testing decisions, prototype verdicts, and
-  verification seams
+  verification seams, `Dependency Readiness`, and `Branch/Base Intent`
 - exclude unaccepted solution design and plan-owned files, commands, workers,
   task graph, or execution order
 - when the epic has child stories, include the concrete requirements of each child story instead of summarizing only the parent issue
@@ -46,6 +46,10 @@ Avoid:
 
 - ensure frontmatter has a non-empty string `title`, especially for specs saved directly in routed Fumadocs trees
 - ensure frontmatter contains `readiness: agent-ready`
+- ensure `Dependency Readiness` records `No Stack Required` or `Ready` with
+  evidence
+- ensure `Branch/Base Intent` records accepted parent/base constraints or
+  `Not applicable`
 - remove all template scaffolding
 - remove empty or irrelevant sections
 - ensure the document reads cleanly with no ghost instructions

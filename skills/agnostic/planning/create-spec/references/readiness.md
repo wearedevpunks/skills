@@ -14,6 +14,20 @@ Required inputs:
   accepted branch/base intent with concrete evidence; blocked or unevidenced
   dependencies fail compilation
 
+## Dependency output contract
+
+Serialize both sections in every compiled spec:
+
+- `Dependency Readiness`: write `No Stack Required` when no dependency exists.
+  Otherwise write `Ready` and list every dependency with immutable landing or
+  branch/base evidence.
+- `Branch/Base Intent`: when accepted intent exists, record the intended parent
+  or base, child branch constraint, and supporting evidence. Otherwise write
+  `Not applicable` explicitly.
+
+Never emit `Blocked` with `readiness: agent-ready`; blocked or unevidenced
+dependencies produce `spec-not-ready` instead.
+
 Validate the compiled traceability graph before writing:
 
 - every `US-###` has at least one `AC-###` whose `Covers` list names it

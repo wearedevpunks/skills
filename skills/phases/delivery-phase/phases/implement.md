@@ -9,9 +9,13 @@ Load `implement-spec` only after this phase is selected.
 
 ## Rules
 
+- Read the selected `Execution Mode` from user or plan intent and require
+  `implement-spec` to record it in `IMPLEMENTATION-NOTES.md`.
 - Preserve the plan's dependencies, owned paths, validation gates, and wave boundaries.
-- Launch every currently unblocked task in the active wave through a scoped worker.
-- Run workers concurrently when their owned paths are disjoint; dependency and ownership constraints may produce a one-worker wave.
+- In `sequential`, delegate the entire task loop to exactly one implementation
+  worker; the parent owns orchestration, review, and parent validation.
+- Only explicitly selected `parallel` may launch all safe disjoint tasks in the
+  active waves. Dependency and ownership constraints may produce one-task waves.
 - Keep changes inside the active delivery scope.
 - Parent orchestration owns shared notes and final validation evidence.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.
