@@ -21,6 +21,9 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
    Research lanes remain readonly. Only the coordinator or one designated
    consolidator may write and commit exactly one report after synthesis.
    The writer must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
+   Finder child resolution always selects durable mode because reconciliation
+   requires immutable evidence. Standalone audits remain response-only unless
+   their caller explicitly requests reusable evidence.
 
 ## Split Cleanly
 
