@@ -17,7 +17,14 @@ No shared cross-provider classification field is required. Every adapter must st
 
 ## Pre-spec intake contract
 
-Finder may request one `fog`, `grilling`, `research`, or `prototype` item before a spec exists. Require its precise question, selected classification, map link, dependencies, and claim state. Validate the complete intake dependency graph for missing targets, self-edges, and cycles before mutation. Materialize exactly that intake item; do not infer or create delivery epics/stories.
+Finder may request one `fog`, `grilling`, `research`, or `prototype` item before
+a spec exists. A `fog` item requires a frontier or uncertainty description; it
+does not require a precise question. A `grilling`, `research`, or `prototype`
+item requires the precise question derived when fog graduates. Every intake
+also requires its selected classification, map link, dependencies, and claim
+state. Validate the complete intake dependency graph for missing targets,
+self-edges, and cycles before mutation. Materialize exactly that intake item;
+do not infer or create delivery epics/stories.
 
 ## Delivery input contract
 

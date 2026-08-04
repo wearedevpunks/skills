@@ -9,7 +9,7 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** approved `SPEC.md` or explicit planning request
+- **Upstream:** agent-ready `SPEC.md` or explicit planning request
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
 - **Downstream:** execution-ready `PLAN.md` for `implement-spec`
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing

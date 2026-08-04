@@ -45,4 +45,5 @@ and accepted implementation or testing decisions.
   receives only the verified stable blob URL.
 - Accepted technical and testing decisions belong in the spec. Detailed task
   choreography does not.
-- Do not pause for user review. A caller may route review separately.
+- `readiness: agent-ready` is sufficient downstream. Do not add a review or
+  approval stop; pause only for a user-requested HITL checkpoint.

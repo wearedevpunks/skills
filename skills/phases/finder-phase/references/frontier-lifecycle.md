@@ -11,8 +11,9 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 ### Fog
 
 - Root-level only.
-- Tracks a real but not-yet-sharp area of uncertainty.
-- Graduates when its uncertainty can be stated as a precise question now.
+- Tracks a real but not-yet-sharp area through a frontier or uncertainty description.
+- Graduates when Finder can derive a precise question for `grilling`, `research`,
+  or `prototype`; the fog item itself does not require that question.
 - Is not delivery-eligible.
 - Is not a `SPEC.md` anchor.
 - Does not own child tickets by default.
@@ -50,7 +51,9 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 
 ## Transition Rules
 
-- Sharpening `fog` first chooses or creates a module/milestone, then creates concrete non-fog items there.
+- Sharpening `fog` derives a precise question, chooses or creates a
+  module/milestone, then creates a concrete `grilling`, `research`, or
+  `prototype` item there.
 - `grilling`, `research`, and `prototype` do not become implementation scope silently.
 - Resolution records for `grilling`, `research`, and `prototype` include:
   - answer

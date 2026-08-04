@@ -11,7 +11,7 @@ description: Materialize provider-native backlog items. Use for Finder-selected 
 2. Read `.devpunks/settings.json` and resolve the destination from `backlogProvider` plus `backlogProjectUrl`.
 3. If either setting is missing, or `backlogProjectUrl` is not an absolute HTTP(S) URL, stop and ask the operator to run `hi ensure`. Do not discover or guess a backlog destination.
 4. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
-5. For intake, validate the complete intake dependency graph for missing targets, self-edges, and cycles before mutation; then materialize only the precise question, route, dependencies, and claim state supplied by Finder.
+5. For intake, validate the complete intake dependency graph for missing targets, self-edges, and cycles before mutation; then materialize only the Finder-supplied description or question, route, dependencies, and claim state.
 6. For delivery, use `backlog-shaper` only to draft the epic/story projection; keep final judgment in the parent thread.
 7. Classify each item directly as `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
 8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items in a capability module. Keep capability grouping separate from execution milestones.
@@ -46,7 +46,9 @@ Every supported concept is a first-class provider backlog item that is visible, 
 ### Pre-spec intake
 
 1. Accept a Finder-selected direct classification: `fog`, `grilling`, `research`, or `prototype`.
-2. Preserve the precise question, capability module when known, dependencies, claim state, and map link.
+2. For `fog`, preserve the frontier or uncertainty description. For `grilling`,
+   `research`, or `prototype`, preserve the precise question. Also preserve the
+   capability module when known, dependencies, claim state, and map link.
 3. Validate the complete intake dependency graph for missing targets, self-edges, and cycles before the first provider write.
 4. Create exactly the requested intake item. Do not create an epic or story.
 5. Return the immutable provider id and URL to Finder.

@@ -152,8 +152,24 @@ test("pre-spec intake dependency graph is validated before mutation", () => {
   const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
   for (const document of [skill, reference]) {
     assert.match(document, /complete intake dependency graph/u);
-    assert.match(document, /missing targets, self-edges, and cycles/u);
+    assert.match(document, /missing targets,\s+self-edges, and cycles/u);
     assert.match(document, /before (?:the first provider write|mutation)/u);
+  }
+});
+
+test("fog intake carries uncertainty while graduated intake carries a precise question", () => {
+  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
+  const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
+  for (const document of [skill, reference]) {
+    assert.match(
+      document,
+      /`fog`.{0,200}frontier or uncertainty description/is,
+    );
+    assert.match(
+      document,
+      /`grilling`, `research`, or `prototype`.{0,200}precise question/is,
+    );
+    assert.doesNotMatch(document, /(?:each|one) `fog`[^.]{0,200}precise question/is);
   }
 });
 

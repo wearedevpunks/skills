@@ -83,7 +83,7 @@ test("wayfinder and finder expose a resumable decision lifecycle", () => {
   assert.match(phase, /chart mode/i);
   assert.match(phase, /work mode/i);
   assert.match(all, /backlog root is the living map/i);
-  assert.match(all, /precise question now/i);
+  assert.match(all, /precise question/i);
   assert.match(all, /open, unblocked, and unclaimed/i);
   assert.match(all, /claim.{0,160}before/is);
   assert.match(convergence, /Resume Input/);
@@ -93,6 +93,20 @@ test("wayfinder and finder expose a resumable decision lifecycle", () => {
   assert.match(convergence, /recompute open, unblocked, unclaimed/i);
   assert.match(convergence, /out-of-scope/i);
   assert.doesNotMatch(primitive, /next (planning |work )?kind/i);
+});
+
+test("finder keeps fog broad until it graduates to a precise question", () => {
+  const phase = read("skills/phases/finder-phase/SKILL.md");
+  const frontier = read(
+    "skills/phases/finder-phase/references/frontier-lifecycle.md",
+  );
+  const all = `${phase}\n${frontier}`;
+  assert.match(all, /fog.{0,160}frontier or uncertainty description/is);
+  assert.match(all, /precise question.{0,160}(?:grilling|research|prototype)/is);
+  assert.doesNotMatch(
+    all,
+    /fog item graduates when it can be stated as a precise question now/i,
+  );
 });
 
 test("finder routes physical claim and resolution mutation through write-backlog", () => {
@@ -192,6 +206,25 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
   assert.match(requirements, /spec-written/);
   assert.match(delivery, /agent-ready/);
   assert.doesNotMatch(all, /write-backlog` automatically|before final drafting/i);
+});
+
+test("agent-ready compiler output is sufficient for downstream delivery", () => {
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const implementSpec = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  const implementLifecycle = read(
+    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
+  );
+  const delivery = read("skills/phases/delivery-phase/SKILL.md");
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const spec = read("skills/phases/delivery-phase/phases/spec.md");
+  const all = `${createSpec}\n${createPlan}\n${implementSpec}\n${implementLifecycle}\n${delivery}\n${router}\n${spec}`;
+
+  assert.match(createSpec, /`readiness: agent-ready` is sufficient downstream/i);
+  assert.match(router, /matching agent-ready `SPEC\.md`/i);
+  assert.match(router, /HITL checkpoint is explicit user control/i);
+  assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
+  assert.doesNotMatch(all, /no reviewed matching spec/i);
 });
 
 test("spec compiler rejects incomplete dependency and story coverage", () => {

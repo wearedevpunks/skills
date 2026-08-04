@@ -25,3 +25,6 @@ Write or verify:
 - source issue/tracker/spec folder
 
 Then stop or re-enter `delivery-phase` for routing.
+
+This completion state satisfies the downstream spec gate. Do not add a spec
+review or approval stop unless the user explicitly requested a HITL checkpoint.

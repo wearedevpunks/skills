@@ -27,7 +27,9 @@ directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
 
 - The backlog root is the living map; do not create a separate map issue.
 - `fog` is not delivery-eligible and is not a `SPEC.md` anchor.
-- A fog item graduates when it can be stated as a precise question now.
+- A `fog` item records a frontier or uncertainty description. Once Finder can
+  derive a precise question, graduate it into `grilling`, `research`, or
+  `prototype`; the question belongs to that concrete item, not the fog intake.
 - Frontier tickets are open, unblocked, and unclaimed. Dependencies and claims
   use provider-native relations and assignment/state.
 - Child flows return immutable resolution pointers. Finder produces semantic

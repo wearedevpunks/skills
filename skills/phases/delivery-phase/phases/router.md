@@ -13,7 +13,7 @@ until this router selects one.
 ## Routing Order
 
 1. If goal bounds are unclear, stop and ask one concrete question.
-2. If no reviewed matching spec exists, load [spec.md](spec.md).
+2. If no matching agent-ready `SPEC.md` exists, load [spec.md](spec.md).
 3. If the spec exists but is stale, contradictory, or missing required child-story scope, load [spec.md](spec.md).
 4. If no execution-ready matching plan exists, load [plan.md](plan.md).
 5. If the plan exists but lacks dependencies, owned paths, validation gates, or wave boundaries, load [plan.md](plan.md).
@@ -26,9 +26,10 @@ until this router selects one.
 
 ## HITL Behavior
 
-When the user asks for manual control, route only the requested phase and stop
-after writing its phase handoff. Do not continue to the next phase in the same
-turn unless the user explicitly asks.
+A HITL checkpoint is explicit user control, never an inferred spec approval
+gate. When requested, route only the requested phase and stop after writing its
+phase handoff. On resume, an agent-ready `SPEC.md` proceeds directly to the next
+applicable phase; no reviewed or approved status is required.
 
 ## Resume Behavior
 

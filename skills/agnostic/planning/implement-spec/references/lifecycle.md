@@ -6,7 +6,7 @@
 
 Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for the wave loop and keep shared lifecycle rules here.
 
-## 1. Require an existing reviewed spec folder
+## 1. Require an existing agent-ready spec folder
 
 Execution must stay grounded in the first matching spec folder:
 
@@ -20,6 +20,9 @@ Required files:
 - `PLAN.md`
 
 If `SPEC.md` is missing, stop and report the resolved path error.
+
+Require `readiness: agent-ready`; no separate spec review or approval state is
+needed.
 
 If `PLAN.md` is missing, stop and use `create-plan`. Do not auto-generate plans from this skill.
 
