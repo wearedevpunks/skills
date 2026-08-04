@@ -13,6 +13,13 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 - `PLAN.md` exists and matches the spec.
 - Tasks have dependencies, owned paths, validation gates, and wave boundaries.
+- `execution_mode` is persisted as `sequential` or `parallel`.
+
+## Backlog Projection Complete
+
+- Projection evidence names the immutable spec URL, provider destination,
+  epic/story ids and URLs, and verified observed state.
+- Evidence matches the current spec; otherwise the projection is stale.
 
 ## Implementation Complete
 

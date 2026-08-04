@@ -134,6 +134,22 @@ test("finder routes physical claim and resolution mutation through write-backlog
   );
 });
 
+test("finder research dispatch requires durable report evidence", () => {
+  const convergence = read(
+    "skills/phases/finder-phase/references/convergence.md",
+  );
+  const research = read(
+    "skills/agnostic/research/parallel-research/SKILL.md",
+  );
+  assert.match(
+    convergence,
+    /`research` -> `parallel-research` in durable-report mode/i,
+  );
+  assert.match(convergence, /immutable commit SHA and path/i);
+  assert.match(research, /Finder child resolution.{0,160}durable mode/is);
+  assert.match(research, /standalone audits remain response-only/i);
+});
+
 test("research durable mode remains optional", () => {
   const research = read(
     "skills/agnostic/research/parallel-research/SKILL.md",
@@ -321,6 +337,42 @@ test("delivery implementation honors the selected execution mode", () => {
     /only explicitly selected `parallel`.{0,240}safe disjoint tasks.{0,240}waves/is,
   );
   assert.doesNotMatch(phase, /^\s*- Launch every currently unblocked task/mu);
+});
+
+test("delivery gates backlog projection between spec and planning", () => {
+  const delivery = read("skills/phases/delivery-phase/SKILL.md");
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const backlog = read("skills/phases/delivery-phase/phases/backlog.md");
+  const artifactState = read(
+    "skills/phases/delivery-phase/references/artifact-state.md",
+  );
+  assert.match(router, /spec\.md[\s\S]*backlog\.md[\s\S]*plan\.md/u);
+  assert.match(router, /projection is missing or stale/i);
+  assert.match(backlog, /verified stable blob URL/u);
+  assert.match(backlog, /Activate `write-backlog`/u);
+  assert.match(backlog, /current for the same spec/i);
+  assert.match(backlog, /zero\s+provider mutations/i);
+  assert.match(backlog, /projection evidence/i);
+  assert.match(artifactState, /Backlog Projection Complete/u);
+  assert.match(delivery, /phases\/backlog\.md/u);
+});
+
+test("planning persists execution mode for resume", () => {
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const schema = read(
+    "skills/agnostic/planning/create-plan/references/plan-schema.md",
+  );
+  const phase = read("skills/phases/delivery-phase/phases/plan.md");
+  const artifactState = read(
+    "skills/phases/delivery-phase/references/artifact-state.md",
+  );
+  for (const document of [createPlan, schema, phase, artifactState]) {
+    assert.match(document, /execution_mode/u);
+  }
+  assert.match(schema, /execution_mode: sequential \| parallel/u);
+  assert.match(schema, /Default to `sequential` when absent/u);
+  assert.match(schema, /`parallel` requires explicit user or plan\s+intent/u);
+  assert.match(phase, /persist `execution_mode`/iu);
 });
 
 test("spec compiler serializes dependency and branch-base decisions", () => {

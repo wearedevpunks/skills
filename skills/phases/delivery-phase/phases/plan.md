@@ -13,6 +13,8 @@ Load `create-plan` only after this phase is selected.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
 - Require dependencies, owned paths, validation gates, review routing, and explicit wave boundaries.
 - Group independent tasks with disjoint write scopes into the same wave.
+- Persist `execution_mode` from explicit user or plan intent. Default to
+  `sequential` when absent; never infer `parallel` from available tasks.
 
 ## Completion State
 
@@ -20,6 +22,7 @@ Write or verify:
 
 - execution-ready `PLAN.md`
 - dependencies, owned paths, and wave boundaries
+- `execution_mode: sequential | parallel`
 - validation commands or manual scenarios
 - planned review and docs-ingest expectations
 

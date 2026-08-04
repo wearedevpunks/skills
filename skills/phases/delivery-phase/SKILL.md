@@ -29,6 +29,7 @@ Completion of one phase does not imply loading the rest of the chain.
 
 - [phases/router.md](phases/router.md): choose the next phase from artifacts and evidence.
 - [phases/spec.md](phases/spec.md): create or repair the agent-ready spec.
+- [phases/backlog.md](phases/backlog.md): verify or project the agent-ready spec into delivery backlog items.
 - [phases/plan.md](phases/plan.md): create or repair the execution-ready plan.
 - [phases/implement.md](phases/implement.md): execute the accepted plan.
 - [phases/review.md](phases/review.md): run mandatory review and classify findings.
@@ -41,7 +42,7 @@ Completion of one phase does not imply loading the rest of the chain.
 - Do not read phase files other than `router.md` until the router selects them.
 - Do not activate child skills at delivery start.
 - Reuse fresh matching artifacts before loading creation skills.
-- A phase may delegate to `create-spec`, `create-plan`, `implement-spec`, `review-phase`, `debugging-phase`, `docs-ingest-phase`, or `stack` only from its own phase file.
+- A phase may delegate to `create-spec`, `write-backlog`, `create-plan`, `implement-spec`, `review-phase`, `debugging-phase`, `docs-ingest-phase`, or `stack` only from its own phase file.
 - After a phase completes, write enough state for future resume. See [references/phase-handoff.md](references/phase-handoff.md).
 
 ## Stop Conditions

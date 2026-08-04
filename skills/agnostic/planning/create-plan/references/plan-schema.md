@@ -8,6 +8,7 @@ The generated `PLAN.md` is the execution handoff. It must stand alone without hi
 
 Include:
 
+- `execution_mode: sequential | parallel`
 - initial situation
 - issue or problem statement
 - proposed solution shape
@@ -23,6 +24,9 @@ Include:
 - unresolved questions
 
 `unresolved questions` is not a hiding place for skipped planning. Include only `$grilling`-deferred, externally blocked, or non-blocking questions, and state why each remains open.
+
+Default to `sequential` when absent. `parallel` requires explicit user or plan
+intent; task independence alone does not authorize it.
 
 ## Task contract
 
@@ -90,6 +94,8 @@ When runtime validation is required:
 Use `not_applicable` for the other runtime fields when `runtime_validation: not_required`. Runtime validation is orthogonal to `review_mode`; a `cli`, `browser`, or `mixed` task may still require it. Execution mechanics are disclosed in [../../implement-spec/references/runtime-product-validation.md](../../implement-spec/references/runtime-product-validation.md).
 
 ```md
+execution_mode: sequential | parallel
+
 ### T3: Example task
 
 - **depends_on**: [T1, T2]

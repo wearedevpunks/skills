@@ -9,7 +9,9 @@ state; a prose handoff is evidence, not authoritative map state.
 ## Child Dispatch
 
 - `grilling` -> `requirements-grill`; only the human closes product decisions.
-- `research` -> `parallel-research`; facts may close, product direction may not.
+- `research` -> `parallel-research` in durable-report mode; require the retained
+  report's immutable commit SHA and path. Facts may close, product direction may
+  not.
 - `prototype` -> `prototype-phase`; wait for a human verdict.
 - closed or explicitly parked frontier -> `create-spec`.
 
