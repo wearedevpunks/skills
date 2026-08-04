@@ -2,6 +2,12 @@
 
 Use this reference only when an authoritative agent-ready `SPEC.md` exists at a verified stable blob URL and `write-backlog` has projected or must project it into provider-native delivery items. Concrete planning is downstream from both the spec and backlog projection.
 
+Backlog sync is eligible and in scope only when the planning input retains that
+agent-ready spec and its provider projection relation, and the requested work
+includes maintaining that relation. A planning-only request with no retained
+spec/projection relation has no backlog mutation requirement: record an explicit
+skip reason in `PLAN.md` and continue plan completion.
+
 ## Sync rules
 
 Use the backlog model owned by `write-backlog` at [backlog-model.md](../../../requirements/write-backlog/assets/concepts/backlog-model.md). Do not restate its readiness, taxonomy, traceability, or mutation contracts here.

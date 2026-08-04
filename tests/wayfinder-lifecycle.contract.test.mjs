@@ -375,6 +375,24 @@ test("planning persists execution mode for resume", () => {
   assert.match(phase, /persist `execution_mode`/iu);
 });
 
+test("create-plan syncs backlog only for eligible in-scope spec projections", () => {
+  const skill = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const backlog = read(
+    "skills/agnostic/planning/create-plan/references/backlog-sync.md",
+  );
+  const stop = read(
+    "skills/agnostic/planning/create-plan/references/stop-conditions.md",
+  );
+  const all = `${skill}\n${backlog}\n${stop}`;
+
+  assert.match(all, /agent-ready `SPEC\.md`[\s\S]*verified stable blob URL/iu);
+  assert.match(all, /backlog sync is eligible and in scope/iu);
+  assert.match(all, /record (?:an )?explicit\s+skip reason/iu);
+  assert.match(all, /planning-only request/iu);
+  assert.match(all, /continue plan completion/iu);
+  assert.doesNotMatch(skill, /Stop conditions:\*\* `PLAN\.md` and backlog sync are complete/iu);
+});
+
 test("spec compiler serializes dependency and branch-base decisions", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
   const readiness = read(
