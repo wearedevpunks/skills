@@ -4,7 +4,13 @@
 
 `implement-spec` is the only public execution entrypoint.
 
-Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for the wave loop and keep shared lifecycle rules here.
+Choose execution mode from user or plan intent:
+
+- `sequential`: exactly one implementation worker plus parent validation
+- `parallel`: explicitly authorized independent waves with disjoint write scopes
+
+Default to `sequential`. Load only the selected mode reference; keep shared
+lifecycle rules here.
 
 ## 1. Require an existing agent-ready spec folder
 
@@ -91,10 +97,18 @@ Do not create the file when nothing durable must survive the run.
 
 ## 6. Shared execution invariants
 
+- Choose from explicit user or plan intent. Parallel execution requires explicit
+  authorization plus independent plan waves with disjoint owned paths; never
+  infer parallel permission from task count alone.
+- Default to `sequential` when parallel is not explicitly authorized.
+- Do not switch modes mid-run unless the user redirects.
+- In `sequential`, exactly one implementation worker owns all implementation;
+  the parent coordinates, reviews, validates, and finalizes.
+- In `parallel`, workers own independent tasks while the parent orchestrates,
+  reviews, validates, updates shared artifacts, and advances the graph.
+- Dependencies or ownership constraints may make a parallel wave contain one
+  task. Never force unsafe concurrency.
 - Require every planned task to declare dependencies, owned paths, validation gates, and a wave boundary.
-- Build each wave from tasks whose dependencies are complete and whose write scopes are disjoint.
-- Workers own implementation changes. The parent coordinates, reviews, validates, updates shared artifacts, and finalizes.
-- A wave may contain one worker when dependencies or owned paths leave one task unblocked.
 - Worker routing must be available before implementation begins; otherwise repair it or report the blocker.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
 - Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
@@ -114,9 +128,9 @@ Do not create the file when nothing durable must survive the run.
 - Execution-time backlog sync may use comments, links, native status, and native relations.
 - Never rewrite epic or story bodies with task ids, TDD targets, validation commands, or file lists.
 
-## 7. Shared upkeep after each completed wave
+## 7. Shared upkeep after each completed unit
 
-After each completed wave:
+After each completed task or wave:
 
 - update `PLAN.md` status
 - append a concise execution log in `PLAN.md`
@@ -192,6 +206,7 @@ Rules:
 Before reporting back:
 
 - remove empty sections from `IMPLEMENTATION-NOTES.md`
+- ensure **Execution Mode** reflects the mode actually used
 - ensure **Sanity checks** lists only commands actually run
 - ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
 - ensure **Runtime Validation Evidence** contains conclusive proof for every required task, or an exact blocker with the task and acceptance criterion still marked blocked

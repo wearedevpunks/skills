@@ -280,6 +280,34 @@ test("create-plan produces worker ownership and wave fields", () => {
   assert.match(reviewer, /missing\s+`wave_boundary`/u);
 });
 
+test("implement-spec routes explicit dual execution modes without implicit fan-out", () => {
+  const skill = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  const lifecycle = read(
+    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
+  );
+  const sequential = read(
+    "skills/agnostic/planning/implement-spec/references/sequential.md",
+  );
+  const parallel = read(
+    "skills/agnostic/planning/implement-spec/references/parallel.md",
+  );
+  const notes = read(
+    "skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md",
+  );
+  const all = `${skill}\n${lifecycle}`;
+
+  assert.match(all, /user or plan intent/i);
+  assert.match(all, /default to `sequential`/i);
+  assert.match(all, /load only the selected mode reference/i);
+  assert.match(sequential, /exactly one implementation worker/i);
+  assert.match(sequential, /parent validation/i);
+  assert.match(parallel, /explicitly authorized/i);
+  assert.match(parallel, /independent.{0,160}disjoint/is);
+  assert.match(parallel, /dependencies.{0,160}one-task wave/is);
+  assert.match(notes, /## Execution Mode/u);
+  assert.doesNotMatch(parallel, /Every `implement-spec` run executes through plan-derived worker waves/u);
+});
+
 test("spec compiler rejects incomplete dependency and story coverage", () => {
   const readiness = read(
     "skills/agnostic/planning/create-spec/references/readiness.md",
