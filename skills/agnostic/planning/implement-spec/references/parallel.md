@@ -1,12 +1,17 @@
-# Worker-Wave Execution
+# Parallel Execution
 
-Every `implement-spec` run executes through plan-derived worker waves.
+Use this mode only when parallel execution is explicitly authorized by user or
+plan intent and the plan provides independent tasks with disjoint owned paths.
 
 ## Contract
 
-- **Worker policy:** spawn multiple workers only for currently unblocked independent work
+- **Mode:** `parallel`
+- **Worker policy:** spawn multiple workers only for currently unblocked independent work with disjoint write scopes
 - **Execution board:** completed, in progress, unblocked next, blocked, current wave
 - **Parent policy:** parse, dispatch, review, validate, update shared artifacts, and advance the graph
+
+Dependencies or ownership constraints may produce a one-task wave. Keep the
+wave boundary and parent validation; never force concurrent workers.
 
 ## Required evidence
 

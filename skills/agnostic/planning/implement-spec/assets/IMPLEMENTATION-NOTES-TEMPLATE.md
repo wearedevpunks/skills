@@ -4,6 +4,10 @@
 
 - 
 
+## Execution Mode
+
+-
+
 ## Deviations From the Plan
 
 - 
