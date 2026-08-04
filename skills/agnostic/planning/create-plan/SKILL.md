@@ -13,7 +13,8 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
 - **Downstream:** execution-ready `PLAN.md` for `implement-spec`
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing
-- **Stop conditions:** `PLAN.md` and backlog sync are complete; no implementation started
+- **Stop conditions:** `PLAN.md` is complete; eligible in-scope backlog sync is
+  complete, or an explicit skip reason is recorded; no implementation started
 
 ## Required Inner Skills
 
@@ -32,13 +33,16 @@ Create a plan first. Never implement code in this skill.
 3. Read `references/grill-ambiguity.md` and run `$grilling` as explicit ambiguity reduction.
 4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
 5. After a whole response set is processed, emit any synthesis checkpoint required by `references/grill-ambiguity.md`.
-6. After `$grilling` completes, continue to plan synthesis; backlog sync remains step 12.
+6. After `$grilling` completes, continue to plan synthesis; backlog eligibility
+   remains step 12.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
 9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
 10. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
 11. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-12. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
+12. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
+    backlog sync is eligible and in scope; otherwise record an explicit skip
+    reason and continue plan completion.
 13. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
@@ -64,7 +68,8 @@ Create a plan first. Never implement code in this skill.
 11. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
 12. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
 13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
-14. Stop after plan creation and backlog sync. Do not implement code or spawn implementation workers.
+14. Stop after plan creation and either eligible in-scope backlog sync or its
+    explicit skip record. Do not implement code or spawn implementation workers.
 
 ### Stack-aware preservation
 
