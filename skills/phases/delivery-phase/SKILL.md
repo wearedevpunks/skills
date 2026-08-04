@@ -22,13 +22,13 @@ Completion of one phase does not imply loading the rest of the chain.
 
 - **Full delivery:** user asks to deliver a bounded goal end to end.
 - **Resume:** user returns after manual spec, plan, implementation, review, debugging, or docs work.
-- **HITL checkpoint:** user wants one phase handled, then a stop for discussion or approval.
+- **HITL checkpoint:** user explicitly wants one phase handled, then a manual stop.
 - **Closeout:** user asks to finish evidence, docs, stack, tracker, or PR state after the work is already done.
 
 ## Phase Files
 
 - [phases/router.md](phases/router.md): choose the next phase from artifacts and evidence.
-- [phases/spec.md](phases/spec.md): create or repair the reviewed spec.
+- [phases/spec.md](phases/spec.md): create or repair the agent-ready spec.
 - [phases/plan.md](phases/plan.md): create or repair the execution-ready plan.
 - [phases/implement.md](phases/implement.md): execute the accepted plan.
 - [phases/review.md](phases/review.md): run mandatory review and classify findings.

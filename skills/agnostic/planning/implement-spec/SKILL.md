@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: Implement an approved spec folder through plan-derived worker waves while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when a reviewed spec already has an execution-ready `PLAN.md`.
+description: Implement an agent-ready spec folder through plan-derived worker waves while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when an agent-ready spec already has an execution-ready `PLAN.md`.
 ---
 
 # Implement Spec
@@ -9,10 +9,10 @@ description: Implement an approved spec folder through plan-derived worker waves
 
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** reviewed spec folder with `SPEC.md` and `PLAN.md`
+- **Upstream:** agent-ready spec folder with `SPEC.md` and `PLAN.md`
 - **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal worker-wave orchestration
 - **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
-- **Entry conditions:** existing reviewed spec folder; stop and use `create-plan` if `PLAN.md` is missing
+- **Entry conditions:** existing agent-ready spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
 
 ## Required Inner Skills
