@@ -1,0 +1,16 @@
+{
+  "invalid": [
+    {
+      "name": "unresolved dependency",
+      "reason": "Dependency readiness is blocked or lacks landing evidence"
+    },
+    {
+      "name": "uncovered story",
+      "reason": "A US has no AC that covers it"
+    },
+    {
+      "name": "dangling coverage",
+      "reason": "An AC Covers reference names a nonexistent US"
+    }
+  ]
+}

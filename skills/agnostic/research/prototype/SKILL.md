@@ -24,8 +24,19 @@ The two branches produce different artifacts. If the question is genuinely ambig
 3. Use in-memory state by default. If persistence is the question, use a scratch DB or local file clearly named as prototype data.
 4. Skip polish. No tests, no production abstractions, and no error handling beyond what makes the prototype runnable.
 5. Surface the relevant state after every action or variant switch.
-6. Delete or absorb the prototype when it has answered the question.
+6. Work on a throwaway branch named `prototype/<slug>`. Keep production
+   services, data, and mutations isolated unless they are the question being
+   tested.
+7. Commit the runnable artifact before requesting a verdict. The commit is the
+   durable evidence; prototype code is never merged into production unchanged.
+8. Establish remote retention: push `prototype/<slug>` to the configured remote,
+   or store the commit through an explicit durable retention mechanism when
+   remote branches are forbidden. Verify the remote ref contains the evidence
+   commit before returning the immutable commit SHA and path.
 
 ## Done
 
-Capture the answer somewhere durable, along with the question it answered. If the user is around, capture it in conversation. If not, leave a `NOTES.md` next to the prototype so the verdict can be filled in before deletion.
+Return the run command, branch, immutable commit SHA, artifact path, and the
+remote retention reference, and question still awaiting a human verdict. A caller such as `prototype-phase`
+owns accept, iterate, or reject and records `PROTOTYPE-VERDICT.md` beside the
+artifact on the throwaway branch.

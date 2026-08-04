@@ -1,44 +1,25 @@
 # Backlog Sync
 
-Use this reference after the plan structure is complete.
+Use this reference only when an authoritative agent-ready `SPEC.md` exists at a verified stable blob URL and `write-backlog` has projected or must project it into provider-native delivery items. Concrete planning is downstream from both the spec and backlog projection.
 
 ## Sync rules
 
-Use the canonical backlog model from [../../write-backlog/assets/concepts/backlog-model.md](../../write-backlog/assets/concepts/backlog-model.md).
+Use the backlog model owned by `write-backlog` at [backlog-model.md](../../../requirements/write-backlog/assets/concepts/backlog-model.md). Do not restate its readiness, taxonomy, traceability, or mutation contracts here.
 
-Sync backlog at epic/story level, not at plan-task level.
+Sync at epic/story level, never at plan-task level:
 
-Defaults:
+- epic = capability-boundary projection of one existing spec
+- story = product-facing tracer bullet derived from `US-###` / `AC-###`
+- task = internal `PLAN.md` execution unit
 
-- epic = one future `SPEC.md`
-- story = product-facing backlog item
-- task = internal `PLAN.md` execution unit only
+Plan tasks reference their owning story through `backlog_item_id` and `backlog_item_url`. Multiple tasks may reference one story. Never create another backlog item merely because delivery needs several execution tasks.
 
-Task rules:
+Create or update backlog items only through `write-backlog`, and only when:
 
-- every task stores the owning story in `backlog_item_id` / `backlog_item_url`
-- multiple tasks may reference the same story
-- do not create a new backlog item only because a story needs multiple execution tasks
+- a required epic or story projection is missing
+- native story blockers need correction
+- immutable spec or plan links need refresh
 
-Create or update backlog items only when:
+Keep bodies product-facing. Store files, commands, test cases, worker assignments, and implementation sequencing in `PLAN.md`.
 
-- a required product-facing epic is missing
-- a required product-facing story is missing
-- native story blockers/order need sync
-- epic/story links to spec or plan context need refresh
-
-Do not turn epic or story bodies into execution handoffs.
-
-If planning needs to backfill detail into the backlog:
-
-- prefer native hierarchy, blockers, state, labels, and links
-- keep bodies product-facing
-- reserve execution detail for repo artifacts
-
-Track hierarchy and dependencies natively when supported.
-
-Only use prose fallback when the provider cannot express the primitive natively.
-
-Record referenced or created epic/story ids and URLs back into the plan.
-
-Prefer the selected backlog system's native CLI or tool when available.
+Record referenced or created epic/story ids and URLs in the plan. Use the selected provider's native CLI or tool when available.

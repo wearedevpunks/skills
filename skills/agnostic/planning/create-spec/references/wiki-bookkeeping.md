@@ -21,7 +21,7 @@ When using `apps/wiki/specs`:
 1. Add a row to the **Specs** table in `apps/wiki/index.md`:
 
 ```md
-| <domain> | [[specs/<domain>/<folder-name>/SPEC]] | Draft |
+| <domain> | [[specs/<domain>/<folder-name>/SPEC]] | Approved |
 ```
 
 2. Create or update `apps/wiki/specs/<domain>/<domain>-specs.md` with:
@@ -33,7 +33,7 @@ When using `apps/wiki/specs`:
 ## [YYYY-MM-DD] spec | <spec title>
 - Created spec: [[specs/<domain>/<folder-name>/SPEC]]
 - Domain: <domain>
-- Status: Draft
+- Status: Approved
 ```
 
 ### Docs fallback
@@ -43,7 +43,7 @@ When using `docs/specs`:
 1. Create or update `docs/specs/index.md` with:
    - the domain
    - the spec path
-   - status `Draft`
+   - status `Approved`
 2. Create or update `docs/specs/<domain>/<domain>-specs.md` with:
    - the spec name
    - a one-line summary

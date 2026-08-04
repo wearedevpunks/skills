@@ -16,140 +16,54 @@ Execution milestones
   M1 -> M2 -> M3 ...
 ```
 
-Provider mapping:
+The direct concepts are `fog`, `grilling`, `research`, `prototype`, `epic`, and `story`. Each is visible, assignable, searchable, linkable, and closeable. A provider adapter may represent them with native issue types, fields, labels, columns, or a stable title convention; no shared classification field is required. If no representation preserves the direct concept, preflight fails.
 
-- kind -> provider-native single-value kind storage where available
-- fog -> root-level first-class backlog item
-- capability module -> durable capability grouping, stored separately from execution milestones
-- milestone -> chronological execution wave derived from native blockers
-- grilling -> capability-module-scoped first-class decision item
-- research -> capability-module-scoped first-class investigation item
-- prototype -> capability-module-scoped first-class learning item
-- epic -> capability-module-scoped parent issue / capability item
-- story -> child issue / sub-issue / child work item under an epic
+## Placement
 
-Every supported kind must be visible, assignable, searchable, linkable, and closeable in the target provider.
+- `fog`: root-level uncertainty, never delivery scope or a parent container
+- `grilling`: capability-scoped human decision work
+- `research`: capability-scoped readonly evidence work
+- `prototype`: capability-scoped experiment work
+- `epic`: one capability-boundary projection of an authoritative agent-ready spec
+- `story`: product-facing child tracer bullet derived from spec stories and criteria
 
-## Kind contract
+Each capability module groups durable product ownership. It stays separate from every execution milestone and does not determine implementation order.
 
-`kind` values:
+## Traceability and story readiness
 
-- `fog`
-- `grilling`
-- `research`
-- `prototype`
-- `epic`
-- `story`
+Every projected story names its source `US-###` records and covered `AC-###` records. Before mutation, prove:
 
-`kind` is separate from:
+- every spec story is represented
+- every criterion maps to an existing story
+- every criterion is covered by at least one projected story
+- every projected story has a demonstrable end-to-end outcome
+- each story is small enough for one prepared agent session
 
-- workflow state
-- capability-module grouping
-- execution-milestone assignment
-- parent/child hierarchy
-- provider issue type, unless the provider requires that type for structure
+Do not create layer stories such as database, API, frontend, tests, or wiring. Fold those concerns into a vertical story or leave them for concrete planning.
 
-Labels and tags may mirror `kind`, but they are not canonical when a provider-native field exists.
+## Blocker graph
 
-## Fog contract
+Use native `blockedBy` / `blocks` relations where available.
 
-One fog item:
+Before mutation:
 
-- lives at the backlog root
-- tracks a real but not-yet-sharp area of uncertainty
-- anticipates future modules, tickets, epics, and stories
+1. Resolve every blocker identifier to a projected story.
+2. Reject missing targets and self-blockers.
+3. Detect and reject cycles across the complete selected graph.
+4. Assign dependency-free stories to `M1`.
+5. Assign every other story to `M(1 + max(milestone of each blocker))`.
+6. Verify every blocker is in a strictly earlier milestone.
 
-One fog item must not:
+Items in the same wave may proceed in parallel across capability modules. Recompute milestones whenever blockers change.
 
-- be delivery-eligible
-- be a `SPEC.md` anchor
-- become an execution container
-- own child tickets by default
+## Mutation boundary
 
-Sharpening fog first chooses or creates a capability module, then creates concrete non-fog items there.
+Validate the full agent-ready projection, graph, provider destination, hierarchy support, and dependency representation before the first provider write. A failed validation writes nothing. After validation, write immediately without an approval checkpoint.
 
-## Learning item contract
+Provider execution can still fail mid-sequence. Report every created identifier and the failure honestly; never describe a multi-request provider as transactionally atomic.
 
-`grilling`, `research`, and `prototype` items:
+## Intake and downstream handoff
 
-- live under a capability module
-- represent decision, investigation, or artifact-learning work
-- close before implementation scope changes
+Resolve any pre-spec intake item with the immutable spec link and accepted outcome. Preserve it as history; do not silently promote it into the delivery epic.
 
-Closure notes include:
-
-- answer
-- accepted direction
-- artifacts or evidence
-- created or updated epics/stories
-
-## Ownership boundaries
-
-- backlog owns product-facing coordination
-- `SPEC.md` owns the full problem-space contract for one epic
-- `PLAN.md` owns execution decomposition
-
-## Epic contract
-
-One epic:
-
-- maps to one future `SPEC.md`
-- groups the stories that share one coherent capability boundary
-- can include cross-story scope and constraints
-
-One epic must not:
-
-- become an execution board
-- duplicate the whole future `PLAN.md`
-- be reduced to a pure label/container with no capability meaning
-- absorb unresolved grilling, research, or prototype work as if it were accepted scope
-
-## Story contract
-
-One story:
-
-- is independently observable
-- describes one user-visible slice or system behavior slice
-- stays product-facing
-- can be ordered relative to other stories with native blockers
-
-One story must not:
-
-- become a plan task
-- carry TDD or file-level detail
-- be phrased as a technical chore
-
-## Order contract
-
-Use native provider relations for ordering when available.
-
-Preferred primitives:
-
-- `blockedBy`
-- `blocks`
-- native parent/child
-
-Do not encode story order only in prose when the provider can store it natively.
-
-Capability modules and execution milestones are independent. Modules are durable capability groups. Milestones are chronological execution waves and must be recomputed from native blocker relations. Capability membership, parent/child hierarchy, and existing milestone assignment do not create dependency edges or determine milestone assignment.
-
-Milestone-eligible items are selected concrete non-fog work: `grilling`, `research`, `prototype`, `epic`, and `story`. Fog has no execution milestone until sharpening produces concrete items. Capability-module metadata is grouping, not an execution item.
-
-Before materialization:
-
-1. Build one directed edge from each blocker to the item it blocks across the full selected milestone-eligible scope.
-2. Stop materialization on a missing blocker target or cycle.
-3. Assign every selected milestone-eligible item with no blockers to `M1`.
-4. Assign every other selected milestone-eligible item to `M(1 + max(milestone number of each blocker))`.
-5. Validate every blocker is in a strictly earlier milestone than the item it blocks.
-
-Items with the same derived number can proceed in parallel and share a milestone, including items from different capability modules. One capability module can span multiple milestones. Native `blockedBy` / `blocks` relations remain authoritative; recompute milestone assignment and numbering whenever those relations change.
-
-## `create-spec` reading contract
-
-When `create-spec` reads backlog items:
-
-- the parent epic is the spec anchor
-- all child stories under that epic are source material
-- the resulting `SPEC.md` must include the combined scope of those stories
-- no child story requirement should remain only in the backlog and not appear in the spec
+The delivery epic and stories link back to `SPEC.md`. Concrete files, commands, tests, worker assignments, and execution order belong later in `delivery-phase` / `create-plan`.

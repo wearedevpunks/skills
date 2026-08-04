@@ -6,8 +6,11 @@ Use this reference while filling the template and before saving.
 
 The spec lives in the problem space.
 
-- include what, who, why, acceptance criteria, non-goals, constraints, open questions
-- exclude architecture, implementation steps, code structure, or solution design
+- include what, who, why, user stories, acceptance criteria, non-goals,
+  constraints, accepted technical/testing decisions, prototype verdicts, and
+  verification seams
+- exclude unaccepted solution design and plan-owned files, commands, workers,
+  task graph, or execution order
 - when the epic has child stories, include the concrete requirements of each child story instead of summarizing only the parent issue
 
 ## Acceptance-criteria bar
@@ -17,6 +20,7 @@ Every acceptance criterion should be:
 - binary
 - observable
 - testable
+- identified as `AC-###` with one or more one-way `Covers: US-###` links
 
 Avoid:
 
@@ -24,23 +28,24 @@ Avoid:
 - hidden implementation requirements disguised as product behavior
 - mixed criteria that bundle several independent outcomes into one line
 
-## Epic completeness bar
+## Capability completeness bar
 
-When writing a spec from an epic with child stories:
+When compiling confirmed capability and story decisions:
 
-- the spec must cover the full scope of the epic
+- the spec is the provider-neutral authority for the capability boundary
 - each child story must contribute concrete requirements, constraints, or acceptance criteria
 - cross-story interactions must be resolved in the spec rather than left implicit in backlog items
 
 Avoid:
 
-- a spec that summarizes the epic but omits concrete requirements from one or more child stories
+- a spec that omits confirmed requirements from one or more user stories
 - a spec that treats child stories as links only, without incorporating their product details
 - a spec that copies child stories separately without unifying overlaps and shared constraints
 
 ## Self-review before saving
 
 - ensure frontmatter has a non-empty string `title`, especially for specs saved directly in routed Fumadocs trees
+- ensure frontmatter contains `readiness: agent-ready`
 - remove all template scaffolding
 - remove empty or irrelevant sections
 - ensure the document reads cleanly with no ghost instructions
