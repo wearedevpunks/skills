@@ -317,19 +317,13 @@ test("implement-spec executes plan-derived worker waves", () => {
   assert.doesNotMatch(notes, /## Execution Mode/u);
 });
 
-test("delivery implementation honors the selected execution mode", () => {
+test("delivery implementation uses plan-derived worker waves", () => {
   const phase = read("skills/phases/delivery-phase/phases/implement.md");
-  assert.match(phase, /read the selected `Execution Mode`/i);
-  assert.match(
-    phase,
-    /`sequential`.{0,160}entire task loop.{0,160}exactly one implementation\s+worker/is,
-  );
-  assert.match(phase, /parent.{0,160}parent validation/is);
-  assert.match(
-    phase,
-    /only explicitly selected `parallel`.{0,240}safe disjoint tasks.{0,240}waves/is,
-  );
-  assert.doesNotMatch(phase, /^\s*- Launch every currently unblocked task/mu);
+  assert.match(phase, /Launch every currently unblocked task/i);
+  assert.match(phase, /write scope is disjoint/i);
+  assert.match(phase, /one-worker wave only when dependencies or ownership/i);
+  assert.match(phase, /Parent orchestration owns shared notes and final validation evidence/i);
+  assert.doesNotMatch(phase, /execution mode|sequential|explicitly selected `parallel`/i);
 });
 
 test("delivery gates backlog projection between spec and planning", () => {
@@ -350,7 +344,7 @@ test("delivery gates backlog projection between spec and planning", () => {
   assert.match(delivery, /phases\/backlog\.md/u);
 });
 
-test("planning persists execution mode for resume", () => {
+test("planning persists plan-derived worker waves for resume", () => {
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
   const schema = read(
     "skills/agnostic/planning/create-plan/references/plan-schema.md",
@@ -360,12 +354,12 @@ test("planning persists execution mode for resume", () => {
     "skills/phases/delivery-phase/references/artifact-state.md",
   );
   for (const document of [createPlan, schema, phase, artifactState]) {
-    assert.match(document, /execution_mode/u);
+    assert.match(document, /currently unblocked task/iu);
+    assert.match(document, /disjoint/iu);
+    assert.doesNotMatch(document, /execution_mode|default to `sequential`/iu);
   }
-  assert.match(schema, /execution_mode: sequential \| parallel/u);
-  assert.match(schema, /Default to `sequential` when absent/u);
-  assert.match(schema, /`parallel` requires explicit user or plan\s+intent/u);
-  assert.match(phase, /persist `execution_mode`/iu);
+  assert.match(schema, /one task only when dependencies or ownership/iu);
+  assert.match(phase, /one-task wave only when dependencies or ownership/iu);
 });
 
 test("create-plan syncs backlog only for eligible in-scope spec projections", () => {
