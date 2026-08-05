@@ -13,7 +13,8 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 - `PLAN.md` exists and matches the spec.
 - Tasks have dependencies, owned paths, validation gates, and wave boundaries.
-- `execution_mode` is persisted as `sequential` or `parallel`.
+- Each wave contains every currently unblocked task with a disjoint write scope;
+  one-task waves are justified by dependencies or ownership.
 
 ## Backlog Projection Complete
 

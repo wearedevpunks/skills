@@ -57,8 +57,9 @@ Create a plan first. Never implement code in this skill.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
 8. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
-9. Persist plan-level `execution_mode: sequential | parallel` from explicit
-   user or plan intent. Default to `sequential` when absent.
+9. Build plan-derived worker waves: place every currently unblocked task with
+   a disjoint write scope in the same wave. Use a one-task wave only when
+   dependencies or ownership leave one task unblocked.
 10. Normalize every task with stable ids, `depends_on`, `location`,
    `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
    `files edited/created`, owning-story backlog references, `assigned_skills`,
