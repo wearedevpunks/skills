@@ -10,7 +10,7 @@ skip reason in `PLAN.md` and continue plan completion.
 
 ## Sync rules
 
-Use the backlog model owned by `write-backlog` at [backlog-model.md](../../../requirements/write-backlog/assets/concepts/backlog-model.md). Do not restate its readiness, taxonomy, traceability, or mutation contracts here.
+Use the backlog model owned by `write-backlog` at [backlog-model.md](https://github.com/wearedevpunks/skills/blob/main/skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md). Do not restate its readiness, taxonomy, traceability, or mutation contracts here.
 
 Sync at epic/story level, never at plan-task level:
 

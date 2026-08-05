@@ -232,5 +232,9 @@ test("all provider bodies preserve immutable spec and story traceability", () =>
 
 test("create-plan backlog reference links to the canonical model", () => {
   const document = read("skills/agnostic/planning/create-plan/references/backlog-sync.md");
-  assert.match(document, /\(\.\.\/\.\.\/\.\.\/requirements\/write-backlog\/assets\/concepts\/backlog-model\.md\)/u);
+  const match = document.match(
+    /\(https:\/\/github\.com\/wearedevpunks\/skills\/blob\/main\/(skills\/agnostic\/requirements\/write-backlog\/assets\/concepts\/backlog-model\.md)\)/u,
+  );
+  assert.ok(match, "backlog model link is projection-independent");
+  assert.doesNotThrow(() => read(match[1]));
 });
