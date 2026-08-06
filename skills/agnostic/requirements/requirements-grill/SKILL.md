@@ -29,6 +29,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 ## Core Behavior
 
+- Use `$wait-what` to present every grilling question and recommendation to the user. A round is complete only when every frontier item has been presented, answered, parked, or explicitly deferred, and the updated durable artifacts are persisted before continuing.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
 - Challenge conflicting glossary, vague terms, and hidden tradeoffs immediately.
 - Pin canonical terms, rejected aliases, relationships, and domain axioms as decisions crystallize.
