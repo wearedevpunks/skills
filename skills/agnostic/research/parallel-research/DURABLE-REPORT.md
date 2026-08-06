@@ -1,20 +1,33 @@
 # Durable Report
 
-Use this optional mode when research must remain reusable beyond the response.
-Ordinary audits remain response-only.
+This mode is mandatory for every `$parallel-research` run. The response may
+include a concise synthesis, but the consolidated findings must also be
+written to the project wiki before the run can complete.
 
 ## Contract
 
 1. Create `research/<slug>` from the accepted base.
-2. Discover the repository's research-report convention. If none exists, use
-   the narrowest fitting project-docs path and state it.
+2. Resolve `<wiki-root>` using the repository convention (`apps/wiki` for a
+   monorepo, `wiki` for a single-repo project), then read `<wiki-root>/AGENTS.md`
+   before writing. The consolidated report path is always
+   `<wiki-root>/content/docs/project/research/<slug>-research-report.md`, as a
+   sibling to `project/grilling`. Keep it in the private project wiki: do not
+   substitute `public-docs`, `specs`, or a context-only handoff. If the
+   `project/research` route is missing, create its index and route metadata only
+   as required by the wiki's existing conventions.
 3. Run 2-4 readonly lanes. Lanes never write the report.
 4. After synthesis, the coordinator or one designated consolidator writes one
-   Markdown report. There is exactly one writer and one consolidated report.
-5. Cite the primary source for every retained factual claim. Separate facts,
-   inferences, conflicts, and unresolved product decisions.
-6. Commit the report, then push or explicitly retain `research/<slug>` through a durable repository-approved mechanism.
-7. Verify the retained ref contains the report commit before returning the immutable commit SHA and path.
+   Markdown report at the resolved wiki path. There is exactly one writer and
+   one consolidated report. Include the primary source for every retained
+   factual claim and separate facts, inferences, conflicts, and unresolved
+   product decisions.
+5. Commit the report and any required route metadata in one commit, then push
+   or explicitly retain `research/<slug>` through a durable repository-approved
+   mechanism.
+6. Verify the retained ref contains the report commit before returning the
+   immutable commit SHA and path.
 
 The report may close factual uncertainty. It must not silently choose product
-direction or impersonate a human decision-maker.
+direction or impersonate a human decision-maker. A later `docs-ingest-phase`
+run may project reusable knowledge from this report, but that optional curation
+step does not replace the report or block research completion.

@@ -1,6 +1,6 @@
 ---
 name: parallel-research
-description: Coordinate aggressive parallel subagent fan-out for readonly work. Use when Codex is researching, auditing, updating docs, investigating multiple hypotheses, or exploring unrelated code paths without writing code. Do not use for code-writing tasks, tightly coupled edits, or work that is faster to finish locally on the critical path.
+description: Coordinate aggressive parallel subagent fan-out for readonly work and persist one consolidated research report. Use when Codex is researching, auditing, updating docs, investigating multiple hypotheses, or exploring unrelated code paths without writing code. Do not use for code-writing tasks, tightly coupled edits, or work that is faster to finish locally on the critical path.
 ---
 
 # Parallel Research
@@ -14,16 +14,15 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 3. Keep the immediate blocking step local. Delegate only sidecar work that can run in parallel.
 4. Skip this skill for source or code mutation, patching, rebases, unrelated
    writes, or tightly coupled debugging that needs one continuous thread. The
-   one retained durable-report commit allowed below does not trigger this skip.
-5. Default to response-only output. Use the optional durable mode only when the
-   user or calling phase needs reusable primary evidence; then read
-   [DURABLE-REPORT.md](DURABLE-REPORT.md).
+   one retained durable-report commit required below does not trigger this skip.
+5. Durable-report mode is mandatory. Read [DURABLE-REPORT.md](DURABLE-REPORT.md)
+   before dispatching lanes. Every run writes one consolidated report to the
+   project wiki; findings must not remain response-only or context-only.
    Research lanes remain readonly. Only the coordinator or one designated
-   consolidator may write and commit exactly one report after synthesis.
-   The writer must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
-   Finder child resolution always selects durable mode because reconciliation
-   requires immutable evidence. Standalone audits remain response-only unless
-   their caller explicitly requests reusable evidence.
+   consolidator may write and commit the report after synthesis.
+   The writer must push or explicitly retain `research/<slug>`, verify the
+   retained ref contains the report commit, and do so before returning the
+   immutable SHA and path.
 
 ## Split Cleanly
 
