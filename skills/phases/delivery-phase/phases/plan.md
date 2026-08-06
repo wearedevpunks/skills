@@ -1,7 +1,7 @@
 # Plan Phase
 
-Use this phase when a matching spec exists but no execution-ready `PLAN.md`
-exists, or the plan is stale, vague, or missing validation gates.
+Use this phase when no execution-ready `PLAN.md` exists, or the plan is stale,
+vague, or missing validation gates.
 
 ## Delegate
 
@@ -9,7 +9,7 @@ Load `create-plan` only after this phase is selected.
 
 ## Checks Before Delegating
 
-- Verify the spec still matches the requested goal.
+- Verify the planning input still matches the requested goal.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
 - Require dependencies, owned paths, validation gates, review routing, and explicit wave boundaries.
 - Group independent tasks with disjoint write scopes into the same wave.

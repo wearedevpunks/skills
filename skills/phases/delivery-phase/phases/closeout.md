@@ -1,7 +1,7 @@
 # Closeout Phase
 
-Use this phase when spec, plan, implementation, review, debugging if needed,
-docs ingest or no-op, and validation are complete.
+Use this phase when plan, implementation, review, debugging if needed, docs
+ingest or no-op, and validation are complete.
 
 ## Checks
 
