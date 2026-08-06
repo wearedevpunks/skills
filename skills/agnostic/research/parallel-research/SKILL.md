@@ -19,10 +19,9 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
    before dispatching lanes. Every run writes one consolidated report to the
    project wiki; findings must not remain response-only or context-only.
    Research lanes remain readonly. Only the coordinator or one designated
-   consolidator may write and commit the report after synthesis.
-   The writer must push or explicitly retain `research/<slug>`, verify the
-   retained ref contains the report commit, and do so before returning the
-   immutable SHA and path.
+   consolidator may write and commit exactly one report after synthesis.
+   Finder child resolution uses this same mandatory durable mode. The writer
+   must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
 
 ## Split Cleanly
 
@@ -79,4 +78,4 @@ Return:
 - conflicts or uncertainty
 - the synthesized conclusion
 - the next local action
-- durable report immutable SHA, path, and verified retention reference, when durable mode was selected
+- durable report immutable SHA, path, and verified retention reference
