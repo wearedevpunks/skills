@@ -146,16 +146,16 @@ test("finder research dispatch requires durable report evidence", () => {
     /`research` -> `parallel-research` in durable-report mode/i,
   );
   assert.match(convergence, /immutable commit SHA and path/i);
-  assert.match(research, /Finder child resolution.{0,160}durable mode/is);
-  assert.match(research, /standalone audits remain response-only/i);
+  assert.match(research, /durable-report mode is mandatory/i);
+  assert.match(research, /Every run writes one consolidated report\s+to the\s+project wiki/is);
 });
 
-test("research durable mode remains optional", () => {
+test("research durable mode is mandatory", () => {
   const research = read(
     "skills/agnostic/research/parallel-research/SKILL.md",
   );
-  assert.match(research, /optional durable/i);
-  assert.match(research, /response-only/i);
+  assert.match(research, /durable-report mode is mandatory/i);
+  assert.match(research, /findings must not remain response-only or context-only/i);
 });
 
 test("research and docs ingest preserve one primary-source report", () => {
@@ -168,7 +168,7 @@ test("research and docs ingest preserve one primary-source report", () => {
   assert.match(report, /2-4 readonly lanes/i);
   assert.match(report, /coordinator or one designated consolidator/i);
   assert.match(report, /one consolidated report/i);
-  assert.match(report, /primary source for every retained factual claim/i);
+  assert.match(report, /primary source for every retained\s+factual claim/i);
   assert.match(report, /research\/<slug>/);
   assert.match(report, /immutable commit SHA and path/i);
   assert.match(ingest, /report as primary evidence/i);
@@ -200,9 +200,9 @@ test("durable research is remotely retained before immutable handoff", () => {
   const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
   const contract = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
   for (const document of [skill, contract]) {
-    assert.match(document, /push or explicitly retain `research\/<slug>`/iu);
+    assert.match(document, /push\s+or explicitly retain `research\/<slug>`/iu);
     assert.match(document, /verify the retained ref contains the report commit/iu);
-    assert.match(document, /before returning the immutable (?:commit )?SHA and path/iu);
+    assert.match(document, /before\s+returning the\s+immutable (?:commit )?SHA and path/iu);
   }
 });
 
