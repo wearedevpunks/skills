@@ -5,7 +5,9 @@ description: Route loose oversized foggy work before requirements or delivery. U
 
 # Finder Phase
 
-Harness phase wrapper for backlog-native frontier routing.
+Harness phase wrapper for top-level lifecycle routing.
+
+Lifecycle: `fog/charting -> research | prototype | requirements-phase -> delivery-phase -> complete`.
 
 Use this before `requirements-phase` when the work is too big or foggy to grill
 directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
@@ -13,15 +15,17 @@ directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
 ## Core Loop
 
 1. Choose a destination and mode. In **chart mode**, repair the map and sharpen
-   fog. In **work mode**, claim and execute exactly one frontier ticket.
+   fog. In **work mode**, reconcile one returned child result.
 2. Read the backlog root plus any resumable ticket and immutable evidence links.
    If provider state is unavailable, use docs as temporary evidence and say so.
-3. Use `wayfinder` to compute the frontier and select one route.
-4. In chart mode, use `write-backlog` only when provider mutation is in scope.
-   In work mode, produce a claim and use `write-backlog` for its physical
-   provider mutation before dispatching one bounded child flow.
-5. Reconcile the child result semantically, repair invalidated scope, recompute
+3. Use `wayfinder` to compute the frontier and select one top-level route.
+4. Run bounded `parallel-research` during charting when readonly evidence can
+   sharpen the frontier. Return explicit handoffs for lifecycle phases.
+5. Reconcile returned evidence, repair invalidated scope, recompute
    the frontier, and return the next route or completion state.
+
+The operator activates each returned `prototype-phase`, `requirements-phase`,
+or `delivery-phase` handoff. Finder resumes from that phase's returned evidence.
 
 ## Always-Needed Rules
 
@@ -30,24 +34,21 @@ directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
 - A `fog` item records a frontier or uncertainty description. Once Finder can
   derive a precise question, graduate it into `grilling`, `research`, or
   `prototype`; the question belongs to that concrete item, not the fog intake.
-- Frontier tickets are open, unblocked, and unclaimed. Dependencies and claims
-  use provider-native relations and assignment/state.
-- Child flows return immutable resolution pointers. Finder produces semantic
-  claim/resolution outputs; `write-backlog` owns their provider writes. The phase does not infer a
-  product decision from research or impersonate the human in grilling or
-  prototyping.
-- `finder-phase` owns frontier lifecycle and root routing; `write-backlog` owns provider materialization.
+- Frontier tickets are open, unblocked, and unclaimed.
+- Child workflows return immutable resolution pointers. Finder reconciles those
+  results and keeps product decisions with the human.
+- `finder-phase` owns frontier lifecycle and top-level route selection. Each
+  selected lifecycle phase owns its internal gates and mutations.
 
 ## References
 
 - Frontier lifecycle: [references/frontier-lifecycle.md](references/frontier-lifecycle.md)
 - Convergence and resumption: [references/convergence.md](references/convergence.md)
 - Root routing: [references/root-routing.md](references/root-routing.md)
-- Backlog taxonomy and provider materialization: use the `write-backlog` skill.
 
 ## Completion Criteria
 
 - The frontier is represented as backlog-root state or as a temporary evidence-backed handoff when provider state is unavailable.
-- The destination, current mode, frontier, claims, and next route are explicit.
-- Any backlog writes were delegated to `write-backlog`.
-- The final handoff names the next skill or phase and any unresolved blocker.
+- The destination, current mode, frontier, and next route are explicit.
+- The final handoff names one next lifecycle phase or completion state and any
+  unresolved blocker.

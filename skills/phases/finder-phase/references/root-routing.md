@@ -20,11 +20,12 @@ Keep root prompt guidance short:
 
 ## Boundary
 
-`finder-phase` should not replace:
+Each selected route keeps its own contract:
 
-- `requirements-phase` for human decision closure inside a known topic.
-- `parallel-research` for split-friendly readonly investigation.
-- `prototype-phase` for human-evaluated artifact-driven learning.
-- `create-spec`, `create-plan`, or `delivery-phase` after implementation scope is accepted.
+- `requirements-phase` owns decision closure and requirements readiness inside a
+  known topic.
+- `parallel-research` owns split-friendly readonly investigation.
+- `prototype-phase` owns human-evaluated artifact-driven learning.
+- `delivery-phase` owns accepted implementation work beginning at planning.
 
 It chooses the route and updates the frontier handoff.

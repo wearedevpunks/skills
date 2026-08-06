@@ -2,25 +2,12 @@
 
 Use this reference when deciding whether a phase is complete enough to skip.
 
-## Spec Complete
-
-- `SPEC.md` exists and matches the requested goal.
-- Scope includes required tracker children, acceptance criteria, constraints,
-  and non-goals.
-- Open questions are parked, resolved, or explicitly blocking.
-
 ## Plan Complete
 
-- `PLAN.md` exists and matches the spec.
+- `PLAN.md` exists and matches the requested goal and accepted planning input.
 - Tasks have dependencies, owned paths, validation gates, and wave boundaries.
 - Each wave contains every currently unblocked task with a disjoint write scope;
   one-task waves are justified by dependencies or ownership.
-
-## Backlog Projection Complete
-
-- Projection evidence names the immutable spec URL, provider destination,
-  epic/story ids and URLs, and verified observed state.
-- Evidence matches the current spec; otherwise the projection is stale.
 
 ## Implementation Complete
 

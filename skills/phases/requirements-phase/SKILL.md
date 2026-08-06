@@ -1,26 +1,28 @@
 ---
 name: requirements-phase
-description: Close bounded product decisions through requirements-grill, then compile confirmed outcomes into an agent-ready spec.
+description: Close requirements, retain an agent-ready spec, and verify its backlog projection.
 disable-model-invocation: true
 ---
 
 # Requirements Phase
 
-Human-centric decision closure: `requirements-grill -> create-spec`.
+Resumable requirements readiness: `requirements-grill -> create-spec -> write-backlog`.
 
 ## Workflow
 
-1. Read existing grill status before its log. Summarize accepted, rejected,
-   superseded, parked, and unresolved branches.
-2. While material decisions remain open, use `requirements-grill` for the HITL
-   interview. Research and recommendations are evidence, not decisions.
-3. When the user confirms shared understanding and remaining branches are
-   closed or explicitly parked, invoke `create-spec` immediately.
-4. Require `create-spec` to push or explicitly retain the spec commit, verify the retained ref contains the spec commit, and construct and verify a stable blob URL before `write-backlog` can run. A local SHA plus path is insufficient; otherwise return the compiler's atomic `spec-not-ready` result.
+1. Read [`phases/router.md`](phases/router.md) on every entry and cold resume.
+2. Inspect the planning surface and derive exactly one route from current evidence.
+3. Load only the selected gate file. Complete its bounded delegation and durable handoff update.
+4. Stop on a checkpoint, blocker, or explicit lifecycle handoff. Otherwise re-enter the router.
 
-## Boundary
+## Runtime State
 
-This phase does not create delivery backlog or implementation plans. After
-`spec-written`, its verified stable blob URL must exist before `write-backlog`
-may project the provider-neutral spec, followed by `delivery-phase` /
-`create-plan`.
+Each gate records resume evidence in `<planning-surface>/REQUIREMENTS-HANDOFF.md` using [`references/runtime-handoff.md`](references/runtime-handoff.md). Direct artifacts outrank this record, and its next suggested route is advisory.
+
+## Gate Inventory
+
+- [`phases/requirements-grill.md`](phases/requirements-grill.md): close or park product decisions and confirm shared understanding.
+- [`phases/create-spec.md`](phases/create-spec.md): compile and retain the agent-ready specification.
+- [`phases/write-backlog.md`](phases/write-backlog.md): verify a current provider projection of the retained specification.
+
+Research and prototype needs return `finder-required`. A valid retained spec plus its verified matching projection returns `requirements-complete` for an explicit lifecycle handoff.

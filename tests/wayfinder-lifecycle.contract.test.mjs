@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 
 const read = (path) =>
@@ -87,9 +87,9 @@ test("wayfinder and finder expose a resumable decision lifecycle", () => {
   assert.match(all, /open, unblocked, and unclaimed/i);
   assert.match(all, /claim.{0,160}before/is);
   assert.match(convergence, /Resume Input/);
-  assert.match(convergence, /immutable child-flow resolution pointers/i);
-  assert.match(convergence, /one bounded child flow/i);
-  assert.match(convergence, /Repair claims, dependencies, or scope invalidated/i);
+  assert.match(convergence, /immutable child-flow\s+resolution pointers/i);
+  assert.match(convergence, /one bounded research flow/i);
+  assert.match(convergence, /Repair dependencies or scope invalidated/i);
   assert.match(convergence, /recompute open, unblocked, unclaimed/i);
   assert.match(convergence, /out-of-scope/i);
   assert.doesNotMatch(primitive, /next (planning |work )?kind/i);
@@ -120,17 +120,14 @@ test("wayfinder separates capability placement from execution chronology", () =>
   assert.doesNotMatch(all, /module\/milestone/i);
 });
 
-test("finder routes physical claim and resolution mutation through write-backlog", () => {
+test("finder hands requirement mutations to requirements phase", () => {
   const convergence = read(
     "skills/phases/finder-phase/references/convergence.md",
   );
-  assert.match(
+  assert.match(convergence, /explicit\s+`requirements-phase` handoff/iu);
+  assert.doesNotMatch(
     convergence,
-    /claim is a semantic output.{0,160}`write-backlog`/is,
-  );
-  assert.match(
-    convergence,
-    /resolution is a semantic output.{0,160}`write-backlog`/is,
+    /requirements-grill|create-spec|write-backlog/iu,
   );
 });
 
@@ -221,7 +218,9 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
     "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
   );
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
-  const delivery = read("skills/phases/delivery-phase/phases/spec.md");
+  const requirementsCreateSpec = read(
+    "skills/phases/requirements-phase/phases/create-spec.md",
+  );
   const all = `${skill}\n${readiness}\n${template}`;
   assert.match(all, /research\s+reports/i);
   assert.match(all, /prototype\s+verdict/i);
@@ -239,27 +238,23 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
   assert.match(template, /Accepted Testing Decisions/);
   assert.match(template, /Verification Seams/);
   assert.match(requirements, /requirements-grill -> create-spec/);
-  assert.match(requirements, /invoke `create-spec` immediately/i);
-  assert.match(requirements, /spec-written/);
-  assert.match(delivery, /agent-ready/);
+  assert.match(requirementsCreateSpec, /Activate `create-spec` as a no-interview compiler/i);
+  assert.match(requirementsCreateSpec, /`SPEC\.md` declares `readiness: agent-ready`/i);
   assert.doesNotMatch(all, /write-backlog` automatically|before final drafting/i);
 });
 
-test("agent-ready compiler output is sufficient for downstream delivery", () => {
+test("agent-ready compiler output remains valid direct planning input", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
   const implementSpec = read("skills/agnostic/planning/implement-spec/SKILL.md");
   const implementLifecycle = read(
     "skills/agnostic/planning/implement-spec/references/lifecycle.md",
   );
-  const delivery = read("skills/phases/delivery-phase/SKILL.md");
-  const router = read("skills/phases/delivery-phase/phases/router.md");
-  const spec = read("skills/phases/delivery-phase/phases/spec.md");
-  const all = `${createSpec}\n${createPlan}\n${implementSpec}\n${implementLifecycle}\n${delivery}\n${router}\n${spec}`;
+  const all = `${createSpec}\n${createPlan}\n${implementSpec}\n${implementLifecycle}`;
 
   assert.match(createSpec, /`readiness: agent-ready` is sufficient downstream/i);
-  assert.match(router, /matching agent-ready `SPEC\.md`/i);
-  assert.match(router, /HITL checkpoint is explicit user control/i);
+  assert.match(createPlan, /Upstream:\*\* agent-ready `SPEC\.md` or explicit planning request/i);
+  assert.match(createPlan, /MUST use `\$grilling`/u);
   assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
   assert.doesNotMatch(all, /no reviewed matching spec/i);
 });
@@ -326,22 +321,56 @@ test("delivery implementation uses plan-derived worker waves", () => {
   assert.doesNotMatch(phase, /execution mode|sequential|explicitly selected `parallel`/i);
 });
 
-test("delivery gates backlog projection between spec and planning", () => {
+test("delivery phase inventory starts at plan", () => {
   const delivery = read("skills/phases/delivery-phase/SKILL.md");
   const router = read("skills/phases/delivery-phase/phases/router.md");
-  const backlog = read("skills/phases/delivery-phase/phases/backlog.md");
   const artifactState = read(
     "skills/phases/delivery-phase/references/artifact-state.md",
   );
-  assert.match(router, /spec\.md[\s\S]*backlog\.md[\s\S]*plan\.md/u);
-  assert.match(router, /projection is missing or stale/i);
-  assert.match(backlog, /verified stable blob URL/u);
-  assert.match(backlog, /Activate `write-backlog`/u);
-  assert.match(backlog, /current for the same spec/i);
-  assert.match(backlog, /zero\s+provider mutations/i);
-  assert.match(backlog, /projection evidence/i);
-  assert.match(artifactState, /Backlog Projection Complete/u);
-  assert.match(delivery, /phases\/backlog\.md/u);
+  const phaseText = [
+    "plan",
+    "implement",
+    "review",
+    "debug",
+    "docs-ingest",
+    "closeout",
+  ]
+    .map((phase) => read(`skills/phases/delivery-phase/phases/${phase}.md`))
+    .join("\n");
+  const packageText = `${delivery}\n${router}\n${artifactState}\n${phaseText}`;
+
+  assert.match(router, /## Routing Order[\s\S]*1\..*plan\.md/iu);
+  assert.doesNotMatch(packageText, /phases\/(?:spec|backlog)\.md/iu);
+  assert.doesNotMatch(
+    packageText,
+    /requirements-grill|create-spec|write-backlog|upstream-required/iu,
+  );
+  assert.equal(
+    existsSync(
+      new URL(
+        "../skills/phases/delivery-phase/phases/spec.md",
+        import.meta.url,
+      ),
+    ),
+    false,
+  );
+  assert.equal(
+    existsSync(
+      new URL(
+        "../skills/phases/delivery-phase/phases/backlog.md",
+        import.meta.url,
+      ),
+    ),
+    false,
+  );
+});
+
+test("delivery phase remains explicit-only", () => {
+  const delivery = read("skills/phases/delivery-phase/SKILL.md");
+  const metadata = read("skills/phases/delivery-phase/agents/openai.yaml");
+
+  assert.match(delivery, /disable-model-invocation:\s*true/u);
+  assert.match(metadata, /allow_implicit_invocation:\s*false/u);
 });
 
 test("planning persists plan-derived worker waves for resume", () => {
@@ -424,13 +453,18 @@ test("spec compiler rejects incomplete dependency and story coverage", () => {
 
 test("spec compiler returns remotely verified blob authority before backlog projection", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
-  const requirements = read("skills/phases/requirements-phase/SKILL.md");
-  for (const document of [createSpec, requirements]) {
-    assert.match(document, /push or explicitly retain the spec commit/iu);
-    assert.match(document, /verify the retained ref contains the spec commit/iu);
-    assert.match(document, /construct and verify a stable blob URL\s+before `write-backlog`/iu);
-    assert.doesNotMatch(document, /commit SHA plus repository-relative path, or a stable blob URL/u);
-  }
+  const requirementsCreateSpec = read(
+    "skills/phases/requirements-phase/phases/create-spec.md",
+  );
+  assert.match(createSpec, /push or explicitly retain the spec commit/iu);
+  assert.match(createSpec, /verify the retained ref contains the spec commit/iu);
+  assert.match(createSpec, /construct and verify a stable blob URL\s+before `write-backlog`/iu);
+  assert.match(requirementsCreateSpec, /retained remote ref contains the exact spec commit/iu);
+  assert.match(requirementsCreateSpec, /stable blob URL resolves to the spec at that commit/iu);
+  assert.doesNotMatch(
+    `${createSpec}\n${requirementsCreateSpec}`,
+    /commit SHA plus repository-relative path, or a stable blob URL/u,
+  );
   const backlog = read("skills/agnostic/requirements/write-backlog/SKILL.md");
   assert.match(backlog, /verified stable blob URL/u);
 });
