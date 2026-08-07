@@ -10,6 +10,11 @@ test("prototype phase delegates construction to prototype", () => {
   assert.match(phase, /use the `prototype` skill/i);
 });
 
+test("prototype phase remains explicit-only in model invocation metadata", () => {
+  const metadata = read("skills/phases/prototype-phase/agents/openai.yaml");
+  assert.equal(metadata, "policy:\n  allow_implicit_invocation: false\n");
+});
+
 test("design prototype step composes the primitive, not the standalone phase", () => {
   const design = read("skills/phases/design-phase/phases/prototype.md");
   assert.match(design, /activate the lean `prototype` primitive/u);
