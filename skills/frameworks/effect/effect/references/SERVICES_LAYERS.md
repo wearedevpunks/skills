@@ -1,42 +1,10 @@
-# Services, Layers, And Modules
+# Module Surfaces, Scoped Work, And Operation Helpers
 
-Use this when defining service tags, module surfaces, layer implementations, runtime wiring, typed errors, or `Effect.fn` operation boundaries.
+Use this for the local module namespace convention, scoped long-lived work, whole-function `Effect.fn` transforms, and operation error helpers. Use `$effect-service-design` for service qualification, service module construction, Layer composition, requirement propagation, test Layers, and audits.
 
 ## Module Surface
 
-One opinionated application-module style uses file-local role names and one canonical ES module namespace projection. Follow the existing codebase's module style when it has one; this convention is not required by Effect.
-
-```ts
-export interface Interface {
-  readonly get: (id: UserId) => Effect.Effect<User, NotFound | PersistenceError>
-}
-
-export class Service extends Context.Service<Service, Interface>()(
-  "@app/UserRepo",
-) {}
-
-export const layer = Layer.effect(
-  Service,
-  Effect.gen(function* () {
-    const sql = yield* SqlClient.SqlClient
-
-    const get = Effect.fn("UserRepo.get")(function* (id: UserId) {
-      // ...
-    })
-
-    return Service.of({ get })
-  }),
-)
-
-export class NotFound extends Schema.TaggedErrorClass<NotFound>()(
-  "UserRepo.NotFound",
-  { id: UserId },
-) {}
-
-export * as UserRepo from "./user-repo.js"
-```
-
-Consumers use the module namespace.
+One opinionated application-module style uses file-local role names and one canonical ES module namespace projection. Follow the existing codebase's module style when it has one; this convention is not required by Effect. Consumers use the module namespace.
 
 ```ts
 import { UserRepo } from "./user-repo.js"
@@ -66,25 +34,6 @@ Guidance:
 - The resulting `UserRepo.UserRepo === UserRepo` self-reference is unusual. Use this pattern only where the runtime and toolchain support it; otherwise use named exports or a separate barrel.
 - Export only intentional surface; keep local schemas, row codecs, helpers, and implementation details unexported.
 - Do not introduce TypeScript `namespace` declarations for organization.
-- Use a named service class such as `class UserRepo extends Context.Service...` when an external library or existing codebase does not use module namespace style.
-
-## Layer Constructors
-
-Choose the layer constructor that matches the thing produced.
-
-```ts
-Layer.succeed(Service, impl)       // already-built service
-Layer.sync(Service, () => impl)    // lazy synchronous service
-Layer.effect(Service, makeEffect)  // effectful service acquisition
-```
-
-Guidance:
-
-- Default real implementations to `Layer.effect(Service, Effect.gen(...))`.
-- Use `Layer.effectContext(...)` when one acquisition intentionally supplies multiple services, especially first-class test stubs or one client backing several service tags.
-- Use `Layer.unwrap(...)` when config or runtime discovery chooses/builds the layer.
-- Use `Layer.fresh(...)` or `Effect.provide(layer, { local: true })` only when a test or operation needs isolated acquisition.
-- Use `Context.Reference` rarely, only for ambient/defaultable runtime references where a safe default is real.
 
 ## Long-Lived Work
 
@@ -108,15 +57,6 @@ Guidance:
 - Use `Effect.forkScoped`, `FiberSet`, or `FiberMap` for scoped background work.
 - Do not run forever work inline during layer acquisition.
 - Do not expose public `start` methods unless the domain explicitly needs manual lifecycle control.
-
-## Runtime Wiring
-
-- Use `Layer.provide(...)` to hide an implementation dependency.
-- Use `Layer.provideMerge(...)` only when the dependency should remain exposed for downstream consumers.
-- Use `Layer.mergeAll(...)` for independent exposed layers.
-- Prefer flat, topologically sorted runtime layer values with named subgraphs.
-- Avoid using `provideMerge` as a blind make-it-compile tool.
-- Avoid hiding important authority or lifecycle dependencies behind broad invisible provisioning.
 
 ## Effect.fn
 

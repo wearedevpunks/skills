@@ -10,18 +10,13 @@ export const dataDirectoryConfig = Config.schema(
   "APP_DATA_DIR",
 )
 
-export const layerFromEnvironment = Layer.effect(
-  Configuration.Service,
-  Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("API_KEY")
-    const optionalModel = yield* Config.option(Config.string("MODEL"))
-    const enabled = yield* Config.boolean("FEATURE_ENABLED").pipe(
-      Config.withDefault(false),
-    )
-
-    return Configuration.Service.of({ apiKey, optionalModel, enabled })
-  }),
-)
+export const appConfig = Config.all({
+  apiKey: Config.redacted("API_KEY"),
+  optionalModel: Config.option(Config.string("MODEL")),
+  enabled: Config.boolean("FEATURE_ENABLED").pipe(
+    Config.withDefault(false),
+  ),
+})
 ```
 
 ## Config Recipes
@@ -53,15 +48,11 @@ Library-style layers often expose both concrete `layer(options)` and config-back
 export const layerConfig = (
   config: Config.Wrap<ClientOptions>,
 ) =>
-  Layer.effect(
-    Client.Service,
+  Layer.unwrap(
     Config.unwrap(config).pipe(
-      Effect.flatMap(makeClient),
-      Effect.map((client) => Client.Service.of(client)),
+      Effect.map(layer),
     ),
   )
 ```
 
-Use this pattern when a service naturally supports runtime config while still allowing tests to pass concrete values.
-
-Use `Layer.succeed(AppConfiguration.Service, testConfig)` when the app already wraps environment config in an application service and the test does not need to exercise Config decoding itself.
+Use this pattern when a Layer naturally supports runtime config while still allowing callers to pass concrete values.
