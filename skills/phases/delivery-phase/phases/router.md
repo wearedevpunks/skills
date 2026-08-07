@@ -13,8 +13,8 @@ until this router selects one.
 ## Routing Order
 
 1. If goal bounds are unclear, stop and ask one concrete question.
-2. If no matching agent-ready `SPEC.md` exists, load [spec.md](spec.md).
-3. If the spec exists but is stale, contradictory, or missing required child-story scope, load [spec.md](spec.md).
+2. If no matching agent-ready `SPEC.md` exists with verified remote retention and a verified stable blob URL, load [spec.md](spec.md).
+3. If the spec is stale, contradictory, missing scope from existing tracker children, or retention or stable blob URL verification is missing, load [spec.md](spec.md).
 4. If the verified post-spec backlog projection is missing or stale, load [backlog.md](backlog.md).
 5. If no execution-ready matching plan exists, load [plan.md](plan.md).
 6. If the plan exists but lacks dependencies, owned paths, validation gates, or wave boundaries, load [plan.md](plan.md).
