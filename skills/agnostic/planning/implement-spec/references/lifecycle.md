@@ -55,6 +55,9 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 
 - Create `IMPLEMENTATION-NOTES.md` from the template when missing.
 - Append or refine when it already exists.
+- Every create or update of `IMPLEMENTATION-NOTES.md` applies `$wait-what`
+  before writing. The update is complete when its language contract passes and
+  the recorded evidence remains unchanged.
 - Keep it current during the run, not only at the end.
 - For UI implementation changes, load [ui-screenshot-evidence.md](ui-screenshot-evidence.md) and keep `## UI Evidence Links` current.
 - For tasks with `runtime_validation: required`, load [runtime-product-validation.md](runtime-product-validation.md) and keep `## Runtime Validation Evidence` current.

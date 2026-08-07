@@ -133,6 +133,11 @@ Render these sections in `System.Description`; do not substitute a mutable local
 - epic -> work item type chosen by your process, often `Epic` or `Feature`, with `Custom.DevpunksKind = epic`
 - story -> child work item chosen by your process, often `User Story`, `Product Backlog Item`, or `Task`, with `Custom.DevpunksKind = story`
 
+For Finder-derived `grilling`, `research`, or `prototype`, use the native Parent
+relation to the source fog when the selected process supports that relation.
+Otherwise preserve an immutable evidence link. Keep `System.AreaPath` on the
+concrete item in both cases.
+
 ## Capability grouping
 
 Use `/fields/System.AreaPath` for durable capability-module membership. Area paths organize work by product or feature area and stay independent from delivery chronology. Fog remains at the backlog/root area until sharpening chooses a capability module.

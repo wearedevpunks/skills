@@ -212,6 +212,32 @@ test("create-spec no-interview compiler", () => {
   assert.doesNotMatch(skill, /ask(?:ing)? (?:the user|questions)|questioning\.md/i);
 });
 
+test("planning artifact producers apply the reusable wait-what language contract", () => {
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const implementSpec = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  const lifecycle = read(
+    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
+  );
+
+  assert.match(
+    createSpec,
+    /before (?:writing|persisting).{0,80}`SPEC\.md`.{0,120}(?:invoke|apply) `?\$wait-what`?/is,
+  );
+  assert.match(
+    createPlan,
+    /before (?:writing|persisting).{0,80}`PLAN\.md`.{0,120}(?:invoke|apply) `?\$wait-what`?/is,
+  );
+  assert.match(
+    `${implementSpec}\n${lifecycle}`,
+    /every (?:create|creation) or update of `IMPLEMENTATION-NOTES\.md`.{0,160}(?:invokes|applies) `?\$wait-what`?/is,
+  );
+  assert.match(createSpec, /asks\s+no questions/is);
+  for (const document of [createSpec, createPlan, implementSpec, lifecycle]) {
+    assert.doesNotMatch(document, /ASD-STE100|artifact glossary|repository vocabulary/u);
+  }
+});
+
 test("spec compiler emits agent-ready traceable specs or one atomic failure", () => {
   const skill = read("skills/agnostic/planning/create-spec/SKILL.md");
   const readiness = read(

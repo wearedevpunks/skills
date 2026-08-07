@@ -55,13 +55,21 @@ test("writing-for-agents replaces writing-great-skills without an alias", () => 
   );
 });
 
-test("wait-what is the upstream user-invoked anti-jargon corrective", () => {
+test("wait-what is a model-invoked reusable artifact-language contract", () => {
   const skill = read("skills/misc/wait-what/SKILL.md");
 
   assert.match(skill, /name: wait-what/);
-  assert.match(skill, /disable-model-invocation: true/);
+  assert.doesNotMatch(skill, /disable-model-invocation:\s*true/);
+  assert.match(
+    skill,
+    /description:.*(?:re-pitch|repitch).*(?:artifact|synthesis)/i,
+  );
+  assert.match(skill, /little bit of context/);
   assert.match(skill, /ASD-STE100 Simplified Technical English/);
   assert.match(skill, /ubiquitous language from `CONTEXT\.md`/);
+  assert.match(skill, /when `CONTEXT\.md` is unavailable/i);
+  assert.match(skill, /artifact glossary/i);
+  assert.match(skill, /repository vocabulary/i);
 });
 
 test("v1.2 imports retain immutable provenance and the upstream license", () => {
