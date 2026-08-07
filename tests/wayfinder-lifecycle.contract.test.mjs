@@ -242,6 +242,15 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
   assert.match(requirements, /invoke `create-spec` immediately/i);
   assert.match(requirements, /spec-written/);
   assert.match(delivery, /agent-ready/);
+  assert.match(delivery, /existing tracker child stories or sub-issues/iu);
+  assert.match(
+    delivery,
+    /When no tracker children exist[\s\S]*confirmed requirements and acceptance criteria are sufficient/iu,
+  );
+  assert.doesNotMatch(
+    delivery,
+    /Treat child stories, sub-issues, acceptance criteria, constraints, and non-goals as required input/iu,
+  );
   assert.doesNotMatch(all, /write-backlog` automatically|before final drafting/i);
 });
 
@@ -335,6 +344,14 @@ test("delivery gates backlog projection between spec and planning", () => {
   );
   assert.match(router, /spec\.md[\s\S]*backlog\.md[\s\S]*plan\.md/u);
   assert.match(router, /projection is missing or stale/i);
+  assert.match(
+    router,
+    /agent-ready[\s\S]*verified remote retention[\s\S]*verified stable blob URL/iu,
+  );
+  assert.match(
+    router,
+    /retention or stable blob URL verification is missing[\s\S]*spec\.md/iu,
+  );
   assert.match(backlog, /verified stable blob URL/u);
   assert.match(backlog, /Activate `write-backlog`/u);
   assert.match(backlog, /current for the same spec/i);
