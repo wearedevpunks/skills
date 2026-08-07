@@ -147,6 +147,29 @@ test("provider adapters preserve visible direct taxonomy without custom fields",
   }
 });
 
+test("Linear preflights the complete configured intake Kind taxonomy", () => {
+  const linear = read(
+    "skills/agnostic/requirements/write-backlog/assets/providers/linear-create-payload.md",
+  );
+
+  assert.match(
+    linear,
+    /before (?:any|the first) write.{0,240}Kind\/fog.{0,120}Kind\/grilling.{0,120}Kind\/research.{0,120}Kind\/prototype/is,
+  );
+  assert.match(
+    linear,
+    /create missing (?:Kind )?labels only when explicit workspace policy\s+permits/is,
+  );
+  assert.match(
+    linear,
+    /otherwise.{0,160}setup blocker.{0,160}missing\s+label/is,
+  );
+  assert.match(
+    linear,
+    /incomplete configured `Kind` taxonomy.{0,200}(?:must not|do not) use (?:a )?title prefix/is,
+  );
+});
+
 test("pre-spec intake dependency graph is validated before mutation", () => {
   const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
   const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
@@ -171,6 +194,60 @@ test("fog intake carries uncertainty while graduated intake carries a precise qu
     );
     assert.doesNotMatch(document, /(?:each|one) `fog`[^.]{0,200}precise question/is);
   }
+});
+
+test("finder-derived learning keeps fog as provider-aware evidence parent", () => {
+  const model = read(
+    "skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md",
+  );
+  const finder = read("skills/phases/finder-phase/SKILL.md");
+  const frontier = read(
+    "skills/phases/finder-phase/references/frontier-lifecycle.md",
+  );
+  const all = `${model}\n${finder}\n${frontier}`;
+
+  assert.match(
+    all,
+    /Finder-derived `grilling`, `research`, or `prototype`.{0,240}fog.{0,120}evidence parent/is,
+  );
+  assert.match(
+    all,
+    /fog remains root-level.{0,240}(?:not|is not) (?:a )?delivery/is,
+  );
+  assert.match(all, /fog remains root-level.{0,240}`SPEC\.md` anchor/is);
+  assert.match(all, /fog remains root-level.{0,240}capability module/is);
+  assert.match(all, /fog remains root-level.{0,240}execution item/is);
+  assert.match(
+    model,
+    /when the provider supports.{0,200}native (?:intake )?parent.{0,200}otherwise.{0,200}evidence link/is,
+  );
+  assert.match(
+    finder,
+    /handoff.{0,200}(?:supplies|includes).{0,80}fog parent/is,
+  );
+});
+
+test("provider adapters preserve fog parent evidence within native capabilities", () => {
+  const linear = read(
+    "skills/agnostic/requirements/write-backlog/assets/providers/linear-create-payload.md",
+  );
+  const github = read(
+    "skills/agnostic/requirements/write-backlog/assets/providers/github-projects-create-payload.md",
+  );
+  const azure = read(
+    "skills/agnostic/requirements/write-backlog/assets/providers/azure-devops-create-payload.md",
+  );
+  const monday = read(
+    "skills/agnostic/requirements/write-backlog/assets/providers/monday-create-payload.md",
+  );
+
+  assert.match(linear, /Finder-derived.{0,200}`parentId`.{0,120}source fog/is);
+  assert.match(github, /source fog.{0,200}(?:`parentIssueId`|`addSubIssue`)/is);
+  assert.match(azure, /Parent\s+relation.{0,120}source fog/is);
+  assert.match(
+    monday,
+    /source fog.{0,240}immutable evidence link.{0,200}capability group/is,
+  );
 });
 
 test("write-backlog invocation advertises both lifecycle branches", () => {

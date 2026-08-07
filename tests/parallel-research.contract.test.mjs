@@ -28,3 +28,23 @@ test("parallel research always produces a wiki-backed durable report", () => {
   assert.match(contract, /docs-ingest-phase.*optional curation/is);
   assert.doesNotMatch(skill, /Standalone audits remain response-only/i);
 });
+
+test("parallel research applies wait-what to one bounded synthesis", () => {
+  const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
+  const contract = read(
+    "skills/agnostic/research/parallel-research/DURABLE-REPORT.md",
+  );
+  const all = `${skill}\n${contract}`;
+
+  assert.match(
+    skill,
+    /after (?:evidence )?synthesis.{0,200}(?:invoke|apply) `?\$wait-what`?.{0,200}before (?:writing|returning|final)/is,
+  );
+  assert.match(contract, /short context/is);
+  assert.match(contract, /trusted claims.{0,120}(?:primary )?source/is);
+  assert.match(contract, /uncertainty.{0,120}conflicts|conflicts.{0,120}uncertainty/is);
+  assert.match(contract, /selected next route/is);
+  assert.match(all, /one (?:bounded )?synthesis/is);
+  assert.match(all, /response.{0,200}(?:links to|points to).{0,160}report/is);
+  assert.doesNotMatch(all, /accepted direction/iu);
+});

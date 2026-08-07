@@ -30,6 +30,9 @@ directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
 - A `fog` item records a frontier or uncertainty description. Once Finder can
   derive a precise question, graduate it into `grilling`, `research`, or
   `prototype`; the question belongs to that concrete item, not the fog intake.
+- The materialization handoff supplies the source fog parent for every
+  Finder-derived `grilling`, `research`, or `prototype` item. `write-backlog`
+  selects the provider-supported evidence-parent representation.
 - Frontier tickets are open, unblocked, and unclaimed. Dependencies and claims
   use provider-native relations and assignment/state.
 - Child flows return immutable resolution pointers. Finder produces semantic
