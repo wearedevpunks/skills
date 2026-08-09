@@ -68,6 +68,8 @@ test("design backlog handoff requires the compiled spec", () => {
 
 test("docs onboarding compiles before backlog projection", () => {
   const skill = read("skills/agnostic/docs/docs-onboarding/SKILL.md");
+  assert.match(skill, /\bhi init\b/u);
+  assert.doesNotMatch(skill, /\bhi scaffold (?:init|setup)\b/u);
   assert.match(skill, /confirmed grill decisions/u);
   assert.match(skill, /agent-ready specs/u);
   assert.match(skill, /Only after each spec is written[^\n]+activate `write-backlog`/u);
