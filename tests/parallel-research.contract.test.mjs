@@ -2,14 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const read = (path) =>
-  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("parallel research always produces a wiki-backed durable report", () => {
   const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
-  const contract = read(
-    "skills/agnostic/research/parallel-research/DURABLE-REPORT.md",
-  );
+  const contract = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
   const all = `${skill}\n${contract}`;
 
   assert.match(all, /durable-report mode is mandatory/i);
@@ -31,9 +28,7 @@ test("parallel research always produces a wiki-backed durable report", () => {
 
 test("parallel research applies wait-what to one bounded synthesis", () => {
   const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
-  const contract = read(
-    "skills/agnostic/research/parallel-research/DURABLE-REPORT.md",
-  );
+  const contract = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
   const all = `${skill}\n${contract}`;
 
   assert.match(

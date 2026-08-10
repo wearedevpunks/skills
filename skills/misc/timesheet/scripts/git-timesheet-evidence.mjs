@@ -14,12 +14,12 @@ if (!/^\d{4}-\d{2}$/.test(month)) {
   fail("--month must be YYYY-MM");
 }
 if (!authorTerms.length) {
-  fail("--authors is required, for example \"Stefan Garofalo,simosabba\"");
+  fail('--authors is required, for example "Stefan Garofalo,simosabba"');
 }
 
 const projectMap = parseMap(mapSpec);
 if (!Object.keys(projectMap).length) {
-  fail("--map is required, for example \"CODE=repo-a,repo-b;CODE2=repo-c\"");
+  fail('--map is required, for example "CODE=repo-a,repo-b;CODE2=repo-c"');
 }
 
 const start = `${month}-01T00:00:00`;
@@ -41,9 +41,9 @@ for (const [code, slugs] of Object.entries(projectMap)) {
       continue;
     }
     tryFetch(repo);
-    const commits = gitLog(repo, startDay, commitBefore).filter((commit) => (
-      commit.authorDate >= startDay && commit.authorDate < beforeDay
-    ));
+    const commits = gitLog(repo, startDay, commitBefore).filter(
+      (commit) => commit.authorDate >= startDay && commit.authorDate < beforeDay,
+    );
     let matched = 0;
     for (const commit of commits) {
       const haystack = `${commit.authorName} ${commit.authorEmail}`;
@@ -92,7 +92,11 @@ console.log("");
 console.log("## Day evidence");
 for (const [day, dayRows] of byDay.entries()) {
   const counts = countBy(dayRows, "code");
-  console.log(`- ${day}: ${Object.entries(counts).map(([code, count]) => `${code} ${count}`).join(", ")}`);
+  console.log(
+    `- ${day}: ${Object.entries(counts)
+      .map(([code, count]) => `${code} ${count}`)
+      .join(", ")}`,
+  );
   for (const row of dayRows.slice(0, 8)) {
     const committed = row.commitDate === row.authorDate ? "" : `, committed ${row.commitDate}`;
     console.log(`  - ${row.code} ${row.hash.slice(0, 8)} ${row.slug}: ${row.subject}${committed}`);
@@ -125,12 +129,18 @@ function requireArg(value, message) {
 }
 
 function splitList(value) {
-  return value.split(",").map((item) => item.trim()).filter(Boolean);
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function parseMap(value) {
   const out = {};
-  for (const part of value.split(";").map((item) => item.trim()).filter(Boolean)) {
+  for (const part of value
+    .split(";")
+    .map((item) => item.trim())
+    .filter(Boolean)) {
     const [code, slugsText] = part.split("=");
     if (!code || !slugsText) fail(`Invalid --map part: ${part}`);
     out[code.trim()] = splitList(slugsText);
@@ -168,20 +178,27 @@ function tryFetch(repo) {
 
 function gitLog(repo, since, before) {
   const format = "%H%x1f%ad%x1f%cd%x1f%an%x1f%ae%x1f%s";
-  const output = execFileSync("git", [
-    "-C",
-    repo,
-    "log",
-    "--all",
-    `--since=${since}T00:00:00`,
-    `--before=${before}T00:00:00`,
-    "--date=format:%Y-%m-%d",
-    `--format=${format}`,
-  ], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-  return output.split("\n").filter(Boolean).map((line) => {
-    const [hash, authorDate, commitDate, authorName, authorEmail, subject] = line.split("\x1f");
-    return { hash, authorDate, commitDate, authorName, authorEmail, subject };
-  });
+  const output = execFileSync(
+    "git",
+    [
+      "-C",
+      repo,
+      "log",
+      "--all",
+      `--since=${since}T00:00:00`,
+      `--before=${before}T00:00:00`,
+      "--date=format:%Y-%m-%d",
+      `--format=${format}`,
+    ],
+    { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+  );
+  return output
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [hash, authorDate, commitDate, authorName, authorEmail, subject] = line.split("\x1f");
+      return { hash, authorDate, commitDate, authorName, authorEmail, subject };
+    });
 }
 
 function nextMonthStart(value) {

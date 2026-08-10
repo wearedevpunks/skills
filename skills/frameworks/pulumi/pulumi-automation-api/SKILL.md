@@ -26,11 +26,11 @@ import * as automation from "@pulumi/pulumi/automation";
 
 // Create or select a stack
 const stack = await automation.LocalWorkspace.createOrSelectStack({
-    stackName: "dev",
-    projectName: "my-project",
-    program: async () => {
-        // Your Pulumi program here
-    },
+  stackName: "dev",
+  projectName: "my-project",
+  program: async () => {
+    // Your Pulumi program here
+  },
 });
 
 // Run pulumi up programmatically
@@ -91,8 +91,8 @@ If you have Bash scripts or Makefiles stitching together multiple `pulumi` comma
 
 ```typescript
 const stack = await automation.LocalWorkspace.createOrSelectStack({
-    stackName: "dev",
-    workDir: "./infrastructure",  // Points to existing Pulumi project
+  stackName: "dev",
+  workDir: "./infrastructure", // Points to existing Pulumi project
 });
 ```
 
@@ -109,12 +109,12 @@ const stack = await automation.LocalWorkspace.createOrSelectStack({
 import * as aws from "@pulumi/aws";
 
 const stack = await automation.LocalWorkspace.createOrSelectStack({
-    stackName: "dev",
-    projectName: "my-project",
-    program: async () => {
-        const bucket = new aws.s3.Bucket("my-bucket");
-        return { bucketName: bucket.id };
-    },
+  stackName: "dev",
+  projectName: "my-project",
+  program: async () => {
+    const bucket = new aws.s3.Bucket("my-bucket");
+    return { bucketName: bucket.id };
+  },
 });
 ```
 
@@ -145,43 +145,43 @@ Deploy multiple stacks in dependency order:
 import * as automation from "@pulumi/pulumi/automation";
 
 async function deploy() {
-    const stacks = [
-        { name: "infrastructure", dir: "./infra" },
-        { name: "platform", dir: "./platform" },
-        { name: "application", dir: "./app" },
-    ];
+  const stacks = [
+    { name: "infrastructure", dir: "./infra" },
+    { name: "platform", dir: "./platform" },
+    { name: "application", dir: "./app" },
+  ];
 
-    for (const stackInfo of stacks) {
-        console.log(`Deploying ${stackInfo.name}...`);
+  for (const stackInfo of stacks) {
+    console.log(`Deploying ${stackInfo.name}...`);
 
-        const stack = await automation.LocalWorkspace.createOrSelectStack({
-            stackName: "prod",
-            workDir: stackInfo.dir,
-        });
+    const stack = await automation.LocalWorkspace.createOrSelectStack({
+      stackName: "prod",
+      workDir: stackInfo.dir,
+    });
 
-        await stack.up({ onOutput: console.log });
-        console.log(`${stackInfo.name} deployed successfully`);
-    }
+    await stack.up({ onOutput: console.log });
+    console.log(`${stackInfo.name} deployed successfully`);
+  }
 }
 
 async function destroy() {
-    // Destroy in reverse order
-    const stacks = [
-        { name: "application", dir: "./app" },
-        { name: "platform", dir: "./platform" },
-        { name: "infrastructure", dir: "./infra" },
-    ];
+  // Destroy in reverse order
+  const stacks = [
+    { name: "application", dir: "./app" },
+    { name: "platform", dir: "./platform" },
+    { name: "infrastructure", dir: "./infra" },
+  ];
 
-    for (const stackInfo of stacks) {
-        console.log(`Destroying ${stackInfo.name}...`);
+  for (const stackInfo of stacks) {
+    console.log(`Destroying ${stackInfo.name}...`);
 
-        const stack = await automation.LocalWorkspace.selectStack({
-            stackName: "prod",
-            workDir: stackInfo.dir,
-        });
+    const stack = await automation.LocalWorkspace.selectStack({
+      stackName: "prod",
+      workDir: stackInfo.dir,
+    });
 
-        await stack.destroy({ onOutput: console.log });
-    }
+    await stack.destroy({ onOutput: console.log });
+  }
 }
 ```
 
@@ -191,8 +191,8 @@ Set stack configuration programmatically:
 
 ```typescript
 const stack = await automation.LocalWorkspace.createOrSelectStack({
-    stackName: "dev",
-    workDir: "./infrastructure",
+  stackName: "dev",
+  workDir: "./infrastructure",
 });
 
 // Set configuration values
@@ -224,15 +224,15 @@ Handle deployment failures gracefully:
 
 ```typescript
 try {
-    const result = await stack.up({ onOutput: console.log });
+  const result = await stack.up({ onOutput: console.log });
 
-    if (result.summary.result === "failed") {
-        console.error("Deployment failed");
-        process.exit(1);
-    }
+  if (result.summary.result === "failed") {
+    console.error("Deployment failed");
+    process.exit(1);
+  }
 } catch (error) {
-    console.error(`Deployment error: ${error}`);
-    throw error;
+  console.error(`Deployment error: ${error}`);
+  throw error;
 }
 ```
 
@@ -242,18 +242,20 @@ When stacks are independent, deploy in parallel:
 
 ```typescript
 const independentStacks = [
-    { name: "service-a", dir: "./service-a" },
-    { name: "service-b", dir: "./service-b" },
-    { name: "service-c", dir: "./service-c" },
+  { name: "service-a", dir: "./service-a" },
+  { name: "service-b", dir: "./service-b" },
+  { name: "service-c", dir: "./service-c" },
 ];
 
-await Promise.all(independentStacks.map(async (stackInfo) => {
+await Promise.all(
+  independentStacks.map(async (stackInfo) => {
     const stack = await automation.LocalWorkspace.createOrSelectStack({
-        stackName: "prod",
-        workDir: stackInfo.dir,
+      stackName: "prod",
+      workDir: stackInfo.dir,
     });
     return stack.up({ onOutput: (msg) => console.log(`[${stackInfo.name}] ${msg}`) });
-}));
+  }),
+);
 ```
 
 ## Best Practices
@@ -266,20 +268,18 @@ Externalize configuration into files or environment variables:
 import * as fs from "fs";
 
 interface DeployConfig {
-    stacks: Array<{ name: string; dir: string; }>;
-    environment: string;
+  stacks: Array<{ name: string; dir: string }>;
+  environment: string;
 }
 
-const config: DeployConfig = JSON.parse(
-    fs.readFileSync("./deploy-config.json", "utf-8")
-);
+const config: DeployConfig = JSON.parse(fs.readFileSync("./deploy-config.json", "utf-8"));
 
 for (const stackInfo of config.stacks) {
-    const stack = await automation.LocalWorkspace.createOrSelectStack({
-        stackName: config.environment,
-        workDir: stackInfo.dir,
-    });
-    await stack.up();
+  const stack = await automation.LocalWorkspace.createOrSelectStack({
+    stackName: config.environment,
+    workDir: stackInfo.dir,
+  });
+  await stack.up();
 }
 ```
 
@@ -291,23 +291,23 @@ Use `onOutput` callback for real-time feedback:
 
 ```typescript
 await stack.up({
-    onOutput: (message) => {
-        process.stdout.write(message);
-        // Or send to logging system, websocket, etc.
-    },
+  onOutput: (message) => {
+    process.stdout.write(message);
+    // Or send to logging system, websocket, etc.
+  },
 });
 ```
 
 ## Quick Reference
 
-| Scenario | Approach |
-| --- | --- |
-| Existing Pulumi projects | Local source with workDir |
-| New embedded infrastructure | Inline source with program function |
-| Different teams | Local source for independence |
-| Compiled binary distribution | Inline source or bundled local |
-| Multi-stack dependencies | Sequential deployment in order |
-| Independent stacks | Parallel deployment with Promise.all |
+| Scenario                     | Approach                             |
+| ---------------------------- | ------------------------------------ |
+| Existing Pulumi projects     | Local source with workDir            |
+| New embedded infrastructure  | Inline source with program function  |
+| Different teams              | Local source for independence        |
+| Compiled binary distribution | Inline source or bundled local       |
+| Multi-stack dependencies     | Sequential deployment in order       |
+| Independent stacks           | Parallel deployment with Promise.all |
 
 ## Related Skills
 

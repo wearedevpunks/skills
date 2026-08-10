@@ -1,7 +1,7 @@
 ---
 name: secrets-cli
 description: Operates the DP Secrets CLI (`secrets`) for installation, authentication, project membership, environments, dotenv files, pulls, and secret values. Use before any agent runs a `secrets` command or when the user mentions the Secrets CLI, `secrets login`, `secrets projects`, `secrets envs`, `secrets files`, `secrets values`, or the compatibility `secrets secrets` tree.
-metadata: {"DP Secrets":{"entrypoint":true}}
+metadata: { "DP Secrets": { "entrypoint": true } }
 ---
 
 # secrets-cli

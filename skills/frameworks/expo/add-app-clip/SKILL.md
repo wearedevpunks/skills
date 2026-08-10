@@ -48,10 +48,7 @@ In `app.json`, add both `applinks:` (parent) and `appclips:` (Clip invocation) e
 {
   "expo": {
     "ios": {
-      "associatedDomains": [
-        "applinks:may20.expo.app",
-        "appclips:may20.expo.app"
-      ]
+      "associatedDomains": ["applinks:may20.expo.app", "appclips:may20.expo.app"]
     }
   }
 }

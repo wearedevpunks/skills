@@ -92,7 +92,7 @@ values:
 
 Use the `fn::open::pulumi-stacks` provider to consume another stack's outputs. The
 `stacks` and `network` keys below are arbitrary names you choose. Once the function
-resolves, it *replaces* `stacks.network` with the named stack's outputs — so the
+resolves, it _replaces_ `stacks.network` with the named stack's outputs — so the
 output names (`vpcId`, `subnetIds`) do not appear in the static YAML; they come from
 whatever the producer stack exports. Two things are easy to get wrong:
 
@@ -108,8 +108,8 @@ values:
   stacks:
     fn::open::pulumi-stacks:
       stacks:
-        network:                 # arbitrary local name for the referenced stack
-          stack: my-project/dev  # producer stack to read outputs from
+        network: # arbitrary local name for the referenced stack
+          stack: my-project/dev # producer stack to read outputs from
   pulumiConfig:
     # vpcId / subnetIds are whatever the producer stack exports; after the function
     # resolves they are available directly under `stacks.network` (no `.outputs.`).
@@ -159,7 +159,7 @@ When helping users:
 3. **Fetch relevant documentation**: Use the web-fetch to get specific examples or syntax from the official docs
 4. **Provide step-by-step guidance**: Walk through the process with specific commands
 5. **Validate**: Help them test with `pulumi env get` or `pulumi preview`
-  a. Only use `pulumi env open` when the full resolved values are needed, but use cautiously as it reveals secrets.
+   a. Only use `pulumi env open` when the full resolved values are needed, but use cautiously as it reveals secrets.
 
 ### Example: Helping with AWS OIDC Setup
 
@@ -224,7 +224,7 @@ or the command:
 - AWS SSO: `Failed to refresh cached SSO credentials. Please refresh SSO login.`
   → `aws sso login`
 - AWS temporary credentials: `ExpiredToken: The security token included in the
-  request is expired` → refresh the session or keys
+request is expired` → refresh the session or keys
 - Azure: re-run `az login`
 - GCP: re-run `gcloud auth application-default login`
 - Pulumi Cloud (401 / unauthorized): `pulumi login`

@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const read = (path) =>
-  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("logic prototype is a portable self-contained browser demo", () => {
   const skill = read("skills/agnostic/research/prototype/SKILL.md");
@@ -33,9 +32,7 @@ test("prototype keeps Devpunks durable evidence and verdict lifecycle", () => {
 
 test("writing-for-agents replaces writing-great-skills without an alias", () => {
   const skill = read("skills/agnostic/docs/writing-for-agents/SKILL.md");
-  const mechanics = read(
-    "skills/agnostic/docs/writing-for-agents/SKILL-MECHANICS.md",
-  );
+  const mechanics = read("skills/agnostic/docs/writing-for-agents/SKILL-MECHANICS.md");
 
   assert.match(skill, /name: writing-for-agents/);
   assert.match(skill, /creating or editing skills.{0,80}AGENTS\.md.{0,20}CLAUDE\.md/i);
@@ -45,12 +42,7 @@ test("writing-for-agents replaces writing-great-skills without an alias", () => 
   assert.match(mechanics, /user-invoked/i);
   assert.match(mechanics, /router skill/i);
   assert.equal(
-    existsSync(
-      new URL(
-        "../skills/agnostic/docs/writing-great-skills/SKILL.md",
-        import.meta.url,
-      ),
-    ),
+    existsSync(new URL("../skills/agnostic/docs/writing-great-skills/SKILL.md", import.meta.url)),
     false,
   );
 });
@@ -60,10 +52,7 @@ test("wait-what is a model-invoked reusable artifact-language contract", () => {
 
   assert.match(skill, /name: wait-what/);
   assert.doesNotMatch(skill, /disable-model-invocation:\s*true/);
-  assert.match(
-    skill,
-    /description:.*(?:re-pitch|repitch).*(?:artifact|synthesis)/i,
-  );
+  assert.match(skill, /description:.*(?:re-pitch|repitch).*(?:artifact|synthesis)/i);
   assert.match(skill, /little bit of context/);
   assert.match(skill, /ASD-STE100 Simplified Technical English/);
   assert.match(skill, /ubiquitous language from `CONTEXT\.md`/);
@@ -78,10 +67,7 @@ test("v1.2 imports retain immutable provenance and the upstream license", () => 
     "skills/agnostic/research/prototype",
     "skills/misc/wait-what",
   ]) {
-    assert.match(
-      read(`${directory}/UPSTREAM.md`),
-      /2ffb184ffbb752faa664c0b204f3c9241b1428e9/,
-    );
+    assert.match(read(`${directory}/UPSTREAM.md`), /2ffb184ffbb752faa664c0b204f3c9241b1428e9/);
     assert.match(read(`${directory}/LICENSE`), /Copyright \(c\) 2026 Matt Pocock/);
   }
 });

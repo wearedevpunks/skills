@@ -30,14 +30,14 @@ Senior NestJS specialist with deep expertise in enterprise-grade, scalable TypeS
 
 Load detailed guidance based on context:
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Controllers | `references/controllers-routing.md` | Creating controllers, routing, Swagger docs |
-| Services | `references/services-di.md` | Services, dependency injection, providers |
-| DTOs | `references/dtos-validation.md` | Validation, class-validator, DTOs |
-| Authentication | `references/authentication.md` | JWT, Passport, guards, authorization |
-| Testing | `references/testing-patterns.md` | Unit tests, E2E tests, mocking |
-| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS |
+| Topic             | Reference                              | Load When                                   |
+| ----------------- | -------------------------------------- | ------------------------------------------- |
+| Controllers       | `references/controllers-routing.md`    | Creating controllers, routing, Swagger docs |
+| Services          | `references/services-di.md`            | Services, dependency injection, providers   |
+| DTOs              | `references/dtos-validation.md`        | Validation, class-validator, DTOs           |
+| Authentication    | `references/authentication.md`         | JWT, Passport, guards, authorization        |
+| Testing           | `references/testing-patterns.md`       | Unit tests, E2E tests, mocking              |
+| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS         |
 
 ## Code Examples
 
@@ -45,34 +45,34 @@ Load detailed guidance based on context:
 
 ```typescript
 // create-user.dto.ts
-import { IsEmail, IsString, MinLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString, MinLength } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'user@example.com' })
+  @ApiProperty({ example: "user@example.com" })
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'strongPassword123', minLength: 8 })
+  @ApiProperty({ example: "strongPassword123", minLength: 8 })
   @IsString()
   @MinLength(8)
   password: string;
 }
 
 // users.controller.ts
-import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Body, Controller, Post, HttpCode, HttpStatus } from "@nestjs/common";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { UsersService } from "./users.service";
+import { CreateUserDto } from "./dto/create-user.dto";
 
-@ApiTags('users')
-@Controller('users')
+@ApiTags("users")
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ description: 'User created successfully.' })
+  @ApiCreatedResponse({ description: "User created successfully." })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -83,11 +83,11 @@ export class UsersController {
 
 ```typescript
 // users.service.ts
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./entities/user.entity";
+import { CreateUserDto } from "./dto/create-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -99,7 +99,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existing = await this.usersRepository.findOneBy({ email: createUserDto.email });
     if (existing) {
-      throw new ConflictException('Email already registered');
+      throw new ConflictException("Email already registered");
     }
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
@@ -119,11 +119,11 @@ export class UsersService {
 
 ```typescript
 // users.module.ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UsersController } from "./users.controller";
+import { UsersService } from "./users.service";
+import { User } from "./entities/user.entity";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -138,11 +138,11 @@ export class UsersModule {}
 
 ```typescript
 // users.service.spec.ts
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConflictException } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { ConflictException } from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { User } from "./entities/user.entity";
 
 const mockRepo = {
   findOneBy: jest.fn(),
@@ -150,24 +150,21 @@ const mockRepo = {
   save: jest.fn(),
 };
 
-describe('UsersService', () => {
+describe("UsersService", () => {
   let service: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UsersService,
-        { provide: getRepositoryToken(User), useValue: mockRepo },
-      ],
+      providers: [UsersService, { provide: getRepositoryToken(User), useValue: mockRepo }],
     }).compile();
     service = module.get<UsersService>(UsersService);
     jest.clearAllMocks();
   });
 
-  it('throws ConflictException when email already exists', async () => {
-    mockRepo.findOneBy.mockResolvedValue({ id: 1, email: 'user@example.com' });
+  it("throws ConflictException when email already exists", async () => {
+    mockRepo.findOneBy.mockResolvedValue({ id: 1, email: "user@example.com" });
     await expect(
-      service.create({ email: 'user@example.com', password: 'pass1234' }),
+      service.create({ email: "user@example.com", password: "pass1234" }),
     ).rejects.toThrow(ConflictException);
   });
 });
@@ -176,6 +173,7 @@ describe('UsersService', () => {
 ## Constraints
 
 ### MUST DO
+
 - Use `@Injectable()` and constructor injection for all services — never instantiate services with `new`
 - Validate all inputs with `class-validator` decorators on DTOs and enable `ValidationPipe` globally
 - Use DTOs for all request/response bodies; never pass raw `req.body` to services
@@ -185,6 +183,7 @@ describe('UsersService', () => {
 - Store all config values via `ConfigModule` and `process.env`; never hardcode them
 
 ### MUST NOT DO
+
 - Expose passwords, secrets, or internal stack traces in responses
 - Accept unvalidated user input — always apply `ValidationPipe`
 - Use `any` type unless absolutely necessary and documented
@@ -195,6 +194,7 @@ describe('UsersService', () => {
 ## Output Templates
 
 When implementing a NestJS feature, provide in this order:
+
 1. Module definition (`.module.ts`)
 2. Controller with Swagger decorators (`.controller.ts`)
 3. Service with typed error handling (`.service.ts`)

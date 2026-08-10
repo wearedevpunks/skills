@@ -94,8 +94,8 @@ Your rename, restructure, or value adjustment changed the meaning, not just the 
 The resource would show `same` if the old and new code compiled to the same goal state.
 The `update` means they don't.
 
-Ask yourself: *"If this rename were truly equivalent, the resource would show `same`.
-It doesn't. What is semantically different between my old code and my new code?"*
+Ask yourself: _"If this rename were truly equivalent, the resource would show `same`.
+It doesn't. What is semantically different between my old code and my new code?"_
 
 Common causes: the new property name maps to a different underlying field; the value
 shape changed and your conversion lost or added information; a default value changed
@@ -117,8 +117,8 @@ there. Pulumi wants to create NEW infrastructure - that's not what you want.
 
 The fix is `import`, not `create`. Tell Pulumi to adopt the existing cloud resource.
 
-Ask yourself: *"What cloud object does this new resource represent? Does it already
-exist? How was it managed before the upgrade?"*
+Ask yourself: _"What cloud object does this new resource represent? Does it already
+exist? How was it managed before the upgrade?"_
 
 ```typescript
 // Wrong - creates duplicate infrastructure
@@ -139,6 +139,7 @@ cleanup. The cloud infrastructure still exists and is almost certainly still nee
 This is different from `pulumi state delete`, which removes the resource from Pulumi's
 tracking WITHOUT calling the provider's API. When a resource type is removed in a new
 provider version, the correct approach is:
+
 1. `pulumi state delete '<urn>'` - manual step, removes from tracking only
 2. Add replacement resources (if any) with imports - adopts the cloud state under new types
 3. Verify with preview
@@ -147,8 +148,8 @@ Do NOT leave a `delete` in the preview and proceed to PR creation. A delete that
 via `pulumi up` will destroy real infrastructure. If the resource must be removed from
 state, document it as a manual step for the user.
 
-Ask yourself: *"What cloud infrastructure does this resource manage? If `pulumi up` runs
-this delete, what gets destroyed or unconfigured?"*
+Ask yourself: _"What cloud infrastructure does this resource manage? If `pulumi up` runs
+this delete, what gets destroyed or unconfigured?"_
 
 ### Category B: I didn't change code for this resource
 
@@ -157,6 +158,7 @@ itself - a different default, a changed state representation, or a behavioral di
 Read `references/diagnostic-toolbox.md` and investigate.
 
 These diffs might be:
+
 - **Fixable with code** - set an explicit value for a changed default, add an alias
 - **A documented no-op** - the upgrade guide says it resolves on `pulumi up` without
   affecting real infrastructure. This classification REQUIRES a citation from the upgrade

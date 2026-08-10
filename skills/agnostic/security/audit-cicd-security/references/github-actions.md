@@ -1,6 +1,7 @@
 # GitHub Actions Reference
 
 ## Audit semantics
+
 - `pull_request_target` and `workflow_run` execute in privileged repository contexts and should be treated as elevated-trigger paths.
 - Fork PRs can restore base-branch caches; PR-created caches are scoped to the merge ref, and broad restore keys are evidence to investigate rather than confirmed overwrite vulnerabilities.
 - Pin all third-party actions to full commit SHA; tag-based references remain mutable and expand supply-chain risk.
@@ -9,6 +10,7 @@
 - Environment secrets are exposed only after protection rules and reviewers satisfy the gate path.
 
 ## Remote settings to verify
+
 - Fork PR trust settings and required checks.
 - Default token permissions and whether workflow permissions are minimized.
 - Action allowlist or full-SHA enforcement policy.
@@ -17,6 +19,7 @@
 - Cache and artifact retention/provenance settings.
 
 ## Official sources (verified 2026-07-30)
+
 - https://docs.github.com/en/actions/reference/security/secure-use
 - https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository
 - https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching

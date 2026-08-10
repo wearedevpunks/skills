@@ -44,11 +44,7 @@ If the target Project V2 does not exist, create it:
 
 ```graphql
 mutation CreateBacklogProject($ownerId: ID!, $repositoryId: ID!, $title: String!) {
-  createProjectV2(input: {
-    ownerId: $ownerId
-    repositoryId: $repositoryId
-    title: $title
-  }) {
+  createProjectV2(input: { ownerId: $ownerId, repositoryId: $repositoryId, title: $title }) {
     projectV2 {
       id
       title
@@ -171,19 +167,16 @@ Closure notes for these issues record the answer or verdict, evidence, observati
 Use a parent issue for each epic/capability. Add it to the Project V2 at creation time.
 
 ```graphql
-mutation CreateEpic(
-  $repositoryId: ID!
-  $projectV2Ids: [ID!]
-  $title: String!
-  $body: String!
-) {
-  createIssue(input: {
-    repositoryId: $repositoryId
-    projectV2Ids: $projectV2Ids
-    title: $title
-    body: $body
-    labelIds: []
-  }) {
+mutation CreateEpic($repositoryId: ID!, $projectV2Ids: [ID!], $title: String!, $body: String!) {
+  createIssue(
+    input: {
+      repositoryId: $repositoryId
+      projectV2Ids: $projectV2Ids
+      title: $title
+      body: $body
+      labelIds: []
+    }
+  ) {
     issue {
       id
       number
@@ -221,14 +214,16 @@ mutation CreateStory(
   $title: String!
   $body: String!
 ) {
-  createIssue(input: {
-    repositoryId: $repositoryId
-    projectV2Ids: $projectV2Ids
-    parentIssueId: $parentIssueId
-    title: $title
-    body: $body
-    labelIds: []
-  }) {
+  createIssue(
+    input: {
+      repositoryId: $repositoryId
+      projectV2Ids: $projectV2Ids
+      parentIssueId: $parentIssueId
+      title: $title
+      body: $body
+      labelIds: []
+    }
+  ) {
     issue {
       id
       number
@@ -263,12 +258,13 @@ If a story was created before the epic parent was known, attach it with `addSubI
 
 ```graphql
 mutation AddStoryToEpic($issueId: ID!, $subIssueId: ID!) {
-  addSubIssue(input: {
-    issueId: $issueId
-    subIssueId: $subIssueId
-  }) {
-    issue { id }
-    subIssue { id }
+  addSubIssue(input: { issueId: $issueId, subIssueId: $subIssueId }) {
+    issue {
+      id
+    }
+    subIssue {
+      id
+    }
   }
 }
 ```
@@ -279,11 +275,10 @@ Use native issue dependencies for every real blocker between selected concrete n
 
 ```graphql
 mutation AddBlockedBy($issueId: ID!, $blockingIssueId: ID!) {
-  addBlockedBy(input: {
-    issueId: $issueId
-    blockingIssueId: $blockingIssueId
-  }) {
-    issue { id }
+  addBlockedBy(input: { issueId: $issueId, blockingIssueId: $blockingIssueId }) {
+    issue {
+      id
+    }
   }
 }
 ```

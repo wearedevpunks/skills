@@ -61,39 +61,33 @@ Follow the project's established equivalent of this shape:
 
 ```ts
 export interface Interface {
-  readonly operation: (input: Input) => Effect.Effect<Output, OperationError>
+  readonly operation: (input: Input) => Effect.Effect<Output, OperationError>;
 }
 
-export class Service extends Context.Service<Service, Interface>()(
-  "@app/Capability",
-) {}
+export class Service extends Context.Service<Service, Interface>()("@app/Capability") {}
 
-export const make: Effect.Effect<
-  Service["Service"],
-  never,
-  Dependency.Service
-> = Effect.gen(function* () {
-  const dependency = yield* Dependency.Service
+export const make: Effect.Effect<Service["Service"], never, Dependency.Service> = Effect.gen(
+  function* () {
+    const dependency = yield* Dependency.Service;
 
-  const operation = Effect.fn("Capability.operation")(function* (input: Input) {
-    return yield* dependency.operation(input)
-  })
+    const operation = Effect.fn("Capability.operation")(function* (input: Input) {
+      return yield* dependency.operation(input);
+    });
 
-  return Service.of({ operation })
-})
+    return Service.of({ operation });
+  },
+);
 
-export const layerWithoutDependencies = Layer.effect(Service, make)
+export const layerWithoutDependencies = Layer.effect(Service, make);
 
-export const layer = layerWithoutDependencies.pipe(
-  Layer.provide([Dependency.layer]),
-)
+export const layer = layerWithoutDependencies.pipe(Layer.provide([Dependency.layer]));
 
 export const layerTest = Layer.succeed(
   Service,
   Service.of({
     operation: (_input) => Effect.succeed(testOutput),
   }),
-)
+);
 ```
 
 `layerWithoutDependencies` preserves the service's requirements for composition. `layer` is the ready production assembly and provides the concrete dependency Layers. `layerTest` illustrates a complete static substitute; export it only when that behavior is reusable and honest. Use `layerMemory` instead when an in-memory implementation faithfully preserves the observable contract.

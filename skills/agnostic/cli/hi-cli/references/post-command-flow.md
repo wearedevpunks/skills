@@ -59,22 +59,22 @@ Read the command summary before any generated artifact. If it reports no diff, r
 
 For a diff, inspect only paths changed or flagged by this run. Apply every matching row:
 
-| Changed category | Required follow-through |
-| --- | --- |
-| Settings or manifest pins only | Confirm accepted pins. |
-| Skill content; IDs unchanged | Inspect affected skills and active mirrors only. |
-| Skill added, removed, or renamed | Reconcile affected IDs and their mirrors. |
-| `local-edited` conflict | Preserve local intent; ask when project and baseline intent conflict. |
-| Missing or stale path | Confirm the named recreation or deletion and direct references. |
-| Prompt input | Reconcile only affected prompt scopes and mirrors. |
-| Subagent input | Reconcile only generated and final subagent manifests. |
-| Lint, hook, or script input | Validate the affected config or command; ask before changing policy. |
-| Required tools | Check only added, changed, or failed tools. |
-| Source-guide content | Inspect only affected guide files. |
-| Wiki input | Reconcile affected routes or documents, then validate them. |
-| Default or detected pack addition | Follow only categories changed by that addition. |
-| Optional/removal/policy/surface decision | Ask for the unresolved decision. |
-| First adoption or missing final output | Run applicable scaffold follow-through. |
+| Changed category                         | Required follow-through                                               |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| Settings or manifest pins only           | Confirm accepted pins.                                                |
+| Skill content; IDs unchanged             | Inspect affected skills and active mirrors only.                      |
+| Skill added, removed, or renamed         | Reconcile affected IDs and their mirrors.                             |
+| `local-edited` conflict                  | Preserve local intent; ask when project and baseline intent conflict. |
+| Missing or stale path                    | Confirm the named recreation or deletion and direct references.       |
+| Prompt input                             | Reconcile only affected prompt scopes and mirrors.                    |
+| Subagent input                           | Reconcile only generated and final subagent manifests.                |
+| Lint, hook, or script input              | Validate the affected config or command; ask before changing policy.  |
+| Required tools                           | Check only added, changed, or failed tools.                           |
+| Source-guide content                     | Inspect only affected guide files.                                    |
+| Wiki input                               | Reconcile affected routes or documents, then validate them.           |
+| Default or detected pack addition        | Follow only categories changed by that addition.                      |
+| Optional/removal/policy/surface decision | Ask for the unresolved decision.                                      |
+| First adoption or missing final output   | Run applicable scaffold follow-through.                               |
 
 After write modes, run targeted validation and one fresh `hi check --json`. Rerun `hi update` once only when that check detects new CLI or baseline drift, then finish with one final `hi check --json`.
 

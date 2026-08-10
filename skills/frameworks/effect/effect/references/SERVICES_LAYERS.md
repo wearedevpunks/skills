@@ -7,22 +7,22 @@ Use this for the local module namespace convention, scoped long-lived work, whol
 One opinionated application-module style uses file-local role names and one canonical ES module namespace projection. Follow the existing codebase's module style when it has one; this convention is not required by Effect. Consumers use the module namespace.
 
 ```ts
-import { UserRepo } from "./user-repo.js"
+import { UserRepo } from "./user-repo.js";
 
 const program = Effect.gen(function* () {
-  const repo = yield* UserRepo.Service
-  return yield* repo.get(id)
-})
+  const repo = yield* UserRepo.Service;
+  return yield* repo.get(id);
+});
 ```
 
 The self-export is deliberate. It lets the file remain the module while giving every consumer the same domain-first name, without a TypeScript `namespace`, wrapper object, or repeated consumer-side aliases.
 
 ```ts
 // Sibling module: import the owning leaf directly.
-import { UserRepo } from "./user-repo.js"
+import { UserRepo } from "./user-repo.js";
 
 // Folder or package barrel: relay the identity established by the leaf.
-export { UserRepo } from "./user-repo.js"
+export { UserRepo } from "./user-repo.js";
 ```
 
 Guidance:
@@ -42,14 +42,11 @@ A layer that starts a stream, listener, worker, subscription, or forever loop mu
 ```ts
 export const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const events = yield* Events.Service
+    const events = yield* Events.Service;
 
-    yield* events.stream.pipe(
-      Stream.runForEach(handleEvent),
-      Effect.forkScoped,
-    )
+    yield* events.stream.pipe(Stream.runForEach(handleEvent), Effect.forkScoped);
   }),
-)
+);
 ```
 
 Guidance:
@@ -65,13 +62,10 @@ Use extra `Effect.fn(...)` arguments for wrappers that apply to the whole functi
 ```ts
 const readAttachment = Effect.fn("Attachment.read")(
   function* (ref: AttachmentRef) {
-    return yield* api.read(ref)
+    return yield* api.read(ref);
   },
-  (effect, ref) =>
-    effect.pipe(
-      attachmentError("Attachment.read", { attachmentId: ref.id }),
-    ),
-)
+  (effect, ref) => effect.pipe(attachmentError("Attachment.read", { attachmentId: ref.id })),
+);
 ```
 
 Good whole-function transforms:
@@ -98,11 +92,9 @@ Guidance:
 For boundary errors with operation labels, prefer a shared curried `mapError` helper over hand-writing wrappers in every module.
 
 ```ts
-const persistenceError = operationError(PersistenceError.make)
+const persistenceError = operationError(PersistenceError.make);
 
-const row = yield* query.pipe(
-  persistenceError("UserRepository.findById"),
-)
+const row = yield * query.pipe(persistenceError("UserRepository.findById"));
 ```
 
 Name the local helper after the error it produces, such as `persistenceError`, `projectionError`, or `processingError`. Use `Effect.fn(...)` and spans for observability in addition to payload labels, not instead of them.

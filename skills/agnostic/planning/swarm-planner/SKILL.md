@@ -9,7 +9,7 @@ metadata:
 
 # Swarm-Ready Planner
 
-Create implementation plans with explicit task dependencies optimized for parallel agent execution. This skill can be ran inside or outside of Plan Mode. 
+Create implementation plans with explicit task dependencies optimized for parallel agent execution. This skill can be ran inside or outside of Plan Mode.
 
 ## Core Principles
 
@@ -25,13 +25,14 @@ Create implementation plans with explicit task dependencies optimized for parall
 ### 1. Research
 
 **Codebase investigation:**
+
 - Architecture, patterns, existing implementations
 - Dependencies and frameworks in use
 
 ### 1a. Optional: Stop to Clarification Questions
 
 - If the architecture is unclear or missing STOP AND YIELD to the user, and request user input (AskUserQuestions) before moving on. Always offer recommendations for clarification questions.
-- If architecture is present, skip 1a and move onto next step. 
+- If architecture is present, skip 1a and move onto next step.
 
 ### 2. Documentation
 
@@ -44,11 +45,12 @@ This ensures version-accurate APIs, correct parameters, and current best practic
 ### 3. STOP and Request User Input
 
 When anything is unclear or could reasonably be done multiple ways:
+
 - Stop and ask clarifying questions immediately
 - Do not make assumptions about scope, constraints, or priorities
 - Questions should reduce risk and eliminate ambiguity
 - Always offer recommendations for clarification questions.
-- Use request_user_input or AskUserQuestion tool if available. 
+- Use request_user_input or AskUserQuestion tool if available.
 
 ### 4. Create Dependency-Aware Plan
 
@@ -57,6 +59,7 @@ Structure the plan with explicit task dependencies using this format:
 #### Task Dependency Format
 
 Each task MUST include:
+
 - **id**: Unique identifier (e.g., `T1`, `T2.1`)
 - **depends_on**: Array of task IDs that must complete first (empty `[]` for root tasks)
 - **description**: What the task accomplishes
@@ -64,6 +67,7 @@ Each task MUST include:
 - **validation**: How to verify completion
 
 **Example:**
+
 ```
 T1: [depends_on: []] Create database schema migration
 T2: [depends_on: []] Install required packages
@@ -99,7 +103,6 @@ Context: [brief context about the task]
 
 If the subagent provides actionable feedback, revise the plan before yielding.
 
-
 ## Plan Template
 
 ```markdown
@@ -108,18 +111,21 @@ If the subagent provides actionable feedback, revise the plan before yielding.
 **Generated**: [Date]
 
 ## Overview
+
 [Summary of task and approach]
 
 ## Prerequisites
+
 - [Tools, libraries, access needed]
 
 ## Dependency Graph
-
 ```
+
 [Visual representation of task dependencies]
 T1 ──┬── T3 ──┐
-     │        ├── T5 ── T6 ── T7
+│ ├── T5 ── T6 ── T7
 T2 ──┴── T4 ──┘
+
 ```
 
 ## Tasks

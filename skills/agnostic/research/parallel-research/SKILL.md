@@ -75,6 +75,7 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 ## Output Contract
 
 Return:
+
 - what each subagent covered
 - a concise route and status that points to the report without duplicating it
 - durable report immutable SHA, path, and verified retention reference

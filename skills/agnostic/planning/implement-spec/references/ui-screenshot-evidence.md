@@ -33,8 +33,8 @@ Do not duplicate provider CLI commands here. If upload cannot run, record the bl
 
 Add or update `## UI Evidence Links` in `IMPLEMENTATION-NOTES.md`:
 
-| Surface | Viewport | Before | After | Notes |
-|---------|----------|--------|-------|-------|
+| Surface          | Viewport         | Before        | After        | Notes            |
+| ---------------- | ---------------- | ------------- | ------------ | ---------------- |
 | Checkout summary | Desktop 1440x900 | [before](...) | [after](...) | Same seeded cart |
 
 Rules:

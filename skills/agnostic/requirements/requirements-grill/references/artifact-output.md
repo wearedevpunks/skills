@@ -56,12 +56,14 @@ Record accepted decisions as:
 ### Q<N>
 
 Prerequisites:
+
 - <Q ids or `none`>
 
 Question:
 <question asked>
 
 Accepted answer:
+
 - <locked answer>
 ```
 
@@ -78,6 +80,7 @@ Question:
 <terminology or axiom question>
 
 Accepted answer:
+
 - Canonical term: **<Term>** — <one-sentence definition>
 - Avoid: <alias>, <alias>
 - Relationship: **<Term>** <relationship> **<Other Term>**
@@ -97,10 +100,10 @@ Before yielding each round, persist a `Current Round` section in the status file
 - Current frontier: Q<N>, Q<N+1> | empty
 - Shared-understanding confirmation: not-ready | pending | confirmed
 
-| Question id | Prerequisites | Question | State |
-| --- | --- | --- | --- |
-| Q<N> | none | <decision question> | unanswered |
-| Q<N+1> | Q<N-2> | <decision question> | unanswered |
+| Question id | Prerequisites | Question            | State      |
+| ----------- | ------------- | ------------------- | ---------- |
+| Q<N>        | none          | <decision question> | unanswered |
+| Q<N+1>      | Q<N-2>        | <decision question> | unanswered |
 ```
 
 The table is the stable mapping between the live round and durable question ids. `State` is `unanswered`, `answered`, `parked`, or `deferred`.

@@ -256,10 +256,7 @@ API routes run on Cloudflare Workers. Key limitations:
 
 ```ts
 // Use Web Crypto instead of Node crypto
-const hash = await crypto.subtle.digest(
-  "SHA-256",
-  new TextEncoder().encode("data")
-);
+const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("data"));
 
 // Use fetch instead of node-fetch
 const response = await fetch("https://api.example.com");
@@ -350,7 +347,7 @@ export async function GET(request: Request) {
   const city = url.searchParams.get("city");
 
   const response = await fetch(
-    `https://api.weather.com/v1/current?city=${city}&key=${process.env.WEATHER_API_KEY}`
+    `https://api.weather.com/v1/current?city=${city}&key=${process.env.WEATHER_API_KEY}`,
   );
 
   return Response.json(await response.json());

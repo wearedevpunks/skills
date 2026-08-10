@@ -23,24 +23,22 @@ Use this when writing Effect tests involving time, retry, schedules, concurrency
 ```ts
 it.effect("publishes exactly once", () =>
   Effect.gen(function* () {
-    const published = yield* Queue.unbounded<Message>()
-    const ready = yield* Deferred.make<void>()
+    const published = yield* Queue.unbounded<Message>();
+    const ready = yield* Deferred.make<void>();
 
     const runWorker = makeWorker({
       onReady: () => Deferred.succeed(ready, undefined),
       onPublish: (message) => Queue.offer(published, message),
-    })
+    });
 
-    yield* runWorker.pipe(
-      Effect.forkScoped,
-    )
+    yield* runWorker.pipe(Effect.forkScoped);
 
-    yield* Deferred.await(ready)
-    const message = yield* Queue.take(published)
+    yield* Deferred.await(ready);
+    const message = yield* Queue.take(published);
 
-    expect(message).toEqual(expectedMessage)
+    expect(message).toEqual(expectedMessage);
   }),
-)
+);
 ```
 
 ## Config In Tests

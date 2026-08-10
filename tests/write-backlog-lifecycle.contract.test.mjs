@@ -20,7 +20,11 @@ test("write-backlog uses direct backlog concepts", () => {
     "skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md",
   ]) {
     const document = read(relativePath);
-    assert.match(document, /`fog`[\s\S]*`grilling`[\s\S]*`research`[\s\S]*`prototype`[\s\S]*`epic`[\s\S]*`story`/u, relativePath);
+    assert.match(
+      document,
+      /`fog`[\s\S]*`grilling`[\s\S]*`research`[\s\S]*`prototype`[\s\S]*`epic`[\s\S]*`story`/u,
+      relativePath,
+    );
     assert.doesNotMatch(document, /\b(?:kind|kinds|Kind)\b/u, relativePath);
   }
 });
@@ -43,8 +47,14 @@ test("write-backlog validates the complete blocker graph before mutation", () =>
 
 test("provider adapters do not require a canonical classification field", () => {
   for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.doesNotMatch(document, /Canonical `kind` storage|canonical Harness kind|`Kind` is canonical|canonical when/u, name);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
+    assert.doesNotMatch(
+      document,
+      /Canonical `kind` storage|canonical Harness kind|`Kind` is canonical|canonical when/u,
+      name,
+    );
     assert.match(document, /adapter-specific/u, name);
   }
 });
@@ -95,11 +105,18 @@ test("shared consumers do not reintroduce backlog-first lifecycle", () => {
     "skills/agnostic/requirements/requirements-grill/SKILL.md",
   ]) {
     const document = read(relativePath);
-    assert.doesNotMatch(document, /epics? anchor future|one future `SPEC\.md`|From `requirements-grill` artifacts/u, relativePath);
+    assert.doesNotMatch(
+      document,
+      /epics? anchor future|one future `SPEC\.md`|From `requirements-grill` artifacts/u,
+      relativePath,
+    );
   }
   const grill = read("skills/agnostic/requirements/requirements-grill/SKILL.md");
   assert.match(grill, /closed shared understanding routes to `create-spec`/u);
-  assert.doesNotMatch(grill, /backlog\/user-story creation is the next phase|usually backlog\/user-story creation/u);
+  assert.doesNotMatch(
+    grill,
+    /backlog\/user-story creation is the next phase|usually backlog\/user-story creation/u,
+  );
 });
 
 test("story bodies carry spec authority and demonstration seams", () => {
@@ -113,7 +130,9 @@ test("story bodies carry spec authority and demonstration seams", () => {
 
 test("provider adapters preflight the complete graph before creation", () => {
   for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
     const preflight = document.indexOf("## Preflight before creation");
     const creation = document.indexOf("## Create ");
     assert.ok(preflight >= 0 && (creation < 0 || preflight < creation), `${name}: preflight order`);
@@ -131,17 +150,25 @@ test("provider adapters preflight the complete graph before creation", () => {
 
 test("provider classification is configured and never bootstrapped by default", () => {
   for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
     assert.match(document, /Inspect configured provider metadata/u, name);
     assert.match(document, /Only when explicitly configured/u, name);
     assert.match(document, /Classification examples assume explicit configuration/u, name);
-    assert.doesNotMatch(document, /Resolve or create the `Kind`|If .*`Kind`.*absent, create|does not exist, create a project\/process custom/u, name);
+    assert.doesNotMatch(
+      document,
+      /Resolve or create the `Kind`|If .*`Kind`.*absent, create|does not exist, create a project\/process custom/u,
+      name,
+    );
   }
 });
 
 test("provider adapters preserve visible direct taxonomy without custom fields", () => {
   for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
     assert.match(document, /Fallback order:/u, name);
     assert.match(document, /stable title prefix/u, name);
     assert.match(document, /fail preflight/u, name);
@@ -162,10 +189,7 @@ test("Linear preflights the complete configured intake Kind taxonomy", () => {
     linear,
     /create missing (?:Kind )?labels only when explicit workspace policy\s+permits/is,
   );
-  assert.match(
-    linear,
-    /otherwise.{0,160}setup blocker.{0,160}missing\s+label/is,
-  );
+  assert.match(linear, /otherwise.{0,160}setup blocker.{0,160}missing\s+label/is);
   assert.match(
     linear,
     /incomplete configured `Kind` taxonomy.{0,200}(?:must not|do not) use (?:a )?title prefix/is,
@@ -186,36 +210,23 @@ test("fog intake carries uncertainty while graduated intake carries a precise qu
   const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
   const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
   for (const document of [skill, reference]) {
-    assert.match(
-      document,
-      /`fog`.{0,200}frontier or uncertainty description/is,
-    );
-    assert.match(
-      document,
-      /`grilling`, `research`, or `prototype`.{0,200}precise question/is,
-    );
+    assert.match(document, /`fog`.{0,200}frontier or uncertainty description/is);
+    assert.match(document, /`grilling`, `research`, or `prototype`.{0,200}precise question/is);
     assert.doesNotMatch(document, /(?:each|one) `fog`[^.]{0,200}precise question/is);
   }
 });
 
 test("finder-derived learning keeps fog as provider-aware evidence parent", () => {
-  const model = read(
-    "skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md",
-  );
+  const model = read("skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md");
   const finder = read("skills/phases/finder-phase/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
+  const frontier = read("skills/phases/finder-phase/references/frontier-lifecycle.md");
   const all = `${model}\n${finder}\n${frontier}`;
 
   assert.match(
     all,
     /Finder-derived `grilling`, `research`, or `prototype`.{0,240}fog.{0,120}evidence parent/is,
   );
-  assert.match(
-    all,
-    /fog remains root-level.{0,240}(?:not|is not) (?:a )?delivery/is,
-  );
+  assert.match(all, /fog remains root-level.{0,240}(?:not|is not) (?:a )?delivery/is);
   assert.match(all, /fog remains root-level.{0,240}`SPEC\.md` anchor/is);
   assert.match(all, /fog remains root-level.{0,240}capability module/is);
   assert.match(all, /fog remains root-level.{0,240}execution item/is);
@@ -223,10 +234,7 @@ test("finder-derived learning keeps fog as provider-aware evidence parent", () =
     model,
     /when the provider supports.{0,200}native (?:intake )?parent.{0,200}otherwise.{0,200}evidence link/is,
   );
-  assert.match(
-    finder,
-    /handoff.{0,200}(?:supplies|includes).{0,80}fog parent/is,
-  );
+  assert.match(finder, /handoff.{0,200}(?:supplies|includes).{0,80}fog parent/is);
 });
 
 test("provider adapters preserve fog parent evidence within native capabilities", () => {
@@ -246,10 +254,7 @@ test("provider adapters preserve fog parent evidence within native capabilities"
   assert.match(linear, /Finder-derived.{0,200}`parentId`.{0,120}source fog/is);
   assert.match(github, /source fog.{0,200}(?:`parentIssueId`|`addSubIssue`)/is);
   assert.match(azure, /Parent\s+relation.{0,120}source fog/is);
-  assert.match(
-    monday,
-    /source fog.{0,240}immutable evidence link.{0,200}capability group/is,
-  );
+  assert.match(monday, /source fog.{0,240}immutable evidence link.{0,200}capability group/is);
 });
 
 test("write-backlog invocation advertises both lifecycle branches", () => {
@@ -261,7 +266,10 @@ test("write-backlog invocation advertises both lifecycle branches", () => {
 
 test("design backlog bodies exclude implementation notes", () => {
   const phase = read("skills/phases/design-phase/phases/backlog.md");
-  assert.match(phase, /accepted product and design constraints, acceptance context, and artifact links/u);
+  assert.match(
+    phase,
+    /accepted product and design constraints, acceptance context, and artifact links/u,
+  );
   assert.doesNotMatch(phase, /implementation notes/u);
 });
 
@@ -278,7 +286,9 @@ test("write-backlog physically updates existing decision tickets", () => {
     ["monday", /change_item_column_values/u],
   ]);
   for (const [name, signal] of providerSignals) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
     assert.match(document, /## Update existing decision tickets/u, name);
     assert.match(document, /claim, release, and resolve/u, name);
     assert.match(document, signal, name);
@@ -295,17 +305,30 @@ test("learning closure returns evidence to Wayfinder without delivery authorizat
     "skills/agnostic/requirements/write-backlog/assets/providers/monday-create-payload.md",
   ]) {
     const document = read(relativePath);
-    assert.doesNotMatch(document, /accepted direction|created or updated (?:implementation )?(?:items|epics\/stories)/iu, relativePath);
+    assert.doesNotMatch(
+      document,
+      /accepted direction|created or updated (?:implementation )?(?:items|epics\/stories)/iu,
+      relativePath,
+    );
   }
   const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  assert.match(skill, /Evidence returns to Wayfinder for reconciliation; closure does not authorize delivery/u);
+  assert.match(
+    skill,
+    /Evidence returns to Wayfinder for reconciliation; closure does not authorize delivery/u,
+  );
 });
 
 test("all provider bodies preserve immutable spec and story traceability", () => {
   for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
+    const document = read(
+      `skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`,
+    );
     assert.match(document, /Epic body ownership:[\s\S]*immutable spec link/u, name);
-    assert.match(document, /Story body ownership:[\s\S]*source `US-###`[\s\S]*covered `AC-###`[\s\S]*demonstration[\s\S]*accepted artifact links/u, name);
+    assert.match(
+      document,
+      /Story body ownership:[\s\S]*source `US-###`[\s\S]*covered `AC-###`[\s\S]*demonstration[\s\S]*accepted artifact links/u,
+      name,
+    );
   }
 });
 

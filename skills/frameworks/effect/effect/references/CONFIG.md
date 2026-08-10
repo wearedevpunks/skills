@@ -5,18 +5,13 @@ Use this when reading runtime configuration, env vars, `.env` files, provider-sp
 Read runtime configuration through Effect `Config` recipes and provider layers, not direct `process.env` access inside application logic.
 
 ```ts
-export const dataDirectoryConfig = Config.schema(
-  AbsolutePath,
-  "APP_DATA_DIR",
-)
+export const dataDirectoryConfig = Config.schema(AbsolutePath, "APP_DATA_DIR");
 
 export const appConfig = Config.all({
   apiKey: Config.redacted("API_KEY"),
   optionalModel: Config.option(Config.string("MODEL")),
-  enabled: Config.boolean("FEATURE_ENABLED").pipe(
-    Config.withDefault(false),
-  ),
-})
+  enabled: Config.boolean("FEATURE_ENABLED").pipe(Config.withDefault(false)),
+});
 ```
 
 ## Config Recipes
@@ -45,14 +40,8 @@ export const appConfig = Config.all({
 Library-style layers often expose both concrete `layer(options)` and config-backed `layerConfig(options: Config.Wrap<Options>)`.
 
 ```ts
-export const layerConfig = (
-  config: Config.Wrap<ClientOptions>,
-) =>
-  Layer.unwrap(
-    Config.unwrap(config).pipe(
-      Effect.map(layer),
-    ),
-  )
+export const layerConfig = (config: Config.Wrap<ClientOptions>) =>
+  Layer.unwrap(Config.unwrap(config).pipe(Effect.map(layer)));
 ```
 
 Use this pattern when a Layer naturally supports runtime config while still allowing callers to pass concrete values.

@@ -5,9 +5,9 @@ Effect-Atom (`@effect-atom/atom-react`) is the standard way to handle data fetch
 ## Package & Imports
 
 ```typescript
-import { Atom, AtomHttpApi, Result, Registry, RegistryContext } from "@effect-atom/atom-react"
-import { AtomRpc } from "@effect-atom/atom-react"
-import { useAtom, useAtomValue, useAtomSet, useAtomRefresh } from "@effect-atom/atom-react"
+import { Atom, AtomHttpApi, Result, Registry, RegistryContext } from "@effect-atom/atom-react";
+import { AtomRpc } from "@effect-atom/atom-react";
+import { useAtom, useAtomValue, useAtomSet, useAtomRefresh } from "@effect-atom/atom-react";
 ```
 
 ## 1. Use Typesafe Clients (AtomHttpApi or AtomRpc)
@@ -39,13 +39,10 @@ export const createUserMutation = ApiClient.mutation("users", "createUser")
 For Effect RPC services — provides end-to-end type safety from server to client:
 
 ```typescript
-export class UsersClient extends AtomRpc.Tag<UsersClient>()(
-  "@myorg/web/UsersClient",
-  {
-    group: UsersRpcGroup,
-    protocol: makeProtocolLayer("/rpc/users"),
-  }
-) {}
+export class UsersClient extends AtomRpc.Tag<UsersClient>()("@myorg/web/UsersClient", {
+  group: UsersRpcGroup,
+  protocol: makeProtocolLayer("/rpc/users"),
+}) {}
 ```
 
 ### What to Flag
@@ -73,21 +70,24 @@ Data fetching should use `AtomHttpApi.query()` or an RPC client, NOT `useState` 
 // GOOD — query atom with TTL
 export const usersAtom = ApiClient.query("users", "listUsers", {
   timeToLive: "5 minutes",
-})
+});
 
 // Parameterized query — function returning atom
 export const userAtom = (userId: UserId) =>
   ApiClient.query("users", "getUser", {
     urlParams: { user_id: userId },
     timeToLive: "3 minutes",
-  })
+  });
 
 // BAD — manual fetch with useState/useEffect
-const [users, setUsers] = useState([])
-const [loading, setLoading] = useState(true)
+const [users, setUsers] = useState([]);
+const [loading, setLoading] = useState(true);
 useEffect(() => {
-  fetch("/api/users").then(res => res.json()).then(setUsers).finally(() => setLoading(false))
-}, [])
+  fetch("/api/users")
+    .then((res) => res.json())
+    .then(setUsers)
+    .finally(() => setLoading(false));
+}, []);
 ```
 
 ## 3. Mutation Atoms for Write Operations
@@ -96,13 +96,13 @@ Mutations should use `AtomHttpApi.mutation()`.
 
 ```typescript
 // GOOD
-export const createUserMutation = ApiClient.mutation("users", "createUser")
-export const deleteUserMutation = ApiClient.mutation("users", "deleteUser")
+export const createUserMutation = ApiClient.mutation("users", "createUser");
+export const deleteUserMutation = ApiClient.mutation("users", "deleteUser");
 
 // BAD — manual fetch POST
 const handleCreate = async () => {
-  const res = await fetch("/api/users", { method: "POST", body: JSON.stringify(data) })
-}
+  const res = await fetch("/api/users", { method: "POST", body: JSON.stringify(data) });
+};
 ```
 
 ## 4. Consuming Queries — useAtomValue + Result.builder
@@ -168,8 +168,8 @@ When you only need the mutate function without tracking result state:
 
 ```typescript
 // GOOD — multiple mutations, no state tracking needed
-const setCreate = useAtomSet(createMutation, { mode: "promise" })
-const setUpdate = useAtomSet(updateMutation, { mode: "promise" })
+const setCreate = useAtomSet(createMutation, { mode: "promise" });
+const setUpdate = useAtomSet(updateMutation, { mode: "promise" });
 ```
 
 ## 7. Cache Invalidation — useAtomRefresh
@@ -178,19 +178,19 @@ Invalidate query caches after mutations with `useAtomRefresh`. NOT manual refetc
 
 ```typescript
 // GOOD
-const refreshUsers = useAtomRefresh(usersAtom)
+const refreshUsers = useAtomRefresh(usersAtom);
 
 const handleCreate = async () => {
-  await mutate({ payload })
-  refreshUsers() // Invalidate and refetch
-}
+  await mutate({ payload });
+  refreshUsers(); // Invalidate and refetch
+};
 
 // BAD — manual refetch state
-const [refetchKey, setRefetchKey] = useState(0)
+const [refetchKey, setRefetchKey] = useState(0);
 const handleCreate = async () => {
-  await createUser(data)
-  setRefetchKey(k => k + 1) // Force re-render
-}
+  await createUser(data);
+  setRefetchKey((k) => k + 1); // Force re-render
+};
 ```
 
 ## 8. Derived/Computed Atoms — Atom.make
@@ -200,20 +200,20 @@ Combine multiple atoms into derived state with `Atom.make()`:
 ```typescript
 // GOOD
 export const dashboardAtom = (appId: ApplicationId) => {
-  const usersAtom = chartDataAtom(appId, { metric: "users" })
-  const revenueAtom = chartDataAtom(appId, { metric: "revenue" })
+  const usersAtom = chartDataAtom(appId, { metric: "users" });
+  const revenueAtom = chartDataAtom(appId, { metric: "revenue" });
 
   return Atom.make((get) => {
     const combined = Result.all({
       users: get(usersAtom),
       revenue: get(revenueAtom),
-    })
+    });
     return Result.map(combined, ({ users, revenue }) => ({
       totalUsers: users.total,
       totalRevenue: revenue.total,
-    }))
-  })
-}
+    }));
+  });
+};
 ```
 
 ## 9. Dialog Pattern

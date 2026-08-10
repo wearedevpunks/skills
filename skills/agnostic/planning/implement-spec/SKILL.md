@@ -20,7 +20,7 @@ description: Implement an agent-ready spec folder through plan-derived worker wa
 - MUST use `$tdd`
 - MUST use `$codebase-design`
 - MUST use `$simplify`
-Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
+  Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
 
 ## Worker-wave responsibilities
 
