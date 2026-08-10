@@ -5,7 +5,9 @@ diff, branch, PR, or implementation artifact.
 
 ## Delegate
 
-Load `review-phase` only after this phase is selected.
+Mandatory step: after this phase is selected, load and call `review-phase`
+before routing or closing delivery. Preserve its findings-first, readonly
+posture even when tests pass.
 
 ## Rules
 

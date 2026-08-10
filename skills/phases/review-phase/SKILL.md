@@ -1,10 +1,9 @@
 ---
 name: review-phase
 description: >-
-  Run a findings-first readonly review phase with explicit entry gates,
-  delegated lenses, artifacts, and validation. Use for review-only goals,
-  manual reviews, PRs, merged branches, external edits, suspicious code, or the
-  mandatory review wrapper inside delivery-phase.
+  Findings-first readonly review with explicit entry gates, delegated lenses,
+  artifacts, and validation.
+disable-model-invocation: true
 ---
 
 # Review Phase
