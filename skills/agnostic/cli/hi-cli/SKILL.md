@@ -1,7 +1,7 @@
 ---
 name: hi-cli
 description: Operates the Harness Intelligence CLI (`hi`, alias `hint`) through init, scaffold, drift, settings, update, tool, report, upgrade, operator-skill, and post-command flows. Use when a user runs or asks about `hi`, `hint`, or generated `.devpunks/` work.
-metadata: {"Harness Intelligence":{"entrypoint":true}}
+metadata: { "Harness Intelligence": { "entrypoint": true } }
 ---
 
 # hi-cli

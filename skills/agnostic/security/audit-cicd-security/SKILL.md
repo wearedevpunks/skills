@@ -6,17 +6,20 @@ description: Audit repository CI/CD pipelines for security risks when explicitly
 # Audit CI/CD Security
 
 ## Operating mode
+
 - Read-only audit. No file edits, no pipeline runs, no secret retrieval/decode, no publish/deploy, no remote settings changes.
 - Do not execute contributor-controlled scripts or config.
 - Proposed patches are required in findings; applying confirmed Critical/High fixes requires explicit approval.
 - Remote actions (runs/deploys/publishes/releases/secret changes/settings) require separate approval.
 
 ## Discovery scope
+
 - Inspect all CI/CD-relevant files and transitive includes/templates/components/actions/plugins/orbs/tasks and all invoked scripts reached by workflow references.
 - If an include/component is unavailable or remote, mark it as `unknown` and keep findings `unknown`.
 - Never execute contributor-controlled code during discovery.
 
 ## Threat model
+
 - Attacker controls fork/branch content, metadata, refs, and submitted inputs.
 - Caches, artifacts, and workspaces are transfer mechanisms, not trust boundaries.
 - Any lower-to-higher trust object transfer is untrusted until producer identity, provenance, and integrity are verified.
@@ -26,6 +29,7 @@ description: Audit repository CI/CD pipelines for security risks when explicitly
 - Mutable third-party refs are a confirmed supply-chain weakness, with severity/exploitability tied to actual execution privilege and controls.
 
 ## Required output
+
 - Verdict exactly one of:
   - `SAFE AGAINST THIS THREAT MODEL`
   - `CONDITIONALLY SAFE`
@@ -49,10 +53,13 @@ description: Audit repository CI/CD pipelines for security risks when explicitly
 - Do not mark unknown as confirmed.
 
 ## Remediation validation
+
 - Use non-executing syntax/static parser checks only.
 - Do not run repository-controlled scripts, builds, tests, or package commands unless user separately authorizes execution after review of the proposed code path.
 
 ## Provider routing
+
 Load full matching refs.
+
 - If provider is unknown or unsupported, now and without pausing, web-search official docs for trusted triggers/forks, secrets/tokens, transfer objects, components, runners, and deployment gates.
 - Continue with provider-neutral logic and classify only provider-confirmed behavior as confirmed.

@@ -11,11 +11,11 @@ Pulumi is a tool for creating and managing cloud infrastructure: virtual machine
 
 Level 1 is `pulumi do`, a CLI for direct CRUD against any provider, with no project files or programming language. Level 2 is a Pulumi project in Python, TypeScript, Go, C#, or Java, used once the work involves multiple related resources, loops or conditionals, reusable abstractions, or environment-specific variants. Level 3 layers Pulumi Cloud onto a project for ESC credentials and configuration, policy, hosted execution, drift detection, schedules, and audit.
 
-| Level | Surface | When to use |
-|-------|---------|-------------|
-| 1 | `pulumi do` | Single resource or multi-vendor bootstrapping |
-| 2 | Pulumi project (Python, TS, Go, C#, Java) | Multiple resources, abstractions, environments |
-| 3 | ESC, policy, deployments, drift, schedules | Governance, secrets, scheduled and hosted runs |
+| Level | Surface                                    | When to use                                    |
+| ----- | ------------------------------------------ | ---------------------------------------------- |
+| 1     | `pulumi do`                                | Single resource or multi-vendor bootstrapping  |
+| 2     | Pulumi project (Python, TS, Go, C#, Java)  | Multiple resources, abstractions, environments |
+| 3     | ESC, policy, deployments, drift, schedules | Governance, secrets, scheduled and hosted runs |
 
 When the directory has no existing Pulumi project, a user asking to create a single bucket is a Level 1 task; do not scaffold a new project for it. A request to provision a VPC with subnets and a Kubernetes cluster is Level 2 from the start. A request for nightly drift detection on an existing stack is Level 3.
 
@@ -127,9 +127,9 @@ By default, `create`, `read`, and `patch` each write one JSON object to stdout f
 
 ```json
 {
-  "id":     "my-data",
+  "id": "my-data",
   "bucket": "my-data",
-  "arn":    "arn:aws:s3:::my-data"
+  "arn": "arn:aws:s3:::my-data"
 }
 ```
 
@@ -276,14 +276,14 @@ When you are uncertain about a CLI flag, command shape, or resource property, lo
 
 When the work moves into territory another skill covers in depth, hand off to that skill rather than reinvent its content.
 
-| Skill | Load when |
-|---|---|
-| `pulumi-best-practices` | Writing any non-trivial Level 2 program |
-| `pulumi-component` | Packaging or consuming `ComponentResource` abstractions |
-| `pulumi-esc` | Defining ESC environments, OIDC trust policies, or rotation |
-| `pulumi-automation-api` | Embedding Pulumi inside another program (IDP, custom CI) |
-| `provider-upgrade` | Upgrading a provider package version in a stack without unintended changes |
-| `package-usage` | Auditing which stacks across the org use a package and at what versions |
-| `pulumi-terraform-to-pulumi`, `pulumi-cdk-to-pulumi`, `cloudformation-to-pulumi`, `pulumi-arm-to-pulumi` | Migrating from those tools |
+| Skill                                                                                                    | Load when                                                                  |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `pulumi-best-practices`                                                                                  | Writing any non-trivial Level 2 program                                    |
+| `pulumi-component`                                                                                       | Packaging or consuming `ComponentResource` abstractions                    |
+| `pulumi-esc`                                                                                             | Defining ESC environments, OIDC trust policies, or rotation                |
+| `pulumi-automation-api`                                                                                  | Embedding Pulumi inside another program (IDP, custom CI)                   |
+| `provider-upgrade`                                                                                       | Upgrading a provider package version in a stack without unintended changes |
+| `package-usage`                                                                                          | Auditing which stacks across the org use a package and at what versions    |
+| `pulumi-terraform-to-pulumi`, `pulumi-cdk-to-pulumi`, `cloudformation-to-pulumi`, `pulumi-arm-to-pulumi` | Migrating from those tools                                                 |
 
 An agent only sees the skills the user installed, so a referenced skill may not be present. `pulumi-best-practices`, `pulumi-component`, `pulumi-esc`, `pulumi-automation-api`, `provider-upgrade`, and `package-usage` ship in the same `pulumi` plugin as this skill, so they are available whenever this one is. The migration skills install separately through the `pulumi-migration` plugin and may be absent. When a referenced skill is available, load it. When it is not, do not stall or treat the gap as an error: continue with the guidance in this skill and the docs at https://www.pulumi.com/docs, and tell the user which skill or plugin covers the work in depth.

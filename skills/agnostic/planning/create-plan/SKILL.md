@@ -64,11 +64,11 @@ Create a plan first. Never implement code in this skill.
    a disjoint write scope in the same wave. Use a one-task wave only when
    dependencies or ownership leave one task unblocked.
 10. Normalize every task with stable ids, `depends_on`, `location`,
-   `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
-   `files edited/created`, owning-story backlog references, `assigned_skills`,
-   `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
-   `codebase_design_notes`, `review_mode`, `runtime_validation`,
-   `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
+    `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
+    `files edited/created`, owning-story backlog references, `assigned_skills`,
+    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
+    `codebase_design_notes`, `review_mode`, `runtime_validation`,
+    `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
 11. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
 12. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
 13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.

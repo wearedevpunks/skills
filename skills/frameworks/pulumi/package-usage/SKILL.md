@@ -18,6 +18,7 @@ You must include the `orgLogin` parameter with the user's organization name. The
 Replace `{orgName}` with the org name from context, `PULUMI_ORG`, or ask the user.
 
 Response fields:
+
 - `packageName`: The queried package
 - `stacks`: Array of `{stackName, projectName, version, lastUpdate}`
 - `totalStacks`: Total count

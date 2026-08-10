@@ -1,6 +1,7 @@
 # Bitbucket Pipelines Reference
 
 ## Audit semantics
+
 - Forked-repository PRs do not trigger Pipelines.
 - PR pipelines can run destination-merged content in addition to branch pipelines, increasing execution surface.
 - Secured variables are masked, but output variables and shared variables flow in clear text.
@@ -10,6 +11,7 @@
 - Premium deployment permissions should gate production-like promotion.
 
 ## Remote settings to verify
+
 - Start-condition and fork-PR toggles.
 - Variable and secret scope (workspace, repo, deployment) and override ordering.
 - Child pipeline/output variable usage and inheritance model.
@@ -19,6 +21,7 @@
 - Cache and artifact retention/visibility.
 
 ## Official sources (verified 2026-07-30)
+
 - https://support.atlassian.com/bitbucket-cloud/docs/pipeline-start-conditions/
 - https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/
 - https://support.atlassian.com/bitbucket-cloud/docs/step-options/

@@ -58,4 +58,4 @@ _Each item needs an owner and resume trigger. Remove when empty._
 ## Decision Log
 
 | Decision | Evidence | Rationale |
-| --- | --- | --- |
+| -------- | -------- | --------- |

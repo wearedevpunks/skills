@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const read = (path) =>
-  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("prototype phase delegates construction to prototype", () => {
   const phase = read("skills/phases/prototype-phase/SKILL.md");
@@ -77,12 +76,8 @@ test("finder implicit invocation is consistent", () => {
 test("wayfinder and finder expose a resumable decision lifecycle", () => {
   const primitive = read("skills/agnostic/planning/wayfinder/SKILL.md");
   const phase = read("skills/phases/finder-phase/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
+  const frontier = read("skills/phases/finder-phase/references/frontier-lifecycle.md");
+  const convergence = read("skills/phases/finder-phase/references/convergence.md");
   const all = `${phase}\n${frontier}\n${convergence}`;
   assert.match(phase, /destination/i);
   assert.match(phase, /chart mode/i);
@@ -102,23 +97,16 @@ test("wayfinder and finder expose a resumable decision lifecycle", () => {
 
 test("finder keeps fog broad until it graduates to a precise question", () => {
   const phase = read("skills/phases/finder-phase/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
+  const frontier = read("skills/phases/finder-phase/references/frontier-lifecycle.md");
   const all = `${phase}\n${frontier}`;
   assert.match(all, /fog.{0,160}frontier or uncertainty description/is);
   assert.match(all, /precise question.{0,160}(?:grilling|research|prototype)/is);
-  assert.doesNotMatch(
-    all,
-    /fog item graduates when it can be stated as a precise question now/i,
-  );
+  assert.doesNotMatch(all, /fog item graduates when it can be stated as a precise question now/i);
 });
 
 test("wayfinder separates capability placement from execution chronology", () => {
   const primitive = read("skills/agnostic/planning/wayfinder/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
+  const frontier = read("skills/phases/finder-phase/references/frontier-lifecycle.md");
   const all = `${primitive}\n${frontier}`;
   assert.match(all, /capability module/i);
   assert.match(all, /execution milestones.{0,160}blocker-derived chronology/is);
@@ -126,50 +114,29 @@ test("wayfinder separates capability placement from execution chronology", () =>
 });
 
 test("finder routes physical claim and resolution mutation through write-backlog", () => {
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
-  assert.match(
-    convergence,
-    /claim is a semantic output.{0,160}`write-backlog`/is,
-  );
-  assert.match(
-    convergence,
-    /resolution is a semantic output.{0,160}`write-backlog`/is,
-  );
+  const convergence = read("skills/phases/finder-phase/references/convergence.md");
+  assert.match(convergence, /claim is a semantic output.{0,160}`write-backlog`/is);
+  assert.match(convergence, /resolution is a semantic output.{0,160}`write-backlog`/is);
 });
 
 test("finder research dispatch requires durable report evidence", () => {
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
-  const research = read(
-    "skills/agnostic/research/parallel-research/SKILL.md",
-  );
-  assert.match(
-    convergence,
-    /`research` -> `parallel-research` in durable-report mode/i,
-  );
+  const convergence = read("skills/phases/finder-phase/references/convergence.md");
+  const research = read("skills/agnostic/research/parallel-research/SKILL.md");
+  assert.match(convergence, /`research` -> `parallel-research` in durable-report mode/i);
   assert.match(convergence, /immutable commit SHA and path/i);
   assert.match(research, /durable-report mode is mandatory/i);
   assert.match(research, /Every run writes one consolidated report\s+to the\s+project wiki/is);
 });
 
 test("research durable mode is mandatory", () => {
-  const research = read(
-    "skills/agnostic/research/parallel-research/SKILL.md",
-  );
+  const research = read("skills/agnostic/research/parallel-research/SKILL.md");
   assert.match(research, /durable-report mode is mandatory/i);
   assert.match(research, /findings must not remain response-only or context-only/i);
 });
 
 test("research and docs ingest preserve one primary-source report", () => {
-  const report = read(
-    "skills/agnostic/research/parallel-research/DURABLE-REPORT.md",
-  );
-  const ingest = read(
-    "skills/phases/docs-ingest-phase/references/learning-artifacts.md",
-  );
+  const report = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
+  const ingest = read("skills/phases/docs-ingest-phase/references/learning-artifacts.md");
   assert.match(report, /2-4 readonly lanes/i);
   assert.match(report, /coordinator or one designated consolidator/i);
   assert.match(report, /one consolidated report/i);
@@ -181,9 +148,7 @@ test("research and docs ingest preserve one primary-source report", () => {
 });
 
 test("research parent enforces one durable report writer", () => {
-  const research = read(
-    "skills/agnostic/research/parallel-research/SKILL.md",
-  );
+  const research = read("skills/agnostic/research/parallel-research/SKILL.md");
   assert.match(research, /lanes remain readonly/i);
   assert.match(
     research,
@@ -192,9 +157,7 @@ test("research parent enforces one durable report writer", () => {
 });
 
 test("parallel research durable retention commit does not trigger its skip rule", () => {
-  const research = read(
-    "skills/agnostic/research/parallel-research/SKILL.md",
-  );
+  const research = read("skills/agnostic/research/parallel-research/SKILL.md");
   assert.match(research, /skip.{0,200}source or code mutation/is);
   assert.match(research, /skip.{0,200}unrelated\s+writes/is);
   assert.match(research, /one retained durable-report commit/i);
@@ -221,9 +184,7 @@ test("planning artifact producers apply the reusable wait-what language contract
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
   const implementSpec = read("skills/agnostic/planning/implement-spec/SKILL.md");
-  const lifecycle = read(
-    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
-  );
+  const lifecycle = read("skills/agnostic/planning/implement-spec/references/lifecycle.md");
 
   assert.match(
     createSpec,
@@ -245,12 +206,8 @@ test("planning artifact producers apply the reusable wait-what language contract
 
 test("spec compiler emits agent-ready traceable specs or one atomic failure", () => {
   const skill = read("skills/agnostic/planning/create-spec/SKILL.md");
-  const readiness = read(
-    "skills/agnostic/planning/create-spec/references/readiness.md",
-  );
-  const template = read(
-    "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
-  );
+  const readiness = read("skills/agnostic/planning/create-spec/references/readiness.md");
+  const template = read("skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md");
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
   const delivery = read("skills/phases/delivery-phase/phases/spec.md");
   const all = `${skill}\n${readiness}\n${template}`;
@@ -297,12 +254,8 @@ test("agent-ready compiler output is sufficient for downstream delivery", () => 
 
 test("spec compiler records neutral compiler state without human approval", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
-  const template = read(
-    "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
-  );
-  const bookkeeping = read(
-    "skills/agnostic/planning/create-spec/references/wiki-bookkeeping.md",
-  );
+  const template = read("skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md");
+  const bookkeeping = read("skills/agnostic/planning/create-spec/references/wiki-bookkeeping.md");
   assert.match(template, /status: compiled/u);
   assert.match(template, /readiness: agent-ready/u);
   assert.match(bookkeeping, /Compiled/u);
@@ -312,12 +265,8 @@ test("spec compiler records neutral compiler state without human approval", () =
 
 test("create-plan produces worker ownership and wave fields", () => {
   const skill = read("skills/agnostic/planning/create-plan/SKILL.md");
-  const schema = read(
-    "skills/agnostic/planning/create-plan/references/plan-schema.md",
-  );
-  const reviewer = read(
-    "skills/agnostic/planning/create-plan/references/planner-task-graph.md",
-  );
+  const schema = read("skills/agnostic/planning/create-plan/references/plan-schema.md");
+  const reviewer = read("skills/agnostic/planning/create-plan/references/planner-task-graph.md");
   assert.match(skill, /`owned_paths`/u);
   assert.match(skill, /`wave_boundary`/u);
   assert.match(schema, /Every task must include:[\s\S]*`owned_paths`[\s\S]*`wave_boundary`/u);
@@ -329,12 +278,8 @@ test("create-plan produces worker ownership and wave fields", () => {
 
 test("implement-spec executes plan-derived worker waves", () => {
   const skill = read("skills/agnostic/planning/implement-spec/SKILL.md");
-  const lifecycle = read(
-    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
-  );
-  const parallel = read(
-    "skills/agnostic/planning/implement-spec/references/parallel.md",
-  );
+  const lifecycle = read("skills/agnostic/planning/implement-spec/references/lifecycle.md");
+  const parallel = read("skills/agnostic/planning/implement-spec/references/parallel.md");
   const notes = read(
     "skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md",
   );
@@ -361,9 +306,7 @@ test("delivery gates backlog projection between spec and planning", () => {
   const delivery = read("skills/phases/delivery-phase/SKILL.md");
   const router = read("skills/phases/delivery-phase/phases/router.md");
   const backlog = read("skills/phases/delivery-phase/phases/backlog.md");
-  const artifactState = read(
-    "skills/phases/delivery-phase/references/artifact-state.md",
-  );
+  const artifactState = read("skills/phases/delivery-phase/references/artifact-state.md");
   assert.match(router, /spec\.md[\s\S]*backlog\.md[\s\S]*plan\.md/u);
   assert.match(router, /projection is missing or stale/i);
   assert.match(backlog, /verified stable blob URL/u);
@@ -377,13 +320,9 @@ test("delivery gates backlog projection between spec and planning", () => {
 
 test("planning persists plan-derived worker waves for resume", () => {
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
-  const schema = read(
-    "skills/agnostic/planning/create-plan/references/plan-schema.md",
-  );
+  const schema = read("skills/agnostic/planning/create-plan/references/plan-schema.md");
   const phase = read("skills/phases/delivery-phase/phases/plan.md");
-  const artifactState = read(
-    "skills/phases/delivery-phase/references/artifact-state.md",
-  );
+  const artifactState = read("skills/phases/delivery-phase/references/artifact-state.md");
   for (const document of [createPlan, schema, phase, artifactState]) {
     assert.match(document, /currently unblocked task/iu);
     assert.match(document, /disjoint/iu);
@@ -395,12 +334,8 @@ test("planning persists plan-derived worker waves for resume", () => {
 
 test("create-plan syncs backlog only for eligible in-scope spec projections", () => {
   const skill = read("skills/agnostic/planning/create-plan/SKILL.md");
-  const backlog = read(
-    "skills/agnostic/planning/create-plan/references/backlog-sync.md",
-  );
-  const stop = read(
-    "skills/agnostic/planning/create-plan/references/stop-conditions.md",
-  );
+  const backlog = read("skills/agnostic/planning/create-plan/references/backlog-sync.md");
+  const stop = read("skills/agnostic/planning/create-plan/references/stop-conditions.md");
   const all = `${skill}\n${backlog}\n${stop}`;
 
   assert.match(all, /agent-ready `SPEC\.md`[\s\S]*verified stable blob URL/iu);
@@ -413,15 +348,9 @@ test("create-plan syncs backlog only for eligible in-scope spec projections", ()
 
 test("spec compiler serializes dependency and branch-base decisions", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
-  const readiness = read(
-    "skills/agnostic/planning/create-spec/references/readiness.md",
-  );
-  const quality = read(
-    "skills/agnostic/planning/create-spec/references/spec-quality-bar.md",
-  );
-  const template = read(
-    "skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md",
-  );
+  const readiness = read("skills/agnostic/planning/create-spec/references/readiness.md");
+  const quality = read("skills/agnostic/planning/create-spec/references/spec-quality-bar.md");
+  const template = read("skills/agnostic/planning/create-spec/assets/SPEC-TEMPLATE.md");
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
 
   for (const document of [createSpec, readiness, quality, template]) {
@@ -434,19 +363,12 @@ test("spec compiler serializes dependency and branch-base decisions", () => {
   assert.match(template, /Not applicable/u);
   assert.match(createPlan, /Preserve `No Stack Required` or `Ready`/u);
   assert.match(createPlan, /`Blocked` is invalid agent-ready input/u);
-  assert.match(
-    createPlan,
-    /If `Branch\/Base Intent` is not `Not applicable`/u,
-  );
+  assert.match(createPlan, /If `Branch\/Base Intent` is not `Not applicable`/u);
 });
 
 test("spec compiler rejects incomplete dependency and story coverage", () => {
-  const readiness = read(
-    "skills/agnostic/planning/create-spec/references/readiness.md",
-  );
-  const fixtures = JSON.parse(
-    read("tests/fixtures/create-spec-readiness.json"),
-  );
+  const readiness = read("skills/agnostic/planning/create-spec/references/readiness.md");
+  const fixtures = JSON.parse(read("tests/fixtures/create-spec-readiness.json"));
   assert.equal(fixtures.invalid.length, 3);
   assert.match(readiness, /dependency readiness/i);
   assert.match(readiness, /every `US-###` has at least one `AC-###`/i);
@@ -460,7 +382,10 @@ test("spec compiler returns remotely verified blob authority before backlog proj
     assert.match(document, /push or explicitly retain the spec commit/iu);
     assert.match(document, /verify the retained ref contains the spec commit/iu);
     assert.match(document, /construct and verify a stable blob URL\s+before `write-backlog`/iu);
-    assert.doesNotMatch(document, /commit SHA plus repository-relative path, or a stable blob URL/u);
+    assert.doesNotMatch(
+      document,
+      /commit SHA plus repository-relative path, or a stable blob URL/u,
+    );
   }
   const backlog = read("skills/agnostic/requirements/write-backlog/SKILL.md");
   assert.match(backlog, /verified stable blob URL/u);

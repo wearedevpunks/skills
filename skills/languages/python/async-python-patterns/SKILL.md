@@ -22,13 +22,13 @@ Comprehensive guidance for implementing asynchronous Python applications using a
 
 Before adopting async, consider whether it's the right choice for your use case.
 
-| Use Case | Recommended Approach |
-|----------|---------------------|
-| Many concurrent network/DB calls | `asyncio` |
-| CPU-bound computation | `multiprocessing` or thread pool |
-| Mixed I/O + CPU | Offload CPU work with `asyncio.to_thread()` |
-| Simple scripts, few connections | Sync (simpler, easier to debug) |
-| Web APIs with high concurrency | Async frameworks (FastAPI, aiohttp) |
+| Use Case                         | Recommended Approach                        |
+| -------------------------------- | ------------------------------------------- |
+| Many concurrent network/DB calls | `asyncio`                                   |
+| CPU-bound computation            | `multiprocessing` or thread pool            |
+| Mixed I/O + CPU                  | Offload CPU work with `asyncio.to_thread()` |
+| Simple scripts, few connections  | Sync (simpler, easier to debug)             |
+| Web APIs with high concurrency   | Async frameworks (FastAPI, aiohttp)         |
 
 **Key Rule:** Stay fully sync or fully async within a call path. Mixing creates hidden blocking and complexity.
 

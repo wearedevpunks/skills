@@ -15,18 +15,18 @@ Annotate spans with entity IDs and key business values. Don't over-annotate with
 
 ```typescript
 // GOOD - essential IDs and context
-yield* Effect.annotateCurrentSpan("applicationId", applicationId)
-yield* Effect.annotateCurrentSpan("paywallId", paywallId)
-yield* Effect.annotateCurrentSpan("action", "create")
+yield * Effect.annotateCurrentSpan("applicationId", applicationId);
+yield * Effect.annotateCurrentSpan("paywallId", paywallId);
+yield * Effect.annotateCurrentSpan("action", "create");
 
 // BAD - over-annotating
-yield* Effect.annotateCurrentSpan("step", "1")
-yield* Effect.annotateCurrentSpan("loopIndex", i)
-yield* Effect.annotateCurrentSpan("intermediateResult", JSON.stringify(result))
+yield * Effect.annotateCurrentSpan("step", "1");
+yield * Effect.annotateCurrentSpan("loopIndex", i);
+yield * Effect.annotateCurrentSpan("intermediateResult", JSON.stringify(result));
 
 // BAD - sensitive data
-yield* Effect.annotateCurrentSpan("apiKey", apiKey)
-yield* Effect.annotateCurrentSpan("userEmail", email)
+yield * Effect.annotateCurrentSpan("apiKey", apiKey);
+yield * Effect.annotateCurrentSpan("userEmail", email);
 ```
 
 ### What to Annotate
@@ -49,13 +49,12 @@ Use `Effect.log` / `Effect.logInfo` / `Effect.logWarning` / `Effect.logError` wi
 
 ```typescript
 // GOOD
-yield* Effect.logInfo("Processing payment").pipe(
-  Effect.annotateLogs({ orderId, amount, provider })
-)
+yield *
+  Effect.logInfo("Processing payment").pipe(Effect.annotateLogs({ orderId, amount, provider }));
 
 // BAD
-console.log(`Processing payment for order ${orderId}`)
-console.log("Payment result:", result)
+console.log(`Processing payment for order ${orderId}`);
+console.log("Payment result:", result);
 ```
 
 ## 4. Error Spans
@@ -68,10 +67,10 @@ new ResourceNotFound({
   message: `No such paywall: '${paywallId}'`,
   resource_type: "paywall",
   resource_id: String(paywallId),
-})
+});
 
 // BAD
-new ResourceNotFound({ message: "Not found" })
+new ResourceNotFound({ message: "Not found" });
 ```
 
 ## 5. Effect.withSpan for Non-fn Contexts
@@ -80,9 +79,11 @@ When `Effect.fn` isn't appropriate (inline pipelines, one-off compositions), use
 
 ```typescript
 // GOOD
-const result = yield* someEffect.pipe(
-  Effect.withSpan("OrgResolver.fromProject", {
-    attributes: { projectId, scope }
-  })
-)
+const result =
+  yield *
+  someEffect.pipe(
+    Effect.withSpan("OrgResolver.fromProject", {
+      attributes: { projectId, scope },
+    }),
+  );
 ```

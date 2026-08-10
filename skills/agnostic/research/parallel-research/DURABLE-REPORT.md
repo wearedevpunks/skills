@@ -23,7 +23,7 @@ written to the project wiki before the run can complete.
    - trusted claims, with a primary source for every retained factual claim
    - uncertainty and conflicts
    - selected next route
-   The response points to this report and does not duplicate its synthesis.
+     The response points to this report and does not duplicate its synthesis.
 5. Commit the report and any required route metadata in one commit, then push
    or explicitly retain `research/<slug>` through a durable repository-approved
    mechanism.

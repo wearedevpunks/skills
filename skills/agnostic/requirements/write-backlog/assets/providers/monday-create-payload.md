@@ -155,10 +155,10 @@ Tool:
 {
   "tool": "@monday-com.create_item",
   "arguments": {
-      "boardId": 123456789,
-      "groupId": "topics",
-      "name": "Submission lifecycle management",
-      "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nScope: ...\\n\\nCross-story constraints: ...\\n\\nImmutable spec: <blob-url>\",\"kind\":{\"label\":\"epic\"}}"
+    "boardId": 123456789,
+    "groupId": "topics",
+    "name": "Submission lifecycle management",
+    "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nScope: ...\\n\\nCross-story constraints: ...\\n\\nImmutable spec: <blob-url>\",\"kind\":{\"label\":\"epic\"}}"
   }
 }
 ```
@@ -184,10 +184,10 @@ Tool:
 {
   "tool": "@monday-com.create_item",
   "arguments": {
-      "boardId": 123456789,
-      "parentItemId": 987654321,
-      "name": "Lead reassigns ownership to another reviewer",
-      "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nSource stories: US-001\\n\\nAcceptance criteria: AC-001\\n\\nDemonstration: ...\\n\\nAccepted artifacts: ...\",\"kind\":{\"label\":\"story\"}}"
+    "boardId": 123456789,
+    "parentItemId": 987654321,
+    "name": "Lead reassigns ownership to another reviewer",
+    "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nSource stories: US-001\\n\\nAcceptance criteria: AC-001\\n\\nDemonstration: ...\\n\\nAccepted artifacts: ...\",\"kind\":{\"label\":\"story\"}}"
   }
 }
 ```

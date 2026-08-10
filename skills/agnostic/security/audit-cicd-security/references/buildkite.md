@@ -1,6 +1,7 @@
 # Buildkite Reference
 
 ## Audit semantics
+
 - PR trigger mode and checkout mode are controlled in Buildkite settings, not only YAML.
 - Branch filters do not prevent PR builds; review UI and webhook gate configuration.
 - Secrets are cluster-scoped and available based on agent policy; a shared agent can receive broader credentials than expected.
@@ -10,6 +11,7 @@
 - `allowed_teams` limits who can unblock gated steps.
 
 ## Remote settings to verify
+
 - SCM integration and PR/branch gating model.
 - Trigger settings, checkout mode, and branch/PR controls.
 - Cluster/agent allowlist, policy, and isolation.
@@ -19,6 +21,7 @@
 - Deploy/publish job gating and team unblock restrictions.
 
 ## Official sources (verified 2026-07-30)
+
 - https://buildkite.com/docs/pipelines/source-control/github
 - https://buildkite.com/docs/pipelines/security/secrets/buildkite-secrets
 - https://buildkite.com/docs/pipelines/best-practices/plugin-management

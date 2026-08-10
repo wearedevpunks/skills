@@ -181,7 +181,7 @@ This section is a user handoff checklist, not an agent completion tracker. Deriv
 Use exactly this table shape:
 
 | Area | Check | How to perform | Expected result |
-|------|-------|----------------|-----------------|
+| ---- | ----- | -------------- | --------------- |
 
 Rules:
 

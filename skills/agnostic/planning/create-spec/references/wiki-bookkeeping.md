@@ -31,6 +31,7 @@ When using `apps/wiki/specs`:
 
 ```md
 ## [YYYY-MM-DD] spec | <spec title>
+
 - Created spec: [[specs/<domain>/<folder-name>/SPEC]]
 - Domain: <domain>
 - Status: Compiled
