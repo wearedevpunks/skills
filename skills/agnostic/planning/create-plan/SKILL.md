@@ -34,10 +34,13 @@ Create a plan first. Never implement code in this skill.
 4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
 5. After a whole response set is processed, emit any synthesis checkpoint required by `references/grill-ambiguity.md`.
 6. After `$grilling` completes, continue to plan synthesis; backlog eligibility
-   remains step 12.
+   remains step 13.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
+9. Locate scoped `AGENTS.md` files for every planned task path. Read each
+   applicable `Skill | What / when` table, select rows whose exact `What / when`
+   triggers match the task, and open each selected skill's complete `SKILL.md`
+   before finalizing task design.
 10. For every implementation task, convert applicable scoped or named skill
     obligations into `implementation_skill_guidance`; preserve `assigned_skills`
     as planning provenance.
@@ -46,7 +49,10 @@ Create a plan first. Never implement code in this skill.
 13. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
     backlog sync is eligible and in scope; otherwise record an explicit skip
     reason and continue plan completion.
-14. Read `references/stop-conditions.md` and stop exactly there.
+14. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
+    only when its language contract passes without changing the resolved
+    decision ledger.
+15. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -59,7 +65,9 @@ Create a plan first. Never implement code in this skill.
 5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
-8. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
+8. Assign each task the deduplicated union of skills whose exact `What / when`
+   triggers match in every touched scope, merging all touched scopes for
+   cross-directory tasks.
 9. Build plan-derived worker waves: place every currently unblocked task with
    a disjoint write scope in the same wave. Use a one-task wave only when
    dependencies or ownership leave one task unblocked.

@@ -16,16 +16,22 @@ Before finalizing task boundaries:
 
 1. List every concrete `location` each task may touch.
 2. For each location, inspect the `AGENTS.md` chain from repo root to the nearest scoped file.
-3. Extract every `Primary skills here` entry from applicable scoped files.
-4. Verify each named skill exists in `.agents/skills/` or an installed skill source visible to the agent.
-5. Load the relevant skill instructions before finalizing the task's boundary, validation, RED target, and review mode.
-6. Add the merged, deduplicated list to the task as `assigned_skills`.
+3. Read every applicable `Skill | What / when` table and select only rows whose
+   exact `What / when` trigger matches the task.
+4. Verify each selected skill exists in `.agents/skills/` or an installed skill
+   source visible to the agent.
+5. Open each selected skill's complete `SKILL.md` before finalizing the task's
+   boundary, validation, RED target, and review mode.
+6. Add the merged, deduplicated union from every touched scope to the task as
+   `assigned_skills`.
 7. For every implementation-applicable item, add exactly one
    `implementation_skill_guidance` entry with the exact skill identity and its
    concise applicable behavior. Planning-only items remain provenance without a
    guidance entry.
 
-If a task spans multiple scopes, include all required skills from all touched scopes. If a scope names a missing skill, keep the task planned but record the missing skill in risks and unresolved questions.
+If a task spans multiple scopes, include all selected skills from all touched
+scopes. If a matching row names a missing skill, keep the task planned but
+record the missing skill in risks and unresolved questions.
 
 `assigned_skills` remains planning provenance;
 `implementation_skill_guidance` is the executor handoff. Do not design the task
@@ -44,7 +50,8 @@ Preserve `$swarm-planner` behavior:
 - validations per task
 - parallel execution waves
 - risks and mitigations
-- explicit `assigned_skills` per task from scoped `AGENTS.md`, with task design shaped by those skills
+- explicit `assigned_skills` per task from exact scoped `What / when` trigger
+  matches, with task design shaped by those skills
 - complete one-to-one `implementation_skill_guidance` for every
   implementation-applicable assigned skill
 - a final `plan-reviewer` subagent review for missing deps, missing
