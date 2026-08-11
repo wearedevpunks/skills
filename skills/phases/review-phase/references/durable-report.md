@@ -89,26 +89,19 @@ The snapshot hash excludes only the report itself, navigation metadata, and the
 wiki log envelope. Navigation ordering does not affect freshness. The report and
 normalized target omit raw selected bytes.
 
-## Retention
+## Retention Evidence
 
-A complete local report enters `report_retention_pending` with no counter
-change. One designated writer:
+This reference defines retention evidence only. The router-selected retention
+gate owns execution. The outside-report retention envelope contains the report
+path, exact report SHA-256, report commit SHA, verified retained ref, and the
+commit's changed paths. Those fields are evidence, not additions to the
+immutable report.
 
-1. rejects a delivery ordinal greater than 3 without an authoritative pass or
-   counter change;
-2. confirms target and governing source hashes remain fresh;
-3. commits only the report, navigation, and wiki-log envelope;
-4. pushes or uses a repository-approved retained ref;
-5. verifies that the retained ref contains the report commit.
-
-Delivery uses its current delivery branch or another approved ref. Standalone
-uses deterministic `review/<review-scope-slug>-<snapshot12>` or another approved
-ref.
-
-Return report path, report SHA-256, report commit SHA, and verified retained ref
-outside the immutable report. A verified retained delivery report is the
-authoritative completed ordinal; only then reconcile the handoff `review_count`
-projection. Standalone retention changes no delivery counter.
+Delivery refs are the current delivery branch or another repository-approved
+ref. Standalone refs are
+`review/<review-scope-slug>-<snapshot12>` or another approved ref. Only a valid
+retained delivery report establishes an ordinal; standalone reports have no
+delivery-counter meaning.
 
 ## Valid Retained Pass
 
@@ -153,18 +146,6 @@ candidate independently before comparison.
 Recovery uses only unique or identical-reuse valid passes. Any same-run conflict
 blocks recovery from that run rather than choosing one candidate. Delivery
 projects the highest uniquely authoritative recovered ordinal.
-
-## Retention Failure
-
-- A retryable retention failure stays `report_retention_pending`, returns exact
-  evidence, and establishes no pass. While target and source hashes remain
-  fresh, reuse the local report without rerunning lenses.
-- A non-retryable contract or infrastructure failure enters `review_failed`
-  with exact evidence, no pass, and no counter change.
-- A malformed active retention candidate or `same_run_conflict` enters
-  `review_failed` with exact evidence, no new pass, and no counter change.
-- If target or source hash changes before retention, mark the local report stale
-  and return to `review_due` without consuming a pass.
 
 The review report is the frozen-snapshot handoff. After fix 3, the delivery
 handoff is final clean-state authority and links report 3, final changes,

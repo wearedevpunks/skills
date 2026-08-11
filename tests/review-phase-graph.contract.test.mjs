@@ -31,13 +31,22 @@ const read = (path) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 const reviewSkill = () => read("skills/phases/review-phase/SKILL.md");
-const reviewReference = () => read("skills/phases/review-phase/REFERENCE.md");
+const reviewRouter = () => read("skills/phases/review-phase/phases/router.md");
+const reviewPrepare = () =>
+  read("skills/phases/review-phase/phases/prepare-review.md");
+const reviewRun = () => read("skills/phases/review-phase/phases/run-review.md");
+const reviewRetain = () =>
+  read("skills/phases/review-phase/phases/retain-report.md");
+const reviewReturn = () =>
+  read("skills/phases/review-phase/phases/return-route.md");
 const reviewGraph = () =>
   read("skills/phases/review-phase/references/state-graph.md");
 const reviewTargets = () =>
   read("skills/phases/review-phase/references/targets.md");
 const reviewReport = () =>
   read("skills/phases/review-phase/references/durable-report.md");
+const reviewHandoff = () =>
+  read("skills/phases/review-phase/references/runtime-handoff.md");
 
 const cloneCandidate = (candidate) => ({
   ...candidate,
@@ -181,6 +190,11 @@ const standaloneRetainedPassFixture = () => retainedPassFixture("standalone");
 
 test("review phase is explicit-only, readonly, and ends after retained routing", () => {
   const skill = reviewSkill();
+  const router = reviewRouter();
+  const prepare = reviewPrepare();
+  const run = reviewRun();
+  const retain = reviewRetain();
+  const returnRoute = reviewReturn();
   const metadata = read("skills/phases/review-phase/agents/openai.yaml");
   const delivery = read("skills/phases/delivery-phase/SKILL.md");
   const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
@@ -203,12 +217,17 @@ test("review phase is explicit-only, readonly, and ends after retained routing",
   assert.match(handoff, /explicit_operator_invocation_required: true/u);
   assert.match(handoff, /review_invocation_skill: \$review-phase/u);
   assert.match(handoff, /`review_due` handoff leaves `review_run_id` unset/iu);
-  assert.match(skill, /explicit operator invocation.{0,100}valid\s+`review_due` context/isu);
-  assert.match(skill, /the invocation has\s+entered `review_running`/iu);
-  assert.match(skill, /reviewed target\s+remains readonly/iu);
-  assert.match(skill, /report, navigation,\s+and wiki-log retention envelope/iu);
-  assert.match(skill, /terminate.{0,100}without entering a\s+repair state/isu);
-  assert.match(skill, /does not plan work.{0,160}assign implementation\s+skills.{0,160}repair findings/isu);
+  assert.match(prepare, /explicit operator invocation/iu);
+  assert.match(prepare, /fresh `review_due` evidence/iu);
+  assert.match(router, /Fresh `review_running` predecessor evidence/iu);
+  assert.match(run, /reviewed target remains unchanged/iu);
+  assert.match(retain, /report, navigation, and\s+wiki-log envelope/iu);
+  assert.match(skill, /never enters a repair/iu);
+  assert.match(
+    run,
+    /plans no work.{0,100}assigns no implementation skills.{0,160}repairs no finding/isu,
+  );
+  assert.match(returnRoute, /delegates no delivery transition.{0,100}owns no repair/isu);
 });
 
 test("all model-facing root and delivery guidance preserves explicit review invocation", () => {
@@ -238,6 +257,56 @@ test("all model-facing root and delivery guidance preserves explicit review invo
     assert.doesNotMatch(document, /explicitly invoke `review-phase`/iu);
     assert.doesNotMatch(document, /delegate to `review-phase`/iu);
   }
+});
+
+test("review router exposes every runtime route class in deterministic precedence", () => {
+  const rows = [...reviewRouter().matchAll(/^\| (\d+) \| (.+) \| (.+) \|$/gmu)].map(
+    ([, priority, evidence, output]) => ({
+      priority: Number(priority),
+      evidence,
+      output: output.replace(/\[(`[^`]+`)\]\([^)]+\)/gu, "$1"),
+    }),
+  );
+
+  assert.deepEqual(
+    rows.map(({ priority }) => priority),
+    Array.from({ length: 12 }, (_, index) => index + 1),
+  );
+  assert.deepEqual(
+    rows.map(({ output }) => output),
+    [
+      "terminal `review_failed`",
+      "terminal `review_budget_exhausted`",
+      "checkpoint `retained_ref_approval_required`",
+      "blocked `review_state_conflict`",
+      "blocked `review_context_blocked`",
+      "blocked `review_not_due`",
+      "terminal `review_complete`",
+      "terminal `review_routed`",
+      "`return-route.md`",
+      "`retain-report.md`",
+      "`run-review.md`",
+      "`prepare-review.md`",
+    ],
+  );
+  assert.match(rows[0].evidence, /Unsupported target/iu);
+  assert.match(rows[8].evidence, /routing output is absent/iu);
+  assert.match(rows[11].evidence, /stale target\/source evidence/iu);
+});
+
+test("runtime handoff covers both storage modes and authoritative no-write outcomes", () => {
+  const handoff = reviewHandoff();
+  assert.match(handoff, /caller-provided delivery handoff/iu);
+  assert.match(handoff, /same `delivery_goal_identity`/iu);
+  assert.match(
+    handoff,
+    /<repo-root>\/.devpunks\/review-phase\/handoffs\/<review_lineage_id>\/<review_run_id>\.md/u,
+  );
+  assert.match(handoff, /Select the highest valid `attempt`/iu);
+  assert.match(handoff, /different valid records for the same attempt.{0,100}`review_state_conflict`/isu);
+  assert.match(handoff, /`review_budget_exhausted`[\s\S]*`review_not_due`[\s\S]*pre-run `review_failed`[\s\S]*pre-storage `review_context_blocked`[\s\S]*`review_state_conflict`/iu);
+  assert.match(handoff, /rediscovery of an identical already-recorded terminal/iu);
+  assert.match(handoff, /Once storage and\s+run identity are valid, a new stateful failure or blocker uses the normal record\s+schema/iu);
 });
 
 test("bounds and target validation precede delivery budget evaluation", () => {
@@ -311,26 +380,26 @@ test("autoreview keeps ordinary closeout behavior and one bounded review-phase c
 });
 
 test("one invocation freezes one snapshot and evaluates all lenses in parallel", () => {
-  const reference = reviewReference();
-  assert.match(reference, /exactly one frozen bounded snapshot/iu);
-  assert.match(reference, /run `autoreview` exactly once/iu);
-  assert.match(reference, /parent verifies.{0,100}advisory candidates/isu);
-  assert.match(reference, /independent lenses.{0,100}in parallel/isu);
-  assert.match(reference, /Standards and skill adherence.{0,100}architecture.{0,100}simplify.{0,100}Spec/isu);
-  assert.match(reference, /presentation and triage order\s+only/iu);
-  assert.match(reference, /Standards.{0,80}Spec.{0,80}distinct/isu);
+  const run = reviewRun();
+  assert.match(run, /exactly one frozen bounded snapshot/iu);
+  assert.match(run, /Invoke `autoreview` exactly once/iu);
+  assert.match(run, /Parent-verify every advisory/iu);
+  assert.match(run, /independent\s+bounded work, in parallel/iu);
+  assert.match(run, /Standards[\s\S]*skill adherence[\s\S]*architecture[\s\S]*simplify[\s\S]*Spec/iu);
+  assert.match(run, /report and triage order only/iu);
+  assert.match(run, /Standards and Spec remain distinct/iu);
 });
 
 test("review validation is narrow and reports missing RED GREEN evidence", () => {
-  const reference = reviewReference();
-  assert.match(reference, /smallest safe readonly validation/iu);
-  assert.match(reference, /broader checks.{0,100}accepted spec\s+or plan explicitly requires/isu);
-  assert.match(reference, /missing required RED\/GREEN evidence.{0,100}finding/isu);
-  assert.match(reference, /review.{0,80}never creates that evidence/isu);
-  assert.match(reference, /no-write mode is proven/iu);
-  assert.match(reference, /may\s+write.{0,160}disposable checkout or snapshot/isu);
-  assert.match(reference, /recompute and compare the frozen-target hash after validation/iu);
-  assert.match(reference, /mismatch.{0,120}`review_due`.{0,120}consumes no pass/isu);
+  const run = reviewRun();
+  assert.match(run, /smallest safe readonly validation/iu);
+  assert.match(run, /Broader checks require explicit accepted spec\s+or plan authority/iu);
+  assert.match(run, /missing required RED\/GREEN evidence as a finding/iu);
+  assert.match(run, /does not create it/iu);
+  assert.match(run, /Proven\s+no-write commands/iu);
+  assert.match(run, /may write.{0,160}disposable\s+checkout or snapshot/isu);
+  assert.match(run, /Record the frozen-target hash before and after every validation/iu);
+  assert.match(run, /before\/after target-hash mismatch.{0,160}consumes no pass/isu);
   assert.deepEqual(
     assessReadonlyValidation({
       beforeHash: "a".repeat(64),
@@ -858,19 +927,21 @@ test("durable report schema and retention output are complete", () => {
   assert.match(report, /`lens_outcomes` has exactly `standards`.{0,180}`spec`/isu);
   assert.match(report, /Detached objects, sidecars.{0,100}never trusted/isu);
   assert.match(report, /report SHA-256.{0,100}report commit SHA.{0,100}verified retained ref/isu);
-  assert.match(report, /outside the immutable report/iu);
+  assert.match(report, /outside-report retention envelope/iu);
+  assert.match(report, /not additions to the\s+immutable report/iu);
 });
 
 test("retention is envelope-only, freshness-aware, and authoritative", () => {
   const report = reviewReport();
+  const retain = reviewRetain();
   const graph = reviewGraph();
-  assert.match(report, /commits only the report, navigation, and wiki-log envelope/iu);
-  assert.match(report, /verifies that the retained ref contains the report commit/iu);
-  assert.match(report, /retryable retention failure.{0,100}`report_retention_pending`/isu);
-  assert.match(report, /reuse.{0,80}local report.{0,80}without rerunning lenses/isu);
-  assert.match(report, /target or source hash changes.{0,100}`review_due`/isu);
-  assert.match(report, /verified retained delivery report.{0,100}authoritative completed ordinal/isu);
-  assert.match(report, /standalone.{0,80}changes no delivery counter/isu);
+  assert.match(retain, /commit only\s+the report and allowed envelope/iu);
+  assert.match(retain, /retained ref contains the exact report commit/iu);
+  assert.match(retain, /`report_retention_pending`.{0,100}retention failed retryably/isu);
+  assert.match(retain, /reuses the same fresh local report.{0,100}never reruns\s+review lenses/isu);
+  assert.match(retain, /`review_due`.{0,100}target, bounds, or source freshness changed/isu);
+  assert.match(retain, /unique valid retained delivery report establishes its ordinal/iu);
+  assert.match(retain, /Standalone retention changes no delivery counter/iu);
   assert.match(report, /valid retained pass only when every\s+predicate holds/iu);
   assert.match(report, /malformed report, wrong lineage or run id, wrong blob or freshness hash/iu);
   assert.match(report, /Repeated discovery.{0,160}reuse that already-retained pass/isu);
@@ -936,10 +1007,10 @@ test("planning guidance reaches one-to-one implementation evidence unchanged", (
 });
 
 test("skill-adherence lens checks claims and omissions against frozen artifacts", () => {
-  const reference = reviewReference();
-  assert.match(reference, /evidence cardinality/iu);
-  assert.match(reference, /every record.{0,100}against frozen changed artifacts/isu);
-  assert.match(reference, /missing, extra, or contradicted.{0,100}skill-adherence finding/isu);
+  const run = reviewRun();
+  assert.match(run, /evidence-cardinality results/iu);
+  assert.match(run, /Verify every.{0,160}claim.{0,160}against frozen changed artifacts/isu);
+  assert.match(run, /Missing, extra, or\s+contradicted evidence becomes a finding/iu);
 });
 
 test("delivery owns review routes and bounded repairs", () => {
@@ -964,6 +1035,6 @@ test("delivery owns review routes and bounded repairs", () => {
 });
 
 test("external GitHub and Codex PR reviewer integration stays excluded", () => {
-  const all = `${reviewSkill()}\n${reviewReference()}\n${reviewGraph()}`;
+  const all = `${reviewSkill()}\n${reviewGraph()}`;
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
 });
