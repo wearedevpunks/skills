@@ -1,102 +1,75 @@
 # React Domain Structure Addendum
 
-Use this after the agnostic frontend structure reference when the current frontend scope is React, Next.js, Remix, TanStack Router, Expo web, tRPC-backed React, or another React-based stack.
-
-The agnostic frontend skill owns the shared layer model:
-
-- framework composition
-- `features/*`
-- `modules/*`
-- shared libraries and packages
-
-This reference owns React-specific placement for hooks, context, providers, components, route modules, and Next.js route files.
+Read this after the agnostic structure reference when the current scope uses React or a React-based
+framework. The agnostic reference owns domain granularity and dependency direction. This addendum owns
+React component, hook, context, provider, and JSX decisions.
 
 ## Framework Composition
 
-React framework entrypoints should stay thin.
+Keep route and screen components as thin orchestration shells. They translate framework inputs, invoke
+feature entrypoints, and compose the result. Put reusable UI, state orchestration, query behavior, and
+product workflows with their owning feature or module.
 
-Common composition folders:
+Framework folders vary: `app/`, `pages/`, `routes/`, and screen registries can all be composition layers.
+Follow the framework convention without letting that convention become the product domain model.
 
-- `app/` in Next.js App Router
-- `pages/` in Next.js Pages Router or Remix-style route modules
-- `routes/` in TanStack Router, Remix, or file-route setups
-- `src/app/` in app-shell conventions
+## Component-Splitting Classifier
 
-Good fits:
+Split by **responsibility and test seam**, not by line count or JSX size. Extract a child when it owns a
+cohesive responsibility with its own behavior, meaningful inputs, repeated use, or focused test seam.
+The parent should become a thin orchestration shell that coordinates named responsibilities.
 
-- `page.tsx`
-- `layout.tsx`
-- route modules
-- route-level `loading`, `error`, and `not-found`
-- route metadata
-- tiny route composition wrappers
+Choose the extraction by what it owns:
 
-Bad fits:
+- A display component receives display-ready props and owns rendering or interaction for one coherent
+  part of the interface. Shape raw transport data before it reaches this boundary.
+- A custom hook owns cohesive state, query, mutation, or workflow logic whose lifecycle belongs
+  together. Keep its returned contract smaller than its implementation mechanics.
+- A model owns pure state transitions, policy, or derived data that does not need React lifecycle.
+- Pure utilities own stateless transformations with no component or hook identity.
 
-- long client components
-- data orchestration that belongs to a feature
-- reusable product sections
-- provider setup repeated across routes
-- low-level hooks imported directly by routes when a feature entrypoint should own them
+Keep tiny, private, related JSX local when its only meaning comes from the parent and it has no distinct
+behavior or test seam. Co-locate tiny related render helpers. Give one a separate file only when it
+develops an independent responsibility that makes the boundary useful.
 
-Route files should import feature entrypoints instead of several low-level hooks, helpers, and components.
+## Domain Placement
 
-## React Domain Internals
+Place extracted components, hooks, models, and utilities under their invariant owner. Technical folders
+such as `components/`, `hooks/`, `context/`, `providers/`, `queries/`, `mutations/`, `models/`, and
+`utils/` are useful only as secondary grouping inside a worthy domain.
 
-Inside `features/*`, `modules/*`, and shared package domains, React-specific technical folders are allowed when they are local to the domain.
+Context and providers follow scope:
 
-Common local folders:
+- feature-scoped context stays in that feature;
+- app-wide reusable providers stay in an app-local module;
+- cross-app providers belong in a shared package only when they have real cross-app consumers.
 
-- `components/`
-- `hooks/`
-- `context/`
-- `providers/`
-- `state/` or `store/`
-- `queries/`
-- `mutations/`
-- `actions/`
-- `forms/`
-- `lib/`
-- `utils/`
+Hooks follow the owner of the state, side effect, query, mutation, or workflow they wrap. Display
+components depend on owner-provided contracts rather than reaching through another domain's internals.
 
-Keep these folders under a domain. Avoid root-level `components/`, `hooks/`, `context/`, or `providers/` unless they are temporary migration debt or genuinely global app shell code.
+## Public React Boundaries
 
-## Placement Examples
+Route components import feature or module entrypoints. A feature entrypoint may expose its top-level
+component, public hook, workflow operation, and deliberate types. Consumers stay independent of its
+private component tree, query keys, mutation details, and context implementation.
 
-Prefer:
+Apply the agnostic dependency law unchanged: use public entrypoints for cross-domain imports, keep edges
+one-way and acyclic, and use the narrow peer-feature exception only when justified.
 
-- `features/auth/components/LoginForm.tsx`
-- `features/auth/hooks/useLoginForm.ts`
-- `features/settings/context/SettingsDraftContext.tsx`
-- `features/dashboard/queries/useDashboardSummary.ts`
-- `modules/auth/providers/AuthProvider.tsx`
-- `modules/auth/hooks/useCurrentUser.ts`
-- `modules/api/lib/httpClient.ts`
-- `modules/ui/components/Button.tsx`
-- `<shared-ui-root>/src/primitives/button.tsx`
-- `<shared-ui-root>/src/brand/components/Logo.tsx`
+## Behavior Tests and Validation
 
-Avoid:
+Add focused behavior tests at the owning component, hook, model, or feature seam affected by the change:
 
-- `src/components/LoginForm.tsx`
-- `src/hooks/useCurrentUser.ts`
-- `src/context/SettingsDraftContext.tsx`
-- `src/providers/AuthProvider.tsx`
-- `src/lib/httpClient.ts`
+- component tests cover visible output and user interaction;
+- hook tests cover cohesive lifecycle or state transitions when the hook is the public behavior seam;
+- model tests cover pure rules and transformations;
+- feature tests cover a workflow when coordination across the pieces is the behavior under change.
 
-## React Boundary Rules
+Choose the narrowest validation that proves the changed responsibility, then run the relevant type,
+lint, or build check for moved exports and imports. Existing architecture checks may supplement this
+proof; this skill does not mandate architecture tests or file-count thresholds. The behavior and its
+dependency boundary determine the split.
 
-- Route components may import feature entrypoints and app-local modules.
-- Feature components may import hooks, context, providers, and helpers from the same feature, modules, or shared libraries.
-- Module hooks and providers must not import feature components.
-- Shared UI packages must not import app-local modules or features.
-- Context providers should live where their scope lives: feature-scoped context in `features/*`, app-wide reusable providers in `modules/*`, cross-app providers in shared packages.
-- Hooks follow the same ownership rule as the state or side effect they wrap.
-
-## React Review Checklist
-
-- Is the route file mostly composition?
-- Are React hooks under the domain that owns their state or side effect?
-- Is context scoped to the smallest domain that needs it?
-- Are providers app-local modules unless they are feature-specific or shared across apps?
-- Are root-level React technical folders avoided unless the project has an explicit app-shell convention?
+The React review is complete when each extracted unit owns a coherent responsibility, orchestration
+shells stay thin, props cross display-ready boundaries, and focused tests prove the changed behavior at
+its owning seam.
