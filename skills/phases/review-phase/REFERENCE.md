@@ -1,147 +1,85 @@
 # Review Phase Reference
 
-## Use And Stop Rules
+Load [references/targets.md](references/targets.md) for target normalization,
+identity, or resume. Load
+[references/state-graph.md](references/state-graph.md) for delivery budget,
+failure, retention, routing, repair, or final-fix behavior. Load
+[references/durable-report.md](references/durable-report.md) before writing or
+retaining a report.
 
-Use for review-only goals, audits, PR review, suspicious code, external edits,
-merged or rebased branches, and `delivery-phase` review gates.
+## One All-Lens Run
 
-Do not use when the user asks for immediate implementation, pure planning,
-requirements grilling, docs writing with no artifact to review, or an undefined
-target that cannot be inferred from branch, diff, issue, PR, or prompt.
+Evaluate exactly one frozen bounded snapshot per completed invocation.
 
-Standalone mode is readonly and stops after findings. Delivery mode may return
-findings to delivery for fixes, debugging, docs, or validation because delivery
-owns completion.
+1. Run `autoreview` exactly once as advisory candidate generation. A ClawPatch
+   helper, when present, stays inside that call and consumes no additional pass.
+2. The parent verifies all advisory candidates against the frozen target and
+   adjacent evidence. Only verified candidates become findings.
+3. Dispatch independent lenses against the same snapshot in parallel:
+   - Standards
+   - skill adherence and scoped skills
+   - architecture
+   - simplify
+   - Spec
+4. Record an explicit outcome for every lens. Standards and skill adherence,
+   architecture, simplify, then Spec controls presentation and triage order
+   only. Parallel execution is unchanged. Standards and Spec stay distinct
+   report sections without cross-axis merging or reranking.
 
-## Scope Policy
+The `review` skill supplies separate Standards and Spec checks. Apply
+`improve-codebase-architecture`, `simplify`, the nearest `AGENTS.md`, and every
+named scoped skill as their own bounded lenses.
 
-Default to the smallest certain target:
+## Skill-Adherence Lens
 
-- open PR changes
-- highlighted diff
-- supplied code portions
-- branch range
-- named files, paths, packages, apps, domains, or features
+Treat `assigned_skills` as planning provenance. For every implementation task:
 
-Use a full-codebase scan only when no PR is open and no certain domain, portion,
-or path is provided, or when the user explicitly asks for a full-codebase
-review.
+1. Match every implementation-applicable `assigned_skills` item to exactly one
+   `implementation_skill_guidance` entry.
+2. Match every guidance entry to exactly one `IMPLEMENTATION-NOTES.md` evidence
+   record.
+3. Check evidence cardinality and every record, including `not_applicable`,
+   against frozen changed artifacts and the cited how/where location.
+4. Report missing, extra, or contradicted claims as a skill-adherence finding.
 
-Pass the bounded target into every inner review step: `autoreview`,
-ClawPatch-backed review, delegated readonly checks, and lens prompts. Do not run
-review tooling against the full codebase when a bounded target exists.
+When a requirements or design wrapper claims grilling behavior, verify its
+named guidance, routed log/status artifacts, stable question mapping, carried
+unanswered questions, and downstream synthesis evidence instead of accepting
+the wrapper claim alone.
 
-For PR review, use the actual PR base branch. Do not assume trunk.
+## Validation Boundary
 
-## Runtime And Lenses
+Run the smallest safe readonly validation needed to verify candidates or
+governing acceptance evidence. Broader checks run only when the accepted spec
+or plan explicitly requires them. Missing required RED/GREEN evidence becomes
+a reported and routed finding; review never creates that evidence.
 
-Start review flow with `review`. It pins the fixed point, discovers
-Spec and Standards sources, carries baseline code smells, and keeps Standards
-findings separate from Spec findings. Use that frame for delegated review
-prompts, `autoreview` context, and final aggregation.
+Before every validation command, record the frozen-target hash. A command may
+run against the reviewed checkout only when its no-write mode is proven. Run any
+command that may write caches, generated files, snapshots, lockfiles, or other
+state in a disposable checkout or snapshot rooted at the frozen revision.
 
-`autoreview` remains the core structured review runtime. Capture the exact
-command and manually verify accepted findings against source, docs, scoped
-skills, and dependency contracts.
+Always recompute and compare the frozen-target hash after validation. A mismatch
+invalidates the run and any local report, returns `review_due` with exact
+mutation evidence, and consumes no pass. Record exact commands, isolation mode,
+before/after hashes, sources, skipped checks, and residual risk. Keep this
+validation bounded; isolation is a safety boundary, not permission to broaden
+the test surface.
 
-Mandatory lenses:
+Use the executable before/after decision in
+[`scripts/review-contract.mjs`](scripts/review-contract.mjs); mutation returns
+`review_due` and consumes no pass.
 
-- `review`: two-axis Standards versus Spec wrapper, fixed diff, and
-  separate aggregation.
-- `simplify`: clarity, avoidable complexity, unnecessary abstraction, derivable
-  state, naming, and scope creep.
-- `improve-codebase-architecture`: boundary friction, shallow modules, module
-  depth, and follow-up RFC candidates.
-- Scoped local guidance: nearest relevant `AGENTS.md`, stack skills, runbooks,
-  ownership rules, and skills named by those instructions.
+## Finding And Route Output
 
-Conditional lens:
+Every stable finding records severity, location, impact, evidence, and action.
+Determine route precedence from verified evidence:
 
-- `parallel-research`: split independent readonly checks by subsystem, risk, or
-  hypothesis. Synthesize evidence; do not vote-count disagreements.
+1. runtime evidence: debugging
+2. otherwise, an in-scope non-runtime blocker: implementation
+3. otherwise, broad architecture debt: debt follow-up
+4. otherwise: documentation ingest or closeout by documentation completeness
 
-## Evidence And Validation
-
-Prefer primary artifacts over tracker summaries. Record exact files and
-commands consulted. Include stack status or prior delivery stack evidence when
-stack metadata is relevant.
-
-Safe readonly validation may include focused tests, typecheck, lint, build,
-docs link checks, or smoke commands. If a check cannot run, state why and the
-residual risk.
-
-For behavior-changing implementation plans or specs, missing RED/GREEN proof is
-a blocking finding unless the task has an explicit valid `reason_not_testable`.
-Reject `reason_not_testable` when the only reason is forgotten RED; the delivery
-owner must recover with public-result RED and GREEN evidence.
-
-## Requirements Grill Wrapper Review
-
-When reviewed spec, plan, phase, or wrapper claims to use
-`requirements-grill` or design-phase grill, review shared interview behavior
-against `$grilling` and durable behavior against the `requirements-grill`
-inner flow, not just its outer handoff.
-
-Check:
-
-- Serious grill sessions pair `references/grilling-flow.md` with
-  `references/artifact-output.md`.
-- Before each round is yielded, it is persisted with stable question ids,
-  prerequisites, and the current frontier, with a stable mapping between live
-  questions and the routed log/status artifacts.
-- Each response set is processed answer by answer; partially answered rounds
-  preserve omitted questions as unanswered and carry them forward.
-- Status is updated after each response set, and branch percentages agree with
-  the unanswered-question and shared-understanding confirmation fields.
-- Routed grill log/status artifacts are created or updated when grilling
-  decisions, branches, parked scope, percentages, glossary, axioms, or
-  ambiguities change.
-- Glossary, axiom, and status updates preserve current meaning while the
-  log records accepted decisions and superseded decisions.
-- Added or renamed wiki grill artifacts update routed metadata/bookkeeping:
-  `content/docs/project/grilling/meta.json`, section index when missing,
-  and wiki `log.md` when the repo maintains one.
-- After `$grilling` completes, downstream handoff evidence exists as
-  applicable: wiki synthesis, backlog/user stories, spec, or phase handoff
-  carrying accepted decisions and recorded scope state.
-
-Missing inner-flow or durable-artifact evidence is a review finding when
-the wrapper promised grill behavior.
-
-## Findings Policy
-
-Prioritize bugs, regressions, broken contracts, missing validation, unsafe
-assumptions, and user-facing risks. Include file and line references when
-available. Separate blocking findings from improvements and optional cleanup.
-
-Do not edit code in standalone mode unless the user explicitly asks after
-seeing the review scope. Do not use `simplify` as permission to refactor.
-
-Do not flatten scoped `AGENTS.md` guidance into generic advice; cite the
-concrete constraint. Do not skip scoped skills from `AGENTS.md` prompts.
-
-Do not run mutating stack commands in review. `review-phase` reports stack
-evidence only; delivery owns `stack sync`.
-
-## Output Checklist
-
-Lead with findings, ordered by severity. For each finding include:
-
-- severity
-- file/line or artifact reference
-- issue and impact
-- evidence
-- recommended action
-
-Then include:
-
-- open questions or assumptions
-- validation run and result
-- exact `autoreview` command and clean/accepted-findings result
-- fixed point, Spec source or skipped reason, Standards sources
-- scoped `AGENTS.md` files and mandatory scoped skills checked
-- short summary after findings
-- mode: standalone readonly review or delivery-owned review
-
-If there are no findings, say so clearly and still report validation coverage
-and residual risk.
+Broad architecture debt may accompany debugging or implementation as a
+secondary follow-up. Review returns this routing output and stops. Delivery
+owns route mutation and repairs.

@@ -31,10 +31,13 @@ test("prototype keeps Devpunks durable evidence and verdict lifecycle", () => {
   assert.match(skill, /PROTOTYPE-VERDICT\.md/);
 });
 
-test("writing-for-agents replaces writing-great-skills without an alias", () => {
+test("writing-for-agents remains canonical with a disabled legacy compatibility skill", () => {
   const skill = read("skills/agnostic/docs/writing-for-agents/SKILL.md");
   const mechanics = read(
     "skills/agnostic/docs/writing-for-agents/SKILL-MECHANICS.md",
+  );
+  const compatibility = read(
+    "skills/agnostic/docs/writing-great-skills/SKILL.md",
   );
 
   assert.match(skill, /name: writing-for-agents/);
@@ -51,8 +54,11 @@ test("writing-for-agents replaces writing-great-skills without an alias", () => 
         import.meta.url,
       ),
     ),
-    false,
+    true,
   );
+  assert.match(compatibility, /disable-model-invocation:\s*true/u);
+  assert.match(compatibility, /Deprecated compatibility/u);
+  assert.match(compatibility, /(?:Prefer|use) writing-for-agents/iu);
 });
 
 test("wait-what is the upstream user-invoked anti-jargon corrective", () => {

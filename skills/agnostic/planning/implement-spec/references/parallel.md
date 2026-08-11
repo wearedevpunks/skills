@@ -18,6 +18,8 @@ unblocked. Keep the wave boundary and parent validation.
 - post-wave review of worker outputs
 - acceptance-criteria coverage plus RED -> GREEN evidence, or explicit non-testable verification
 - task completion only after validation and plan/log updates
+- unchanged guidance forwarding and exactly one verified skill-application
+  evidence record per guidance entry
 - clear reporting of retries, issues, or blockers
 
 ## Loop rule

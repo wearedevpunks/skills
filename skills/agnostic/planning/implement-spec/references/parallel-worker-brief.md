@@ -24,6 +24,8 @@ Every worker brief should include:
 - `expected_red_failure`
 - `green_command`
 - `reason_not_testable`
+- `assigned_skills` as planning provenance
+- every `implementation_skill_guidance` item, unchanged
 - `review_mode`
 - `runtime_validation`
 - `runtime_target`
@@ -53,7 +55,12 @@ Each worker brief should require:
 14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
 15. capturing and linking durable before/after screenshot evidence when the task changes UI
 16. updating the plan entry with status, log, touched files, and gotchas before handoff closes
-17. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
+17. loading every forwarded skill and applying its stated behavior where the
+    task evidence supports it
+18. returning exactly one evidence record per guidance entry with skill,
+    `loaded`, `applied`, or `not_applicable` status, and a how/where pointer;
+    `not_applicable` also states why and where it was assessed
+19. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
 
 ## Worker output contract
 
@@ -67,6 +74,8 @@ Require the worker to return:
 - durable UI before/after screenshot links when UI changed
 - required runtime-validation scenario, observed evidence, cleanup result, or exact blocker
 - validation intentionally deferred
+- one skill-application evidence record for every forwarded guidance item,
+  preserving the exact skill identity
 - anything blocked or risky, with exact reason and required decision
 
 ## Scope rule

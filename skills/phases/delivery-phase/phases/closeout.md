@@ -9,6 +9,9 @@ docs ingest or no-op, and validation are complete.
 - Report phase path actually taken; do not imply skipped phases ran.
 - Report validation commands, browser checks, smoke tests, or manual scenarios.
 - Report review result and whether findings remain.
+- When fix 3 occurred, require `clean_handoff` linking immutable review-3 report,
+  final changes, passing focused validation, and clean status. Do not require a
+  fourth review.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.
 - For UI changes, verify the PR body, PR comment, or PR-ready handoff includes durable before/after `UI Evidence` links.
