@@ -2,15 +2,15 @@
 
 ## Summary
 
-- 
+-
 
 ## Deviations From the Plan
 
-- 
+-
 
 ## Surprises and Decisions
 
-- 
+-
 
 ## Sanity Checks
 
@@ -66,15 +66,15 @@ where the guidance was assessed.
 
 ## Pre-existing Issues
 
-- 
+-
 
 ## Out of Scope Observations
 
-- 
+-
 
 ## Remaining Work
 
-- 
+-
 
 ## Steering
 
