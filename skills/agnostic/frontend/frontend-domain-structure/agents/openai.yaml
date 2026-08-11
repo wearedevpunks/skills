@@ -1,4 +1,4 @@
 interface:
   display_name: "Frontend Domain Structure"
   short_description: "Domain-first frontend structure"
-  default_prompt: "Use $frontend-domain-structure to place frontend code in the correct framework composition, features, modules, or shared-library layer; in React scopes, also apply references/react/structure.md for hooks, context, providers, components, route modules, and Next.js route files."
+  default_prompt: "Use $frontend-domain-structure to review frontend domain worthiness, public dependency boundaries, and framework composition. In React scopes, review React component boundaries; split only at a cohesive responsibility boundary evidenced by distinct behavior, meaningful inputs, repeated use, or a focused test seam; keep tiny, private, related JSX local."

@@ -1,55 +1,37 @@
 ---
 name: frontend-domain-structure
 description: |
-  Organize frontend applications into domain-first layers with thin framework composition entrypoints,
-  user-facing features, reusable app-local modules, and shared libraries. Use when creating or
-  refactoring frontend code, replacing flat components/hooks/lib/utils folders, deciding whether code
-  belongs in framework composition, features/, modules/, or shared packages, or reviewing frontend
-  import boundaries across React, Vue, Svelte, Solid, or other UI frameworks.
+  Review frontend domain boundaries, domain granularity, imports, and React component splitting.
+  Use when creating or refactoring frontend code, deciding whether a feature or module deserves its
+  own domain, replacing flat technical buckets, reviewing React component boundaries, or changing
+  framework composition and cross-domain dependencies.
 ---
 
 # Frontend Domain Structure
 
-Use this skill to keep frontend code domain-based instead of folder-type-based.
-Treat `features/*` and `modules/*` as the main app-local domain containers.
+Use this skill to give frontend behavior one clear domain owner and deliberate boundaries.
 
-Read `references/structure.md` before structure decisions or large refactors.
-For React scopes, also read `references/react/structure.md`.
+The [agnostic reference](references/structure.md) is the single source of truth for domain
+classification, layer placement, and dependency rules. Read it for every frontend structure decision.
 
-## Quick Classifier
+For React scopes, also read the [React addendum](references/react/structure.md). It owns component,
+hook, context, provider, JSX, and behavior-test guidance.
 
-Place code by responsibility first, framework file type second.
+## Workflow
 
-- Put route files, screen entrypoints, layout shells, metadata, and framework-owned composition in the framework composition layer.
-- Put user-visible flows, screens, sections, and product orchestration in feature domains under `features/*`.
-- Put reusable app-local concerns such as providers, client wiring, routing helpers, metadata helpers, API clients, form foundations, and UI libraries in module domains under `modules/*`.
-- Put cross-app reusable domains, UI foundations, tokens, primitives, and framework-neutral helpers in shared libraries or packages.
+1. Inspect nearby structure, imports, and project conventions.
+2. Read the agnostic reference and identify each changed behavior's invariant owner.
+3. Scan sibling domains and apply the domain-worthiness classifier before creating or splitting one.
+4. Trace affected public entrypoints and dependency direction recursively.
+5. In React scopes, read the React addendum and review component boundaries at responsibility and test seams.
+6. Complete in the requested mode.
+   - For a review or diagnostic request, return findings and a recommended target structure without editing files.
+   - Only change files when the user explicitly asks to create, refactor, or implement; then make the smallest coherent move and validate with focused behavior tests and the narrowest relevant static checks.
 
-Inside each feature or module domain, use local technical folders only when useful.
+## Completion
 
-## Boundary Rules
-
-- Keep framework composition thin. Compose features and modules there; do not accumulate domain logic.
-- Let `features/*` depend on `modules/*` and shared libraries.
-- Do not let `modules/*` import `features/*`.
-- Do not move app-specific product features into shared libraries.
-- Avoid root-level generic buckets like `components`, `hooks`, `utils`, `helpers`, or `lib` when code can belong to a domain.
-
-## Shared Library Rule
-
-Use shared libraries for code reused across app boundaries.
-
-- Keep app-local reusable domains in `modules/*`.
-- Keep user-facing product domains in `features/*`.
-- Move only truly shared domains, presentation layers, primitives, tokens, or utilities into shared libraries.
-
-In a monorepo, shared packages should still be domain-first internally instead of becoming global buckets.
-
-## Use This Skill
-
-- Read `references/structure.md`.
-- Add framework-specific references only when the current scope uses that framework.
-- Classify each file by responsibility first.
-- Group by domain second.
-- Organize inside each domain by local technical role only when needed.
-- Keep imports flowing downward: framework composition -> `features` -> `modules` -> shared libraries or shared packages.
+- Review mode finishes when every affected responsibility and boundary is classified, findings cite the
+  current evidence, and the recommended target structure resolves each finding.
+- Implementation mode finishes when every changed responsibility has an honest owner, every new boundary
+  passes its applicable classifier, affected imports remain deliberate, and focused validation proves the
+  changed behavior.
