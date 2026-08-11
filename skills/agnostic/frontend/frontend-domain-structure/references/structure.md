@@ -2,9 +2,10 @@
 
 ## Goal
 
-Organize frontend code by responsibility and domain instead of by file type.
+Organize frontend code around stable responsibility owners. Frameworks choose entrypoint names and
+rendering mechanics; the ownership and dependency rules here stay the same.
 
-Prefer this shape:
+A common shape is:
 
 ```text
 src/
@@ -13,245 +14,121 @@ src/
   modules/
 ```
 
-Interpret the layers like this:
+- **Framework composition** owns routes, screens, layouts, navigation shells, loading and error
+  boundaries, metadata, and application assembly.
+- **Features** own coherent user-facing capabilities and workflows.
+- **Modules** own reusable app-local capabilities, integrations, foundations, and app-wide wiring.
+- **Shared libraries** own domains or primitives whose reuse boundary genuinely spans applications or
+  surfaces.
 
-- framework composition layer
-  Framework-owned user-land entrypoints such as routes, pages, screens, layouts, loading states, errors, metadata, and navigation shells.
-- `features/*`
-  Domain containers for user-visible product logic and page- or screen-facing slices.
-- `modules/*`
-  Domain containers for reusable app-local support building blocks, integrations, and root-level dependencies reused by multiple features.
-- shared libraries
-  Cross-app or cross-surface domains, primitives, tokens, utilities, and presentation helpers.
+These labels may differ between projects. Preserve the responsibilities rather than imposing the
+example names.
 
-The exact names of framework composition folders and shared libraries vary by project. The rule does not.
+## Invariant Owner Classifier
 
-`features` and `modules` are both domain layers. They are not flat dumping grounds. Each domain may contain local technical folders when those folders serve that domain.
+Start with the **invariant owner**: the smallest stable domain responsible for the behavior, its rules,
+and the changes that must remain coherent. A route name, visual region, file type, or reuse count alone
+does not establish ownership.
 
-The same principle applies to packages in a monorepo. A package should still be structured by domain internally instead of becoming one flat global `components`, `hooks`, or `utils` bucket.
+Classify in this order:
 
-## Why This Shape
+1. Framework-mandated lifecycle or composition belongs to the framework composition layer.
+2. A user-facing capability with its own workflow, policy, state transitions, or language belongs to a
+   feature domain.
+3. An app-local capability serving several features, without owning a user-facing workflow, belongs to
+   a module domain.
+4. A capability or primitive with real consumers across application or surface boundaries belongs to a
+   shared library or package.
+5. A detail with no independent invariant stays with its current owner.
 
-Flat folders such as `components`, `hooks`, `lib`, and `utils` scale poorly because they group by technical type instead of business purpose.
+Prefer the deepest honest owner. Move code upward only when the broader owner truly governs it.
 
-Group around domains first, then use technical subfolders inside the domain when useful.
+## Domain-Worthiness Classifier
 
-Root-level escape hatches like `utils/` and `lib/` should stay rare. Small truly global helpers can exist, but most code placed there eventually belongs to a feature domain, a module domain, or a shared library.
+Before creating a feature, module, package, or nested domain, **scan the siblings**. Look for the same
+invariant owner, product language, workflow, change cadence, and consumers. Extend or rename an existing
+owner when it already covers the responsibility.
 
-This structure improves:
+A new domain is worthy when it gives a coherent responsibility a stable name and at least one real
+boundary, such as independent policy, lifecycle, state, workflow, consumer contract, or reuse scope.
+Several tightly related files may form one worthy domain; one substantial public boundary may also be
+enough. File count is not the classifier.
 
-- discoverability
-- ownership
-- reuse boundaries
-- thin route or screen entrypoints
-- resistance to feature leakage across the app
+Keep implementation with its current owner when the proposed split is only navigational. In particular,
+reject a cosmetic micro-feature or micro-module named after a panel, button, page fragment, file type, or
+temporary layout. Keep a one-file folder folded into its owner until that folder expresses a deliberate
+public or semantic boundary. This prevents directory depth from masquerading as architecture.
 
-## Decision Table
+## Layer Responsibilities
 
-Classify each file in this order.
+### Framework Composition
 
-1. Is this a framework entrypoint or composition shell?
-   Put it in the framework composition layer.
-2. Is this a user-facing business section, screen flow, or product workflow that an entrypoint should import?
-   Put it in a feature domain under `features/*`.
-3. Is this reusable inside the app but not itself a page- or screen-facing product slice?
-   Put it in a module domain under `modules/*`.
-4. Is this generic enough to reuse across apps, packages, or surfaces?
-   Put it in a shared library or shared package.
+Keep entrypoints thin: translate framework lifecycle into domain calls, assemble higher-level pieces,
+and map domain results to framework output. Product policy, long workflows, reusable product sections,
+and scattered client setup belong to their invariant owners.
 
-If a file is named by type instead of purpose, rename around the domain or concern when moving it.
+### Features
 
-## Layer Meanings
+A feature owns a coherent user-visible capability: its workflow, policy, state, data interaction,
+presentation, and feature-local helpers. Examples include authentication, checkout, account settings,
+or a dashboard capability when each name identifies real product behavior.
 
-### Framework Composition Layer
+### Modules
 
-Keep this layer thin.
-
-Good fits:
-
-- route files
-- screen entrypoint files
-- layouts and navigation shells
-- loading, error, empty, and not-found boundaries
-- route or screen metadata
-- tiny composition wrappers
-
-Bad fits:
-
-- domain logic
-- long form flows
-- reusable product sections
-- app client setup scattered across many entrypoints
-- business state orchestration
-
-The entrypoint should mostly assemble higher-level pieces.
-
-### `features/*`
-
-Use features for meaningful user-facing domains.
-
-Good fits:
-
-- authentication screens and flows
-- dashboard sections
-- account settings areas
-- navigation experiences
-- user-facing forms and workflows
-- domain-specific business state and orchestration
-
-A feature domain may contain local UI, state, data access, config, helpers, and sub-sections.
-
-Do not create a feature for every tiny component. A feature should represent a coherent user-facing capability.
-
-### `modules/*`
-
-Use modules for reusable app-local support domains.
-
-Good fits:
-
-- auth client setup
-- API client wiring
-- providers
-- routes or navigation configuration
-- metadata helpers
-- form foundations reused across several features
-- domain service adapters used by many features
-- UI library domains
-- framework integration layers
-- root-level dependencies shared by several features
-
-Modules are reusable inside the app, but they are not page-facing product slices.
-
-A `modules/ui` domain is valid when it is effectively the app's local UI library: primitives, brand-styled abstractions, UI behavior, and UI-specific logic reused across many features.
+A module owns an app-local capability reused by multiple features: client setup, application providers,
+navigation configuration, form foundations, service adapters, metadata mechanics, or an app-local UI
+system. Modules support product flows without owning those flows.
 
 ### Shared Libraries
 
-Use shared libraries for code that is reused across app boundaries.
+A shared library owns code reused across application or surface boundaries: domain abstractions, design
+tokens, primitives, framework-neutral helpers, or a coherent presentation system. Keep app-specific
+widgets and workflows with the app that owns them. Inside a shared package, apply the same
+domain-worthiness test; shared code is still organized by responsibility.
 
-Good fits:
+## Recursive Semantic Internals
 
-- shared domain abstractions
-- UI primitives
-- design tokens
-- framework-neutral helpers
-- icons
-- styling foundations
-- generic presentation helpers
+The ownership rule is recursive at every directory and package depth. Within a feature, module, or
+shared package, group semantic subdomains before adding technical folders. Introduce local folders such
+as `state/`, `api/`, `models/`, or `presentation/` only when several related internals benefit from that
+secondary grouping.
 
-Bad fits:
+For example, a billing feature may contain semantic `invoices/` and `payment-methods/` subdomains. Each
+subdomain follows the same invariant-owner, sibling-scan, public-boundary, and acyclic-dependency rules.
+A flat technical bucket remains a poor substitute for semantic ownership even when nested.
 
-- page sections
-- product workflows
-- app-specific domain widgets
-- route- or screen-specific logic
+## Public Entrypoints and Dependencies
 
-If the code is only reusable within one app, keep it inside that app, usually in `modules/*`.
+Give every cross-domain dependency a **deliberate public entrypoint**. Export only the contracts,
+views, operations, and types the domain intentionally offers. Imports within a domain may reach its
+private internals; consumers use its public entrypoint.
 
-In a monorepo, shared packages should still be domain-based internally.
+Keep the graph one-way and acyclic:
 
-Good package patterns:
+- framework composition imports feature and module entrypoints;
+- features import modules and shared-library entrypoints;
+- modules import shared-library entrypoints and external libraries;
+- shared libraries remain independent of app-local code;
+- cross-domain deep imports and cycles are rejected;
+- lazy loading, re-export chains, and path aliases preserve these boundaries rather than conceal cycles.
 
-- a package that is itself one coherent shared domain
-- a package with a small number of clearly separated internal domains
+Peer-feature imports are highly discouraged. Permit one only when the dependency is justified as a real
+one-way, acyclic relationship and it passes through the imported feature's public entrypoint. When both
+features own part of the contract, move the common invariant to the nearest honest module or shared
+domain. A reverse import or deep import invalidates the exception.
 
-Examples:
+## Migration and Review
 
-- `<shared-ui-root>/src/primitives/*`
-- `<shared-ui-root>/src/brand/*`
-- `<auth-package-root>/src/client/*`
-- `<auth-package-root>/src/server/*`
-- `<forms-package-root>/src/fields/*`
+When migrating flat `views`, `state`, `lib`, or `utils` buckets:
 
-Bad package patterns:
+1. Inventory behavior and identify each invariant owner.
+2. Scan existing sibling domains before proposing new ones.
+3. Move framework composition, feature behavior, app-local capabilities, and application- or
+   surface-spanning code to their honest owners.
+4. Create public entrypoints and update consumers before making internals private.
+5. Repeat the classifier recursively inside each changed domain.
+6. Validate changed behavior and dependency direction with the narrowest checks the project already
+   supports.
 
-- a giant `<shared-ui-root>/src/components` folder holding unrelated concerns
-- `<shared-foundation-root>/src/utils` growing without domain ownership
-- a single package collecting every reusable concern just because it is shared
-
-If a package contains several unrelated concerns, split the package or introduce internal domain folders.
-
-## Import Boundaries
-
-Keep dependencies flowing downward.
-
-- framework composition layer may import:
-  - `features/*`
-  - `modules/*`
-  - bootstrapping helpers
-- `features/*` may import:
-  - sibling files in the same feature
-  - `modules/*`
-  - shared libraries
-- `modules/*` may import:
-  - sibling files in the same module
-  - shared libraries
-  - external libraries
-- shared packages may import:
-  - sibling files inside the same package domain
-  - lower-level shared utilities inside that package
-  - external libraries
-
-Avoid these inversions:
-
-- `modules/*` importing `features/*`
-- shared libraries importing app-local code
-- one shared package domain importing unrelated package domains without a clear boundary
-- framework entrypoints importing many low-level helpers instead of a feature-level entrypoint
-
-## Refactoring Guide
-
-When migrating from flat buckets like `components`, `hooks`, `lib`, and `utils`:
-
-- move framework-facing composition into the framework composition layer
-- group page- or screen-facing workflows under domain folders in `features/*`
-- group reusable app-local support code under domain folders in `modules/*`
-- move only truly shared code into shared libraries or shared packages
-
-Name folders by domain or responsibility, not by file type.
-
-Prefer:
-
-- `features/auth`
-- `features/settings`
-- `features/layout`
-- `modules/auth`
-- `modules/providers`
-- `modules/api`
-- `modules/ui`
-
-In monorepos, also prefer:
-
-- `<shared-ui-root>/src/primitives`
-- `<shared-ui-root>/src/brand`
-- `<auth-package-root>/src/client`
-- `<auth-package-root>/src/server`
-- `<table-package-root>/src/hooks`
-
-Then, inside a domain, use local technical folders only when they help:
-
-- `features/auth/components`
-- `features/auth/state`
-- `features/auth/api`
-- `modules/auth/config`
-- `modules/api/lib`
-- `<auth-package-root>/src/client`
-- `<shared-ui-root>/src/brand/components`
-
-Avoid:
-
-- `components/common`
-- `components/shared`
-- `utils/misc`
-- `lib/helpers`
-
-When root-level `utils/` already exists, treat it as migration debt unless the helpers are genuinely global and domain-neutral.
-
-## Review Checklist
-
-When reviewing or designing structure:
-
-- Can the framework composition file get thinner?
-- Is the entrypoint importing a feature instead of several low-level files?
-- Is reusable app-local logic living in a module instead of scattered buckets?
-- Is truly shared code kept out of app-local layers?
-- Are shared packages internally domain-based instead of flat dumping grounds?
+The review is complete when every changed responsibility has one honest owner, every new domain passes
+the worthiness classifier, and every affected cross-domain edge is public, one-way, and acyclic.
