@@ -17,13 +17,10 @@ written to the project wiki before the run can complete.
    as required by the wiki's existing conventions.
 3. Run 2-4 readonly lanes. Lanes never write the report.
 4. After synthesis, the coordinator or one designated consolidator writes one
-   bounded Markdown synthesis at the resolved wiki path. There is exactly one writer and
-   one consolidated report. Include only:
-   - short context
-   - trusted claims, with a primary source for every retained factual claim
-   - uncertainty and conflicts
-   - selected next route
-   The response points to this report and does not duplicate its synthesis.
+   Markdown report at the resolved wiki path. There is exactly one writer and
+   one consolidated report. Include the primary source for every retained
+   factual claim and separate facts, inferences, conflicts, and unresolved
+   product decisions.
 5. Commit the report and any required route metadata in one commit, then push
    or explicitly retain `research/<slug>` through a durable repository-approved
    mechanism.

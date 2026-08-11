@@ -20,8 +20,7 @@ The direct concepts are `fog`, `grilling`, `research`, `prototype`, `epic`, and 
 
 ## Placement
 
-- `fog`: root-level uncertainty; not delivery scope, a `SPEC.md` anchor, a
-  capability module, or an execution item
+- `fog`: root-level uncertainty, never delivery scope or a parent container
 - `grilling`: capability-scoped human decision work
 - `research`: capability-scoped readonly evidence work
 - `prototype`: capability-scoped experiment work
@@ -29,18 +28,6 @@ The direct concepts are `fog`, `grilling`, `research`, `prototype`, `epic`, and 
 - `story`: product-facing child tracer bullet derived from spec stories and criteria
 
 Each capability module groups durable product ownership. It stays separate from every execution milestone and does not determine implementation order.
-
-## Evidence parent
-
-Finder-derived `grilling`, `research`, or `prototype` may retain the source
-`fog` as an evidence parent. The fog remains root-level and is not a delivery
-item, `SPEC.md` anchor, capability module, or execution item. The concrete item
-keeps its own classification and capability placement.
-
-When the provider supports a native intake parent relation, use the fog as that
-evidence parent. Otherwise, preserve an immutable evidence link without
-inventing hierarchy that the provider cannot represent. The provider adapter
-must declare which representation it supports before mutation.
 
 ## Traceability and story readiness
 

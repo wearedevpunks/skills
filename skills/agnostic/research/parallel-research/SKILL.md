@@ -48,13 +48,11 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 ## Synthesize Before Acting
 
-1. Compare outputs against the repo, docs, or other primary artifacts.
-2. Resolve disagreements with evidence, not majority vote.
-3. Follow every retained factual claim back to its primary source.
-4. After evidence synthesis, invoke `$wait-what`. Apply its language contract
-   before writing the report or final response.
-5. Write one bounded synthesis using [DURABLE-REPORT.md](DURABLE-REPORT.md),
-   then close agents that are no longer needed.
+- Compare outputs against the repo, docs, or other primary artifacts.
+- Resolve disagreements with evidence, not majority vote.
+- Follow every retained factual claim back to its primary source.
+- Extract the few facts that matter, then decide locally.
+- Close agents that are no longer needed.
 
 ## Good Fits
 
@@ -76,5 +74,8 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 Return:
 - what each subagent covered
-- a concise route and status that points to the report without duplicating it
+- the evidence worth trusting, with claim-level source citations
+- conflicts or uncertainty
+- the synthesized conclusion
+- the next local action
 - durable report immutable SHA, path, and verified retention reference

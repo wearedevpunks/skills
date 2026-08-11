@@ -16,8 +16,7 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
   or `prototype`; the fog item itself does not require that question.
 - Is not delivery-eligible.
 - Is not a `SPEC.md` anchor.
-- May remain the evidence parent of a concrete learning ticket when the
-  provider supports that relation.
+- Does not own child tickets by default.
 
 ### Grilling
 
@@ -72,7 +71,6 @@ Return:
 - current frontier
 - selected next concept
 - chosen or proposed placement
-- source fog parent for a Finder-derived `grilling`, `research`, or `prototype`
 - evidence used
 - open blockers
 - next skill or phase

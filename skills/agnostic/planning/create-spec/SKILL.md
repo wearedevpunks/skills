@@ -26,18 +26,15 @@ parent/base constraints.
    decisions; never invent closure. Serialize `Dependency Readiness` and
    `Branch/Base Intent` using the readiness contract.
 4. Apply [spec-quality-bar.md](references/spec-quality-bar.md).
-5. Before writing `SPEC.md`, invoke `$wait-what` on the compiled artifact.
-   Proceed only when the language contract passes without changing confirmed
-   decisions or reopening interviews.
-6. Update existing planning-surface indexes through
+5. Update existing planning-surface indexes through
    [wiki-bookkeeping.md](references/wiki-bookkeeping.md).
-7. Persist the completed spec and its bookkeeping in a dedicated git commit.
+6. Persist the completed spec and its bookkeeping in a dedicated git commit.
    Never stage unrelated changes.
-8. Push or explicitly retain the spec commit through a repository-approved
+7. Push or explicitly retain the spec commit through a repository-approved
    remote mechanism, verify the retained ref contains the spec commit, then
    construct and verify a stable blob URL before `write-backlog` may consume it.
    A local commit SHA plus path is insufficient.
-9. Return `spec-written` with `readiness: agent-ready` and the verified stable
+8. Return `spec-written` with `readiness: agent-ready` and the verified stable
    blob URL. If retention or URL verification fails, return one atomic
    `spec-not-ready` result and do not invoke backlog projection.
 

@@ -89,22 +89,13 @@ Only when explicitly configured to use a `Kind` label group, use one matching la
 
 Linear label groups allow only one label from the group per issue. Do not use workflow state as classification. Do not create a label group by default.
 
-For pre-spec intake with a configured `Kind` group, resolve the complete intake
-taxonomy before any write: `Kind/fog`, `Kind/grilling`, `Kind/research`, and
-`Kind/prototype`. Create missing Kind labels only when explicit workspace policy
-permits it. Otherwise return an exact setup blocker that lists every missing
-label. An incomplete configured `Kind` taxonomy must not use a title prefix as
-a workaround.
-
 Fallback order:
 
 1. configured label group
 2. existing native issue label or category that exactly preserves the direct concept
 3. stable title prefix such as `[story]`
 
-Use this fallback only when no `Kind` group is configured. If workspace policy
-permits none of these representations, fail preflight. Label creation always
-requires explicit workspace policy.
+If workspace policy permits none of these, fail preflight. Do not create labels implicitly.
 
 ## Repo mapping
 
@@ -116,10 +107,6 @@ requires explicit workspace policy.
 - prototype -> capability-module-scoped issue with `Kind/prototype`
 - epic -> top-level issue with `Kind/epic`
 - story -> child issue created with `parentId` and `Kind/story`
-
-For Finder-derived `grilling`, `research`, or `prototype`, set `parentId` to the
-source fog issue. The concrete issue keeps its capability metadata. This parent
-is evidence lineage; it does not make fog a capability or execution item.
 
 `grilling`, `research`, and `prototype` closure notes record the answer or verdict, evidence, observations, open decisions, and resolution pointer for Wayfinder. They do not authorize delivery.
 
