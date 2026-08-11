@@ -9,7 +9,7 @@
 - MUST use `$tdd`
 - MUST use `$codebase-design`
 - `opensrc` provides source context for installed or external packages
-- scoped `AGENTS.md` files provide per-path skill requirements through `Primary skills here`
+- scoped `AGENTS.md` files provide per-path skill requirements through `Skill | What / when` tables; select exact trigger matches and open each selected skill's complete `SKILL.md`
 
 ## Graph map
 

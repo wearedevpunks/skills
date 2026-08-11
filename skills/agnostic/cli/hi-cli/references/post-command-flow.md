@@ -33,6 +33,11 @@ If an expected artifact is missing, continue and report it.
 Then:
 
 - author the requested root, docs, and workspace guidance
+- treat `.devpunks/specs/prompts/**` as the complete prompt-authoring contract; apply every scoped-prompt criterion it contains
+- ground scoped prompts in current code evidence: structure, placement, dependencies, and boundaries first; applied coding conventions second; enforced constraints outrank the nearest stable module-family pattern
+- keep each scoped prompt lean with exact-trigger pointers to co-authored reference content; references disclose content and never create deeper prompt scopes
+- render every selected non-phase skill in a `Skill | What / when` table derived from its complete `SKILL.md`
+- always link `opensrc/README.md` from scoped prompts and read it when work depends on third-party library behavior
 - reconcile only the generated skills, prompts, lint, hooks, scripts, subagents, tools, and wiki assets in scope
 - preserve repo-owned edits and ask before changing project policy
 - run targeted validation for the outputs reconciled
