@@ -11,8 +11,7 @@ Load `create-spec` only after this phase is selected.
 
 - Confirm the bounded goal, issue, tracker item, or requested capability.
 - Reuse existing spec artifacts when they match the requested scope.
-- Treat confirmed acceptance criteria, constraints, non-goals, and any existing tracker child stories or sub-issues as authoritative input.
-- When no tracker children exist, confirmed requirements and acceptance criteria are sufficient to compile a provider-neutral spec.
+- Treat child stories, sub-issues, acceptance criteria, constraints, and non-goals as required input, not loose references.
 - If requirements are unsettled, return the compiler's `spec-not-ready` result
   and route each named gap upstream instead of interviewing here.
 
@@ -23,8 +22,6 @@ Write or verify:
 - matching `SPEC.md`
 - `readiness: agent-ready`
 - `spec-written`
-- verified remote retention
-- verified stable blob URL
 - source issue/tracker/spec folder
 
 Then stop or re-enter `delivery-phase` for routing.

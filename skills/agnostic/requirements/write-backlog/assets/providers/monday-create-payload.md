@@ -97,10 +97,6 @@ When classification is explicitly configured, use its actual column ID from boar
 
 Create each learning item as a first-class parent item in the matching capability group.
 
-When Finder supplies a source fog parent, preserve an immutable evidence link
-in the learning item. Keep the item in its capability group; do not turn it into
-a fog subitem because that would lose capability placement.
-
 When configured, set the classification column to `grilling`, `research`, or `prototype`.
 
 Closure notes record the answer or verdict, evidence, observations, open decisions, and resolution pointer for Wayfinder. They do not authorize delivery.

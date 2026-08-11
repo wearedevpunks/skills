@@ -48,8 +48,7 @@ Every supported concept is a first-class provider backlog item that is visible, 
 1. Accept a Finder-selected direct classification: `fog`, `grilling`, `research`, or `prototype`.
 2. For `fog`, preserve the frontier or uncertainty description. For `grilling`,
    `research`, or `prototype`, preserve the precise question. Also preserve the
-   capability module when known, source fog parent when Finder supplied one,
-   dependencies, claim state, and map link.
+   capability module when known, dependencies, claim state, and map link.
 3. Validate the complete intake dependency graph for missing targets, self-edges, and cycles before the first provider write.
 4. Create exactly the requested intake item. Do not create an epic or story.
 5. Return the immutable provider id and URL to Finder.

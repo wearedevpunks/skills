@@ -43,10 +43,7 @@ Create a plan first. Never implement code in this skill.
 12. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
     backlog sync is eligible and in scope; otherwise record an explicit skip
     reason and continue plan completion.
-13. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
-    only when its language contract passes without changing the resolved
-    decision ledger.
-14. Read `references/stop-conditions.md` and stop exactly there.
+13. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 

@@ -155,10 +155,6 @@ After creation, set Project fields:
 
 Use first-class issues in the matching capability module. These are not child stories unless the provider explicitly needs a parent for visibility.
 
-When Finder supplies a source fog parent, preserve it with `parentIssueId` or
-`addSubIssue`. Keep the concrete issue's `Capability module` value. This is
-evidence lineage, not epic/story hierarchy.
-
 After creation, set Project fields:
 
 - `Kind = grilling`, `Kind = research`, or `Kind = prototype`
