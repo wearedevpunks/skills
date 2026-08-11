@@ -1,0 +1,4 @@
+interface:
+  display_name: "SQLAlchemy Schema Design"
+  short_description: "Design robust SQLAlchemy schemas and migrations"
+  default_prompt: "Use $sqlalchemy-schema-design to design a safe SQLAlchemy schema and Alembic migration."
