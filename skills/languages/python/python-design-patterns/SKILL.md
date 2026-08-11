@@ -7,6 +7,8 @@ description: Python design patterns including KISS, Separation of Concerns, Sing
 
 Write maintainable Python code using fundamental design principles. These patterns help you build systems that are easy to understand, test, and modify.
 
+For backend package topology and import direction, [python-backend-structure](../python-backend-structure/SKILL.md) is authoritative.
+
 ## When to Use This Skill
 
 - Designing new components or services
@@ -111,27 +113,34 @@ class UserHandler:
         # Response formatting
         return Response({"id": user.id, "email": user.email}, status=201)
 
-# GOOD: Separated concerns
-class UserService:
-    """Business logic only."""
+# GOOD: Parent-owned contracts describe dependencies; child packages own implementations
+class UserRepository(Protocol):
+    async def save(self, user: User) -> User:
+        ...
 
-    def __init__(self, repo: UserRepository) -> None:
-        self._repo = repo
+class CreateUser(Protocol):
+    async def __call__(self, data: CreateUserInput) -> User:
+        ...
 
-    async def create_user(self, data: CreateUserInput) -> User:
-        # Only business rules here
+class CreateUserAction:
+    """Use-case policy."""
+
+    def __init__(self, repository: UserRepository) -> None:
+        self._repository = repository
+
+    async def __call__(self, data: CreateUserInput) -> User:
         user = User(email=data.email, name=data.name)
-        return await self._repo.save(user)
+        return await self._repository.save(user)
 
 class UserHandler:
     """HTTP concerns only."""
 
-    def __init__(self, service: UserService) -> None:
-        self._service = service
+    def __init__(self, create_user: CreateUser) -> None:
+        self._create_user = create_user
 
     async def create_user(self, request: Request) -> Response:
         data = CreateUserInput(**(await request.json()))
-        user = await self._service.create_user(data)
+        user = await self._create_user(data)
         return Response(user.to_dict(), status=201)
 ```
 
@@ -139,60 +148,70 @@ Now HTTP changes don't affect business logic, and vice versa.
 
 ### Pattern 3: Separation of Concerns
 
-Organize code into distinct layers with clear responsibilities.
+Separate runtime call flow from Python import topology. A request may run through a handler, action, and repository capability, but peer packages at the same parent never import one another. They depend on parent-owned contracts and models; composition imports and wires their concrete implementations.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  API Layer (handlers)                                │
+│  Transport handler                                   │
 │  - Parse requests                                    │
-│  - Call services                                     │
+│  - Call an injected action contract                  │
 │  - Format responses                                  │
 └─────────────────────────────────────────────────────┘
                         │
+                        │ runtime call
                         ▼
 ┌─────────────────────────────────────────────────────┐
-│  Service Layer (business logic)                      │
-│  - Domain rules and validation                       │
-│  - Orchestrate operations                            │
-│  - Pure functions where possible                     │
+│  Action                                              │
+│  - Own use-case policy                               │
+│  - Call an injected repository contract              │
 └─────────────────────────────────────────────────────┘
                         │
+                        │ runtime call
                         ▼
 ┌─────────────────────────────────────────────────────┐
-│  Repository Layer (data access)                      │
-│  - SQL queries                                       │
-│  - External API calls                                │
-│  - Cache operations                                  │
+│  Repository adapter                                  │
+│  - Persistence reads and writes                      │
+│  - Durable storage mapping                           │
+│  - Transaction-shaped operations                    │
 └─────────────────────────────────────────────────────┘
 ```
 
-Each layer depends only on layers below it:
+HTTP clients, external APIs, and caches belong behind integrations or adapters, not persistence repositories.
 
 ```python
-# Repository: Data access
-class UserRepository:
+# Parent-owned contracts and models
+class UserRepository(Protocol):
     async def get_by_id(self, user_id: str) -> User | None:
-        row = await self._db.fetchrow(
-            "SELECT * FROM users WHERE id = $1", user_id
-        )
-        return User(**row) if row else None
+        ...
 
-# Service: Business logic
-class UserService:
-    def __init__(self, repo: UserRepository) -> None:
-        self._repo = repo
+class GetUser(Protocol):
+    async def __call__(self, user_id: str) -> User:
+        ...
 
-    async def get_user(self, user_id: str) -> User:
-        user = await self._repo.get_by_id(user_id)
+# Action implementation: imports only parent contracts and models
+class GetUserAction:
+    def __init__(self, repository: UserRepository) -> None:
+        self._repository = repository
+
+    async def __call__(self, user_id: str) -> User:
+        user = await self._repository.get_by_id(user_id)
         if user is None:
             raise UserNotFoundError(user_id)
         return user
 
-# Handler: HTTP concerns
-@app.get("/users/{user_id}")
-async def get_user(user_id: str) -> UserResponse:
-    user = await user_service.get_user(user_id)
-    return UserResponse.from_user(user)
+# Transport implementation: imports the parent action contract, not an action package
+class UserHandler:
+    def __init__(self, get_user: GetUser) -> None:
+        self._get_user = get_user
+
+    async def handle(self, user_id: str) -> UserResponse:
+        user = await self._get_user(user_id)
+        return UserResponse.from_user(user)
+
+# Parent composition: the only place that imports and selects implementations
+repository: UserRepository = StoredUserRepository(storage)
+get_user: GetUser = GetUserAction(repository)
+handler = UserHandler(get_user)
 ```
 
 ### Pattern 4: Composition Over Inheritance
@@ -308,58 +327,63 @@ def process_order(order: Order) -> Result:
 
 ### Pattern 7: Dependency Injection
 
-Pass dependencies through constructors for testability.
+Pass parent-owned capability contracts through constructors. Child implementations import those leaf Protocols; parent composition selects implementations and wires them.
 
 ```python
-from typing import Protocol
+class UserRepository(Protocol):
+    async def get_by_id(self, user_id: str) -> User | None:
+        ...
 
-class Logger(Protocol):
-    def info(self, msg: str, **kwargs) -> None: ...
-    def error(self, msg: str, **kwargs) -> None: ...
-
-class Cache(Protocol):
+class UserCache(Protocol):
     async def get(self, key: str) -> str | None: ...
     async def set(self, key: str, value: str, ttl: int) -> None: ...
 
-class UserService:
-    """Service with injected dependencies."""
+class AuditLog(Protocol):
+    def info(self, event: str, **fields: str) -> None:
+        ...
 
+class GetUser(Protocol):
+    async def __call__(self, user_id: str) -> User | None:
+        ...
+
+class GetUserAction:
     def __init__(
         self,
         repository: UserRepository,
-        cache: Cache,
-        logger: Logger,
+        cache: UserCache,
+        audit_log: AuditLog,
     ) -> None:
-        self._repo = repository
+        self._repository = repository
         self._cache = cache
-        self._logger = logger
+        self._audit_log = audit_log
 
-    async def get_user(self, user_id: str) -> User:
-        # Check cache first
+    async def __call__(self, user_id: str) -> User | None:
         cached = await self._cache.get(f"user:{user_id}")
         if cached:
-            self._logger.info("Cache hit", user_id=user_id)
+            self._audit_log.info("user_cache_hit", user_id=user_id)
             return User.from_json(cached)
 
-        # Fetch from database
-        user = await self._repo.get_by_id(user_id)
+        user = await self._repository.get_by_id(user_id)
         if user:
             await self._cache.set(f"user:{user_id}", user.to_json(), ttl=300)
 
         return user
 
-# Production
-service = UserService(
-    repository=PostgresUserRepository(db),
-    cache=RedisCache(redis),
-    logger=StructlogLogger(),
+# Parent composition selects implementations and wires the action
+repository: UserRepository = StoredUserRepository(storage)
+cache: UserCache = ExternalUserCache(cache_client)
+audit_log: AuditLog = ApplicationAuditLog(log_sink)
+get_user: GetUser = GetUserAction(
+    repository=repository,
+    cache=cache,
+    audit_log=audit_log,
 )
 
-# Testing
-service = UserService(
+# A focused test supplies the same parent-owned contracts
+get_user = GetUserAction(
     repository=InMemoryUserRepository(),
-    cache=FakeCache(),
-    logger=NullLogger(),
+    cache=FakeUserCache(),
+    audit_log=RecordingAuditLog(),
 )
 ```
 
@@ -425,9 +449,9 @@ Keep the composition shallow (2-3 levels). If wrapping is the only mechanism, co
 Duplication that diverges in dangerous ways should be abstracted sooner. The rule of three is a heuristic, not a law. If the copies are already diverging incorrectly, extract immediately and add a test that exercises the shared behavior.
 
 **A service layer is importing from the API layer, breaking the dependency direction.**
-This is a layering violation. The service layer must not import from handlers. Introduce a shared types/models layer that both can import from, keeping the dependency arrow pointing downward (API → Service → Repository).
+This is an ownership violation. Runtime calls may flow from transport through an action to a repository capability, but sibling packages do not encode that flow by importing one another. Move contracts and models to their honest parent, inject them into children, and let parent composition wire implementations.
 
 ## Related Skills
 
 - [python-testing-patterns](../python-testing-patterns/SKILL.md) — Test each layer in isolation using the dependency injection structure established here
-- [python-project-setup](../python-project-setup/SKILL.md) — Set up project structure and tooling that enforces layer boundaries from the start
+- [python-backend-structure](../python-backend-structure/SKILL.md) — Python backend domains, composition, and import boundaries
