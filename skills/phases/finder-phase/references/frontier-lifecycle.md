@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The frontier is the visible set of unresolved uncertainty that must be routed before delivery scope is accepted.
+The frontier is the set of open, unblocked, and unclaimed decision tickets.
 
 The backlog root is the living map. Docs, specs, grill logs, and notes are evidence for updating that map.
 
@@ -11,35 +11,37 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 ### Fog
 
 - Root-level only.
-- Tracks a real but not-yet-sharp area of uncertainty.
-- Anticipates future modules, tickets, epics, and stories.
+- Tracks a real but not-yet-sharp area through a frontier or uncertainty description.
+- Graduates when Finder can derive a precise question for `grilling`, `research`,
+  or `prototype`; the fog item itself does not require that question.
 - Is not delivery-eligible.
 - Is not a `SPEC.md` anchor.
 - Does not own child tickets by default.
 
 ### Grilling
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when a human decision must close ambiguity.
 - Closes with an accepted decision note before implementation scope changes.
 
 ### Research
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when readonly investigation can answer the unknown.
-- Closes with answer, evidence, accepted direction, and created or updated implementation items when applicable.
+- Closes with answer and immutable evidence. Wayfinder, not research, selects
+  any product direction.
 
 ### Prototype
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Used when learning needs an artifact, experiment, or throwaway proof.
-- Closes with produced artifacts, accepted direction, and created or updated implementation items when applicable.
+- Closes with a human verdict and immutable artifact/verdict evidence.
 
 ### Epic
 
-- Module/milestone-scoped.
+- Capability-module-scoped.
 - Accepted implementation capability.
-- Anchors one future `SPEC.md`.
+- Is a post-spec delivery projection.
 
 ### Story
 
@@ -49,13 +51,17 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 
 ## Transition Rules
 
-- Sharpening `fog` first chooses or creates a module/milestone, then creates concrete non-fog items there.
+- Sharpening `fog` derives a precise question, chooses or creates a
+  capability module, then creates a concrete `grilling`, `research`, or
+  `prototype` item there.
+- Execution milestones are separately blocker-derived chronology; they do not
+  determine capability placement.
 - `grilling`, `research`, and `prototype` do not become implementation scope silently.
-- Closure notes for `grilling`, `research`, and `prototype` must include:
+- Resolution records for `grilling`, `research`, and `prototype` include:
   - answer
-  - accepted direction
-  - artifacts or evidence
-  - created or updated epics/stories
+  - artifacts or evidence by immutable commit SHA and path
+- Use provider-native blocker relations. Claim a ticket through native
+  assignment/state before working it.
 - Epic/story semantics stay strict even beside learning and uncertainty items.
 
 ## Handoff Shape
@@ -63,7 +69,7 @@ The backlog root is the living map. Docs, specs, grill logs, and notes are evide
 Return:
 
 - current frontier
-- selected next kind
+- selected next concept
 - chosen or proposed placement
 - evidence used
 - open blockers

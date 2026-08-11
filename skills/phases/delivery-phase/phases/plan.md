@@ -13,6 +13,9 @@ Load `create-plan` only after this phase is selected.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
 - Require dependencies, owned paths, validation gates, review routing, and explicit wave boundaries.
 - Group independent tasks with disjoint write scopes into the same wave.
+- Put every currently unblocked task with a disjoint write scope in the same
+  wave. Use a one-task wave only when dependencies or ownership leave one task
+  unblocked.
 
 ## Completion State
 

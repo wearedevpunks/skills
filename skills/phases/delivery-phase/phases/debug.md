@@ -16,6 +16,13 @@ Load `debugging-phase` only after this phase is selected.
 - Speculative parallel fixes are not allowed.
 - If the bug is broader than delivery scope, capture debt or open a separate
   debugging goal.
+- Preserve review lineage, `review_count`, `repair_count`, and the opening
+  `review_run_id` through the repair.
+- After an ordinary fix with `review_count < 3`, stale the preceding report and
+  enter `review_due`.
+- After debug fix 3 (`review_count = 3`, `repair_count = 3`), enter
+  `focused_validation`. Failure resumes `debug_active` in epoch 3 without a
+  counter change; passing records `clean_handoff`. Fix 3 never opens review 4.
 
 ## Completion State
 
@@ -25,6 +32,6 @@ Write or verify:
 - root cause or narrowed hypothesis
 - fix or explicit blocker
 - rerun validation
-- whether another review is required
+- resulting state and preserved counter evidence
 
 Then stop or re-enter `delivery-phase` for routing.

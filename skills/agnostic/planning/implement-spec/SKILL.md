@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: Implement an approved spec folder through plan-derived worker waves while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when a reviewed spec already has an execution-ready `PLAN.md`.
+description: Implement an agent-ready spec folder through plan-derived worker waves while keeping `IMPLEMENTATION-NOTES.md`, `PLAN.md`, and spec-linked tech debt in sync. Use when an agent-ready spec already has an execution-ready `PLAN.md`.
 ---
 
 # Implement Spec
@@ -9,10 +9,10 @@ description: Implement an approved spec folder through plan-derived worker waves
 
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** reviewed spec folder with `SPEC.md` and `PLAN.md`
+- **Upstream:** agent-ready spec folder with `SPEC.md` and `PLAN.md`
 - **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal worker-wave orchestration
 - **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
-- **Entry conditions:** existing reviewed spec folder; stop and use `create-plan` if `PLAN.md` is missing
+- **Entry conditions:** existing agent-ready spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
 
 ## Required Inner Skills
@@ -26,15 +26,20 @@ Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
 
 Follow [references/parallel.md](references/parallel.md) as the execution contract.
 
-The parent owns wave orchestration and shared artifacts. Scoped workers own implementation tasks.
+The parent owns wave orchestration and shared artifacts. Scoped workers own
+implementation tasks.
 
 ## Quick start
 
 1. Resolve the target spec folder by checking, in order: `apps/wiki/content/docs/project/specs/<domain>/<spec>/`, legacy `apps/wiki/specs/<domain>/<spec>/`, then `docs/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
 3. Read `references/parallel.md`, parse the plan graph, and build the first unblocked wave.
-4. Launch scoped workers for the current wave using `references/parallel-worker-brief.md`.
-5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and spec-linked tech debt before advancing.
+4. Launch scoped workers for the current wave using
+   `references/parallel-worker-brief.md`. Forward every guidance item unchanged,
+   preserving its `implementation_skill_guidance` skill and behavior fields.
+5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and
+   spec-linked tech debt before advancing. Require exactly one skill-application
+   evidence record per guidance entry.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.

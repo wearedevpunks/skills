@@ -9,7 +9,8 @@ Yield after planning.
 Stop after:
 
 - the plan file is complete
-- backlog sync is complete
+- eligible in-scope backlog sync is complete, or `PLAN.md` records the explicit
+  skip reason for a planning-only request and can continue plan completion
 
 Do not:
 

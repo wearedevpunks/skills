@@ -1,10 +1,12 @@
 ---
 name: writing-great-skills
-description: Reference for writing and editing skills well: predictable invocation, steps, references, disclosure, and pruning.
+description: Deprecated compatibility reference for legacy manifests that write and edit skills. Prefer writing-for-agents for new work.
 disable-model-invocation: true
 ---
 
 # Writing Great Skills
+
+Deprecated compatibility skill. New manifests use `writing-for-agents`.
 
 A skill wrangles predictability out of a stochastic system. Predictability means the agent follows the same process every run, not that it produces the same output.
 

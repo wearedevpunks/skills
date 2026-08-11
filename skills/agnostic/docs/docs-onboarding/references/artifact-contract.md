@@ -44,7 +44,7 @@ The targeted grill can close when every blocking contradiction, missing backlog 
 - parked
 - marked `Missing` with explicit follow-up
 
-Do not grill every low-risk current-state fact. Carry those into `create-spec` as `Inferred`.
+Do not grill every low-risk current-state fact. Carry those into the reconstruction record as `Inferred`, but do not claim agent readiness while a required product decision remains inferred.
 
 ## Reconstructed Specs
 
@@ -65,3 +65,5 @@ Evidence levels:
 - `Missing`: expected context was not found, and the spec must ask a follow-up.
 
 Reconstructed specs must link back to relevant Project Map sections and onboarding grill decisions.
+
+Only specs that pass `create-spec` readiness and return a verified stable blob URL may be projected by `write-backlog`. A `spec-not-ready` result returns its named gaps to onboarding; it produces neither a partial spec nor backlog mutations.

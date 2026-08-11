@@ -1,69 +1,26 @@
 ---
 name: requirements-phase
-description: Orchestrates the human-centric requirements phase from ambiguity through requirements-grill artifacts into backlog shape. Use when the user asks to run a requirements phase, move from discovery to backlog, close requirement branches, decide whether backlog writing is ready, or coordinate requirements-grill with write-backlog.
+description: Close bounded product decisions through requirements-grill, then compile confirmed outcomes into an agent-ready spec.
 disable-model-invocation: true
 ---
 
 # Requirements Phase
 
-Human-centric discovery wrapper for `requirements-grill -> write-backlog`.
-
-Normally do not create or update a formal agent goal. This phase is an interview and decision-closure loop, not execution delivery.
-
-## Use when
-
-- The user asks for a requirements phase, requirements discovery, or backlog readiness.
-- Ambiguity needs to become grill branches, glossary, axioms, parked scope, and closure decisions.
-- Existing `*-grill-status.md` / `*-grill-log.md` artifacts need to drive backlog/module/epic/story shape.
-- The user wants to know whether to keep grilling, park scope, or write/sync backlog.
-
-## Do not use when
-
-- The user asks to write `SPEC.md`, `PLAN.md`, implementation notes, code, tests, PRs, or delivery execution.
-- The next step is already an approved spec/plan/implementation task. Use delivery-phase or the specific delivery skill instead.
-- The user wants only a tactical backlog formatting pass from already-closed requirements. Use `write-backlog` directly.
+Human-centric decision closure: `requirements-grill -> create-spec`.
 
 ## Workflow
 
-1. Establish phase state.
-   - Identify the topic, source artifacts, current backlog target/provider, and any explicit scope boundary.
-   - Scan relevant routed learning artifacts when known behavior, prior bugs, project conventions, or domain facts could affect requirements.
-   - If grill artifacts exist, read status first, then log.
-   - If subagents are available and existing artifacts are long, use `requirements-synthesizer` to compress status/log evidence into accepted, rejected, superseded, parked, and unresolved decisions.
-   - State assumptions and known unresolved branches tersely.
+1. Read existing grill status before its log. Summarize accepted, rejected,
+   superseded, parked, and unresolved branches.
+2. While material decisions remain open, use `requirements-grill` for the HITL
+   interview. Research and recommendations are evidence, not decisions.
+3. When the user confirms shared understanding and remaining branches are
+   closed or explicitly parked, invoke `create-spec` immediately.
+4. Require `create-spec` to push or explicitly retain the spec commit, verify the retained ref contains the spec commit, and construct and verify a stable blob URL before `write-backlog` can run. A local SHA plus path is insufficient; otherwise return the compiler's atomic `spec-not-ready` result.
 
-2. Route to `requirements-grill` while decisions are open.
-   - Let `requirements-grill` own HITL interviewing.
-   - Turn ambiguity into named branches, branch percentages, accepted decisions, rejected/superseded decisions, glossary entries, axioms, and parked scope.
+## Boundary
 
-3. Decide backlog readiness.
-   - After `$requirements-grill` completes, backlog-ready means active requirements are shaped enough for module/epic/story work and any non-blocking or follow-up scope is recorded.
-   - If not ready, report the exact backlog-shaping blockers.
-   - If ready, hand off to `write-backlog`.
-
-4. Run `write-backlog` only after readiness.
-   - Derive modules first, then epics/capabilities, then stories.
-   - If subagents are available, use `backlog-shaper` for draft module/epic/story shape before parent review.
-   - Use accepted decisions and locked direction only.
-   - Preserve parked scope and unresolved items as deferred notes, not silent backlog content.
-   - Sync or draft provider payloads only when the user requested backlog write/sync.
-
-5. Stop at the requirements boundary.
-   - Do not create specs, plans, implementation tasks, or code changes from this phase.
-   - Recommend delivery-phase only after backlog state is clear.
-
-## Output contract
-
-End with one of these states:
-
-- `backlog-ready`: branches closed or parked enough; backlog can be written next.
-- `backlog-written`: backlog hierarchy/payloads were produced or synced.
-- `parked`: requirements are intentionally unresolved; parked scope and resume trigger are explicit.
-- `blocked`: named branches still need human decisions before backlog writing.
-
-Include:
-
-- active, closed, parked, and unresolved branches
-- glossary and axiom changes, if any
-- backlog module/epic/story implications, if known
-- next recommended action: continue grill, write/sync backlog, park, or move to delivery-phase
+This phase does not create delivery backlog or implementation plans. After
+`spec-written`, its verified stable blob URL must exist before `write-backlog`
+may project the provider-neutral spec, followed by `delivery-phase` /
+`create-plan`.

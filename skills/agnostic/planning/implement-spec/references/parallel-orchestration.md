@@ -30,6 +30,8 @@ For each task, extract:
   - acceptance criteria
   - validation
   - `tdd_target`
+  - `assigned_skills`
+  - `implementation_skill_guidance`
   - `review_mode`
   - `runtime_validation`
   - `runtime_target`
@@ -66,6 +68,7 @@ For each unblocked task:
 - use the worker-brief contract from [parallel-worker-brief.md](parallel-worker-brief.md)
 - assign the task's owned paths
 - assign its validation gates
+- forward each `implementation_skill_guidance` item unchanged
 
 ## Step 5: Review and validate the wave
 
@@ -74,8 +77,11 @@ After the workers return:
 1. inspect their outputs for correctness and completeness
 2. compare the result against the task validation contract
 3. ensure the task log and touched files were written back into `PLAN.md`
-4. ensure non-obvious deviations or surprises were written into `IMPLEMENTATION-NOTES.md`
-5. retry or escalate failed work instead of quietly advancing
+4. ensure `IMPLEMENTATION-NOTES.md` has exactly one evidence record per guidance
+   entry and no unmatched record
+5. verify each record against the worker result and changed artifacts
+6. ensure non-obvious deviations or surprises were written into `IMPLEMENTATION-NOTES.md`
+7. retry or escalate failed work instead of quietly advancing
 
 Move to the next wave only after the current wave is validated and logged.
 
@@ -100,6 +106,8 @@ A task is complete only when all of the following are true:
 - `PLAN.md` reflects the completed status and execution log
 - touched files are recorded
 - any non-obvious deviations are reflected in `IMPLEMENTATION-NOTES.md`
+- skill-application evidence has exact one-to-one cardinality with forwarded
+  guidance
 
 If any of these are missing, the task is not done yet.
 

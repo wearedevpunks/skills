@@ -12,6 +12,10 @@ Official sources:
   - `Content-Type: application/json`
   - `Authorization: Bearer <ACCESS_TOKEN>`
 
+## Preflight before creation
+
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in Linear. A failed preflight writes nothing.
+
 ## Minimum documented mutation
 
 ```graphql
@@ -27,6 +31,10 @@ mutation IssueCreate($input: IssueCreateInput!) {
   }
 }
 ```
+
+## Update existing decision tickets
+
+Use Linear `issueUpdate(id: ..., input: ...)` for claim, release, and resolve after reading the issue's current assignee/state and rejecting a conflicting claim. Use only configured assignee/state/label fields. Resolution updates the terminal state and appends the immutable resolution pointer to the issue body or closure comment. Return the updated identifier and URL to Finder.
 
 ```json
 {
@@ -47,6 +55,8 @@ mutation IssueCreate($input: IssueCreateInput!) {
 }
 ```
 
+The example `labelIds` value assumes an explicitly configured classification label group. Without it, use the fallback below and change the example title accordingly.
+
 ## Required fields
 
 - `teamId`
@@ -62,11 +72,13 @@ mutation IssueCreate($input: IssueCreateInput!) {
 - `stateId`
 - `dueDate`
 
-## Kind storage
+## Provider classification
 
-Canonical `kind` storage is a single-select Linear label group.
+Classification examples assume explicit configuration.
 
-Use one label from the `Kind` group:
+Inspect configured provider metadata before choosing a representation. An adapter-specific single-select Linear label group may represent the direct backlog concepts.
+
+Only when explicitly configured to use a `Kind` label group, use one matching label:
 
 - `Kind/fog`
 - `Kind/grilling`
@@ -75,7 +87,15 @@ Use one label from the `Kind` group:
 - `Kind/epic`
 - `Kind/story`
 
-Linear label groups allow only one label from the group per issue. Do not use workflow state as kind. Other labels may mirror domain or capability-module metadata, but the `Kind/...` label is canonical.
+Linear label groups allow only one label from the group per issue. Do not use workflow state as classification. Do not create a label group by default.
+
+Fallback order:
+
+1. configured label group
+2. existing native issue label or category that exactly preserves the direct concept
+3. stable title prefix such as `[story]`
+
+If workspace policy permits none of these, fail preflight. Do not create labels implicitly.
 
 ## Repo mapping
 
@@ -88,7 +108,29 @@ Linear label groups allow only one label from the group per issue. Do not use wo
 - epic -> top-level issue with `Kind/epic`
 - story -> child issue created with `parentId` and `Kind/story`
 
-`grilling`, `research`, and `prototype` closure notes must name the answer, accepted direction, artifacts or evidence, and created or updated epics/stories.
+`grilling`, `research`, and `prototype` closure notes record the answer or verdict, evidence, observations, open decisions, and resolution pointer for Wayfinder. They do not authorize delivery.
+
+## Delivery body contracts
+
+Epic body ownership:
+
+- outcome
+- scope and cross-story constraints
+- child story list
+- immutable spec link
+- accepted artifact links when relevant
+
+Story body ownership:
+
+- outcome
+- source `US-###`
+- covered `AC-###`
+- demonstration
+- non-goals and dependencies
+- immutable spec link
+- accepted artifact links
+
+Use these headings in `description`; do not substitute a mutable local spec path.
 
 ## Chronological execution milestones
 
@@ -96,12 +138,11 @@ Linear project milestones answer first/next/later. Name them chronologically, su
 
 Only selected non-fog `grilling`, `research`, `prototype`, `epic`, and `story` issues are milestone-eligible. Fog has no execution milestone until sharpened into concrete work. Capability-module metadata remains grouping and is not an execution issue.
 
-1. Create the milestone-eligible issues and native blocker relations first across the full selected scope.
-2. Stop materialization on a missing blocker target or cycle.
-3. Assign selected milestone-eligible issues with no blockers to `M1`.
-4. Assign every other selected milestone-eligible issue to `M(1 + max(milestone number of each blocker))`.
-5. Create or reuse the derived chronological project milestones and assign exactly one to each selected milestone-eligible issue.
-6. Verify every blocker is in a strictly earlier milestone than the issue it blocks.
+1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
+2. Derive blocker-free issues as `M1`; derive every other issue as `M(1 + max(milestone number of each blocker))`.
+3. Verify every blocker is in a strictly earlier milestone and that the configured Linear representation supports the full graph.
+4. Only after preflight passes, create issues, map planned keys to provider ids, create native blocker relations, and create or reuse the derived milestones.
+5. Assign exactly one verified milestone to each selected milestone-eligible issue.
 
 Issues in the same derived wave share a milestone and can proceed in parallel, even when they belong to different capability modules. A capability module can span multiple milestones. Capability grouping, parent/child hierarchy, and existing milestone assignment never determine chronology. Native blocker relations remain authoritative; recompute milestone assignment and numbering whenever they change.
 
@@ -109,6 +150,6 @@ Issues in the same derived wave share a milestone and can proceed in parallel, e
 
 - Linear issues belong to a single team.
 - If `stateId` is omitted, Linear assigns the team’s default backlog or triage state.
-- If the `Kind` label group is absent, create or request it before backlog sync.
+- If an explicitly configured label group is absent, record a provider setup blocker. Do not create classification labels or groups without explicit configuration.
 - Linear’s GraphQL schema is introspectable. If you need a workspace-specific or newly-added create field, inspect `IssueCreateInput` before hardcoding it.
 - Project milestone assignment is part of project-backed issue creation in Linear. Treat the current schema or SDK types as the source of truth for the exact milestone input field name in your workspace version.

@@ -9,11 +9,12 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** approved `SPEC.md` or explicit planning request
+- **Upstream:** agent-ready `SPEC.md` or explicit planning request
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
 - **Downstream:** execution-ready `PLAN.md` for `implement-spec`
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing
-- **Stop conditions:** `PLAN.md` and backlog sync are complete; no implementation started
+- **Stop conditions:** `PLAN.md` is complete; eligible in-scope backlog sync is
+  complete, or an explicit skip reason is recorded; no implementation started
 
 ## Required Inner Skills
 
@@ -32,14 +33,26 @@ Create a plan first. Never implement code in this skill.
 3. Read `references/grill-ambiguity.md` and run `$grilling` as explicit ambiguity reduction.
 4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
 5. After a whole response set is processed, emit any synthesis checkpoint required by `references/grill-ambiguity.md`.
-6. After `$grilling` completes, continue to plan synthesis; backlog sync remains step 12.
+6. After `$grilling` completes, continue to plan synthesis; backlog eligibility
+   remains step 13.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
-10. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
-11. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-12. Read `references/backlog-sync.md` and sync backlog at epic/story level, not one item per plan task.
-13. Read `references/stop-conditions.md` and stop exactly there.
+9. Locate scoped `AGENTS.md` files for every planned task path. Read each
+   applicable `Skill | What / when` table, select rows whose exact `What / when`
+   triggers match the task, and open each selected skill's complete `SKILL.md`
+   before finalizing task design.
+10. For every implementation task, convert applicable scoped or named skill
+    obligations into `implementation_skill_guidance`; preserve `assigned_skills`
+    as planning provenance.
+11. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
+12. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
+13. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
+    backlog sync is eligible and in scope; otherwise record an explicit skip
+    reason and continue plan completion.
+14. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
+    only when its language contract passes without changing the resolved
+    decision ledger.
+15. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -52,27 +65,38 @@ Create a plan first. Never implement code in this skill.
 5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
-8. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
-9. Normalize every task with stable ids, `depends_on`, `location`, `description`, `validation`, `status`, `log`, `files edited/created`, owning-story backlog references, `assigned_skills`, `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields, `codebase_design_notes`, `review_mode`, `runtime_validation`, `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
-10. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
-11. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
-12. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
-13. Stop after plan creation and backlog sync. Do not implement code or spawn implementation workers.
+8. Assign each task the deduplicated union of skills whose exact `What / when`
+   triggers match in every touched scope, merging all touched scopes for
+   cross-directory tasks.
+9. Build plan-derived worker waves: place every currently unblocked task with
+   a disjoint write scope in the same wave. Use a one-task wave only when
+   dependencies or ownership leave one task unblocked.
+10. Normalize every task with stable ids, `depends_on`, `location`,
+   `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
+   `files edited/created`, owning-story backlog references, `assigned_skills`,
+   `implementation_skill_guidance`,
+   `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
+   `codebase_design_notes`, `review_mode`, `runtime_validation`,
+   `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
+11. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
+12. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
+13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
+14. Stop after plan creation and either eligible in-scope backlog sync or its
+    explicit skip record. Do not implement code or spawn implementation workers.
 
 ### Stack-aware preservation
 
 If `SPEC.md` contains `Dependency Readiness` or `Branch/Base Intent`, copy those
 sections into `PLAN.md` and validate that they are internally consistent.
 
-- Preserve the exact dependency status: `No Stack Required`,
-  `Branch/Base Intent`, or `Blocked`.
+- Preserve `No Stack Required` or `Ready` plus its dependency evidence.
 - Do not decide stack topology in `create-plan`.
 - Do not convert task-level `depends_on` into stacked PRs. Intra-epic task
   dependencies stay inside one PR and only control implementation order.
-- If `Dependency Readiness` is `Blocked`, stop planning and report the blocker
-  instead of producing an execution-ready plan.
-- If `Branch/Base Intent` exists, make implementation tasks reference that
-  branch/base intent as an execution constraint.
+- `Blocked` is invalid agent-ready input. Stop planning and report the stale or
+  contradictory spec instead of producing an execution-ready plan.
+- If `Branch/Base Intent` is not `Not applicable`, make implementation tasks
+  reference that intent as an execution constraint.
 
 ### Review modes
 

@@ -1,6 +1,6 @@
 ---
 name: parallel-research
-description: Coordinate aggressive parallel subagent fan-out for readonly work. Use when Codex is researching, auditing, updating docs, investigating multiple hypotheses, or exploring unrelated code paths without writing code. Do not use for code-writing tasks, tightly coupled edits, or work that is faster to finish locally on the critical path.
+description: Coordinate aggressive parallel subagent fan-out for readonly work and persist one consolidated research report. Use when Codex is researching, auditing, updating docs, investigating multiple hypotheses, or exploring unrelated code paths without writing code. Do not use for code-writing tasks, tightly coupled edits, or work that is faster to finish locally on the critical path.
 ---
 
 # Parallel Research
@@ -12,7 +12,16 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 1. Confirm the task is readonly.
 2. Confirm the work can be split into independent questions or areas.
 3. Keep the immediate blocking step local. Delegate only sidecar work that can run in parallel.
-4. Skip this skill for code writing, patching, rebases, commits, or tightly coupled debugging that needs one continuous thread.
+4. Skip this skill for source or code mutation, patching, rebases, unrelated
+   writes, or tightly coupled debugging that needs one continuous thread. The
+   one retained durable-report commit required below does not trigger this skip.
+5. Durable-report mode is mandatory. Read [DURABLE-REPORT.md](DURABLE-REPORT.md)
+   before dispatching lanes. Every run writes one consolidated report to the
+   project wiki; findings must not remain response-only or context-only.
+   Research lanes remain readonly. Only the coordinator or one designated
+   consolidator may write and commit exactly one report after synthesis.
+   Finder child resolution uses this same mandatory durable mode. The writer
+   must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
 
 ## Split Cleanly
 
@@ -41,7 +50,7 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 
 - Compare outputs against the repo, docs, or other primary artifacts.
 - Resolve disagreements with evidence, not majority vote.
-- Follow important claims back to their owning source before relying on them.
+- Follow every retained factual claim back to its primary source.
 - Extract the few facts that matter, then decide locally.
 - Close agents that are no longer needed.
 
@@ -69,3 +78,4 @@ Return:
 - conflicts or uncertainty
 - the synthesized conclusion
 - the next local action
+- durable report immutable SHA, path, and verified retention reference

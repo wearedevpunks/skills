@@ -4,7 +4,8 @@
 
 Route to `finder-phase` before `requirements-phase` when a loose idea is too large for one agent session and still wrapped in fog.
 
-Use this route when the first question is not "which requirement is unclear?" but "what kind of work is this frontier?"
+Use this route when the first question is not "which requirement is unclear?"
+but "which concept and child flow can close this frontier?"
 
 ## Placement In Root Guidance
 
@@ -14,7 +15,8 @@ Keep root prompt guidance short:
 - Unclear requirements inside a bounded topic route to `requirements-phase`.
 - Accepted specs, issues, or plans route to `delivery-phase`.
 - Runtime failures route to `debugging-phase`.
-- Reviews route to `review-phase`.
+- Review requests persist the bounded target and accepted-bounds context, then
+  point the operator to the exact explicit `$review-phase` invocation.
 - Docs learning after proven changes routes to `docs-ingest-phase`.
 
 ## Boundary
@@ -23,7 +25,11 @@ Keep root prompt guidance short:
 
 - `requirements-phase` for human decision closure inside a known topic.
 - `parallel-research` for split-friendly readonly investigation.
-- `prototype` for artifact-driven learning.
+- `prototype-phase` for human-evaluated artifact-driven learning.
 - `create-spec`, `create-plan`, or `delivery-phase` after implementation scope is accepted.
 
 It chooses the route and updates the frontier handoff.
+
+`finder-phase`, root routing, and `delivery-phase` never invoke, delegate to, or
+model-select `review-phase`. They may only persist its input context, return the
+exact explicit `$review-phase` instruction, and stop.
