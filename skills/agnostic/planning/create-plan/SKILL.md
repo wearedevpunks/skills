@@ -37,7 +37,7 @@ Create a plan first. Never implement code in this skill.
    remains step 12.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
+9. Locate scoped `AGENTS.md` files for every planned task path. Read each applicable `Skill | What / when` table, select rows whose exact `What / when` triggers match the task, and open each selected skill's complete `SKILL.md` before finalizing task design.
 10. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
 11. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
 12. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
@@ -59,7 +59,7 @@ Create a plan first. Never implement code in this skill.
 5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
-8. Assign each task the exact existing skills required by those scoped `Primary skills here` lists, merging all scopes for cross-directory tasks.
+8. Assign each task the deduplicated union of skills whose exact `What / when` triggers match in every touched scope, merging all touched scopes for cross-directory tasks.
 9. Build plan-derived worker waves: place every currently unblocked task with
    a disjoint write scope in the same wave. Use a one-task wave only when
    dependencies or ownership leave one task unblocked.
