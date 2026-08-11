@@ -38,12 +38,15 @@ Create a plan first. Never implement code in this skill.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
 9. Locate scoped `AGENTS.md` files for every planned task path, extract `Primary skills here` lists, and load the relevant skill guidance before finalizing task design.
-10. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
-11. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-12. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
+10. For every implementation task, convert applicable scoped or named skill
+    obligations into `implementation_skill_guidance`; preserve `assigned_skills`
+    as planning provenance.
+11. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
+12. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
+13. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
     backlog sync is eligible and in scope; otherwise record an explicit skip
     reason and continue plan completion.
-13. Read `references/stop-conditions.md` and stop exactly there.
+14. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -63,6 +66,7 @@ Create a plan first. Never implement code in this skill.
 10. Normalize every task with stable ids, `depends_on`, `location`,
    `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
    `files edited/created`, owning-story backlog references, `assigned_skills`,
+   `implementation_skill_guidance`,
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,
    `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.

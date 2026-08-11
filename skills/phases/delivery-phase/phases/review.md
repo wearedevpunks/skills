@@ -1,31 +1,52 @@
 # Review Phase
 
-Use this phase after implementation or when delivery resumes with an unreviewed
-diff, branch, PR, or implementation artifact.
+Use after implementation or whenever delivery has `review_due` for a stale or
+missing retained review.
 
-## Delegate
+## Prepare Explicit Review
 
-Mandatory step: after this phase is selected, load and call `review-phase`
-before routing or closing delivery. Preserve its findings-first, readonly
-posture even when tests pass.
+1. Validate accepted bounds and normalize a supported Git/diff target without
+   mutating it. Unsupported targets or invalid bounds enter `review_failed`
+   with exact evidence, no report, and no counter change.
+2. Keep that result in memory and recover `review_count` from unique valid retained passes for the
+   delivery lineage and reconcile the handoff projection.
+3. If recovered `review_count >= 3`, return `review_budget_exhausted` with exact
+   current-route evidence. This is a zero-write no-op: do not persist
+   `review_due` or mutate any handoff, counter, or delivery status.
+4. Only when recovered `review_count < 3`, persist `review_due` with the valid
+   normalized target and exact explicit `$review-phase` invocation
+   context defined in the phase-handoff reference. Do not preallocate an ordinal
+   or derive `review_run_id` yet.
+5. Return that invocation context and stop. Only an explicit operator invocation
+   of `$review-phase` consumes it, preallocates ordinal `review_count + 1`, fixes
+   `review_run_id`, and enters `review_running`.
 
-## Rules
+For `report_retention_pending`, return an explicit `$review-phase` resume context
+with the existing run id, local report identity, and fresh target/source hashes,
+then stop. The explicit review invocation resumes retention without rerunning
+lenses.
 
-- Review is mandatory even when tests pass.
-- Review remains findings-first and readonly unless the called review skill says otherwise.
-- Classify findings before routing:
-  - No blocking findings: route to docs ingest or closeout.
-  - In-scope non-runtime blockers: route back to implement.
-  - Runtime evidence: route to debug.
-  - Broad scope or architecture debt: capture follow-up debt instead of expanding delivery.
+## Route Retained Findings
 
-## Completion State
+After the retained report establishes the completed ordinal:
 
-Write or verify:
+1. Runtime evidence routes primarily to debugging.
+2. Otherwise, an in-scope non-runtime blocker routes primarily to implementation.
+3. Otherwise, broad architecture debt routes to debt follow-up.
+4. Otherwise, route to docs ingest or closeout by documentation completeness.
 
-- review command or process used
-- findings and severity
-- accepted no-op reason if no findings
-- next route decision and why
+Architecture debt may remain a secondary follow-up beside debugging or
+implementation. Opening either repair route is one atomic durable handoff write
+of active state, route, `repair_count = review_count`, and idempotency
+`review_run_id`. Reject a mismatched or already-consumed repair ordinal.
+Complete the transition only after that write. Resume an already-recorded run
+directly without another increment.
 
-Then stop or re-enter `delivery-phase` for routing.
+## Completion
+
+Before review, completion is a durable `review_due` handoff plus exact explicit
+invocation context and a stop. After review returns `review_routed`, completion
+records report path, report SHA-256, report commit SHA, verified retained ref,
+lineage, run id, recovered/projected counts, stable finding ids, primary route,
+secondary debt route when present, and resulting state. Then stop or re-enter
+delivery routing.

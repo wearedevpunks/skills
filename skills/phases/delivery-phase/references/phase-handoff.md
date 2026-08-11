@@ -1,9 +1,8 @@
 # Phase Handoff
 
-Each phase must leave enough state for a later `delivery-phase` invocation to
-resume without guessing.
+Each phase leaves enough durable state for resume without guessing.
 
-## Minimum Handoff Shape
+## Base Shape
 
 ```text
 Phase:
@@ -17,11 +16,62 @@ Next suggested route:
 Blockers:
 ```
 
-## Rules
+State only what ran. Prefer durable artifact paths/links. Carry approved
+artifacts and UI evidence. Give every skip an exact no-op reason. Honor explicit
+HITL stops.
 
-- State what actually ran. Do not imply downstream phases ran.
-- Prefer links or paths to durable artifacts over prose-only claims.
-- Carry approved artifact links and before/after UI Evidence links forward; if links are missing, name whether `repo-asset-management` is blocked or not applicable.
-- If a phase is skipped, record the no-op reason.
-- If the user requested HITL control, stop after the handoff even when the next
-  route is obvious.
+## Review And Repair Projection
+
+For a delivery goal with review activity, also persist:
+
+```text
+delivery_goal_identity:
+accepted_bounds_identity:
+accepted_bounds_hash:
+review_lineage_id:
+review_run_id:
+state: review_due | review_running | report_retention_pending | review_routed | debug_active | repair_active | focused_validation | clean_handoff
+primary_route:
+review_count:
+repair_count:
+authoritative_report_path:
+authoritative_report_commit:
+verified_retained_ref:
+stable_finding_ids:
+```
+
+`review_count` is a projection of the highest valid retained report ordinal for
+the lineage. Reconcile it on resume. An opening repair transition atomically
+writes active state, primary route, `repair_count = review_count`, and
+idempotency `review_run_id`; complete the transition only after the write. A
+recorded run id resumes its state without increment or guard fallthrough.
+
+## Explicit Review Invocation Context
+
+Delivery persists this block for `review_due` and returns it unchanged before
+stopping:
+
+```text
+explicit_operator_invocation_required: true
+review_invocation_skill: $review-phase
+review_invocation_mode: delivery
+delivery_goal_identity:
+accepted_bounds_identity:
+accepted_bounds_hash:
+review_lineage_id:
+recovered_review_count:
+current_route:
+normalized_target:
+```
+
+The `review_due` handoff leaves `review_run_id` unset. Only the explicit operator
+invocation consumes this context, preallocates the next ordinal, fixes the run
+id, and enters `review_running`.
+
+For `report_retention_pending`, the explicit resume context additionally carries
+the existing `review_run_id`, ordinal, local report path and SHA-256, target hash,
+source hashes, and intended retained ref. Delivery returns it and stops; the
+operator invokes `$review-phase` to retry retention without rerunning lenses.
+
+After fix 3, `clean_handoff` is final authority. Link immutable review 3, final
+changes, the same passing focused validation, and clean status.

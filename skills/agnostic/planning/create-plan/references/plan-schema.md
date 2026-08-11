@@ -46,6 +46,7 @@ Every task must include:
 - `backlog_item_url`
 - `relation_mode`
 - `assigned_skills`
+- `implementation_skill_guidance`
 - `tdd_status`
 - `tdd_target`
 - `red_command`
@@ -74,6 +75,19 @@ Multiple tasks may point to the same story when one story needs several executio
 Do not create a new backlog item only because a task boundary exists in the plan.
 
 `assigned_skills` must list the skills used to shape the task during planning, not only skills expected during implementation. Skill guidance should be reflected in the task's boundary, validation, `tdd_target`, `codebase_design_notes`, and `review_mode`.
+
+`implementation_skill_guidance` is the executor contract for the task. Assess
+every `assigned_skills` item for implementation applicability. Every
+implementation-applicable `assigned_skills` item maps to exactly one guidance
+entry; omit planning-only items. Each entry carries the exact skill identity and
+concise applicable behavior:
+
+- `skill`: exact skill identity
+- `applicable_behavior`: concise behavior the executor must follow while
+  implementing this task
+
+Deduplicate by skill within one task. Do not replace `assigned_skills`; it
+remains planning provenance.
 
 For behavior-changing code tasks, `tdd_status` must be `required` and the task must include concrete RED/GREEN commands before implementation starts. For docs-only, formatting-only, generated-code-only, config-only, scaffold/bookkeeping-only, or truly non-testable tasks, record `tdd_status: not_applicable` or `not_testable` with an explicit `reason_not_testable`.
 
@@ -109,6 +123,11 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-story
 - **relation_mode**: native | body-links
 - **assigned_skills**: [`effect`, `tdd`]
+- **implementation_skill_guidance**:
+  - **skill**: `effect`
+    **applicable_behavior**: Model the boundary with typed effects and preserve typed failure channels.
+  - **skill**: `tdd`
+    **applicable_behavior**: Capture the named public-result RED before implementation and preserve its GREEN evidence.
 - **tdd_status**: required
 - **tdd_target**: First failing public behavior to implement.
 - **red_command**: Exact command expected to fail before implementation.

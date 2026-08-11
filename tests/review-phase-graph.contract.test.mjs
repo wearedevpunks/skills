@@ -1,0 +1,969 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { test } from "node:test";
+import {
+  acceptedBoundsHash,
+  assessReadonlyValidation,
+  deliveryLineageId,
+  deliveryRunId,
+  deliverySnapshotHash,
+  encodeReviewReport,
+  inclusiveScopeHash,
+  normalizeReviewSources,
+  normalizeReviewTarget,
+  orderedBundleContentHash,
+  parseReviewReport,
+  planDeliveryReviewGate,
+  recoverDeliveryCount,
+  resolveRetainedRun,
+  reviewReportPath,
+  reviewScopeSlug,
+  sha256Hex,
+  snapshot12,
+  sourceSetHash,
+  standaloneLineageId,
+  standaloneRunId,
+  standaloneSnapshotHash,
+  validateRetainedPass,
+} from "../skills/phases/review-phase/scripts/review-contract.mjs";
+
+const read = (path) =>
+  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+
+const reviewSkill = () => read("skills/phases/review-phase/SKILL.md");
+const reviewReference = () => read("skills/phases/review-phase/REFERENCE.md");
+const reviewGraph = () =>
+  read("skills/phases/review-phase/references/state-graph.md");
+const reviewTargets = () =>
+  read("skills/phases/review-phase/references/targets.md");
+const reviewReport = () =>
+  read("skills/phases/review-phase/references/durable-report.md");
+
+const cloneCandidate = (candidate) => ({
+  ...candidate,
+  reportBytes: Buffer.from(candidate.reportBytes),
+  commitPaths: [...candidate.commitPaths],
+});
+
+const rewriteReport = (candidate, mutate) => {
+  const parsed = parseReviewReport(candidate.reportBytes);
+  const report = structuredClone(parsed.report);
+  mutate(report);
+  candidate.reportBytes = encodeReviewReport(report, {
+    domain: parsed.frontmatter.domain,
+  });
+  candidate.reportSha256 = sha256Hex(candidate.reportBytes);
+};
+
+const rewriteBytes = (candidate, mutate) => {
+  const text = new TextDecoder().decode(candidate.reportBytes);
+  candidate.reportBytes = Buffer.from(mutate(text), "utf8");
+  candidate.reportSha256 = sha256Hex(candidate.reportBytes);
+};
+
+const retainedPassFixture = (mode = "delivery") => {
+  const delivery = mode === "delivery";
+  const targetEvidence = delivery
+    ? {
+        locator: "repo:wearedevpunks/harness-intelligence",
+        actualBaseRef: "origin/main",
+        fixedPointSha: "1".repeat(40),
+        headIdentity: "2".repeat(40),
+        scopeEntries: ["apps/cli/src/a.ts", "apps/wiki/spec.md"],
+        canonicalPatchBytes: Buffer.from("canonical patch\n"),
+      }
+    : {
+        locator: "artifact:spec-v1",
+        files: [
+          { identity: "docs/b.md", bytes: Buffer.from("beta\n") },
+          { identity: "docs/a.md", bytes: Buffer.from("alpha\n") },
+        ],
+        scopeEntries: ["docs/b.md", "docs/a.md"],
+      };
+  const target = normalizeReviewTarget(mode, targetEvidence);
+  const boundsIdentity = delivery ? "bounds:v1:HI-104" : "bounds:v1:artifact";
+  const boundsHash = acceptedBoundsHash(boundsIdentity, target.inclusive_scope);
+  const deliveryGoalIdentity = delivery ? "goal:HI-104" : null;
+  const lineageId = delivery
+    ? deliveryLineageId(deliveryGoalIdentity)
+    : standaloneLineageId(target.locator, boundsHash);
+  const snapshotHash = delivery
+    ? deliverySnapshotHash({
+        locator: target.locator,
+        actualBaseRef: target.actual_base_ref,
+        fixedPointSha: target.fixed_point_sha,
+        headIdentity: target.head_identity,
+        scopeEntries: target.inclusive_scope,
+        canonicalPatchHash: target.canonical_patch_hash,
+      })
+    : standaloneSnapshotHash({
+        locator: targetEvidence.locator,
+        files: targetEvidence.files,
+        scopeEntries: targetEvidence.scopeEntries,
+      });
+  const ordinal = delivery ? 2 : null;
+  const runId = delivery
+    ? deliveryRunId(lineageId, ordinal)
+    : standaloneRunId(lineageId, snapshotHash);
+  const reviewedAt = delivery ? "20260811T120000Z" : "20260811T120500Z";
+  const reportPath = reviewReportPath({ lineageId, reviewedAt, snapshotHash });
+  const auxiliaryEnvelopePaths = [
+    "apps/wiki/content/docs/project/reviews/meta.json",
+    "apps/wiki/log.md",
+  ];
+  const envelopePaths = [reportPath, ...auxiliaryEnvelopePaths];
+  const sourceEvidence = [
+    {
+      path: delivery ? "SPEC.md" : "Standards.md",
+      bytes: Buffer.from(delivery ? "accepted spec\n" : "standards\n"),
+    },
+  ];
+  const sources = normalizeReviewSources(sourceEvidence);
+  const retainedRef = delivery
+    ? "refs/heads/review-proof"
+    : `review/${reviewScopeSlug(lineageId)}-${snapshot12(snapshotHash)}`;
+  const report = {
+    review_lineage_id: lineageId,
+    review_run_id: runId,
+    accepted_bounds_identity: boundsIdentity,
+    accepted_bounds_hash: boundsHash,
+    reviewed_at: reviewedAt,
+    mode,
+    normalized_target: target,
+    snapshot_hash: snapshotHash,
+    excluded_envelope: envelopePaths,
+    source_paths_and_hashes: sources,
+    source_set_hash: sourceSetHash(sources),
+    lens_outcomes: Object.fromEntries(
+      ["standards", "skill_adherence", "architecture", "simplify", "spec"].map(
+        (lens) => [lens, "clean"],
+      ),
+    ),
+    findings: [],
+    routing: { primary: "closeout", secondary_architecture_follow_up: false },
+    validation: [],
+    delivery_goal_identity: deliveryGoalIdentity,
+    review_ordinal: ordinal,
+    preceding_repair_ordinal: delivery ? 1 : null,
+  };
+  const reportBytes = encodeReviewReport(
+    report,
+    {
+      domain: delivery ? "cli" : "project",
+      trailingProse: delivery ? "Human-readable review summary." : "",
+    },
+  );
+  return {
+    candidate: {
+      reportPath,
+      reportBytes,
+      reportSha256: sha256Hex(reportBytes),
+      reportCommitSha: (delivery ? "b" : "e").repeat(40),
+      retainedRef,
+      refContainsCommit: true,
+      commitPaths: envelopePaths,
+    },
+    expected: {
+      mode,
+      acceptedBoundsIdentity: boundsIdentity,
+      targetEvidence,
+      sourceEvidence,
+      auxiliaryEnvelopePaths,
+      approvedRetainedRefs: [retainedRef],
+      wikiDomain: delivery ? "cli" : "project",
+      ...(delivery ? { deliveryGoalIdentity, reviewOrdinal: ordinal } : {}),
+    },
+    lineageId,
+  };
+};
+
+const standaloneRetainedPassFixture = () => retainedPassFixture("standalone");
+
+test("review phase is explicit-only, readonly, and ends after retained routing", () => {
+  const skill = reviewSkill();
+  const metadata = read("skills/phases/review-phase/agents/openai.yaml");
+  const delivery = read("skills/phases/delivery-phase/SKILL.md");
+  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
+  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
+  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
+  assert.match(skill, /disable-model-invocation:\s*true/u);
+  assert.match(metadata, /allow_implicit_invocation:\s*false/u);
+  assert.match(delivery, /`review-phase` is user-invoked/iu);
+  assert.match(delivery, /exact `\$review-phase` invocation context.{0,100}stops/isu);
+  assert.doesNotMatch(delivery, /delegate to `review-phase`/iu);
+  assert.match(deliveryReview, /persist `review_due`.{0,160}exact explicit `\$review-phase` invocation\s+context/isu);
+  assert.match(deliveryReview, /Return that invocation context and stop/iu);
+  assert.match(deliveryReview, /Only an explicit operator invocation.{0,160}enters `review_running`/isu);
+  assert.doesNotMatch(deliveryReview, /explicitly invoke `review-phase`/iu);
+  assert.match(deliveryRouter, /For durable `review_due`/iu);
+  assert.match(
+    deliveryRouter,
+    /exact explicit `\$review-phase`\s+invocation context.{0,50}stop/isu,
+  );
+  assert.match(handoff, /explicit_operator_invocation_required: true/u);
+  assert.match(handoff, /review_invocation_skill: \$review-phase/u);
+  assert.match(handoff, /`review_due` handoff leaves `review_run_id` unset/iu);
+  assert.match(skill, /explicit operator invocation.{0,100}valid\s+`review_due` context/isu);
+  assert.match(skill, /the invocation has\s+entered `review_running`/iu);
+  assert.match(skill, /reviewed target\s+remains readonly/iu);
+  assert.match(skill, /report, navigation,\s+and wiki-log retention envelope/iu);
+  assert.match(skill, /terminate.{0,100}without entering a\s+repair state/isu);
+  assert.match(skill, /does not plan work.{0,160}assign implementation\s+skills.{0,160}repair findings/isu);
+});
+
+test("all model-facing root and delivery guidance preserves explicit review invocation", () => {
+  const rootRouting = read(
+    "skills/phases/finder-phase/references/root-routing.md",
+  );
+  const delivery = read("skills/phases/delivery-phase/SKILL.md");
+  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
+  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
+  const deliveryHandoff = read(
+    "skills/phases/delivery-phase/references/phase-handoff.md",
+  );
+  const modelGuidance = [rootRouting, delivery, deliveryReview, deliveryRouter];
+  modelGuidance.push(deliveryHandoff);
+
+  assert.match(
+    rootRouting,
+    /Review requests persist.{0,160}exact explicit `\$review-phase` invocation/isu,
+  );
+  assert.match(
+    rootRouting,
+    /never invoke, delegate to, or\s+model-select `review-phase`/iu,
+  );
+  for (const document of modelGuidance) {
+    assert.doesNotMatch(document, /Reviews route to `review-phase`/iu);
+    assert.doesNotMatch(document, /load and call `review-phase`/iu);
+    assert.doesNotMatch(document, /explicitly invoke `review-phase`/iu);
+    assert.doesNotMatch(document, /delegate to `review-phase`/iu);
+  }
+});
+
+test("bounds and target validation precede delivery budget evaluation", () => {
+  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
+  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
+  const graph = reviewGraph();
+
+  const reviewValidation = deliveryReview.indexOf(
+    "Validate accepted bounds and normalize a supported Git/diff target",
+  );
+  const reviewBudget = deliveryReview.indexOf("recovered `review_count >= 3`");
+  assert.ok(reviewValidation >= 0 && reviewValidation < reviewBudget);
+  assert.match(
+    deliveryReview,
+    /Unsupported targets or invalid bounds enter `review_failed`.{0,120}no counter change/isu,
+  );
+  assert.match(
+    deliveryReview,
+    /`review_count >= 3`.{0,180}zero-write no-op.{0,180}do not persist\s+`review_due`/isu,
+  );
+  assert.match(
+    deliveryRouter,
+    /validates accepted bounds and normalizes a\s+supported target before any delivery-budget evaluation/iu,
+  );
+  assert.ok(
+    deliveryRouter.indexOf("first validates") <
+      deliveryRouter.indexOf("recover `review_count`"),
+  );
+  assert.match(
+    deliveryRouter,
+    /rejection enters\s+`review_failed` even when a persisted counter is 3/iu,
+  );
+  assert.ok(
+    graph.indexOf("Unsupported target") <
+      graph.indexOf("recovered `review_count >= 3`"),
+  );
+  assert.ok(
+    graph.indexOf("Invalid accepted bounds") <
+      graph.indexOf("recovered `review_count >= 3`"),
+  );
+
+  assert.deepEqual(
+    planDeliveryReviewGate({
+      currentState: "implementation_complete",
+      acceptedBoundsValid: true,
+      targetSupported: true,
+      recoveredReviewCount: 3,
+    }),
+    {
+      state: "review_budget_exhausted",
+      priorState: "implementation_complete",
+      handoffWrites: [],
+    },
+  );
+  assert.deepEqual(
+    planDeliveryReviewGate({
+      currentState: "implementation_complete",
+      acceptedBoundsValid: true,
+      targetSupported: true,
+      recoveredReviewCount: 2,
+    }).handoffWrites,
+    ["review_due_context"],
+  );
+});
+
+test("autoreview keeps ordinary closeout behavior and one bounded review-phase call", () => {
+  const autoreview = read("skills/agnostic/quality/autoreview/SKILL.md");
+  assert.match(autoreview, /Outside `review-phase`.{0,100}keep going until structured review returns no\s+accepted\/actionable findings/isu);
+  assert.match(autoreview, /When `review-phase` supplies a frozen normalized target.{0,160}exactly\s+once as advisory candidate generation/isu);
+  assert.match(autoreview, /Do not repair findings or rerun the helper in this bounded\s+call/iu);
+});
+
+test("one invocation freezes one snapshot and evaluates all lenses in parallel", () => {
+  const reference = reviewReference();
+  assert.match(reference, /exactly one frozen bounded snapshot/iu);
+  assert.match(reference, /run `autoreview` exactly once/iu);
+  assert.match(reference, /parent verifies.{0,100}advisory candidates/isu);
+  assert.match(reference, /independent lenses.{0,100}in parallel/isu);
+  assert.match(reference, /Standards and skill adherence.{0,100}architecture.{0,100}simplify.{0,100}Spec/isu);
+  assert.match(reference, /presentation and triage order\s+only/iu);
+  assert.match(reference, /Standards.{0,80}Spec.{0,80}distinct/isu);
+});
+
+test("review validation is narrow and reports missing RED GREEN evidence", () => {
+  const reference = reviewReference();
+  assert.match(reference, /smallest safe readonly validation/iu);
+  assert.match(reference, /broader checks.{0,100}accepted spec\s+or plan explicitly requires/isu);
+  assert.match(reference, /missing required RED\/GREEN evidence.{0,100}finding/isu);
+  assert.match(reference, /review.{0,80}never creates that evidence/isu);
+  assert.match(reference, /no-write mode is proven/iu);
+  assert.match(reference, /may\s+write.{0,160}disposable checkout or snapshot/isu);
+  assert.match(reference, /recompute and compare the frozen-target hash after validation/iu);
+  assert.match(reference, /mismatch.{0,120}`review_due`.{0,120}consumes no pass/isu);
+  assert.deepEqual(
+    assessReadonlyValidation({
+      beforeHash: "a".repeat(64),
+      afterHash: "b".repeat(64),
+    }),
+    { state: "review_due", passConsumed: false },
+  );
+  assert.deepEqual(
+    assessReadonlyValidation({
+      beforeHash: "a".repeat(64),
+      afterHash: "a".repeat(64),
+    }),
+    { state: "validation_accepted", passConsumed: false },
+  );
+});
+
+test("target adapters freeze complete mode-specific identities", () => {
+  const targets = reviewTargets();
+  for (const field of [
+    "locator",
+    "actual base ref",
+    "merge-base or fixed-point SHA",
+    "head or dirty-worktree identity",
+    "inclusive scope",
+    "canonical patch hash",
+  ]) {
+    assert.match(targets, new RegExp(field, "iu"));
+  }
+  for (const field of [
+    "ordered file identities",
+    "ordered bundle content hash",
+    "explicit absence of a Git fixed point",
+  ]) {
+    assert.match(targets, new RegExp(field, "iu"));
+  }
+  assert.match(targets, /smallest certain inclusive scope/iu);
+  assert.match(targets, /full-repository expansion.{0,100}explicit/isu);
+  assert.match(targets, /does not embed raw selected bytes/iu);
+});
+
+test("canonical identity algorithm matches fixed vectors", () => {
+  const targets = reviewTargets();
+  const scope = ["apps/wiki/spec.md", "apps/cli/src/a.ts"];
+  const boundsHash = acceptedBoundsHash("bounds:v1:HI-104", scope);
+  const lineageId = deliveryLineageId("goal:HI-104");
+  const snapshotHash = deliverySnapshotHash({
+    locator: "repo:wearedevpunks/harness-intelligence",
+    actualBaseRef: "origin/main",
+    fixedPointSha: "1111111111111111111111111111111111111111",
+    headIdentity: "2222222222222222222222222222222222222222",
+    scopeEntries: scope,
+    canonicalPatchHash: "a".repeat(64),
+  });
+
+  assert.equal(
+    inclusiveScopeHash(scope),
+    "5fb7f4cd0577ad89de00916c8c18b122b264e50fb61df0c79249b88aba23a306",
+  );
+  assert.equal(
+    boundsHash,
+    "90dddda98e886e9b2ef511790f32d1d359847af24f5950361d25aedfe729bd8a",
+  );
+  assert.equal(
+    lineageId,
+    "291c26957263b22b0cd5ad8a209415ff2992cc9a645f0018ed46ac4ba48de33b",
+  );
+  assert.equal(
+    snapshotHash,
+    "f116049b650180523f8dd9ee48b900394f090a425ca8a1d7f369c56ca9d5998b",
+  );
+  assert.equal(snapshot12(snapshotHash), "f116049b6501");
+  assert.equal(reviewScopeSlug(lineageId), "review-291c26957263b22b0cd5");
+  assert.equal(
+    deliveryRunId(lineageId, 2),
+    "9b164c914a883778fd5d4a3e242aaa2d261a44ce7601df10d1530bd9dd777e32",
+  );
+  assert.equal(
+    reviewReportPath({
+      lineageId,
+      reviewedAt: "20260811T120000Z",
+      snapshotHash,
+    }),
+    "apps/wiki/content/docs/project/reviews/review-291c26957263b22b0cd5-20260811T120000Z-f116049b6501-review-report.md",
+  );
+
+  const files = [
+    { identity: "docs/b.md", bytes: Buffer.from("beta\n", "utf8") },
+    { identity: "docs/a.md", bytes: Buffer.from("alpha\n", "utf8") },
+  ];
+  const standaloneBounds = acceptedBoundsHash(
+    "bounds:v1:artifact",
+    files.map(({ identity }) => identity),
+  );
+  const standaloneLineage = standaloneLineageId(
+    "artifact:spec-v1",
+    standaloneBounds,
+  );
+  const standaloneSnapshot = standaloneSnapshotHash({
+    locator: "artifact:spec-v1",
+    files,
+    scopeEntries: files.map(({ identity }) => identity),
+  });
+  assert.equal(
+    orderedBundleContentHash(files),
+    "107ee7c127b10e1826bf2d2899a36cc21291392ee6702af8d9e39b3e13553cb7",
+  );
+  assert.equal(
+    standaloneBounds,
+    "8dfde7eafe7f68b6ee5f763d23d01310f414fd5b7fca6393d5e92e90d963aa7f",
+  );
+  assert.equal(
+    standaloneLineage,
+    "ba4a5082445cac8ab133b533cfb090f936d69915266728bc9c6bd4b5b786f95a",
+  );
+  assert.equal(
+    standaloneSnapshot,
+    "d4c43491a0aef9aaeb604dc224792222d0fb6c85caec76d03ff763896563a58a",
+  );
+  assert.equal(
+    standaloneRunId(standaloneLineage, standaloneSnapshot),
+    "f165ab99100afe180bea68b41eb730fd2b61b2122347be0e50c91549140629d4",
+  );
+  assert.equal(reviewScopeSlug(standaloneLineage), "review-ba4a5082445cac8ab133");
+  for (const fixedValue of [
+    boundsHash,
+    lineageId,
+    snapshotHash,
+    deliveryRunId(lineageId, 2),
+    orderedBundleContentHash(files),
+    standaloneBounds,
+    standaloneLineage,
+    standaloneSnapshot,
+    standaloneRunId(standaloneLineage, standaloneSnapshot),
+  ]) {
+    assert.match(targets, new RegExp(fixedValue, "u"));
+  }
+});
+
+test("retained-pass predicate rejects malformed identity and hash evidence", () => {
+  const fixture = retainedPassFixture();
+  assert.deepEqual(validateRetainedPass(fixture.candidate, fixture.expected), {
+    valid: true,
+    errors: [],
+  });
+
+  const malformed = cloneCandidate(fixture.candidate);
+  rewriteReport(malformed, (report) => delete report.routing);
+  assert.equal(validateRetainedPass(malformed, fixture.expected).valid, false);
+
+  const wrongLineage = cloneCandidate(fixture.candidate);
+  rewriteReport(wrongLineage, (report) => {
+    report.review_lineage_id = "0".repeat(64);
+  });
+  assert.match(
+    validateRetainedPass(wrongLineage, fixture.expected).errors.join(","),
+    /mismatch:review_lineage_id/u,
+  );
+
+  const wrongHash = cloneCandidate(fixture.candidate);
+  wrongHash.reportSha256 = "0".repeat(64);
+  assert.match(
+    validateRetainedPass(wrongHash, fixture.expected).errors.join(","),
+    /mismatch:report_sha256/u,
+  );
+
+  const staleTarget = cloneCandidate(fixture.candidate);
+  rewriteReport(staleTarget, (report) => {
+    report.normalized_target.head_identity = "dirty:changed";
+  });
+  assert.match(
+    validateRetainedPass(staleTarget, fixture.expected).errors.join(","),
+    /mismatch:normalized_target/u,
+  );
+
+  const staleCurrentEvidence = {
+    ...fixture.expected,
+    sourceEvidence: [
+      { path: "SPEC.md", bytes: Buffer.from("changed spec\n", "utf8") },
+    ],
+  };
+  assert.match(
+    validateRetainedPass(fixture.candidate, staleCurrentEvidence).errors.join(","),
+    /mismatch:source_set_hash|mismatch:source_paths_and_hashes/u,
+  );
+
+  const wrongReviewedAt = cloneCandidate(fixture.candidate);
+  rewriteReport(wrongReviewedAt, (report) => {
+    report.reviewed_at = "20260811T120001Z";
+  });
+  assert.match(
+    validateRetainedPass(wrongReviewedAt, fixture.expected).errors.join(","),
+    /mismatch:report_path/u,
+  );
+
+  const arbitraryBytes = cloneCandidate(fixture.candidate);
+  arbitraryBytes.reportBytes = Buffer.from("not a review report", "utf8");
+  arbitraryBytes.reportSha256 = sha256Hex(arbitraryBytes.reportBytes);
+  assert.match(
+    validateRetainedPass(arbitraryBytes, fixture.expected).errors.join(","),
+    /malformed_report_blob/u,
+  );
+
+  const malformedBlock = cloneCandidate(fixture.candidate);
+  malformedBlock.reportBytes = Buffer.from(
+    "```review-report-json\n{\n```",
+    "utf8",
+  );
+  malformedBlock.reportSha256 = sha256Hex(malformedBlock.reportBytes);
+  assert.match(
+    validateRetainedPass(malformedBlock, fixture.expected).errors.join(","),
+    /malformed_report_blob/u,
+  );
+
+  const duplicateBlock = cloneCandidate(fixture.candidate);
+  duplicateBlock.reportBytes = Buffer.concat([
+    duplicateBlock.reportBytes,
+    Buffer.from("\n```review-report-json\n{}\n```", "utf8"),
+  ]);
+  duplicateBlock.reportSha256 = sha256Hex(duplicateBlock.reportBytes);
+  assert.match(
+    validateRetainedPass(duplicateBlock, fixture.expected).errors.join(","),
+    /malformed_report_blob/u,
+  );
+
+  const detachedSidecar = cloneCandidate(fixture.candidate);
+  detachedSidecar.report = { review_lineage_id: "0".repeat(64) };
+  assert.match(
+    validateRetainedPass(detachedSidecar, fixture.expected).errors.join(","),
+    /unexpected:detached_report_sidecar/u,
+  );
+
+  const outsideEnvelope = cloneCandidate(fixture.candidate);
+  outsideEnvelope.commitPaths.push("src/reviewed-target.ts");
+  assert.match(
+    validateRetainedPass(outsideEnvelope, fixture.expected).errors.join(","),
+    /commit_path_outside_envelope/u,
+  );
+});
+
+test("retained report bytes enforce wiki frontmatter before one authority block", () => {
+  const fixture = retainedPassFixture();
+  const parsed = parseReviewReport(fixture.candidate.reportBytes);
+  assert.equal(new TextDecoder().decode(fixture.candidate.reportBytes).startsWith("---\n"), true);
+  assert.equal(parsed.frontmatter.type, "review-report");
+  assert.deepEqual(parsed.frontmatter.links, []);
+  assert.equal(parsed.frontmatter.review_mode, parsed.report.mode);
+
+  const expectBlobFailure = (mutate) => {
+    const candidate = cloneCandidate(fixture.candidate);
+    rewriteBytes(candidate, mutate);
+    assert.match(
+      validateRetainedPass(candidate, fixture.expected).errors.join(","),
+      /malformed_report_blob/u,
+    );
+  };
+  expectBlobFailure((text) => text.slice(text.indexOf("```review-report-json")));
+  expectBlobFailure((text) => text.replace('links: []', 'links: not-yaml'));
+  expectBlobFailure((text) => text.slice(0, text.indexOf("\n\n```review-report-json")));
+  expectBlobFailure((text) => `${text}\n---\ntype: "review-report"\n---`);
+  expectBlobFailure((text) =>
+    text.replace(/```review-report-json\n[^\n]+/u, "```review-report-json\n{"),
+  );
+
+  const missingField = cloneCandidate(fixture.candidate);
+  rewriteBytes(missingField, (text) =>
+    text.replace(/^snapshot_hash:.*\n/mu, ""),
+  );
+  assert.match(
+    validateRetainedPass(missingField, fixture.expected).errors.join(","),
+    /malformed:frontmatter_schema/u,
+  );
+
+  for (const [line, replacement, field] of [
+    ['review_mode: "delivery"', 'review_mode: "standalone"', "review_mode"],
+    ['domain: "cli"', 'domain: 42', "domain"],
+    [
+      `title: "${reviewScopeSlug(fixture.lineageId)} review report"`,
+      'title: "wrong review report"',
+      "title",
+    ],
+    [
+      /^snapshot_hash:.*$/mu,
+      `snapshot_hash: "${"0".repeat(64)}"`,
+      "snapshot_hash",
+    ],
+    [
+      /^review_lineage_id:.*$/mu,
+      `review_lineage_id: "${"0".repeat(64)}"`,
+      "review_lineage_id",
+    ],
+    [
+      /^review_run_id:.*$/mu,
+      `review_run_id: "${"0".repeat(64)}"`,
+      "review_run_id",
+    ],
+    [
+      'reviewed_at: "20260811T120000Z"',
+      'reviewed_at: "20260811T120001Z"',
+      "reviewed_at",
+    ],
+    [
+      /^accepted_bounds_hash:.*$/mu,
+      `accepted_bounds_hash: "${"0".repeat(64)}"`,
+      "accepted_bounds_hash",
+    ],
+    ['created: "2026-08-11"', 'created: "2026-08-10"', "created"],
+  ]) {
+    const candidate = cloneCandidate(fixture.candidate);
+    rewriteBytes(candidate, (text) => text.replace(line, replacement));
+    assert.match(
+      validateRetainedPass(candidate, fixture.expected).errors.join(","),
+      new RegExp(`mismatch:frontmatter:${field}`, "u"),
+    );
+  }
+});
+
+test("retained-pass relationships derive from primitive evidence in both modes", () => {
+  const delivery = retainedPassFixture();
+  const standalone = standaloneRetainedPassFixture();
+  assert.equal(validateRetainedPass(delivery.candidate, delivery.expected).valid, true);
+  assert.equal(
+    validateRetainedPass(standalone.candidate, standalone.expected).valid,
+    true,
+  );
+
+  const deliveryBounds = cloneCandidate(delivery.candidate);
+  rewriteReport(deliveryBounds, (report) => {
+    report.accepted_bounds_hash = "0".repeat(64);
+  });
+  assert.match(
+    validateRetainedPass(deliveryBounds, delivery.expected).errors.join(","),
+    /mismatch:accepted_bounds_hash/u,
+  );
+
+  const deliveryTargetSchema = cloneCandidate(delivery.candidate);
+  rewriteReport(deliveryTargetSchema, (report) => {
+    delete report.normalized_target.actual_base_ref;
+  });
+  assert.match(
+    validateRetainedPass(deliveryTargetSchema, delivery.expected).errors.join(","),
+    /malformed:normalized_target_schema/u,
+  );
+
+  const standaloneBundle = cloneCandidate(standalone.candidate);
+  rewriteReport(standaloneBundle, (report) => {
+    report.normalized_target.ordered_bundle_content_hash = "0".repeat(64);
+  });
+  assert.match(
+    validateRetainedPass(standaloneBundle, standalone.expected).errors.join(","),
+    /mismatch:normalized_target/u,
+  );
+
+  const standaloneRun = cloneCandidate(standalone.candidate);
+  rewriteReport(standaloneRun, (report) => {
+    report.review_run_id = "0".repeat(64);
+  });
+  assert.match(
+    validateRetainedPass(standaloneRun, standalone.expected).errors.join(","),
+    /mismatch:review_run_id/u,
+  );
+
+  const standaloneTargetSchema = cloneCandidate(standalone.candidate);
+  rewriteReport(standaloneTargetSchema, (report) => {
+    report.normalized_target.git_fixed_point = "1".repeat(40);
+  });
+  assert.match(
+    validateRetainedPass(
+      standaloneTargetSchema,
+      standalone.expected,
+    ).errors.join(","),
+    /malformed:standalone_target_fields/u,
+  );
+});
+
+test("retained report enforces exact lens and structured evidence semantics", () => {
+  const fixture = retainedPassFixture();
+  const expectInvalid = (mutate, pattern) => {
+    const candidate = cloneCandidate(fixture.candidate);
+    rewriteReport(candidate, mutate);
+    assert.match(
+      validateRetainedPass(candidate, fixture.expected).errors.join(","),
+      pattern,
+    );
+  };
+
+  const structured = cloneCandidate(fixture.candidate);
+  rewriteReport(structured, (report) => {
+    report.lens_outcomes.spec = "findings";
+    report.findings = [
+      {
+        id: "spec.missing-proof",
+        lens: "spec",
+        severity: "high",
+        location: "SPEC.md#AC-1",
+        impact: "Acceptance evidence is absent.",
+        evidence: "The frozen implementation notes omit the required check.",
+        action: "Route the missing proof to implementation.",
+      },
+    ];
+    report.routing.primary = "implementation";
+    report.validation = [
+      {
+        command: "bun test focused",
+        isolation: "proven-no-write",
+        before_hash: "a".repeat(64),
+        after_hash: "a".repeat(64),
+        outcome: "failed",
+        evidence: "Required acceptance assertion failed.",
+      },
+    ];
+  });
+  assert.equal(validateRetainedPass(structured, fixture.expected).valid, true);
+
+  expectInvalid(
+    (report) => delete report.lens_outcomes.spec,
+    /malformed:lens_keys/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.lens_outcomes.security = "clean";
+    },
+    /malformed:lens_keys/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.lens_outcomes.spec = "unknown";
+    },
+    /malformed:lens_outcome:spec/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.findings = [{ id: "bad", lens: "spec" }];
+    },
+    /malformed:finding/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.routing = "closeout";
+    },
+    /malformed:routing/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.validation = [{ command: "bun test" }];
+    },
+    /malformed:validation_record/u,
+  );
+  expectInvalid(
+    (report) => {
+      report.preceding_repair_ordinal = null;
+    },
+    /invalid:delivery_identity_or_ordinal/u,
+  );
+});
+
+test("same-run retention reuses identical authority and rejects conflicts", () => {
+  const fixture = retainedPassFixture();
+  const entry = { candidate: fixture.candidate, expected: fixture.expected };
+  assert.equal(resolveRetainedRun([entry]).status, "unique");
+  assert.equal(
+    resolveRetainedRun([
+      entry,
+      {
+        candidate: cloneCandidate(fixture.candidate),
+        expected: fixture.expected,
+      },
+    ]).status,
+    "reuse",
+  );
+  assert.deepEqual(recoverDeliveryCount([entry], fixture.lineageId), {
+    status: "ok",
+    reviewCount: 2,
+  });
+
+  const conflictingCandidate = cloneCandidate(fixture.candidate);
+  conflictingCandidate.reportBytes = Buffer.concat([
+    conflictingCandidate.reportBytes,
+    Buffer.from("\n", "utf8"),
+  ]);
+  conflictingCandidate.reportSha256 = sha256Hex(
+    conflictingCandidate.reportBytes,
+  );
+  conflictingCandidate.reportCommitSha = "c".repeat(40);
+  const conflict = {
+    candidate: conflictingCandidate,
+    expected: fixture.expected,
+  };
+  assert.equal(resolveRetainedRun([entry, conflict]).status, "conflict");
+  assert.deepEqual(
+    recoverDeliveryCount([entry, conflict], fixture.lineageId),
+    { status: "conflict", reviewCount: null },
+  );
+});
+
+test("review identity separates delivery lineage, bounds, and standalone identity", () => {
+  const targets = reviewTargets();
+  assert.match(targets, /delivery lineage.{0,100}only from stable delivery-goal identity/isu);
+  assert.match(targets, /accepted-\s*bounds identity and hash.{0,100}not.{0,50}lineage/isu);
+  assert.match(targets, /standalone lineage.{0,100}target locator.{0,100}accepted-bounds hash/isu);
+  assert.match(targets, /delivery run identity.{0,100}lineage.{0,100}ordinal/isu);
+  assert.match(targets, /standalone run identity.{0,100}lineage.{0,100}`snapshot12`/isu);
+  assert.match(targets, /filename slug.{0,80}lineage/isu);
+});
+
+test("durable report schema and retention output are complete", () => {
+  const report = reviewReport();
+  assert.match(report, /apps\/wiki\/content\/docs\/project\/reviews\/<review-scope-slug>-<YYYYMMDDTHHMMSSZ>-<snapshot12>-review-report\.md/u);
+  for (const field of [
+    "review_lineage_id",
+    "review_run_id",
+    "accepted-bounds identity and hash",
+    "reviewed_at",
+    "normalized target",
+    "snapshot hash",
+    "source paths and hashes",
+    "stable finding identifiers",
+    "routing and validation",
+  ]) {
+    assert.match(report, new RegExp(field, "iu"));
+  }
+  assert.match(report, /content\s+never\s+changes after creation/iu);
+  assert.match(report, /start with the wiki-required YAML frontmatter.{0,100}exactly one fenced authority block/isu);
+  assert.match(report, /parser reads both structures from retained bytes/iu);
+  assert.match(report, /parsed JSON object is report authority/iu);
+  assert.match(report, /`lens_outcomes` has exactly `standards`.{0,180}`spec`/isu);
+  assert.match(report, /Detached objects, sidecars.{0,100}never trusted/isu);
+  assert.match(report, /report SHA-256.{0,100}report commit SHA.{0,100}verified retained ref/isu);
+  assert.match(report, /outside the immutable report/iu);
+});
+
+test("retention is envelope-only, freshness-aware, and authoritative", () => {
+  const report = reviewReport();
+  const graph = reviewGraph();
+  assert.match(report, /commits only the report, navigation, and wiki-log envelope/iu);
+  assert.match(report, /verifies that the retained ref contains the report commit/iu);
+  assert.match(report, /retryable retention failure.{0,100}`report_retention_pending`/isu);
+  assert.match(report, /reuse.{0,80}local report.{0,80}without rerunning lenses/isu);
+  assert.match(report, /target or source hash changes.{0,100}`review_due`/isu);
+  assert.match(report, /verified retained delivery report.{0,100}authoritative completed ordinal/isu);
+  assert.match(report, /standalone.{0,80}changes no delivery counter/isu);
+  assert.match(report, /valid retained pass only when every\s+predicate holds/iu);
+  assert.match(report, /malformed report, wrong lineage or run id, wrong blob or freshness hash/iu);
+  assert.match(report, /Repeated discovery.{0,160}reuse that already-retained pass/isu);
+  assert.match(report, /same_run_conflict/iu);
+  assert.match(report, /Recovery uses only unique or identical-reuse valid passes/iu);
+  assert.match(graph, /Idempotent retention recovery/iu);
+  assert.match(graph, /Same-run conflict.{0,160}`review_failed`/isu);
+  assert.match(graph, /Retained-pass validation rejected.{0,160}`review_failed`/isu);
+});
+
+test("review graph preserves failures, budget, routing, and the no-review-4 boundary", () => {
+  const graph = reviewGraph();
+  const expectedRows = [
+    /`review_due`.*recovered `review_count < 3`.*`review_running`.*Preallocate ordinal/isu,
+    /Current delivery state.*recovered `review_count >= 3`.*Return `review_budget_exhausted`.*no report or status mutation/isu,
+    /`review_running`.*complete local report exists.*`report_retention_pending`.*no completed-pass change/isu,
+    /`report_retention_pending`.*ordinal is greater than 3.*`review_budget_exhausted`.*no authoritative pass/isu,
+    /`review_routed`.*runtime evidence exists.*`debug_active`.*atomic handoff/isu,
+    /`review_routed`.*in-scope non-runtime blocker exists.*`repair_active`.*atomic handoff/isu,
+    /`repair_active` or `debug_active`.*`review_count < 3`.*`review_due`/isu,
+    /Fix 3 completes.*`review_count = 3` and `repair_count = 3`.*`focused_validation`/isu,
+    /focused validation fails.*`repair_active` or `debug_active`.*unchanged counters/isu,
+    /focused validation passes.*`clean_handoff`.*report-3 link/isu,
+  ];
+  for (const row of expectedRows) assert.match(graph, row);
+  assert.match(graph, /fix 3 never opens\s+review 4/iu);
+});
+
+test("repair opening and resume are atomic and idempotent", () => {
+  const graph = reviewGraph();
+  assert.match(graph, /one atomic durable handoff write/iu);
+  assert.match(graph, /active state.{0,100}primary route.{0,100}`repair_count = review_count`.{0,100}`review_run_id`/isu);
+  assert.match(graph, /already recorded run ID.{0,100}without another increment/isu);
+  assert.match(graph, /cannot\s+fall through to an unrecorded\s+guard/iu);
+});
+
+test("delivery recovery and reset rules use retained report authority", () => {
+  const graph = reviewGraph();
+  assert.match(graph, /highest valid retained ordinal/iu);
+  assert.match(graph, /handoff counter is a projection/iu);
+  assert.match(graph, /same-goal bounds revisions preserve delivery lineage and counters/iu);
+  assert.match(graph, /only an explicitly\s+new delivery goal with materially changed accepted bounds/iu);
+  assert.match(graph, /resume,\s+rebase, new commit, process retry, and handoff preserve/iu);
+});
+
+test("planning guidance reaches one-to-one implementation evidence unchanged", () => {
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+  const planSchema = read("skills/agnostic/planning/create-plan/references/plan-schema.md");
+  const plannerGraph = read("skills/agnostic/planning/create-plan/references/planner-task-graph.md");
+  const implementSpec = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  const workerBrief = read("skills/agnostic/planning/implement-spec/references/parallel-worker-brief.md");
+  const notes = read("skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md");
+  const planned = `${createPlan}\n${planSchema}\n${plannerGraph}`;
+  const executed = `${implementSpec}\n${workerBrief}\n${notes}`;
+  assert.match(planned, /implementation_skill_guidance/u);
+  assert.match(planned, /every\s+implementation-applicable `assigned_skills` item.{0,120}exactly one guidance\s+entry/isu);
+  assert.match(planSchema, /skill identity.{0,100}applicable\s+behavior/isu);
+  assert.match(executed, /forward.{0,80}guidance item unchanged/isu);
+  assert.match(notes, /## Skill Application Evidence/u);
+  assert.match(notes, /loaded \| applied \| not_applicable/u);
+  assert.match(executed, /exactly one evidence record per guidance entry/iu);
+  assert.match(executed, /`not_applicable`.{0,100}why.{0,100}where/isu);
+});
+
+test("skill-adherence lens checks claims and omissions against frozen artifacts", () => {
+  const reference = reviewReference();
+  assert.match(reference, /evidence cardinality/iu);
+  assert.match(reference, /every record.{0,100}against frozen changed artifacts/isu);
+  assert.match(reference, /missing, extra, or contradicted.{0,100}skill-adherence finding/isu);
+});
+
+test("delivery owns review routes and bounded repairs", () => {
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const phase = read("skills/phases/delivery-phase/phases/review.md");
+  const implement = read("skills/phases/delivery-phase/phases/implement.md");
+  const debug = read("skills/phases/delivery-phase/phases/debug.md");
+  const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
+  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
+  const all = `${router}\n${phase}\n${implement}\n${debug}\n${closeout}\n${handoff}`;
+  assert.match(all, /review_budget_exhausted/iu);
+  assert.match(all, /runtime.{0,100}debug/isu);
+  assert.match(all, /non-runtime.{0,100}implement/isu);
+  assert.match(all, /architecture.{0,100}debt/isu);
+  assert.match(all, /focused_validation/iu);
+  assert.match(all, /clean_handoff/iu);
+  assert.match(router, /`report_retention_pending`.{0,200}without\s+rerunning lenses/isu);
+  assert.match(router, /`review_routed` report.{0,120}no durable route handoff/isu);
+  assert.match(handoff, /review_lineage_id/iu);
+  assert.match(handoff, /review_count/iu);
+  assert.match(handoff, /repair_count/iu);
+});
+
+test("external GitHub and Codex PR reviewer integration stays excluded", () => {
+  const all = `${reviewSkill()}\n${reviewReference()}\n${reviewGraph()}`;
+  assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
+});

@@ -34,8 +34,12 @@ implementation tasks.
 1. Resolve the target spec folder by checking, in order: `apps/wiki/content/docs/project/specs/<domain>/<spec>/`, legacy `apps/wiki/specs/<domain>/<spec>/`, then `docs/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
 3. Read `references/parallel.md`, parse the plan graph, and build the first unblocked wave.
-4. Launch scoped workers for the current wave using `references/parallel-worker-brief.md`.
-5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and spec-linked tech debt before advancing.
+4. Launch scoped workers for the current wave using
+   `references/parallel-worker-brief.md`. Forward every guidance item unchanged,
+   preserving its `implementation_skill_guidance` skill and behavior fields.
+5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and
+   spec-linked tech debt before advancing. Require exactly one skill-application
+   evidence record per guidance entry.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.

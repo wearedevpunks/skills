@@ -1,26 +1,31 @@
 ---
 name: review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review a frozen Git change or standalone plan, spec, or documentation bundle along separate Standards and Spec axes. Runs both checks in parallel and reports them side by side. Use for branch, PR, work-in-progress, or artifact review.
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Two-axis review of either a frozen Git/diff target or a deterministic standalone
+plan, spec, or documentation bundle:
 
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the originating issue / PRD / spec?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
-
-The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if `docs/agents/issue-tracker.md` is missing.
+Both axes run as **parallel sub-agents** so they do not pollute each other's
+context. Keep their outcomes separate.
 
 ## Process
 
-### 1. Pin the fixed point
+### 1. Freeze the target
 
-Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, ask for it.
+When the caller supplies a normalized target, use it unchanged. Otherwise:
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+- For Git work, resolve the supplied commit, branch, tag, or actual PR base.
+  Capture `git diff <fixed-point>...HEAD` and
+  `git log <fixed-point>..HEAD --oneline` once.
+- For a standalone plan, spec, or documentation review, sort the selected file
+  identities deterministically and use the caller's frozen ordered bundle.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
+Before continuing, verify the fixed point or bundle identity and non-empty
+inclusive scope. Fail invalid targets before dispatch.
 
 ### 2. Identify the spec source
 
@@ -61,13 +66,13 @@ Send a single message with two `Agent` tool calls. Use the `general-purpose` sub
 
 **Standards sub-agent prompt** — include:
 
-- The full diff command and commit list.
+- The frozen target identity and the command or ordered file bundle used.
 - The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full — the sub-agent has no other access to it.
 - The brief: "Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
 **Spec sub-agent prompt** — include:
 
-- The diff command and commit list.
+- The frozen target identity and the command or ordered file bundle used.
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
