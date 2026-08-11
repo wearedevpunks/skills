@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Backend Structure"
+  short_description: "Acyclic domain-first Python backend packages"
+  default_prompt: "Use $python-backend-structure to organize Python backend domains, package imports, public APIs, services, adapters, and composition roots."
