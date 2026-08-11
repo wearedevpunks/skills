@@ -22,8 +22,9 @@ Use when:
 - Read dependency docs/source/types when the finding depends on external behavior.
 - Reject unrealistic edge cases, speculative risks, broad rewrites, and fixes that over-complicate the codebase.
 - Prefer small fixes at the right ownership boundary; no refactor unless it clearly improves the bug class.
-- Keep going until structured review returns no accepted/actionable findings.
-- If a review-triggered fix changes code, rerun focused tests and rerun the structured review helper.
+- Outside `review-phase`, keep going until structured review returns no
+  accepted/actionable findings. If a review-triggered fix changes code, rerun
+  focused tests and the structured review helper.
 - For security-audit suppression changes, verify accepted findings remain auditable: suppressed findings stay in structured output, active output keeps an unsuppressible suppression notice, and aggregate findings cannot hide unrelated active risk.
 - Never switch or override the requested review engine/model. If the review hits model capacity, retry the same command a few times with the same engine/model.
 - Be patient with large bundles. Structured review can take up to 30 minutes while the model call is active, especially with Codex tools or web search.
@@ -41,6 +42,14 @@ Use when:
 - If `gh`/Gitcrawl reports `database disk image is malformed`, run `gitcrawl doctor --json` once to let the portable cache repair before retrying review; do not bypass the shim unless repair fails and freshness requires live GitHub.
 - If Gitcrawl reports a portable manifest mismatch, source/runtime DB health error, or stale portable-store checkout, run `gitcrawl doctor --json` and inspect `source_db_health`, `runtime_db_health`, and `portable_store_status` before falling back to live GitHub.
 - Do not push just to review. Push only when the user requested push/ship/PR update.
+
+## Bounded Review-Phase Call
+
+When `review-phase` supplies a frozen normalized target, run this helper exactly
+once as advisory candidate generation for that snapshot. Return its structured
+candidates to the parent for verification. ClawPatch, when present, stays inside
+this invocation. Do not repair findings or rerun the helper in this bounded
+call; delivery owns later repair epochs and review passes.
 
 ## Pick Target
 

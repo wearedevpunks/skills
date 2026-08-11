@@ -9,6 +9,10 @@ Official sources:
 - Project fields: [docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields](https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields)
 - Issue dependencies: [docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies)
 
+## Preflight before creation
+
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in GitHub. A failed preflight writes nothing.
+
 ## Intent
 
 Use GitHub Projects V2 and GitHub Issues together.
@@ -22,6 +26,10 @@ Canonical mapping:
 - story ordering -> native issue dependency
 
 Do not use an issues-only path for GitHub backlog sync when Projects V2 is available.
+
+## Update existing decision tickets
+
+Use the GraphQL `updateIssue` mutation or REST issue update for claim, release, and resolve after reading the current assignees/state and rejecting a conflicting claim. Use only configured Project fields. Resolution closes the issue and records the immutable resolution pointer in the body or a durable comment. Return the updated issue id and URL to Finder.
 
 ## Required bootstrap
 
@@ -49,17 +57,21 @@ mutation CreateBacklogProject($ownerId: ID!, $repositoryId: ID!, $title: String!
 }
 ```
 
-Expected Project fields:
+Configured Project fields may include:
 
 - `Kind`: Project custom single-select field named `Kind` with values `fog`, `grilling`, `research`, `prototype`, `epic`, `story`
 - `Capability module`: Project custom single-select field with one option per durable product capability
 - `Epic`: text, storing the epic issue number/title for story rows
 
-Create missing fields with `createProjectV2Field`; set values with `updateProjectV2ItemFieldValue`.
+Use `updateProjectV2ItemFieldValue` only for fields named by the project configuration. A missing configured field is a setup blocker; do not bootstrap classification fields implicitly.
 
-## Kind storage
+## Provider classification
 
-Canonical `kind` storage is the Project custom single-select field named `Kind`.
+Classification examples assume explicit configuration.
+
+Inspect configured provider metadata before choosing a representation. An adapter-specific Project custom single-select field named `Kind` may represent the direct backlog concepts.
+
+Only when explicitly configured to use that field, resolve it and its matching option. If it is absent, record a setup blocker; do not create classification fields or options by default.
 
 Allowed values:
 
@@ -70,7 +82,15 @@ Allowed values:
 - `epic`
 - `story`
 
-Avoid GitHub Issue Type as the default kind storage. Issue types are organization-level and better for broad org taxonomy. Labels may mirror kind for compatibility, but `Kind` is canonical when the Project field exists.
+Prefer the configured Project field when it exists. Issue types are organization-level and may instead be the workspace's chosen adapter representation. No particular field is required across providers.
+
+Fallback order:
+
+1. configured Project field
+2. existing GitHub Issue Type or label that exactly preserves the direct concept
+3. stable title prefix such as `[story]`
+
+If repository policy permits none of these, fail preflight. Do not create classification fields, types, or labels implicitly.
 
 ## Capability grouping
 
@@ -82,13 +102,11 @@ Fog leaves `Capability module` empty until sharpening selects a module. Every se
 
 Use repository milestones named `M1`, `M2`, and so on only for dependency-derived execution waves. Do not create one repository milestone per capability module.
 
-1. Create selected concrete non-fog issues without a milestone.
-2. Add every native blocker with `addBlockedBy`.
-3. Stop on a missing blocker target or dependency cycle.
-4. Assign blocker-free issues to `M1`.
-5. Assign every other issue to `M(1 + max(milestone number of each blocker))`.
-6. Create or reuse the derived repository milestones and assign exactly one to each selected milestone-eligible issue.
-7. Verify every blocker belongs to a strictly earlier milestone.
+1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
+2. Derive blocker-free issues as `M1`; derive every other issue as `M(1 + max(milestone number of each blocker))`.
+3. Verify every blocker belongs to a strictly earlier milestone and that GitHub can represent the complete hierarchy and graph.
+4. Only after preflight passes, create issues, map planned keys to provider ids, add every native blocker with `addBlockedBy`, and create or reuse milestones.
+5. Assign exactly one verified milestone to each selected milestone-eligible issue.
 
 Issues from different capability modules can share one milestone, and one capability module can span multiple milestones. Recompute milestone assignment whenever native dependencies change.
 
@@ -142,7 +160,7 @@ After creation, set Project fields:
 - `Kind = grilling`, `Kind = research`, or `Kind = prototype`
 - `Capability module = <module title>`
 
-Closure notes for these issues must name the answer, accepted direction, artifacts or evidence, and created or updated epics/stories.
+Closure notes for these issues record the answer or verdict, evidence, observations, open decisions, and resolution pointer for Wayfinder. They do not authorize delivery.
 
 ## Create an epic issue
 
@@ -177,7 +195,10 @@ Epic body ownership:
 - scope
 - cross-story constraints
 - child story list
-- links to source grill/status artifacts when relevant
+- immutable spec link
+- accepted artifact links when relevant
+
+Minimum body headings: `Outcome`, `Scope`, `Constraints`, `Immutable spec`, and `Stories`.
 
 After creation, set Project fields:
 
@@ -219,9 +240,14 @@ mutation CreateStory(
 Story body ownership:
 
 - outcome
-- acceptance signals
+- source `US-###`
+- covered `AC-###`
+- demonstration
 - non-goals
-- links
+- immutable spec link
+- accepted artifact links
+
+Minimum body headings: `Outcome`, `Source stories`, `Acceptance criteria`, `Demonstration`, `Non-goals`, and `Links`.
 
 After creation, set Project fields:
 
@@ -262,16 +288,12 @@ mutation AddBlockedBy($issueId: ID!, $blockingIssueId: ID!) {
 
 ## Minimal creation order
 
-1. Resolve repository/owner IDs.
-2. Resolve Project V2 by title; create it if absent.
-3. Resolve or create the `Kind`, `Capability module`, and `Epic` Project fields.
-4. Resolve capability-module options.
-5. Create root fog issues when the route remains root-level.
-6. Create selected concrete non-fog issues with `projectV2Ids` and no execution milestone.
-7. Create story child issues with `parentIssueId` and `projectV2Ids`.
-8. Set Project field values for kind/capability/epic grouping.
-9. Add native issue dependencies for every real blocker.
-10. Derive, create or reuse, and assign chronological repository milestones from the complete dependency graph.
+1. Resolve repository/owner IDs, Project V2, configured fields, and capability-module options.
+2. Complete the in-memory hierarchy, graph, milestone, and representability preflight.
+3. Only after preflight passes, create root fog or selected delivery issues and story children.
+4. Set only explicitly configured Project field values.
+5. Map planned keys to provider ids and add native dependencies.
+6. Create or reuse the already-derived chronological repository milestones and assign them.
 
 ## Notes
 

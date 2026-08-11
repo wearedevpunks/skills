@@ -4,9 +4,10 @@
 
 `implement-spec` is the only public execution entrypoint.
 
-Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for the wave loop and keep shared lifecycle rules here.
+Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for
+the wave loop and keep shared lifecycle rules here.
 
-## 1. Require an existing reviewed spec folder
+## 1. Require an existing agent-ready spec folder
 
 Execution must stay grounded in the first matching spec folder:
 
@@ -20,6 +21,9 @@ Required files:
 - `PLAN.md`
 
 If `SPEC.md` is missing, stop and report the resolved path error.
+
+Require `readiness: agent-ready`; no separate spec review or approval state is
+needed.
 
 If `PLAN.md` is missing, stop and use `create-plan`. Do not auto-generate plans from this skill.
 
@@ -54,6 +58,9 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 - Keep it current during the run, not only at the end.
 - For UI implementation changes, load [ui-screenshot-evidence.md](ui-screenshot-evidence.md) and keep `## UI Evidence Links` current.
 - For tasks with `runtime_validation: required`, load [runtime-product-validation.md](runtime-product-validation.md) and keep `## Runtime Validation Evidence` current.
+- Seed `## Skill Application Evidence` from every task's
+  `implementation_skill_guidance`. Preserve each guidance item unchanged and
+  create exactly one evidence row for it.
 
 ## 5. Prepare the tech-debt ledger
 
@@ -100,6 +107,9 @@ Do not create the file when nothing durable must survive the run.
 - Accept missing RED/GREEN evidence only when the task has an explicit `reason_not_testable` or `tdd_status: not_applicable`.
 - Do not accept `reason_not_testable` for forgotten RED. If code came first, recover by writing the public-result RED test, recording failure, patching to pass, and marking `tdd_status: recovered`.
 - Treat every `review_mode` as required validation routing, never optional metadata.
+- Forward every `implementation_skill_guidance` item unchanged to its worker.
+  Completion requires exactly one evidence record per guidance entry and no
+  unmatched record.
 - Treat `runtime_validation`, `runtime_target`, `runtime_evidence`, and `runtime_cleanup` as a task completion contract orthogonal to `review_mode`.
 - When `runtime_validation: required`, do not mark the task complete until the supported runtime has conclusive public-entrypoint-first evidence recorded under `## Runtime Validation Evidence`.
 - An exact runtime blocker is an honest blocked result, not completion. Record it and keep the affected task and acceptance criterion blocked.
@@ -120,6 +130,9 @@ After each completed wave:
 - record touched files in `PLAN.md`
 - fill `red_evidence` and `green_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
 - fill or reconcile `codebase_design_notes` when module shape, seam placement, adapters, or test surface changed
+- reconcile `## Skill Application Evidence`: verify each skill identity, allowed
+  status, and how/where pointer against changed artifacts; for
+  `not_applicable`, verify why and where the guidance was assessed
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - for UI implementation changes, record durable before/after screenshot asset links in `IMPLEMENTATION-NOTES.md`
 - for required runtime validation, record the scenario, public action, correlation or provenance ids, observed result, durable evidence, cleanup, and status or exact blocker in `IMPLEMENTATION-NOTES.md`
@@ -193,6 +206,9 @@ Before reporting back:
 - ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
 - ensure **Runtime Validation Evidence** contains conclusive proof for every required task, or an exact blocker with the task and acceptance criterion still marked blocked
 - ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
+- ensure **Skill Application Evidence** has exact one-to-one cardinality with
+  plan guidance; allowed statuses are `loaded`, `applied`, and
+  `not_applicable`
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
 - ensure every tech-debt ledger entry has exact blocker/decision/owner/next action

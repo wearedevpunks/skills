@@ -2,11 +2,9 @@
 
 ## Purpose
 
-`write-backlog` is the canonical backlog-authoring skill for this repo.
+`write-backlog` is the provider-mutation adapter for three bounded branches: pre-spec decision intake, update-existing claim/release/resolution, and post-spec delivery projection. It does not compile specifications or create concrete implementation plans. Updating requires a provider id or URL, reads current state first, rejects conflicting claims, and writes the immutable resolution pointer supplied by Finder.
 
-It turns wayfinder routes, requirements discussions, grill artifacts, and accepted decisions into first-class backlog items.
-
-Supported `kind` values:
+The direct backlog concepts are:
 
 - `fog`
 - `grilling`
@@ -15,78 +13,71 @@ Supported `kind` values:
 - `epic`
 - `story`
 
-It does not write specs, plans, or execution handoffs.
+No shared cross-provider classification field is required. Every adapter must still make the direct concept visible and searchable through configured native representation or its documented nearest-native fallback. If neither preserves the concept, fail before mutation. Provider vocabulary does not become canonical domain vocabulary.
 
-Downstream contract:
+## Pre-spec intake contract
 
-- every supported `kind` is visible, assignable, searchable, linkable, and closeable in the target provider
-- `fog` is root-level only
-- concrete `grilling`, `research`, `prototype`, `epic`, and `story` items live under a capability module
-- chronological execution milestones are derived separately from native blockers
-- one epic maps to one future `SPEC.md`
-- child stories remain the product-facing slices beneath that epic
-- `PLAN.md` later decomposes execution without replacing the backlog model
+Finder may request one `fog`, `grilling`, `research`, or `prototype` item before
+a spec exists. A `fog` item requires a frontier or uncertainty description; it
+does not require a precise question. A `grilling`, `research`, or `prototype`
+item requires the precise question derived when fog graduates. Every intake
+also requires its selected classification, map link, dependencies, and claim
+state. Validate the complete intake dependency graph for missing targets,
+self-edges, and cycles before mutation. Materialize exactly that intake item;
+do not infer or create delivery epics/stories.
 
-## Supported inputs
+## Delivery input contract
 
-`write-backlog` can work from:
+Before inspecting or mutating provider state for an `epic` or `story` delivery projection, require:
 
-- a raw requirements discussion
-- an existing messy backlog
-- `requirements-grill` artifacts from `/Users/stefan/Desktop/repos/weareDevpunks-multiplai/.agents/skills/requirements-grill`
-- `wayfinder` or `finder-phase` route decisions
-- accepted research, prototype, or grilling closure notes
+- a verified stable blob URL to an authoritative `SPEC.md`; local SHA plus path is insufficient
+- frontmatter `readiness: agent-ready`
+- stable `US-###` user stories
+- stable `AC-###` acceptance criteria
+- every criterion carrying `Covers: US-###`
+- no uncovered story and no criterion pointing to a missing story
+- accepted technical/testing decisions and verification seams
+- prototype verdict links when prototypes informed the decisions
 
-When grill artifacts exist, treat them as the highest-signal structured source for backlog derivation.
+If any requirement is missing, return a readiness failure naming every gap. Write nothing to the provider.
 
-## `requirements-grill` artifact contract
+## Projection contract
 
-Expected inputs:
+Create one capability-boundary epic for the spec. Derive the fewest product-facing stories that preserve all `US-###` outcomes and `AC-###` evidence. Every story must:
 
-- `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
-- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md`
+- name its source `US-###` records
+- name its covered `AC-###` records
+- be agent-sized
+- be a vertical tracer bullet with one demonstrable user, operator, or system outcome
+- remain understandable without the implementation plan
 
-Read order:
+Split only across distinct product outcomes, acceptance signals, provider boundaries, or true dependencies. Technical layers are not stories.
 
-1. status file first
-2. log file second
+## Readiness before mutation
 
-Use the status file to extract:
+Build and validate the complete intended projection in memory before the first provider write:
 
-- branch names
-- completion percentages
-- locked direction
-- still-open items
-- parked branches
+1. Resolve the target from `.devpunks/settings.json`.
+2. Validate the spec and traceability.
+3. Validate every story as an agent-sized tracer bullet.
+4. Resolve every blocker to a projected story.
+5. Reject self-blockers, missing targets, and cycles.
+6. Derive chronological execution milestones from the complete blocker DAG.
+7. Validate provider representation and required native primitives.
+8. Only after every check passes, write immediately without a separate approval stop.
 
-Use the log file to extract:
+A validation failure produces zero mutations. If a provider fails during the write sequence, stop, report created identifiers, and do not claim atomicity or readiness.
 
-- accepted decisions
-- superseded decisions
-- canonical terms
-- branch closure notes
+## Intake resolution
 
-Backlog derivation rules from grill artifacts:
+When the work began as a pre-spec `fog`, `grilling`, `research`, or `prototype` item:
 
-- derive backlog from locked direction and accepted decisions
-- do not promote unresolved still-open items into committed story scope without marking them explicitly
-- preserve parked branches as deferred scope, follow-up epic candidates, or backlog notes when relevant
-- if two decisions conflict, the latest explicit superseding decision wins
+- keep that intake item as historical decision evidence
+- resolve it with the immutable spec link and the accepted outcome
+- create a separate delivery epic projection
+- never silently promote or relabel the intake item as the delivery epic
 
-Good handoff signal from `requirements-grill`:
-
-- active branches are `100%`
-- remaining work is non-design validation
-- recommended next direction is backlog/user-story creation
-
-If the grill is still materially open:
-
-- keep backlog conservative
-- reflect the unresolved branch as an open scope note instead of pretending closure
-
-## Canonical model
-
-Use this model:
+## Provider model
 
 ```text
 Backlog root
@@ -102,256 +93,14 @@ Execution milestones
   M1 -> M2 -> M3 ...
 ```
 
-Provider mapping:
+Capability grouping is independent from chronology. Native blockers are authoritative. A story with no blockers is `M1`; every other story is `M(1 + max(blocker milestone))`.
 
-- kind -> provider-native single-value kind storage where available
-- fog -> root-level issue/work item/item
-- capability module -> durable provider grouping independent from chronology
-- execution milestone -> dependency-derived chronological wave
-- grilling/research/prototype -> capability-module-scoped issue/work item/item
-- epic -> capability-module-scoped parent issue/work item/capability record
-- story -> child issue/sub-issue/work item under an epic
-
-monday.com mapping:
-
-- fog -> root/backlog group item or root planning group item
-- capability module -> board group
-- execution milestone -> separate Status or Dropdown column derived from dependencies
-- grilling/research/prototype -> parent item in a capability group
-- epic/capability -> parent item
-- story -> subitem
-- story ordering -> dependency column when present
-
-Rules:
-
-- every supported kind must be a first-class backlog item
-- `kind` is separate from workflow state, capability grouping, execution milestone, and parent/child hierarchy
-- `fog` must not have child tickets by default
-- concrete non-fog items must first choose or create a capability module
-- `grilling`, `research`, and `prototype` must close into accepted decisions before they create or update implementation epics/stories
-- every story must be independently understandable and product-facing
-- one epic may contain multiple stories
-- one epic maps to one future `SPEC.md`
-- one story does not imply one future `SPEC.md`
+Provider representation is defined in [assets/providers/](assets/providers/). Use actual metadata and native hierarchy/dependency primitives. Do not invent fields, flatten child stories, or replace representable blockers with prose.
 
 ## Body ownership
 
-Backlog bodies stay product-facing and kind-appropriate.
+Epic bodies contain outcome, scope, cross-story constraints, the immutable spec link, and child story links.
 
-Fog bodies may include:
+Story bodies contain product outcome, `US-###` sources, `AC-###` coverage, demonstration signal, non-goals, dependencies, and durable accepted-artifact links.
 
-- unclear frontier
-- why it is not yet module-scoped
-- suspected modules or outcomes
-- next route candidates
-
-Grilling bodies may include:
-
-- decision question
-- context
-- options
-- branch/artifact links
-- closure note with accepted answer and downstream items
-
-Research bodies may include:
-
-- research question
-- evidence sources
-- answer criteria
-- closure note with evidence and downstream items
-
-Prototype bodies may include:
-
-- learning goal
-- artifact expectations
-- acceptance signal for the prototype result
-- closure note with artifact links and downstream items
-
-Epic bodies may include:
-
-- outcome
-- scope
-- cross-story constraints
-- links
-
-Story bodies may include:
-
-- outcome
-- acceptance signals
-- non-goals
-- links
-- approved artifact links or durable visual asset links when they are acceptance context
-
-Do not put these in backlog bodies:
-
-- plan task ids
-- TDD targets
-- file paths
-- validation commands
-- worker handoffs
-- code-structure notes
-
-## Ordering rules
-
-Implementation order belongs in the backlog only through native dependency primitives when supported. Capability grouping never determines chronology. Derive `M1`, `M2`, and later execution milestones with the DAG algorithm in [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md), then store them in the provider mechanism documented by the matching payload asset.
-
-Preferred order signal:
-
-- native `blockedBy` / `blocks`
-
-Avoid:
-
-- prose-only dependency paragraphs
-- fake ordering labels when native blockers exist
-- using plan tasks as backlog children
-
-## Kind selection workflow
-
-### 1. Decide whether the frontier is still fog
-
-Use `fog` when the work is real but not yet sharp enough to choose a capability module or concrete learning/implementation ticket.
-
-Do not use `fog` as:
-
-- a parent for research or grilling tickets
-- delivery scope
-- a `SPEC.md` anchor
-- an execution container
-
-### 2. Derive modules
-
-For concrete non-fog work, split the discussion into durable capability groups that would still make sense if implementation order changed.
-
-Good capability module:
-
-- intake and review
-- account lifecycle
-- notifications
-
-Bad module:
-
-- backend foundation
-- frontend polish
-
-### 3. Derive learning items
-
-Use these before implementation scope is accepted:
-
-- `grilling`: the blocker is a human decision.
-- `research`: readonly investigation can answer it.
-- `prototype`: artifact-driven learning is needed.
-
-Each item must live under a capability module and close with an accepted decision note before changing epics/stories.
-
-### 4. Derive epics
-
-Within each module, create epics/capabilities that will later justify one coherent spec.
-
-Good epic:
-
-- submission lifecycle management
-- account onboarding and activation
-
-Bad epic:
-
-- database schema
-- API routes
-
-### 5. Derive stories
-
-Break each epic into stories only when the slice is product-facing and independently observable.
-
-Good story:
-
-- coordinator creates a new submission from external intake
-- lead reassigns ownership to another reviewer
-
-Bad story:
-
-- add column and router
-- create mutation and form hook
-
-### 6. Add native order
-
-Only add blockers when one story truly depends on another story outcome.
-
-Use blockers for:
-
-- foundational product slices
-- gating flows
-- prerequisite user-visible capability
-
-Do not add blockers for:
-
-- internal code layering preferences
-- one engineer wanting to implement one file before another
-
-## Using grill artifacts during derivation
-
-When the source is a grill status/log pair:
-
-- use branch names and locked direction to identify likely module boundaries
-- use accepted decisions to define epic boundaries
-- use branch closure notes and concrete accepted answers to derive stories
-- use still-open items only as:
-  - explicit open questions for the backlog author
-  - deferred scope notes
-  - follow-up epic/story candidates when the source already frames them that way
-
-Do not:
-
-- turn every grill question into a story
-- treat partially closed branches as committed epic scope by default
-- ignore canonical terminology captured in the grill log
-
-## Closure and handoff
-
-For `grilling`, `research`, and `prototype`, closure notes must include:
-
-- answer
-- accepted direction
-- artifacts or evidence
-- created or updated epics/stories
-
-Do not create or update implementation `epic` or `story` items from unresolved learning work.
-
-## Handoff to `create-spec`
-
-When `create-spec` is given a backlog-backed epic:
-
-- the epic is the spec anchor
-- every child story is mandatory source material
-- the resulting `SPEC.md` must cover all child stories under that epic
-- the spec must preserve per-story requirements while unifying them into one coherent problem-space contract
-
-## Provider policy
-
-This skill documents raw provider create/setup payloads and provider-native kind storage.
-
-In scope:
-
-- create issue/work item payload shapes
-- create provider containers needed for the canonical hierarchy
-- required vs optional fields
-- how `kind` appears at creation time
-- how module/epic/story intent appears at creation time
-
-Out of scope:
-
-- completion-time execution sync
-- comment payloads
-- status churn after backlog creation
-- provider-specific asset upload commands; use `repo-asset-management` for backlog attachments and repo-provider fallback links
-
-If a provider cannot express part of the canonical model in one create call:
-
-- document the limitation explicitly
-- include the minimal native follow-up call needed to preserve module -> epic -> story
-- do not silently flatten or reshape the model
-
-## Anti-patterns
-
-- one backlog item per implementation task
-- one `SPEC.md` per child story when the epic is the real capability boundary
-- milestone descriptions that duplicate entire epic bodies
-- story bodies rewritten into execution handoffs after planning
+Keep `PLAN.md` task ids, file paths, validation commands, worker assignments, and code structure out of backlog bodies. Concrete planning remains downstream in `delivery-phase` / `create-plan`.

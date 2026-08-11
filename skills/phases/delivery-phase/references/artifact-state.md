@@ -13,6 +13,14 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 - `PLAN.md` exists and matches the spec.
 - Tasks have dependencies, owned paths, validation gates, and wave boundaries.
+- Each wave contains every currently unblocked task with a disjoint write scope;
+  one-task waves are justified by dependencies or ownership.
+
+## Backlog Projection Complete
+
+- Projection evidence names the immutable spec URL, provider destination,
+  epic/story ids and URLs, and verified observed state.
+- Evidence matches the current spec; otherwise the projection is stale.
 
 ## Implementation Complete
 
@@ -22,8 +30,14 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 ## Review Complete
 
-- `review-phase` ran after the latest implementation diff.
-- Findings are resolved, accepted, routed to debug, or captured as follow-up.
+- A fresh immutable report matches the delivery lineage, accepted bounds,
+  normalized target, governing source hashes, and latest implementation state.
+- Its commit exists on a verified retained ref; a local report alone is pending.
+- The highest valid retained ordinal is authoritative and the handoff
+  `review_count` is its reconciled projection.
+- Findings are routed by stable ids. Review itself entered no repair state.
+- After fix 3, `clean_handoff` supersedes the normal fresh-review requirement
+  and links report 3, final changes, focused validation, and clean status.
 
 ## Debug Complete
 

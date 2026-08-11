@@ -1,6 +1,6 @@
 # Folder Naming
 
-Use this reference after questioning and before writing the file.
+Use this reference after input readiness passes and before writing the file.
 
 ## Domain resolution
 
@@ -28,6 +28,9 @@ Each spec folder must be unique within its domain.
 
 If the folder already exists:
 
-- ask whether to update the existing spec or create a new one
+- update it only when its identity and capability boundary match the confirmed
+  inputs
+- otherwise return `spec-not-ready` with the collision and required upstream
+  naming decision
 
-Do not ask the user to confirm the folder name unless the correct name is genuinely ambiguous.
+Do not interview from this compiler.

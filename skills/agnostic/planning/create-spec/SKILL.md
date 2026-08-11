@@ -1,109 +1,55 @@
 ---
 name: create-spec
-description: Create a SPEC.md file for a new feature, product, or system using the Spec-Driven Development (SDD) approach. The spec works in the problem space — it clarifies the "what", not the "how", and when backlog context exists it maps to one epic/capability and must unify all child-story requirements beneath it. Use this skill whenever the user wants to write a spec, define requirements, capture what needs to be built, create a specification document, or start the SDD workflow.
+description: Compile confirmed product decisions into SPEC.md. Use when requirements are closed or explicitly parked and an agent-ready provider-neutral specification is needed before backlog or planning.
 ---
 
-# Spec Creator
+# Create Spec
 
-## Contract
+`create-spec` is a no-interview compiler of confirmed decisions. Upstream
+Wayfinder, research, prototyping, and grilling own uncertainty. This skill asks
+no questions, runs no local grill, and performs no backlog mutation.
 
-- **Role:** higher-order spec authoring skill
-- **Entrypoint type:** public entrypoint
-- **Upstream:** new idea, feature request, epic/capability issue, or problem statement
-- **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$parallel-research` for split-friendly readonly discovery; `$requirements-grill` when discovery leaves meaningful spec-affecting unknowns; `$write-backlog` when the spec objective or grill outcomes change epic/story scope; `spec-reviewer` for a final readonly quality pass when subagents are available
-- **Entry conditions:** a planning surface can be resolved from routed wiki docs, legacy wiki specs, existing docs, backlog context, or the user's request
-- **Stop conditions:** `SPEC.md` and any existing planning-surface indexes/logs are updated, then wait for user review
+## Inputs
 
-This skill creates `SPEC.md` files that stay in the problem space: what to build, who it is for, why it matters, what counts as done, and what is out of scope.
+Accept confirmed user decisions and their evidence: grill status/logs, research
+reports, prototype verdicts, ADRs, glossary, axioms, constraints, system facts,
+accepted implementation or testing decisions, dependency evidence, and accepted
+parent/base constraints.
 
-When backlog context exists, one `SPEC.md` maps to one parent epic/capability issue and must cover the full scope of that epic. If the epic has child stories, the spec must explicitly incorporate and unify the requirements of all of them.
+## Steps
 
-Resolve the output root from the repo before writing. Prefer `apps/wiki/content/docs/project/specs/<domain>/<folder-name>/SPEC.md`, then legacy `apps/wiki/specs/<domain>/<folder-name>/SPEC.md`, then `docs/specs/<domain>/<folder-name>/SPEC.md`.
+1. Resolve the planning surface using [folder-naming.md](references/folder-naming.md).
+2. Validate readiness using [readiness.md](references/readiness.md). If anything
+   required is missing, return one atomic `spec-not-ready` result and write no
+   partial `SPEC.md`.
+3. Compile [SPEC-TEMPLATE.md](assets/SPEC-TEMPLATE.md). Preserve only confirmed
+   decisions; never invent closure. Serialize `Dependency Readiness` and
+   `Branch/Base Intent` using the readiness contract.
+4. Apply [spec-quality-bar.md](references/spec-quality-bar.md).
+5. Update existing planning-surface indexes through
+   [wiki-bookkeeping.md](references/wiki-bookkeeping.md).
+6. Persist the completed spec and its bookkeeping in a dedicated git commit.
+   Never stage unrelated changes.
+7. Push or explicitly retain the spec commit through a repository-approved
+   remote mechanism, verify the retained ref contains the spec commit, then
+   construct and verify a stable blob URL before `write-backlog` may consume it.
+   A local commit SHA plus path is insufficient.
+8. Return `spec-written` with `readiness: agent-ready` and the verified stable
+   blob URL. If retention or URL verification fails, return one atomic
+   `spec-not-ready` result and do not invoke backlog projection.
 
-## Quick start
+## Boundaries
 
-1. Resolve the planning surface with `references/discovery.md`; do not block solely because legacy `apps/wiki/AGENTS.md` is absent.
-2. Read `references/discovery.md` and orient yourself in the right spec domain or project area before asking questions.
-3. When discovery spans independent code paths, docs, backlog items, prior specs, or hypotheses, read and use `$parallel-research` for readonly sidecar coverage before synthesizing.
-4. If backlog context exists, read the parent epic and every child story before asking questions.
-5. If the user did not provide a concrete request, ask for a rough description first.
-6. Read `references/questioning.md` and ask only the lightweight clarifying questions needed to identify whether a grill phase is required.
-7. If draft `Open Questions` would affect spec trust, read `references/grill-phase.md` and run a bounded `$requirements-grill` phase.
-8. If the requested objective, discovery, or grill changes accepted scope, child stories, deferred scope, story wording, or story order, read `references/backlog-sync.md` and run `$write-backlog` to sync the backlog automatically before final drafting.
-9. Read `references/folder-naming.md` to resolve the domain and spec folder path.
-10. Read `assets/SPEC-TEMPLATE.md` and write the spec.
-11. Read `references/spec-quality-bar.md` before saving.
-12. If subagents are available, use `spec-reviewer` for a readonly pass over the draft before user review.
-13. Read `references/wiki-bookkeeping.md` to update the indexes/logs that exist for the resolved planning surface.
-14. Present the completed spec for user review, then stop.
-
-## Workflow
-
-### Default workflow
-
-1. Build orientation first; do not jump straight into writing.
-2. Scan relevant routed learning artifacts when prior bug knowledge, domain behavior, or project conventions could affect the spec.
-3. Ask only enough to make the spec crisp, testable, and bounded.
-4. Use `$parallel-research` when readonly orientation can be split cleanly across independent evidence sources; keep synthesis and spec decisions local.
-5. When an epic has child stories, harvest and preserve each story's requirements before drafting.
-6. Use `$requirements-grill` for meaningful spec-affecting unknowns; do not replace that phase with ad hoc `Open Questions` prompts.
-7. Use `$write-backlog` automatically before final drafting when accepted spec direction implies backlog changes, whether that direction came from the user's objective, discovery, or a grill phase.
-8. Keep the spec free of implementation detail.
-9. Use the template structure exactly, then remove all template scaffolding.
-10. Use `spec-reviewer` to catch invented requirements, missing constraints, vague acceptance criteria, and contradictions before yielding when subagents are available.
-11. Update planning-surface bookkeeping in the same run.
-12. Present the completed spec for user review, then stop.
-
-### Dependency readiness and stack intent
-
-When backlog context exists, inspect backlog dependencies before drafting.
-
-- A task-level `depends_on` inside one epic or plan is implementation ordering,
-  not PR stack topology.
-- A backlog dependency between epics/stories is a dependency-readiness gate.
-- If the dependency has an `IMPLEMENTATION-NOTES.md` or equivalent
-  implemented-status artifact, trust it as implemented. Record
-  `No Stack Required` unless another open PR dependency still applies.
-- If no implemented-status artifact exists, use local code evidence or merged PR
-  evidence as fallback proof that the dependency landed.
-- If the dependency is represented by an open parent PR, record
-  `Branch/Base Intent`.
-- If the dependency is neither proven implemented nor represented by an open
-  parent PR, block spec creation and report the missing dependency evidence.
-
-When backlog dependencies exist, add this section to `SPEC.md`:
-
-```md
-## Dependency Readiness
-
-- Status: No Stack Required | Branch/Base Intent | Blocked
-- Dependency: <epic/story/pr/link>
-- Evidence: <implementation notes path | implemented-status artifact | merged PR | parent PR>
-- Reason: <why this status was chosen>
-```
-
-Only for stack-dependent work, also add:
-
-```md
-## Branch/Base Intent
-
-- Parent PR: #123
-- Parent branch: team/name/parent
-- Child branch: team/name/child
-- PR base: team/name/parent
-- Required gate: stack sync --dry-run after PR creation/update
-```
-
-`create-spec` records stack intent only. Do not create, switch, or push git
-branches unless the user explicitly requests branch setup during the spec turn.
-
-## Advanced features
-
-- Discovery and repo orientation: see [references/discovery.md](references/discovery.md)
-- Clarifying-question strategy: see [references/questioning.md](references/questioning.md)
-- Requirements grill phase: see [references/grill-phase.md](references/grill-phase.md)
-- Backlog sync after grilling: see [references/backlog-sync.md](references/backlog-sync.md)
-- Domain and folder naming rules: see [references/folder-naming.md](references/folder-naming.md)
-- Acceptance-criteria and quality bar: see [references/spec-quality-bar.md](references/spec-quality-bar.md)
-- Planning surface index/log updates: see [references/wiki-bookkeeping.md](references/wiki-bookkeeping.md)
-- Canonical backlog model: see [../write-backlog/assets/concepts/backlog-model.md](../write-backlog/assets/concepts/backlog-model.md)
+- `SPEC.md` is provider-neutral authority. `write-backlog` projects epics and
+  stories afterward; `create-plan` owns concrete files, commands, workers, and
+  execution order.
+- A mutable path or local-only commit is not a backlog handoff. `write-backlog`
+  receives only the verified stable blob URL.
+- Accepted technical and testing decisions belong in the spec. Detailed task
+  choreography does not.
+- `Dependency Readiness` and `Branch/Base Intent` preserve accepted dependency
+  evidence and parent/base constraints for `create-plan`.
+- `readiness: agent-ready` is sufficient downstream. Do not add a review or
+  approval stop; pause only for a user-requested HITL checkpoint.
+- Compiler state is `compiled`. Human approval, when explicitly requested, is a
+  separate optional action and is never inferred or stamped by this compiler.
