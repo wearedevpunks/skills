@@ -1022,6 +1022,47 @@ test("finding routes centrally derive aggregate routing", () => {
   );
 });
 
+test("mixed debt routes capture once before resuming their repair", () => {
+  const graph = reviewGraph();
+  const finding = (return_route) => ({ return_route });
+
+  for (const [repairRoute, repairState] of [
+    ["debugging", "debug_active"],
+    ["implementation", "repair_active"],
+  ]) {
+    assert.deepEqual(
+      deriveReviewRouting([
+        finding(repairRoute),
+        finding("debt_follow_up"),
+      ]),
+      {
+        primary: repairRoute,
+        secondary_architecture_follow_up: true,
+      },
+    );
+    assert.match(
+      graph,
+      new RegExp(
+        "derived primary route is `" +
+          repairRoute +
+          "`[^|]*secondary architecture follow-up[^|]*\\|[^|]*\\| `debt_follow_up`[^|]*\\|[^|]*\\|[^|]*post-debt route `" +
+          repairRoute +
+          "`",
+        "iu",
+      ),
+    );
+    assert.match(
+      graph,
+      new RegExp(
+        "\\| `debt_follow_up` \\| Debt captured[^\\n]*\\| `" +
+          repairState +
+          "`[^\\n]*capture exactly once",
+        "iu",
+      ),
+    );
+  }
+});
+
 test("same-run retention reuses identical authority and rejects conflicts", () => {
   const fixture = retainedPassFixture();
   const entry = { candidate: fixture.candidate, expected: fixture.expected };
@@ -1254,7 +1295,7 @@ test("review retention and delivery debt handoff are explicit and resumable", ()
   assert.match(graph, /Resume debt follow-up.{0,160}`debt_follow_up`/isu);
   assert.match(
     graph,
-    /Debt captured.{0,200}`post_debt_route`.{0,200}`debug_active` or `repair_active`.{0,240}`docs_ingest` or `closeout`/isu,
+    /Debt captured.{0,160}`post_debt_route`.{0,160}(?:`debug_active`|`repair_active`|`docs_ingest` or `closeout`)/isu,
   );
 
   assert.match(
