@@ -9,7 +9,7 @@ Use this table to choose the recovery model before writing code.
 | DB + Better Auth mutation | Compensation or durable repair path | DB rollback does not undo Better Auth state. |
 | DB + Better Auth + email | DB transaction only for local writes, then explicit compensation / repair for Better Auth, plus an explicit delivery policy for email | Do not imply a single rollback boundary across all three systems. |
 | DB + email / queue / third-party side effect | Explicit commit boundary plus post-commit recovery story | Decide whether the side effect is best-effort, compensatable, or must create repairable operator state. |
-| Preflight validation over many items | `validateAll`, `partition`, or `Effect.all(..., { mode: "validate" | "either" })` | Use before the commit path, not during it. |
+| Preflight validation over many items | `validateAll`, `partition`, or `Effect.all(..., { mode: "validate" \| "either" })` | Use before the commit path, not during it. |
 | Parallel validation or read-only fan-out | `Effect.all` with explicit concurrency, optionally `parallelErrors` | Be explicit about whether you want short-circuiting, `either`, `validate`, or collected parallel errors. |
 | Commit path orchestration | Sequential by default | Introduce concurrency only when the failure semantics stay safe and obvious. |
 
