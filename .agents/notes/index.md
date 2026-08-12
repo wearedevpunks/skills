@@ -1,2 +1,3 @@
 - [planning-open-questions](planning-open-questions.md) - Spec/plan skills must resolve user-answerable unknowns before recording Open Questions; create-spec uses grill/backlog sync for material scope changes.
 - [local-publishing-skill](local-publishing-skill.md) - Publish/sync/baseline workflow skill is local-only under `.agents`, with `.codex` and `.claude` symlinks.
+- [matt-pocock-provenance](matt-pocock-provenance.md) - Direct Matt-derived skills keep byte-identical MIT notices and immutable provenance; indirect Dillon derivatives document the chain.
