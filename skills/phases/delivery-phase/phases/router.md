@@ -41,20 +41,22 @@ state take precedence over inferred artifact order.
    Passing becomes `clean_handoff`; failure remains repair epoch 3.
 9. Route `clean_handoff` to [docs-ingest.md](docs-ingest.md) when docs remain,
    otherwise [closeout.md](closeout.md).
-10. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
+10. For durable `docs_ingest`, load [docs-ingest.md](docs-ingest.md).
+11. For durable `closeout`, load [closeout.md](closeout.md).
+12. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
    incomplete, or its remote retention or stable blob URL is missing or
    unverified, load [spec.md](spec.md).
-11. If the verified post-spec backlog projection is missing or stale, load
+13. If the verified post-spec backlog projection is missing or stale, load
    [backlog.md](backlog.md).
-12. If no execution-ready matching plan exists, or it lacks dependencies, owned
+14. If no execution-ready matching plan exists, or it lacks dependencies, owned
    paths, validation gates, or wave boundaries, load [plan.md](plan.md).
-13. If accepted plan work is incomplete, load [implement.md](implement.md).
-14. If implementation exists and its retained review is missing or stale, load
+15. If accepted plan work is incomplete, load [implement.md](implement.md).
+16. If implementation exists and its retained review is missing or stale, load
     [review.md](review.md). That phase validates accepted bounds and normalizes a
     supported target before any delivery-budget evaluation, then returns either
     `review_failed`, `review_budget_exhausted`, or the exact explicit
     `$review-phase` invocation context and stops.
-15. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
+17. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
     otherwise [closeout.md](closeout.md).
 
 Only an explicitly new delivery goal with materially changed accepted bounds
