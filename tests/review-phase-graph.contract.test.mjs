@@ -1335,6 +1335,23 @@ test("primary debt successors are durable cold-resume states", () => {
   );
 });
 
+test("delivery router resumes durable terminal routes before artifact inference", () => {
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const artifactInference = router.indexOf("If no matching agent-ready `SPEC.md`");
+  assert.notEqual(artifactInference, -1, "artifact inference boundary is required");
+  for (const [state, phase] of [
+    ["docs_ingest", "docs-ingest.md"],
+    ["closeout", "closeout.md"],
+  ]) {
+    const route = new RegExp(
+      "durable `" + state + "`[^\\n]*\\[" + phase.replace(".", "\\.") + "\\]",
+      "u",
+    ).exec(router);
+    assert.ok(route, `${state} must load ${phase}`);
+    assert.ok(route.index < artifactInference, `${state} must precede artifact inference`);
+  }
+});
+
 test("external GitHub and Codex PR reviewer integration stays excluded", () => {
   const all = `${reviewSkill()}\n${reviewGraph()}`;
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
