@@ -33,16 +33,22 @@ After the retained report establishes the completed ordinal:
 1. Recompute aggregate routing from every finding's validated `return_route`
    with the review contract helper. Reject a mismatch with the retained routing
    object.
-2. `debugging` opens debugging and `implementation` opens implementation.
-3. `debt_follow_up` enters the durable debt-capture branch below.
-4. `docs_ingest` enters docs ingest. `closeout` enters closeout.
+2. When `secondary_architecture_follow_up` is true, enter `debt_follow_up`
+   first and persist the primary `debugging` or `implementation` route as
+   `post_debt_route`.
+3. Without secondary debt, `debugging` opens debugging and `implementation`
+   opens implementation.
+4. Primary `debt_follow_up` enters debt capture with `post_debt_route` set to
+   `docs_ingest` when documentation remains, otherwise `closeout`.
+5. `docs_ingest` enters docs ingest. `closeout` enters closeout.
 
 Architecture debt may remain a secondary follow-up beside debugging or
-implementation. Opening either repair route is one atomic durable handoff write
-of active state, route, `repair_count = review_count`, and idempotency
-`review_run_id`. Reject a mismatched or already-consumed repair ordinal.
-Complete the transition only after that write. Resume an already-recorded run
-directly without another increment.
+implementation. Open its repair only after debt capture. Opening either repair
+route is one atomic durable handoff write of active state, route,
+`repair_count = review_count`, and idempotency `review_run_id`. Reject a
+mismatched or already-consumed repair ordinal. Complete the transition only
+after that write. Resume an already-recorded run directly without another
+increment.
 
 ## Capture Debt Follow-Up
 
