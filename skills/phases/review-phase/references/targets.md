@@ -6,7 +6,8 @@ composition, report, routing, and freshness contracts.
 
 ## Scope
 
-Record the smallest certain inclusive scope. Full-repository expansion requires
+Record a non-empty, smallest certain inclusive scope in every review mode. A
+zero-artifact bundle is not a review target. Full-repository expansion requires
 an explicit caller request. Unsupported targets or invalid accepted bounds enter
 `review_failed` with exact evidence, no report, and no counter change, including
 when a delivery counter is already 3.

@@ -460,6 +460,18 @@ test("delivery target normalization rejects an empty inclusive scope", () => {
   );
 });
 
+test("standalone target normalization rejects an empty artifact scope", () => {
+  assert.throws(
+    () =>
+      normalizeReviewTarget("standalone", {
+        locator: "artifact:empty",
+        files: [],
+        scopeEntries: [],
+      }),
+    /invalid standalone target evidence/u,
+  );
+});
+
 test("governing-source normalization rejects an empty source set", () => {
   assert.throws(() => normalizeReviewSources([]), /invalid source evidence/u);
 });

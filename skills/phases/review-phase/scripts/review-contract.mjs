@@ -361,6 +361,7 @@ export const normalizeReviewTarget = (mode, evidence) => {
     const scope = sortUtf8(evidence.scopeEntries);
     if (
       !nonemptyString(evidence.locator) ||
+      identities.length === 0 ||
       !sortedUniqueStrings(identities) ||
       !files.every(({ bytes }) => Buffer.isBuffer(bytes)) ||
       !isDeepStrictEqual(scope, identities)
