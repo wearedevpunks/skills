@@ -9,7 +9,11 @@
 - MUST use `$tdd`
 - MUST use `$codebase-design`
 - `opensrc` provides source context for installed or external packages
-- scoped `AGENTS.md` files provide per-path skill requirements through `Skill | What / when` tables; select exact trigger matches and open each selected skill's complete `SKILL.md`
+- scoped `AGENTS.md` files provide per-path skill requirements through one final
+  `## Skills` table with `Skill | Exact trigger`; select matching non-phase rows
+  and open each selected installed skill's `SKILL.md`, which remains workflow
+  authority. Root `AGENTS.md` stays table-free. Phase wrappers remain global
+  orchestration entrypoints and are excluded from scoped tables.
 
 ## Graph map
 
