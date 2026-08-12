@@ -689,6 +689,21 @@ test("retained-pass predicate rejects malformed identity and hash evidence", () 
   );
 });
 
+test("retained-pass predicate reports a null inclusive scope as malformed", () => {
+  const fixture = retainedPassFixture();
+  const malformed = cloneCandidate(fixture.candidate);
+  rewriteReport(malformed, (report) => {
+    report.normalized_target.inclusive_scope = null;
+  });
+
+  let result;
+  assert.doesNotThrow(() => {
+    result = validateRetainedPass(malformed, fixture.expected);
+  });
+  assert.equal(result.valid, false);
+  assert.match(result.errors.join(","), /malformed:normalized_target_common_fields/u);
+});
+
 test("retained ref containment accepts only boolean true", () => {
   const fixture = retainedPassFixture();
   const candidate = cloneCandidate(fixture.candidate);
@@ -1202,11 +1217,20 @@ test("review retention and delivery debt handoff are explicit and resumable", ()
   );
 
   assert.match(handoff, /state:.*debt_follow_up/isu);
+  assert.match(handoff, /post_debt_route:/u);
+  assert.match(
+    handoff,
+    /`post_debt_route` is durable.{0,160}`debugging` or\s+`implementation` for secondary debt.{0,160}`docs_ingest` or `closeout` for\s+primary debt/isu,
+  );
   assert.match(
     handoff,
     /debt follow-up key.{0,160}authoritative report commit.{0,160}report path.{0,160}stable finding id/isu,
   );
   assert.match(deliveryRouter, /`debt_follow_up`.{0,160}\[review\.md\]/isu);
+  assert.match(
+    deliveryRouter,
+    /`debt_follow_up`.{0,240}`post_debt_route`.{0,200}`debugging`.{0,80}`implementation`.{0,200}`docs_ingest`.{0,80}`closeout`/isu,
+  );
   assert.match(
     deliveryReview,
     /goal\/spec-linked debt artifact.{0,200}exactly once.{0,200}retained report.{0,160}stable finding ID/isu,
@@ -1216,7 +1240,10 @@ test("review retention and delivery debt handoff are explicit and resumable", ()
     /does not implement.{0,100}debt.{0,180}`docs_ingest`.{0,100}`closeout`/isu,
   );
   assert.match(graph, /Resume debt follow-up.{0,160}`debt_follow_up`/isu);
-  assert.match(graph, /Debt captured.{0,200}`docs_ingest` or `closeout`/isu);
+  assert.match(
+    graph,
+    /Debt captured.{0,200}`post_debt_route`.{0,200}`debug_active` or `repair_active`.{0,240}`docs_ingest` or `closeout`/isu,
+  );
 
   assert.match(
     authoring,

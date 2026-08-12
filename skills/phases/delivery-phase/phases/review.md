@@ -49,14 +49,17 @@ directly without another increment.
 For each primary or secondary debt finding, enter `debt_follow_up` and upsert a
 goal/spec-linked debt artifact exactly once. Key each entry by retained report
 commit, retained report path, and stable finding ID. Persist the artifact path,
-keys, and captured finding IDs in the review handoff before leaving this state.
-On resume, reuse matching keys and add only missing entries.
+keys, captured finding IDs, and `post_debt_route` in the review handoff before
+leaving this state. Set `post_debt_route` to the higher-priority `debugging` or
+`implementation` route for secondary debt. For primary debt, set it to
+`docs_ingest` when required documentation remains, otherwise `closeout`. On
+resume, reuse matching keys, add only missing entries, and follow the recorded
+route after every key is present.
 
 Debt capture records unaccepted work; it does not implement the debt or open an
-implementation task. When debt is secondary, capture it before opening the
-higher-priority debugging or implementation route. With no higher-priority
-route, continue to `docs_ingest` when required documentation remains, otherwise
-`closeout`.
+implementation task. Primary capture resumes `docs_ingest` or `closeout`;
+secondary capture resumes its recorded repair. Capture happens once before that
+route.
 
 ## Completion
 

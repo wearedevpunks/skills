@@ -31,7 +31,7 @@ and clean handoff.
 | `review_routed` | Mixed or single finding route | Runtime evidence exists; derived primary route is `debugging`; run id unrecorded | `delivery-phase` | `debug_active` | Atomic handoff opens corresponding repair | Explicit finding routes, stable findings, atomic handoff, optional architecture follow-up |
 | `review_routed` | Mixed or single finding route | No runtime evidence; in-scope non-runtime blocker exists; derived primary route is `implementation`; run id unrecorded | `delivery-phase` | `repair_active` | Atomic handoff opens corresponding repair | Explicit finding routes, stable findings, atomic handoff, optional architecture follow-up |
 | `review_routed` | Finding route | Derived primary route is `debt_follow_up` | `delivery-phase` | `debt_follow_up` | None | Explicit debt routes and stable findings |
-| `debt_follow_up` | Debt captured | Every debt key is present in the goal/spec-linked artifact | Delivery review handoff | `docs_ingest` or `closeout` | None | Retained report commit/path, stable finding IDs, artifact path, captured keys |
+| `debt_follow_up` | Debt captured | Every debt key is present in the goal/spec-linked artifact; durable `post_debt_route` is valid | Delivery review handoff | `debug_active` or `repair_active` for secondary debt; `docs_ingest` or `closeout` for primary debt | Open repair atomically only after capture; otherwise none | Retained report commit/path, stable finding IDs, artifact path, captured keys, post-debt route |
 | `review_routed` | Documentation-only findings | Derived primary route is `docs_ingest` | `delivery-phase` | `docs_ingest` | None | Explicit docs routes and stable findings |
 | `review_routed` | Finding-free route | Finding set is empty | `delivery-phase` | `closeout` | None | Report and derived closeout route |
 | `repair_active` or `debug_active` | Ordinary repair completes | `review_count < 3` | `delivery-phase` | `review_due` | None | Stale prior report, changed target identity, preserved counters |
@@ -56,9 +56,10 @@ cannot fall through to an unrecorded guard.
 
 Debt capture is also idempotent. The retained report commit, report path, and
 stable finding ID form one key in the goal/spec-linked debt artifact. Resume
-reuses recorded keys, adds only missing keys, and proceeds to docs or closeout
-without implementing unaccepted debt. Secondary debt is captured before its
-higher-priority debugging or implementation route opens.
+reuses recorded keys, adds only missing keys, and follows durable
+`post_debt_route` without implementing unaccepted debt. Secondary debt records
+`debugging` or `implementation`; primary debt records `docs_ingest` or
+`closeout`. Capture completes before the recorded route opens.
 
 Review 1 may open fix 1, review 2 fix 2, and review 3 fix 3. Fix 3 never opens
 review 4. A failed focused validation stays in repair epoch 3 until that same
