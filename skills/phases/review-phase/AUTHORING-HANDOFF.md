@@ -3,6 +3,10 @@
 This is the graph-authoring record. It is separate from review runtime
 handoffs, retained reports, and delivery handoffs.
 
+Test references below are source-repository provenance. The installed package
+omits the source repository test files; reproduce a claim from the immutable
+source commit with its named command and contract seam.
+
 ## Router Selection
 
 Phase: router
@@ -362,8 +366,8 @@ Artifacts:
 Validation:
 
 - Disclosure completion was durable.
-- The focused route contract was observed RED at 16/23: seven assertions still
-  addressed deleted or relocated authority.
+- The focused route contract was observed RED against deleted or relocated
+  authority.
 - The nine authoring route predictions and runtime storage/no-write cases were
   not yet executable or recorded, so `test-routes.md` was the single route.
 
@@ -410,8 +414,8 @@ Validation:
 - All nine predictions matched derivation; no runtime contract mismatch required
   repair.
 - Stale, out-of-scope, and invalid artifact subcases resolve separately.
-- The focused suite moved from observed RED 16/23 to GREEN 25/25 after replacing
-  deleted-root assertions and adding two runtime graph contracts.
+- The focused source contract moved from observed RED to GREEN after replacing
+  deleted-root assertions and adding runtime graph contracts.
 - Router priorities 1-12 cover terminal, checkpoint, blocked, and all four gate
   outputs. Delivery and standalone storage, conflict, and every declared
   authoritative no-write class are executable assertions.
@@ -441,7 +445,7 @@ storage modes, no-write outcomes, conflicts, and router classes were tested.
 
 Artifacts:
 
-- `tests/review-phase-graph.contract.test.mjs`: 25 focused graph contracts.
+- The canonical source review-graph contract and its named Node command.
 - `Test Routes Outcome`: nine frozen predictions with nine matching derived
   routes and zero graph repairs.
 
@@ -474,8 +478,7 @@ Artifacts:
 
 - `SKILL.md`, `agents/openai.yaml`, `phases/router.md`, four flat gate files,
   four references, and `scripts/review-contract.mjs`.
-- `tests/review-phase-graph.contract.test.mjs` and all eight shared
-  `tests/*.test.mjs` files.
+- The canonical source review-graph contract and shared source contract command.
 
 Validation:
 
@@ -498,7 +501,7 @@ Validation:
 - The no-op test required zero deletions: each remaining instruction changes
   invocation, routing, evidence, validation, persistence, or stop behavior.
 - `SKILL.md` and `agents/openai.yaml` consistently disable implicit invocation.
-- Focused tests pass 25/25; all eight shared test files pass 94/94. Both Node
+- The focused and shared source contract commands pass. Both Node
   files pass syntax checks, and the scoped diff passes `git diff --check`.
 - The requested literal `python` command is unavailable. The same validator
   executed through `uv run --with pyyaml python` and failed because
@@ -582,8 +585,8 @@ Artifacts:
 
 - `SKILL.md`, `agents/openai.yaml`, `phases/router.md`, four flat gate files,
   four references, and `scripts/review-contract.mjs`.
-- `tests/review-phase-graph.contract.test.mjs`, all eight shared test files,
-  and the applicable `skills` packaging validator output.
+- The canonical source review-graph and shared contract commands, plus the
+  applicable `skills` packaging validator output.
 
 Validation:
 
@@ -601,7 +604,7 @@ Validation:
   form the progressive-disclosure trace.
 - The no-op test required zero deletions. Root frontmatter and
   `agents/openai.yaml` consistently enforce explicit-only invocation.
-- Focused tests pass 25/25; all eight shared test files pass 94/94. Both Node
+- The focused and shared source contract commands pass. Both Node
   files pass syntax checks, and the scoped diff passes `git diff --check`.
 - The applicable packaging validator exits zero, validates the local path,
   discovers 106 skills, and lists `review-phase` with the exact source

@@ -45,9 +45,14 @@ the fixed wiki values are `review-report`, `project`, and `internal`. Its title
 uses the derived filename slug; created and updated equal the date in
 `reviewed_at`. Its lineage, run, mode, timestamp, accepted-bounds identity/hash,
 and snapshot hash must agree with the JSON authority and recomputed evidence.
+Prototype-sensitive frontmatter keys are malformed and are rejected before any
+assignment. `reviewed_at` must name a real UTC calendar instant. Delivery
+normalization requires a non-empty inclusive scope and delivery-goal identity;
+governing-source normalization requires a non-empty source set.
 
 The parsed JSON object is report authority. Detached objects, sidecars, and
-caller-supplied derived identities are never trusted. It contains exactly these fields:
+caller-supplied derived identities are never trusted. It contains exactly these
+fields:
 
 - `review_lineage_id`
 - `review_run_id`
@@ -60,8 +65,8 @@ caller-supplied derived identities are never trusted. It contains exactly these 
 - canonical `source_set_hash`
 - an explicit outcome for Standards, skill adherence and scoped skills,
   architecture, simplify, and Spec
-- stable finding identifiers with severity, location, impact, evidence, and
-  action
+- stable finding identifiers with severity, location, impact, evidence,
+  action, and one `return_route`
 - routing and validation
 
 Delivery mode also records delivery-goal identity, review ordinal, and preceding
@@ -70,16 +75,23 @@ as null or not applicable.
 
 `lens_outcomes` has exactly `standards`, `skill_adherence`, `architecture`,
 `simplify`, and `spec`; each value is `clean` or `findings`. Every finding has
-exactly stable `id`, `lens`, `severity`, `location`, `impact`, `evidence`, and
-`action`. Finding IDs are unique, severity is `critical`, `high`, `medium`, or
-`low`, and each lens outcome agrees with whether that lens has a finding.
+exactly the fields `id`, `lens`, `severity`, `location`, `impact`, `evidence`,
+`action`, and `return_route`. Finding IDs are unique, severity is `critical`,
+`high`, `medium`, or `low`, and each lens outcome agrees with whether that lens
+has a finding. Each finding's `return_route` is exactly `debugging`,
+`implementation`, `debt_follow_up`, or `docs_ingest`.
 
 `routing` has exactly `primary` and `secondary_architecture_follow_up`.
 `primary` is `debugging`, `implementation`, `debt_follow_up`, `docs_ingest`, or
-`closeout`; the secondary flag is boolean. `validation` is an array of records
-with exactly command, isolation mode, before/after frozen hashes, outcome, and
-evidence. Isolation is proven no-write, disposable checkout, or disposable
-snapshot. Retained validation records require equal before/after hashes.
+`closeout`; the secondary flag is boolean. Aggregate routing is derived by the
+public `deriveReviewRouting` helper from the complete finding set. Precedence is
+`debugging` > `implementation` > `debt_follow_up` > `docs_ingest`; an empty set
+derives `closeout`, and debt is secondary only beside debugging or
+implementation. A supplied aggregate mismatch is invalid. `validation` is an
+array of records with exactly command, isolation mode, before/after frozen
+hashes, outcome, and evidence. Isolation is proven no-write, disposable
+checkout, or disposable snapshot. Retained validation records require equal
+before/after hashes.
 
 Delivery ordinals are 1 through 3. Review 1 has null preceding-repair ordinal;
 review 2 or 3 records respectively 1 or 2. Standalone delivery-goal identity,
@@ -117,12 +129,15 @@ evidence. A candidate is a valid retained pass only when every predicate holds:
    snapshot hash, source-set hash, and deterministic report path equal values
    recomputed from the canonical identity algorithm;
 3. the outside-envelope report SHA-256 equals the exact retained report blob;
-4. current accepted-bounds, normalized-target, and governing-source hashes still
+4. bytes resolved from `reportCommitSha:reportPath` are exactly equal to the
+   local report bytes; the caller supplies them as `resolvedReportBytes`;
+5. current accepted-bounds, normalized-target, and governing-source hashes still
    equal the report values;
-5. the report commit changed the report path and only repository-approved
+6. the report commit changed the report path and only repository-approved
    report, navigation, and wiki-log envelope paths;
-6. the approved retained ref contains that exact report commit;
-7. delivery ordinal is an integer from 1 through 3; standalone delivery-only
+7. the approved retained ref contains that exact report commit with boolean
+   `true` containment evidence;
+8. delivery ordinal is an integer from 1 through 3; standalone delivery-only
    fields are null.
 
 A malformed report, wrong lineage or run id, wrong blob or freshness hash,
