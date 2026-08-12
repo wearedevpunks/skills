@@ -39,8 +39,15 @@ export const inclusiveScopeHash = (entries) =>
 export const acceptedBoundsHash = (identity, scopeEntries) =>
   hashRecord("accepted-bounds", [identity, inclusiveScopeHash(scopeEntries)]);
 
-export const deliveryLineageId = (deliveryGoalIdentity) =>
-  hashRecord("delivery-lineage", [deliveryGoalIdentity]);
+export const deliveryLineageId = (deliveryGoalIdentity) => {
+  if (
+    typeof deliveryGoalIdentity !== "string" ||
+    deliveryGoalIdentity.length === 0
+  ) {
+    throw new TypeError("delivery goal identity must be a non-empty string");
+  }
+  return hashRecord("delivery-lineage", [deliveryGoalIdentity]);
+};
 
 export const standaloneLineageId = (locator, boundsHash) =>
   hashRecord("standalone-lineage", [locator, boundsHash]);
@@ -130,10 +137,23 @@ export const sourceSetHash = (sources) =>
       .flatMap(({ path, hash }) => [path, hash]),
   );
 
-export const reviewReportPath = ({ lineageId, reviewedAt, snapshotHash }) => {
-  if (!/^\d{8}T\d{6}Z$/u.test(reviewedAt)) {
-    throw new TypeError("reviewedAt must use YYYYMMDDTHHMMSSZ UTC format");
+const assertReviewedAt = (reviewedAt, field) => {
+  const match = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/u.exec(
+    reviewedAt,
+  );
+  if (!match) {
+    throw new TypeError(`${field} must use YYYYMMDDTHHMMSSZ UTC format`);
   }
+  const [, year, month, day, hour, minute, second] = match;
+  const iso = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
+  const instant = new Date(iso);
+  if (Number.isNaN(instant.valueOf()) || instant.toISOString() !== iso) {
+    throw new TypeError(`${field} must name a real UTC instant`);
+  }
+};
+
+export const reviewReportPath = ({ lineageId, reviewedAt, snapshotHash }) => {
+  assertReviewedAt(reviewedAt, "reviewedAt");
   return `apps/wiki/content/docs/project/reviews/${reviewScopeSlug(lineageId)}-${reviewedAt}-${snapshot12(snapshotHash)}-review-report.md`;
 };
 
@@ -165,6 +185,35 @@ const LENS_KEYS = [
   "simplify",
   "spec",
 ];
+const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+const FINDING_ROUTES = [
+  "debugging",
+  "implementation",
+  "debt_follow_up",
+  "docs_ingest",
+];
+
+export const deriveReviewRouting = (findings) => {
+  if (
+    !Array.isArray(findings) ||
+    findings.some(
+      (finding) =>
+        finding === null ||
+        typeof finding !== "object" ||
+        !FINDING_ROUTES.includes(finding.return_route),
+    )
+  ) {
+    throw new TypeError("invalid finding return route");
+  }
+  const routes = new Set(findings.map(({ return_route: route }) => route));
+  const primary = FINDING_ROUTES.find((route) => routes.has(route)) ?? "closeout";
+  return {
+    primary,
+    secondary_architecture_follow_up:
+      routes.has("debt_follow_up") &&
+      (primary === "debugging" || primary === "implementation"),
+  };
+};
 
 const exactKeys = (value, keys) =>
   value !== null &&
@@ -182,9 +231,7 @@ const sortedUniqueStrings = (values) =>
   isDeepStrictEqual(values, sortUtf8(values));
 
 const reportDate = (reviewedAt) => {
-  if (!/^\d{8}T\d{6}Z$/u.test(reviewedAt)) {
-    throw new TypeError("reviewed_at must use YYYYMMDDTHHMMSSZ");
-  }
+  assertReviewedAt(reviewedAt, "reviewed_at");
   return `${reviewedAt.slice(0, 4)}-${reviewedAt.slice(4, 6)}-${reviewedAt.slice(6, 8)}`;
 };
 
@@ -240,11 +287,14 @@ const parseFrontmatter = (text) => {
   if (!text.startsWith("---\n")) throw new TypeError("missing frontmatter");
   const close = text.indexOf("\n---\n", 4);
   if (close < 0) throw new TypeError("unclosed frontmatter");
-  const frontmatter = {};
+  const frontmatter = Object.create(null);
   for (const line of text.slice(4, close).split("\n")) {
     const separator = line.indexOf(": ");
     if (separator < 1) throw new TypeError("malformed frontmatter line");
     const key = line.slice(0, separator);
+    if (PROTOTYPE_KEYS.has(key)) {
+      throw new TypeError("prototype-sensitive frontmatter key");
+    }
     if (Object.hasOwn(frontmatter, key)) throw new TypeError("duplicate frontmatter key");
     const raw = line.slice(separator + 2);
     frontmatter[key] = raw === "[]" ? [] : JSON.parse(raw);
@@ -288,6 +338,8 @@ export const normalizeReviewTarget = (mode, evidence) => {
       !nonemptyString(evidence.actualBaseRef) ||
       !COMMIT_SHA.test(evidence.fixedPointSha) ||
       !nonemptyString(evidence.headIdentity) ||
+      !Array.isArray(evidence.scopeEntries) ||
+      evidence.scopeEntries.length === 0 ||
       !sortedUniqueStrings(sortUtf8(evidence.scopeEntries)) ||
       !Buffer.isBuffer(evidence.canonicalPatchBytes)
     ) {
@@ -330,6 +382,7 @@ export const normalizeReviewTarget = (mode, evidence) => {
 export const normalizeReviewSources = (sources) => {
   if (
     !Array.isArray(sources) ||
+    sources.length === 0 ||
     sources.some(
       ({ path, bytes }) => !nonemptyString(path) || !Buffer.isBuffer(bytes),
     ) ||
@@ -422,7 +475,11 @@ const validateTargetSchema = (target, mode, errors) => {
     errors.push("malformed:normalized_target_schema");
     return;
   }
-  if (!nonemptyString(target.locator) || !sortedUniqueStrings(target.inclusive_scope)) {
+  if (
+    !nonemptyString(target.locator) ||
+    target.inclusive_scope.length === 0 ||
+    !sortedUniqueStrings(target.inclusive_scope)
+  ) {
     errors.push("malformed:normalized_target_common_fields");
   }
   if (mode === "delivery") {
@@ -472,6 +529,7 @@ const validateReportSemantics = (report, errors) => {
       "impact",
       "evidence",
       "action",
+      "return_route",
     ];
     const ids = new Set();
     const findingLenses = new Set();
@@ -514,6 +572,14 @@ const validateReportSemantics = (report, errors) => {
     typeof report.routing?.secondary_architecture_follow_up !== "boolean"
   ) {
     errors.push("malformed:routing");
+  } else {
+    try {
+      if (!isDeepStrictEqual(report.routing, deriveReviewRouting(report.findings))) {
+        errors.push("mismatch:routing");
+      }
+    } catch {
+      errors.push("malformed:finding_return_route");
+    }
   }
 
   const validationKeys = [
@@ -708,7 +774,13 @@ const inspectRetainedPass = (candidate, expected) => {
   ) {
     errors.push("mismatch:report_sha256");
   }
-  if (!candidate.refContainsCommit) errors.push("ref_missing_commit");
+  if (
+    !Buffer.isBuffer(candidate.resolvedReportBytes) ||
+    !candidate.reportBytes.equals(candidate.resolvedReportBytes)
+  ) {
+    errors.push("mismatch:resolved_report_bytes");
+  }
+  if (candidate.refContainsCommit !== true) errors.push("ref_missing_commit");
   if (!COMMIT_SHA.test(candidate.reportCommitSha)) {
     errors.push("invalid:report_commit_sha");
   }

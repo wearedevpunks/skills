@@ -7,6 +7,7 @@ import {
   deliveryLineageId,
   deliveryRunId,
   deliverySnapshotHash,
+  deriveReviewRouting,
   encodeReviewReport,
   inclusiveScopeHash,
   normalizeReviewSources,
@@ -51,6 +52,7 @@ const reviewHandoff = () =>
 const cloneCandidate = (candidate) => ({
   ...candidate,
   reportBytes: Buffer.from(candidate.reportBytes),
+  resolvedReportBytes: Buffer.from(candidate.resolvedReportBytes),
   commitPaths: [...candidate.commitPaths],
 });
 
@@ -61,12 +63,14 @@ const rewriteReport = (candidate, mutate) => {
   candidate.reportBytes = encodeReviewReport(report, {
     domain: parsed.frontmatter.domain,
   });
+  candidate.resolvedReportBytes = Buffer.from(candidate.reportBytes);
   candidate.reportSha256 = sha256Hex(candidate.reportBytes);
 };
 
 const rewriteBytes = (candidate, mutate) => {
   const text = new TextDecoder().decode(candidate.reportBytes);
   candidate.reportBytes = Buffer.from(mutate(text), "utf8");
+  candidate.resolvedReportBytes = Buffer.from(candidate.reportBytes);
   candidate.reportSha256 = sha256Hex(candidate.reportBytes);
 };
 
@@ -166,6 +170,7 @@ const retainedPassFixture = (mode = "delivery") => {
     candidate: {
       reportPath,
       reportBytes,
+      resolvedReportBytes: Buffer.from(reportBytes),
       reportSha256: sha256Hex(reportBytes),
       reportCommitSha: (delivery ? "b" : "e").repeat(40),
       retainedRef,
@@ -440,6 +445,51 @@ test("target adapters freeze complete mode-specific identities", () => {
   assert.match(targets, /does not embed raw selected bytes/iu);
 });
 
+test("delivery target normalization rejects an empty inclusive scope", () => {
+  assert.throws(
+    () =>
+      normalizeReviewTarget("delivery", {
+        locator: "repo:wearedevpunks/harness-intelligence",
+        actualBaseRef: "origin/main",
+        fixedPointSha: "1".repeat(40),
+        headIdentity: "2".repeat(40),
+        scopeEntries: [],
+        canonicalPatchBytes: Buffer.from("canonical patch\n"),
+      }),
+    /invalid delivery target evidence/u,
+  );
+});
+
+test("governing-source normalization rejects an empty source set", () => {
+  assert.throws(() => normalizeReviewSources([]), /invalid source evidence/u);
+});
+
+test("review timestamps must name a real UTC instant", () => {
+  const args = {
+    lineageId: "a".repeat(64),
+    snapshotHash: "b".repeat(64),
+  };
+  for (const reviewedAt of ["20260230T120000Z", "20260811T246000Z"]) {
+    assert.throws(
+      () => reviewReportPath({ ...args, reviewedAt }),
+      /real UTC instant/u,
+    );
+  }
+});
+
+test("delivery lineage rejects an empty goal identity", () => {
+  assert.throws(() => deliveryLineageId(""), /delivery goal identity/u);
+
+  const fixture = retainedPassFixture();
+  assert.match(
+    validateRetainedPass(fixture.candidate, {
+      ...fixture.expected,
+      deliveryGoalIdentity: "",
+    }).errors.join(","),
+    /invalid:delivery_goal_identity/u,
+  );
+});
+
 test("canonical identity algorithm matches fixed vectors", () => {
   const targets = reviewTargets();
   const scope = ["apps/wiki/spec.md", "apps/cli/src/a.ts"];
@@ -639,6 +689,26 @@ test("retained-pass predicate rejects malformed identity and hash evidence", () 
   );
 });
 
+test("retained ref containment accepts only boolean true", () => {
+  const fixture = retainedPassFixture();
+  const candidate = cloneCandidate(fixture.candidate);
+  candidate.refContainsCommit = "false";
+  assert.match(
+    validateRetainedPass(candidate, fixture.expected).errors.join(","),
+    /ref_missing_commit/u,
+  );
+});
+
+test("retention binds local bytes to the named commit and report path", () => {
+  const fixture = retainedPassFixture();
+  const candidate = cloneCandidate(fixture.candidate);
+  candidate.resolvedReportBytes = Buffer.from("different committed bytes\n");
+  assert.match(
+    validateRetainedPass(candidate, fixture.expected).errors.join(","),
+    /mismatch:resolved_report_bytes/u,
+  );
+});
+
 test("retained report bytes enforce wiki frontmatter before one authority block", () => {
   const fixture = retainedPassFixture();
   const parsed = parseReviewReport(fixture.candidate.reportBytes);
@@ -714,6 +784,22 @@ test("retained report bytes enforce wiki frontmatter before one authority block"
       new RegExp(`mismatch:frontmatter:${field}`, "u"),
     );
   }
+});
+
+test("frontmatter parsing rejects prototype-sensitive keys without mutation", () => {
+  const fixture = retainedPassFixture();
+  const poisoned = Buffer.from(
+    new TextDecoder()
+      .decode(fixture.candidate.reportBytes)
+      .replace('title: "review-', '__proto__: {"polluted":true}\ntitle: "review-'),
+    "utf8",
+  );
+
+  assert.throws(
+    () => parseReviewReport(poisoned),
+    /prototype-sensitive frontmatter key/u,
+  );
+  assert.equal({}.polluted, undefined);
 });
 
 test("retained-pass relationships derive from primitive evidence in both modes", () => {
@@ -797,6 +883,7 @@ test("retained report enforces exact lens and structured evidence semantics", ()
         impact: "Acceptance evidence is absent.",
         evidence: "The frozen implementation notes omit the required check.",
         action: "Route the missing proof to implementation.",
+        return_route: "implementation",
       },
     ];
     report.routing.primary = "implementation";
@@ -855,6 +942,59 @@ test("retained report enforces exact lens and structured evidence semantics", ()
   );
 });
 
+test("finding routes centrally derive aggregate routing", () => {
+  const finding = (return_route) => ({ return_route });
+  assert.deepEqual(deriveReviewRouting([]), {
+    primary: "closeout",
+    secondary_architecture_follow_up: false,
+  });
+  assert.deepEqual(deriveReviewRouting([finding("docs_ingest")]), {
+    primary: "docs_ingest",
+    secondary_architecture_follow_up: false,
+  });
+  assert.deepEqual(deriveReviewRouting([finding("debt_follow_up")]), {
+    primary: "debt_follow_up",
+    secondary_architecture_follow_up: false,
+  });
+  assert.deepEqual(
+    deriveReviewRouting([
+      finding("debt_follow_up"),
+      finding("implementation"),
+      finding("debugging"),
+    ]),
+    {
+      primary: "debugging",
+      secondary_architecture_follow_up: true,
+    },
+  );
+  assert.throws(
+    () => deriveReviewRouting([finding("closeout")]),
+    /invalid finding return route/u,
+  );
+
+  const fixture = retainedPassFixture();
+  const contradictory = cloneCandidate(fixture.candidate);
+  rewriteReport(contradictory, (report) => {
+    report.lens_outcomes.spec = "findings";
+    report.findings = [
+      {
+        id: "spec.docs-gap",
+        lens: "spec",
+        severity: "medium",
+        location: "SPEC.md#Docs",
+        impact: "Required documentation is incomplete.",
+        evidence: "The retained docs checklist is open.",
+        action: "Complete the required documentation.",
+        return_route: "docs_ingest",
+      },
+    ];
+  });
+  assert.match(
+    validateRetainedPass(contradictory, fixture.expected).errors.join(","),
+    /mismatch:routing/u,
+  );
+});
+
 test("same-run retention reuses identical authority and rejects conflicts", () => {
   const fixture = retainedPassFixture();
   const entry = { candidate: fixture.candidate, expected: fixture.expected };
@@ -879,6 +1019,9 @@ test("same-run retention reuses identical authority and rejects conflicts", () =
     conflictingCandidate.reportBytes,
     Buffer.from("\n", "utf8"),
   ]);
+  conflictingCandidate.resolvedReportBytes = Buffer.from(
+    conflictingCandidate.reportBytes,
+  );
   conflictingCandidate.reportSha256 = sha256Hex(
     conflictingCandidate.reportBytes,
   );
@@ -1032,6 +1175,55 @@ test("delivery owns review routes and bounded repairs", () => {
   assert.match(handoff, /review_lineage_id/iu);
   assert.match(handoff, /review_count/iu);
   assert.match(handoff, /repair_count/iu);
+});
+
+test("review retention and delivery debt handoff are explicit and resumable", () => {
+  const run = reviewRun();
+  const retain = reviewRetain();
+  const returnRoute = reviewReturn();
+  const report = reviewReport();
+  const graph = reviewGraph();
+  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
+  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
+  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
+  const authoring = read("skills/phases/review-phase/AUTHORING-HANDOFF.md");
+
+  assert.match(run, /accepted finding.{0,200}`return_route`/isu);
+  assert.match(returnRoute, /`deriveReviewRouting`/u);
+  assert.match(report, /each finding.{0,160}`return_route`/isu);
+  assert.match(report, /aggregate routing.{0,120}derived/isu);
+  assert.match(
+    retain,
+    /`reportCommitSha:reportPath`.{0,300}exact committed.{0,160}local report bytes/isu,
+  );
+  assert.match(
+    report,
+    /bytes resolved from `reportCommitSha:reportPath`.{0,160}exactly equal.{0,100}local report bytes/isu,
+  );
+
+  assert.match(handoff, /state:.*debt_follow_up/isu);
+  assert.match(
+    handoff,
+    /debt follow-up key.{0,160}authoritative report commit.{0,160}report path.{0,160}stable finding id/isu,
+  );
+  assert.match(deliveryRouter, /`debt_follow_up`.{0,160}\[review\.md\]/isu);
+  assert.match(
+    deliveryReview,
+    /goal\/spec-linked debt artifact.{0,200}exactly once.{0,200}retained report.{0,160}stable finding ID/isu,
+  );
+  assert.match(
+    deliveryReview,
+    /does not implement.{0,100}debt.{0,180}`docs_ingest`.{0,100}`closeout`/isu,
+  );
+  assert.match(graph, /Resume debt follow-up.{0,160}`debt_follow_up`/isu);
+  assert.match(graph, /Debt captured.{0,200}`docs_ingest` or `closeout`/isu);
+
+  assert.match(
+    authoring,
+    /installed package\s+omits the source repository test files/iu,
+  );
+  assert.doesNotMatch(authoring, /\b\d+\/\d+\b/u);
+  assert.doesNotMatch(authoring, /all eight shared test files/iu);
 });
 
 test("external GitHub and Codex PR reviewer integration stays excluded", () => {

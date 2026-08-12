@@ -51,7 +51,8 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 6. Parent-verify every advisory and lens candidate against the frozen target and
    adjacent evidence. Only verified candidates become findings. Give each
    accepted finding a stable identifier, lens, severity, location, impact,
-   evidence, and action.
+   evidence, action, and one explicit `return_route`: `debugging`,
+   `implementation`, `debt_follow_up`, or `docs_ingest`.
 7. Run only the smallest safe readonly validation needed to verify candidates or
    governing acceptance evidence. Broader checks require explicit accepted spec
    or plan authority. Record missing required RED/GREEN evidence as a finding;
@@ -61,10 +62,11 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
    caches, generated files, snapshots, lockfiles, or state run in a disposable
    checkout or snapshot rooted at the frozen revision. Reconcile exact commands,
    isolation mode, hashes, output, skipped checks, and residual risk.
-9. Derive the report route from verified findings: runtime evidence first,
-   otherwise an in-scope non-runtime blocker, otherwise broad architecture debt,
-   otherwise documentation ingest or closeout by documentation completeness.
-   Architecture debt may remain a secondary follow-up.
+9. Pass the complete verified finding set to `deriveReviewRouting` in
+   [`review-contract.mjs`](../scripts/review-contract.mjs). Store its result
+   unchanged. The helper uses only `return_route`, applies canonical precedence,
+   and preserves debt as a secondary follow-up beside debugging or
+   implementation. Finding prose never selects or reranks a route.
 10. Assemble exactly one complete local report using
     [`../references/durable-report.md`](../references/durable-report.md). Record
     an explicit outcome for every lens. After its final bytes are written, treat
@@ -95,6 +97,7 @@ The run is complete only when one local report contains:
   and mode-specific delivery identities
 - explicit Standards, skill-adherence, architecture, simplify, and Spec outcomes
 - every verified stable finding and no unverified advisory candidate
+- one validated `return_route` on each accepted finding
 - evidence-cardinality results for all applicable skill guidance and notes
 - exact validation commands, isolation, before/after hashes, outcomes, skipped
   checks, and residual risk

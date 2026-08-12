@@ -31,13 +31,11 @@ debug, debt, documentation, or closeout work.
 1. Revalidate the retained blob, canonical identities, approved commit paths,
    same-run uniqueness, ref containment, and current freshness. Reuse only the
    immutable authority block inside those retained bytes.
-2. Derive the primary route from retained findings in this order:
-   - any finding with runtime-failure evidence -> `debugging`
-   - otherwise, any in-scope non-runtime blocking finding -> `implementation`
-   - otherwise, any broad architecture-debt finding -> `debt_follow_up`
-   - otherwise, incomplete required documentation -> `docs_ingest`
-   - otherwise -> `closeout`
-3. Set `secondary_architecture_follow_up` only when a broad architecture-debt
+2. Pass the complete retained finding set to the public `deriveReviewRouting`
+   helper. Each non-empty finding already carries one validated `return_route`.
+   The helper applies `debugging` > `implementation` > `debt_follow_up` >
+   `docs_ingest`; an empty set returns `closeout`.
+3. Accept `secondary_architecture_follow_up` only when a `debt_follow_up`
    finding accompanies a higher-priority debugging or implementation route.
 4. Require the derived result to equal the retained report's `routing` object.
    A mismatch is invalid retained routing evidence and routes to
@@ -63,7 +61,7 @@ debug, debt, documentation, or closeout work.
 
 - valid retained-pass result and final freshness result
 - retained report path, SHA-256, commit, and containing ref
-- stable finding IDs used by each route class
+- stable finding IDs and their explicit `return_route` classifications
 - deterministic precedence result and exact match to report `routing`
 - returned mode-specific state and routing-evidence artifact
 
