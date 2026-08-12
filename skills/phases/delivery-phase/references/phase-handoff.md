@@ -33,6 +33,7 @@ review_run_id:
 state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | clean_handoff
 primary_route:
 secondary_architecture_follow_up:
+post_debt_route:
 review_count:
 repair_count:
 authoritative_report_path:
@@ -55,6 +56,11 @@ authoritative report path, and stable finding ID. The debt artifact links the
 delivery goal and accepted Spec, records those keys, and lives outside the
 immutable report. Replaying a recorded key reuses the existing entry. It never
 opens implementation work for unaccepted debt.
+
+`post_debt_route` is durable before debt capture starts. It is `debugging` or
+`implementation` for secondary debt, and `docs_ingest` or `closeout` for
+primary debt after capture. Resume follows this field after every debt key is
+present.
 
 ## Explicit Review Invocation Context
 

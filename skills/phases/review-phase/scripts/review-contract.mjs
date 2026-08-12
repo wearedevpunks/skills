@@ -477,6 +477,7 @@ const validateTargetSchema = (target, mode, errors) => {
   }
   if (
     !nonemptyString(target.locator) ||
+    !Array.isArray(target.inclusive_scope) ||
     target.inclusive_scope.length === 0 ||
     !sortedUniqueStrings(target.inclusive_scope)
   ) {

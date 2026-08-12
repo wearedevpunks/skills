@@ -34,8 +34,9 @@ state take precedence over inferred artifact order.
    or `repair_active` through [implement.md](implement.md). A recorded
    `review_run_id` cannot increment `repair_count` again.
 7. Resume `debt_follow_up` through [review.md](review.md). Its handler reuses or
-   records the goal/spec-linked debt artifact, then routes to docs ingest or
-   closeout without implementing the debt.
+   records the goal/spec-linked debt artifact, then follows durable
+   `post_debt_route`: `debugging` or `implementation` for secondary debt;
+   `docs_ingest` or `closeout` for primary debt. It never implements the debt.
 8. Route `focused_validation` to its recorded implementation or debugging owner.
    Passing becomes `clean_handoff`; failure remains repair epoch 3.
 9. Route `clean_handoff` to [docs-ingest.md](docs-ingest.md) when docs remain,
