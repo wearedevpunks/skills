@@ -22,6 +22,8 @@ Write or verify:
 - matching `SPEC.md`
 - `readiness: agent-ready`
 - `spec-written`
+- verify the retained ref contains the spec commit
+- construct and verify a stable blob URL before backlog
 - source issue/tracker/spec folder
 
 Then stop or re-enter `delivery-phase` for routing.
