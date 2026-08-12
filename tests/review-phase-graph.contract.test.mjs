@@ -1321,6 +1321,20 @@ test("review retention and delivery debt handoff are explicit and resumable", ()
   assert.doesNotMatch(authoring, /all eight shared test files/iu);
 });
 
+test("primary debt successors are durable cold-resume states", () => {
+  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
+  const stateProjection = /^state:\s*(?<states>.+)$/mu.exec(handoff);
+  assert.ok(stateProjection?.groups?.states, "durable state projection is required");
+  const states = stateProjection.groups.states.split("|").map((state) => state.trim());
+  for (const successor of ["docs_ingest", "closeout"]) {
+    assert.ok(states.includes(successor), `${successor} must be a durable state`);
+  }
+  assert.match(
+    handoff,
+    /primary debt.{0,200}capture.{0,200}state = `post_debt_route`.{0,200}resume.{0,200}(?:does not|without).{0,80}repeat.{0,80}capture/isu,
+  );
+});
+
 test("external GitHub and Codex PR reviewer integration stays excluded", () => {
   const all = `${reviewSkill()}\n${reviewGraph()}`;
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);

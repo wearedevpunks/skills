@@ -30,7 +30,7 @@ accepted_bounds_identity:
 accepted_bounds_hash:
 review_lineage_id:
 review_run_id:
-state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | clean_handoff
+state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff
 primary_route:
 secondary_architecture_follow_up:
 post_debt_route:
@@ -60,7 +60,9 @@ opens implementation work for unaccepted debt.
 `post_debt_route` is durable before debt capture starts. It is `debugging` or
 `implementation` for secondary debt, and `docs_ingest` or `closeout` for
 primary debt after capture. Resume follows this field after every debt key is
-present.
+present. For primary debt, the successful capture transition atomically records
+every debt key and sets state = `post_debt_route`. Resume continues from the
+recorded `docs_ingest` or `closeout` state without repeating capture.
 
 ## Explicit Review Invocation Context
 
