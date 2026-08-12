@@ -349,6 +349,18 @@ test("delivery gates backlog projection between spec and planning", () => {
   assert.match(delivery, /phases\/backlog\.md/u);
 });
 
+test("delivery repairs agent-ready specs lacking verified remote blob authority", () => {
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const spec = read("skills/phases/delivery-phase/phases/spec.md");
+
+  assert.match(
+    router,
+    /agent-ready `SPEC\.md`[\s\S]*remote retention[\s\S]*stable blob URL[\s\S]*\[spec\.md\]/iu,
+  );
+  assert.match(spec, /verify the retained ref contains the spec commit/iu);
+  assert.match(spec, /construct and verify a stable blob URL before backlog/iu);
+});
+
 test("planning persists plan-derived worker waves for resume", () => {
   const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
   const schema = read(

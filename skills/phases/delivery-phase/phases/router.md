@@ -37,8 +37,9 @@ state take precedence over inferred artifact order.
    Passing becomes `clean_handoff`; failure remains repair epoch 3.
 8. Route `clean_handoff` to [docs-ingest.md](docs-ingest.md) when docs remain,
    otherwise [closeout.md](closeout.md).
-9. If no matching agent-ready `SPEC.md` exists, or it is stale,
-   contradictory, or incomplete, load [spec.md](spec.md).
+9. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
+   incomplete, or its remote retention or stable blob URL is missing or
+   unverified, load [spec.md](spec.md).
 10. If the verified post-spec backlog projection is missing or stale, load
    [backlog.md](backlog.md).
 11. If no execution-ready matching plan exists, or it lacks dependencies, owned
