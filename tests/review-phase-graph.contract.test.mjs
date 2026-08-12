@@ -472,6 +472,21 @@ test("standalone target normalization rejects an empty artifact scope", () => {
   );
 });
 
+test("standalone target normalization requires a scope array", () => {
+  assert.throws(
+    () =>
+      normalizeReviewTarget("standalone", {
+        locator: "artifact:string-scope",
+        files: [
+          { identity: "a", bytes: Buffer.from("alpha") },
+          { identity: "b", bytes: Buffer.from("beta") },
+        ],
+        scopeEntries: "ab",
+      }),
+    /invalid standalone target evidence/u,
+  );
+});
+
 test("governing-source normalization rejects an empty source set", () => {
   assert.throws(() => normalizeReviewSources([]), /invalid source evidence/u);
 });

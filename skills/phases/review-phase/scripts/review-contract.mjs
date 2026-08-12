@@ -356,6 +356,12 @@ export const normalizeReviewTarget = (mode, evidence) => {
     };
   }
   if (mode === "standalone") {
+    if (
+      !Array.isArray(evidence.scopeEntries) ||
+      evidence.scopeEntries.length === 0
+    ) {
+      throw new TypeError("invalid standalone target evidence");
+    }
     const files = orderedFiles(evidence.files);
     const identities = files.map(({ identity }) => identity);
     const scope = sortUtf8(evidence.scopeEntries);
