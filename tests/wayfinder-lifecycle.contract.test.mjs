@@ -175,7 +175,7 @@ test("research and docs ingest preserve one primary-source report", () => {
   assert.match(report, /one consolidated report/i);
   assert.match(report, /primary source for every retained\s+factual claim/i);
   assert.match(report, /research\/<slug>/);
-  assert.match(report, /immutable commit SHA and path/i);
+  assert.match(report, /immutable commit SHA\s+and path/i);
   assert.match(ingest, /report as primary evidence/i);
   assert.match(ingest, /keep`, `update`, `consolidate`, `replace`,\s+or `mark_stale`/i);
 });
@@ -201,14 +201,26 @@ test("parallel research durable retention commit does not trigger its skip rule"
   assert.doesNotMatch(research, /skip this skill[^.]*\bcommits\b/i);
 });
 
-test("durable research is remotely retained before immutable handoff", () => {
+test("durable research stays on the current checkout branch", () => {
   const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
   const contract = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
-  for (const document of [skill, contract]) {
-    assert.match(document, /push\s+or explicitly retain `research\/<slug>`/iu);
-    assert.match(document, /verify the retained ref contains the report commit/iu);
-    assert.match(document, /before\s+returning the\s+immutable (?:commit )?SHA and path/iu);
-  }
+  const all = `${skill}\n${contract}`;
+
+  assert.match(contract, /record the current checkout and branch/iu);
+  assert.match(
+    contract,
+    /write and commit.*current checkout.*current branch/isu,
+  );
+  assert.match(
+    contract,
+    /never create, switch, checkout,\s+or use another branch or worktree/isu,
+  );
+  assert.match(contract, /same branch\s+contains the report commit/isu);
+  assert.match(contract, /before returning the immutable commit SHA\s+and path/isu);
+  assert.doesNotMatch(
+    all,
+    /(?:create|switch|checkout|retain|push)[^\n]*`research\/<slug>`/iu,
+  );
 });
 
 test("create-spec no-interview compiler", () => {

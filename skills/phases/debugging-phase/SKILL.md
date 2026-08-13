@@ -15,7 +15,7 @@ description: >-
 - **Entrypoint type:** standalone public skill, or inner phase of `delivery-phase`
 - **Standalone inputs:** user-reported broken behavior, failing smoke checks, logs, recordings, runtime symptoms
 - **Delivery-internal inputs:** `implement-spec` validation failure or `review-phase` runtime failure
-- **Wraps:** `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review
+- **Wraps:** `$verify-behavior`, `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review
 - **Owns:** evidence matrices, cited log references, hypothesis status, fix verification
 - **Exit conditions:** bug fixed, concrete blocker proven, or scope proven to require a spec/delivery goal
 
@@ -43,23 +43,32 @@ description: >-
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.
    - If the evidence points outside that scope, record debt or open a separate debugging/debt goal.
-3. **Run `$debug-agent`.**
+3. **Reproduce visible behavior.**
+   - Before forming hypotheses or starting fix work, run `$verify-behavior` in
+     `reproduce` mode when the reported behavior is visibly exercisable.
+   - Seed the evidence matrix with the reproduction status and cited evidence.
+   - A blocked reproduction is evidence of the blocker, not false confirmation
+     that the failure occurred or disappeared.
+4. **Run `$debug-agent`.**
    - Build 3-5 hypotheses.
    - Instrument or inspect with runtime evidence.
    - Keep an evidence matrix with each hypothesis marked `confirmed`, `rejected`, or `inconclusive`.
    - Cite log lines, recordings, commands, test output, or scenario evidence for every status.
-4. **Optionally run readonly `$parallel-research`.**
+   - Use `$show-me` to present the evidence matrix before selecting a cause or
+     fix. The visual explains the comparison; cited evidence and statuses remain
+     authoritative.
+5. **Optionally run readonly `$parallel-research`.**
    - Use for independent hypotheses, unfamiliar subsystems, logs, docs, or prior-art inspection.
    - Synthesize findings before fixing.
-5. **Fix only proven causes.**
+6. **Fix only proven causes.**
    - Make the smallest bounded patch that addresses confirmed evidence.
    - Remove speculative changes from rejected hypotheses.
    - Keep debug instrumentation until post-fix evidence proves success, unless the user explicitly asks for cleanup.
-6. **Verify.**
+7. **Verify.**
    - Rerun the failing smoke check, focused test, browser path, CLI command, or manual scenario.
    - Compare before/after evidence.
    - Run review appropriate to the touched scope.
-7. **Exit.**
+8. **Exit.**
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
    - Out of scope: report why this needs a spec/delivery goal or debt issue.

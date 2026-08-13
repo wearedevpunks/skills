@@ -6,7 +6,8 @@ written to the project wiki before the run can complete.
 
 ## Contract
 
-1. Create `research/<slug>` from the accepted base.
+1. Record the current checkout and branch before dispatching lanes. This branch
+   is the retention reference. A detached checkout is a blocker.
 2. Resolve `<wiki-root>` using the repository convention (`apps/wiki` for a
    monorepo, `wiki` for a single-repo project), then read `<wiki-root>/AGENTS.md`
    before writing. The consolidated report path is always
@@ -21,11 +22,13 @@ written to the project wiki before the run can complete.
    one consolidated report. Include the primary source for every retained
    factual claim and separate facts, inferences, conflicts, and unresolved
    product decisions.
-5. Commit the report and any required route metadata in one commit, then push
-   or explicitly retain `research/<slug>` through a durable repository-approved
-   mechanism.
-6. Verify the retained ref contains the report commit before returning the
-   immutable commit SHA and path.
+5. Write and commit the report and any required route metadata in one commit in
+   the current checkout on the current branch. Never create, switch, checkout,
+   or use another branch or worktree to persist the report. Push that same
+   branch when remote retention is required; otherwise retain it locally.
+6. Verify the checkout and branch are unchanged and that the same branch
+   contains the report commit. Do this before returning the immutable commit SHA
+   and path, plus the verified branch retention reference.
 
 The report may close factual uncertainty. It must not silently choose product
 direction or impersonate a human decision-maker. A later `docs-ingest-phase`

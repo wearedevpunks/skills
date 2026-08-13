@@ -11,6 +11,11 @@ description: |
 
 Use this skill to keep backend code domain-based instead of transport- or utility-bucket-based.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 Read `references/layout.md` before structure decisions or large refactors.
 
 ## Quick Classifier

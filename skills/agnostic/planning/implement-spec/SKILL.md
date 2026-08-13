@@ -20,7 +20,15 @@ description: Implement an agent-ready spec folder through plan-derived worker wa
 - MUST use `$tdd`
 - MUST use `$codebase-design`
 - MUST use `$simplify`
+- MUST use `$show-me`
 Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
+Use `$verify-behavior` in `verify` mode when acceptance criteria are visibly
+exercisable.
+
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
 
 ## Worker-wave responsibilities
 
@@ -39,14 +47,25 @@ implementation tasks.
    preserving its `implementation_skill_guidance` skill and behavior fields.
 5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and
    spec-linked tech debt before advancing. Require exactly one skill-application
-   evidence record per guidance entry.
+   evidence record per guidance entry. Use `$show-me` for a derived wave board
+   when it materially improves operator orientation; the shared artifacts remain
+   authoritative.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
 9. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
 10. For UI implementation changes, follow [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md) and use `repo-asset-management` for durable before/after asset links.
 11. For tasks with `runtime_validation: required`, follow [references/runtime-product-validation.md](references/runtime-product-validation.md) and do not mark them complete without conclusive runtime evidence; an exact blocker keeps the task blocked.
-12. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+12. After task and runtime checks, run `$verify-behavior` in `verify` mode for
+    visibly exercisable acceptance criteria before final acceptance
+    classification. A mismatch is runtime evidence: route it to
+    `debugging-phase`. If the required interaction capability is unavailable,
+    record the explicit blocker and keep affected acceptance criteria blocked.
+13. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+14. Invoke `$show-me` to present the implementation notes, final code changes,
+    acceptance status, and manual review path from finalized
+    `IMPLEMENTATION-NOTES.md`, the diff, and recorded evidence. The presentation
+    does not replace evidence and cannot satisfy or change an acceptance result.
 
 ## Branch and PR invariant
 
