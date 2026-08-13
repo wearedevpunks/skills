@@ -21,7 +21,7 @@ Before writing, read `<wiki-root>/AGENTS.md`. The grilling artifacts live in the
 If a legacy `docs/<topic>-grill-log.md` or `docs/<topic>-grill-status.md` exists, treat it as input to move or merge into the routed grilling section. Do not keep updating both locations.
 
 The log is the durable decision record.
-The status file is the current branch dashboard, round/frontier state, and current glossary snapshot.
+The status file is the current branch dashboard, round/frontier state, and active grill glossary. Supply that glossary to `$domain-modeling` as working persistence until explicit closure.
 
 ## Routed Wiki Contract
 
@@ -161,14 +161,7 @@ Keep the status file glossary compact and current:
 - "<ambiguous word>" was used to mean both **<Term A>** and **<Term B>**. Resolution: <decision>.
 ```
 
-Rules:
-
-- Be opinionated: pick one canonical term.
-- Keep definitions to one sentence.
-- Include only terms meaningful to product/domain experts in this grill.
-- Prefer status-file updates for the current glossary; use log entries for the decision trail.
-- Group terms under subheadings only when clusters are natural.
-- Add a short example dialogue only when it clarifies a boundary that keeps recurring.
+Use `$domain-modeling` for glossary acceptance criteria. Prefer status-file updates for the current glossary and log entries for its decision trail.
 
 ## Branch Closure
 
@@ -177,5 +170,6 @@ When a branch closes:
 1. Update the grill log with final accepted decisions.
 2. Update the status file percentage, open items, round/frontier state, glossary snapshot, axioms, and ambiguities.
 3. Confirm no unanswered item or pending shared-understanding confirmation is represented as `100%`.
-4. If the branch changes durable domain/product knowledge, run the wiki-output workflow.
-5. Say exactly what changed, which routed artifacts were updated, and whether `meta.json` or wiki log bookkeeping changed.
+4. Invoke `$domain-modeling` for a final consistency pass.
+5. After explicit user closure, run the wiki-output workflow for durable domain/product knowledge.
+6. Say exactly what changed, which routed artifacts were updated, and whether `meta.json` or wiki log bookkeeping changed.

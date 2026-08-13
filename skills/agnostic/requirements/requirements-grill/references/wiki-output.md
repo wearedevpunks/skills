@@ -1,6 +1,6 @@
 # Wiki Output From Grill Artifacts
 
-Use this reference when closed grill branches should be reflected in `apps/wiki`.
+Use this reference only after the user explicitly closes the grill.
 
 ## Inputs
 
@@ -49,6 +49,12 @@ Good wiki targets:
 - multi-step user or system flows
 - major decisions whose rationale should stand alone
 
+Publish each accepted domain context's glossary at:
+
+`<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`
+
+Synthesize it from the active grill glossary after `$domain-modeling`'s final consistency pass. The grill log remains the decision trail.
+
 Usually keep out of wiki:
 
 - retry constants
@@ -83,7 +89,7 @@ Keep the routed grilling log/status files as the detailed requirements record.
 Use other routed `<wiki-root>/content/docs/project/` pages for synthesized project knowledge.
 For the default scaffold, that routed project surface is `apps/wiki/content/docs/project/`.
 
-Do not create a separate `apps/wiki/domains/` article tree. That duplicates the routed Fumadocs surface and makes later docs ingest choose between competing homes.
+Keep domain glossaries inside the routed project surface above. Do not create a separate `<wiki-root>/domains/` article tree.
 
 Do not duplicate the full grill log into concept, flow, or decision pages.
 Summarize stable meaning, glossary, and axioms; link back to source docs when useful.
