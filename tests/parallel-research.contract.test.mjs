@@ -22,9 +22,27 @@ test("parallel research always produces a wiki-backed durable report", () => {
   assert.match(contract, /2-4 readonly lanes/i);
   assert.match(contract, /lanes never write the report/i);
   assert.match(contract, /one writer and\s+one consolidated report/i);
-  assert.match(contract, /push\s+or explicitly retain `research\/<slug>`/i);
-  assert.match(contract, /verify the retained ref contains the report commit/i);
-  assert.match(contract, /before returning the\s+immutable commit SHA and path/i);
+  assert.match(contract, /record the current checkout and branch/i);
+  assert.match(
+    contract,
+    /write and commit.*current checkout.*current branch/is,
+  );
+  assert.match(
+    contract,
+    /never create, switch, checkout,\s+or use another branch or worktree/is,
+  );
+  assert.match(
+    contract,
+    /verify.*same branch\s+contains the report commit/is,
+  );
+  assert.doesNotMatch(
+    all,
+    /(?:create|switch|checkout|retain|push)[^\n]*`research\/<slug>`/i,
+  );
+  assert.match(
+    contract,
+    /before returning the\s+immutable commit SHA\s+and path/i,
+  );
   assert.match(contract, /docs-ingest-phase.*optional curation/is);
   assert.doesNotMatch(skill, /Standalone audits remain response-only/i);
 });
