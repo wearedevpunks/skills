@@ -23,6 +23,7 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 - MUST use `$swarm-planner`
 - MUST use `$tdd`
 - MUST use `$codebase-design`
+- MUST use `$show-me`
 
 Create a plan first. Never implement code in this skill.
 
@@ -49,10 +50,13 @@ Create a plan first. Never implement code in this skill.
 13. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
     backlog sync is eligible and in scope; otherwise record an explicit skip
     reason and continue plan completion.
-14. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
+14. Invoke `$show-me` to present the task graph, dependencies, waves, and
+    validation gates from the complete plan state before `$wait-what`. The
+    presentation is a derived view; `PLAN.md` fields remain the execution authority.
+15. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
     only when its language contract passes without changing the resolved
     decision ledger.
-15. Read `references/stop-conditions.md` and stop exactly there.
+16. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 

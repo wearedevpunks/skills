@@ -6,6 +6,11 @@ Keep every backlog item body product-facing and appropriate to its direct classi
 
 All bodies may include durable source links, accepted evidence, and closure notes. Do not include execution plans, file-level implementation notes, or validation commands.
 
+Every written ticket body includes a compact `$show-me` visual explainer suited
+to its classification. Keep the body independently understandable in text: the
+visual supplements its product outcome and never replaces source-story or
+acceptance-criteria traceability, authority links, or provider-native relations.
+
 ## Fog body
 
 Use a short root-level body.

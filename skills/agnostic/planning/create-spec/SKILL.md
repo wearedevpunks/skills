@@ -34,7 +34,10 @@ parent/base constraints.
    remote mechanism, verify the retained ref contains the spec commit, then
    construct and verify a stable blob URL before `write-backlog` may consume it.
    A local commit SHA plus path is insufficient.
-8. Return `spec-written` with `readiness: agent-ready` and the verified stable
+8. Invoke `$show-me` to present the completed spec (`SPEC.md`). Derive the presentation
+   only from the compiled spec, identify it as a view of that authority, and
+   continue without adding an approval gate or inferring new closure.
+9. Return `spec-written` with `readiness: agent-ready` and the verified stable
    blob URL. If retention or URL verification fails, return one atomic
    `spec-not-ready` result and do not invoke backlog projection.
 
