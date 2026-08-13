@@ -7,6 +7,11 @@ description: Improve codebase architecture by discovering module-deepening, seam
 
 Explore a codebase like an AI would, surface architectural friction, and propose module-deepening refactors using `$codebase-design` vocabulary.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 Use `$grilling` only when the user wants to stress-test a chosen candidate or when a recommendation depends on unresolved design choices.
 
 ## Process

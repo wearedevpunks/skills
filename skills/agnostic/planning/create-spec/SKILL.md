@@ -18,6 +18,11 @@ parent/base constraints.
 
 ## Steps
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 1. Resolve the planning surface using [folder-naming.md](references/folder-naming.md).
 2. Validate readiness using [readiness.md](references/readiness.md). If anything
    required is missing, return one atomic `spec-not-ready` result and write no

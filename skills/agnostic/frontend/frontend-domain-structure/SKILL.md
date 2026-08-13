@@ -11,6 +11,11 @@ description: |
 
 Use this skill to give frontend behavior one clear domain owner and deliberate boundaries.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 The [agnostic reference](references/structure.md) is the single source of truth for domain
 classification, layer placement, and dependency rules. Read it for every frontend structure decision.
 
