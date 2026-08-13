@@ -49,6 +49,21 @@ test("planning entrypoints present requirements, specs, plans, and delivery", ()
   assert.match(implementation, /does not replace.*evidence/is);
 });
 
+test("requirements grill delegates completion scheduling while retaining presentation", () => {
+  const grill = read(
+    "skills/agnostic/requirements/requirements-grill/SKILL.md",
+  );
+
+  assert.match(
+    grill,
+    /After `\$grilling` completes and the durable artifacts are current, invoke\s+`\$show-me`/u,
+  );
+  assert.doesNotMatch(
+    grill,
+    /frontier is empty|frontier remains open|empty-frontier/iu,
+  );
+});
+
 test("phase entrypoints present complex state without taking authority", () => {
   const docs = read("skills/phases/docs-ingest-phase/SKILL.md");
   const finder = read("skills/phases/finder-phase/SKILL.md");
