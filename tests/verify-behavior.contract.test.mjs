@@ -38,11 +38,34 @@ test("verify-behavior keeps the portable modes, coverage, evidence, and safety c
 
 test("implement-spec verifies visible behavior before acceptance classification", () => {
   const skill = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  const lifecycle = read(
+    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
+  );
+  const notes = read(
+    "skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md",
+  );
 
   assert.match(skill, /\$verify-behavior.*`verify`/is);
   assert.match(skill, /after.*runtime.*checks.*before.*acceptance.*classification/is);
   assert.match(skill, /mismatch.*runtime evidence.*debugging-phase/is);
   assert.match(skill, /capability.*unavailable.*acceptance.*blocked/is);
+  assert.match(notes, /## Behavior Verification Evidence/);
+  assert.match(
+    notes,
+    /Story and criterion.*Ref.*Channel.*Scenario.*Status.*Durable evidence or exact blocker/,
+  );
+  assert.match(
+    lifecycle,
+    /story and acceptance criterion.*branch or ref.*channel.*scenario.*status.*durable evidence or exact blocker/is,
+  );
+  assert.match(
+    lifecycle,
+    /same scenario.*Runtime Validation Evidence.*cross-reference.*duplicate/is,
+  );
+  assert.match(
+    lifecycle,
+    /visibly exercisable.*`met`.*cited interactive evidence/is,
+  );
 });
 
 test("debugging-phase reproduces visible behavior before hypothesis and fix work", () => {
