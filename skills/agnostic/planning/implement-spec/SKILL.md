@@ -48,23 +48,36 @@ implementation tasks.
 11. For tasks with `runtime_validation: required`, follow [references/runtime-product-validation.md](references/runtime-product-validation.md) and do not mark them complete without conclusive runtime evidence; an exact blocker keeps the task blocked.
 12. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
 
-## Stack-aware branch gate
+## Branch and PR invariant
 
-Before coding, inspect `PLAN.md` for `Branch/Base Intent`.
+Before any implementation action, record the current branch and its open PR, if
+one exists. Read `.devpunks/settings.json` and the accepted `Branch/Base Intent`
+at the same gate. That branch owns the complete run.
 
-- If no `Branch/Base Intent` exists, continue with the normal execution flow.
-- If it exists, verify the current branch is the intended child branch based on
-  the intended parent branch, or create/switch to the intended child branch from
-  the intended parent branch before implementation starts.
-- Do not reinterpret intra-epic task dependencies as separate PRs.
-- Default to PR-after-implementation: implement, commit, push, create or update
-  the PR with the recorded base, then run `stack sync --dry-run`.
-- If the dry-run preview is correct and reports pending stack changes, run
-  `stack sync`.
+- Keep the recorded branch checked out through implementation, validation,
+  commits, push, and closeout. Never create, checkout, or switch branches during
+  an `implement-spec` run.
+- When the recorded branch already has an open PR, update that exact PR. Never
+  create or move the work to another PR.
+- When the recorded branch has no open PR, finish the work on that branch, push
+  it, and create exactly one PR for it using the accepted base intent.
+- When `.devpunks/settings.json` sets `repositoryManager` to `github`, preserve
+  an accepted open-parent dependency as a GitHub-native PR stack. If the current
+  branch already has a PR, set that PR's base to the open parent PR's head
+  branch. If it has no PR, create its single PR with the open parent PR's head
+  branch as the base. This changes PR metadata only; never checkout, create, or
+  switch branches to build the stack.
+- Resolve the parent from the accepted plan or backlog dependency evidence, then
+  verify the current PR is open, its head is the recorded branch, and its base
+  is the intended parent branch. Use the repository's GitHub integration or
+  `gh pr view` and `gh pr edit --base` to inspect and set that PR metadata.
+- For non-GitHub repositories, follow the configured provider's accepted base
+  intent.
+- Treat a conflicting `Branch/Base Intent`, parent-branch instruction, or PR
+  instruction, or a missing or closed intended parent PR as a blocker. Report
+  the conflict instead of changing branches, choosing another parent, or
+  creating another PR.
 - Early draft PRs are opt-in only when the user explicitly asks for them.
-- If `stack` is unavailable and `Branch/Base Intent` exists, block the
-  stack-dependent workflow. Missing `stack` does not block independent
-  trunk-based work.
 
 ## Advanced features
 
