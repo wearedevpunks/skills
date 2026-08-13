@@ -14,8 +14,10 @@ to Wayfinder. Use the `prototype` skill to build the throwaway artifact.
 1. Claim one precise question. Record the expected learning and source ticket.
 2. Use the `prototype` skill on `prototype/<slug>`. Do not merge prototype code
    into production.
-3. Give the user the run command and wait for a natural-language verdict:
-   accept, iterate, or reject.
+3. Give the user the run command. When alternatives exist, use `$show-me` to
+   present each variant's meaningful differences, evidence, and constraints
+   before asking for a natural-language verdict: accept, iterate, or reject. A
+   visual supports the verdict; it does not supply one.
 4. On iterate, update `PROTOTYPE-VERDICT.md` with the observed evidence,
    rejected alternatives, risks, and requested change; commit it, keep this
    phase active, and rebuild only what the feedback tests.

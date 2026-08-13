@@ -54,6 +54,9 @@ description: >-
    - Instrument or inspect with runtime evidence.
    - Keep an evidence matrix with each hypothesis marked `confirmed`, `rejected`, or `inconclusive`.
    - Cite log lines, recordings, commands, test output, or scenario evidence for every status.
+   - Use `$show-me` to present the evidence matrix before selecting a cause or
+     fix. The visual explains the comparison; cited evidence and statuses remain
+     authoritative.
 5. **Optionally run readonly `$parallel-research`.**
    - Use for independent hypotheses, unfamiliar subsystems, logs, docs, or prior-art inspection.
    - Synthesize findings before fixing.

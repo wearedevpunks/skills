@@ -21,7 +21,9 @@ directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
    In work mode, produce a claim and use `write-backlog` for its physical
    provider mutation before dispatching one bounded child flow.
 5. Reconcile the child result semantically, repair invalidated scope, recompute
-   the frontier, and return the next route or completion state.
+   the frontier, and use `$show-me` to present that frontier before returning
+   the next route or completion state. The visual explains the living map; the
+   backlog root remains authoritative.
 
 ## Always-Needed Rules
 
