@@ -37,7 +37,7 @@ Completion of one phase does not imply loading the rest of the chain.
   classify findings from a retained report.
 - [phases/debug.md](phases/debug.md): investigate runtime-evidence failures.
 - [phases/docs-ingest.md](phases/docs-ingest.md): ingest docs-affecting changes or record a no-op.
-- [phases/closeout.md](phases/closeout.md): finish stack, tracker, PR, validation, and final report state.
+- [phases/closeout.md](phases/closeout.md): finish tracker, PR, validation, and final report state.
 
 ## Router Rules
 
@@ -45,7 +45,7 @@ Completion of one phase does not imply loading the rest of the chain.
 - Do not activate child skills at delivery start.
 - Reuse fresh matching artifacts before loading creation skills.
 - A phase may delegate to `create-spec`, `write-backlog`, `create-plan`,
-  `implement-spec`, `debugging-phase`, `docs-ingest-phase`, or `stack` only from
+  `implement-spec`, `debugging-phase`, or `docs-ingest-phase` only from
   its own phase file.
 - `review-phase` is user-invoked. Only below the three-pass budget may delivery
   persist `review_due` and return the exact `$review-phase` invocation context,
