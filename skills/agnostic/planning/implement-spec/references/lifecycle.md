@@ -47,6 +47,10 @@ Read, in this order:
 4. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
 5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
 
+When `PLAN.md` declares architecture applicability as `architecture-bearing`,
+also read [architecture-conformance.md](architecture-conformance.md) before
+dispatching the first wave.
+
 If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.
 
 ## 4. Prepare execution notes
@@ -60,6 +64,9 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 - For tasks with `runtime_validation: required`, load [runtime-product-validation.md](runtime-product-validation.md) and keep `## Runtime Validation Evidence` current.
 - For visibly exercisable acceptance criteria, keep `## Behavior Verification
   Evidence` current using the template contract.
+- For architecture-bearing plans, seed `## Architecture Conformance Evidence`
+  from the persisted architecture contract and keep one cumulative checkpoint
+  per architecture wave plus final closure.
 - Seed `## Skill Application Evidence` from every task's
   `implementation_skill_guidance`. Preserve each guidance item unchanged and
   create exactly one evidence row for it.
@@ -136,6 +143,9 @@ After each completed wave:
   status, and how/where pointer against changed artifacts; for
   `not_applicable`, verify why and where the guidance was assessed
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
+- for architecture-bearing plans, run the cumulative conformance checkpoint
+  after every architecture wave; persist the `$show-me` view, textual conclusion,
+  graph and ownership evidence, public-seam delta, migration-ledger delta, and verdict
 - for UI implementation changes, record durable before/after screenshot asset links in `IMPLEMENTATION-NOTES.md`
 - for required runtime validation, record the scenario, public action, correlation or provenance ids, observed result, durable evidence, cleanup, and status or exact blocker in `IMPLEMENTATION-NOTES.md`
 - persist each `$verify-behavior` result under `## Behavior Verification
@@ -183,6 +193,11 @@ Re-read `SPEC.md` acceptance criteria and mark each one:
 
 Record a reason for every unmet or blocked item in `IMPLEMENTATION-NOTES.md`.
 
+For architecture-bearing plans, acceptance also audits every Responsibility
+Acceptance Criterion against the cumulative evidence. A failed topology,
+dependency, public-seam, or migration-ledger checkpoint keeps affected criteria
+unmet or blocked.
+
 Acceptance that depends on required runtime validation is `met` only when its recorded evidence is conclusive. An exact blocker makes it `blocked`.
 
 Visibly exercisable acceptance is `met` only when its Behavior Verification
@@ -223,11 +238,19 @@ Before reporting back:
 - ensure **Skill Application Evidence** has exact one-to-one cardinality with
   plan guidance; allowed statuses are `loaded`, `applied`, and
   `not_applicable`
+- ensure **Architecture Conformance Evidence**, when applicable, contains every
+  wave checkpoint and final closure; closure proves zero drift and an empty
+  migration ledger
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
 - ensure every tech-debt ledger entry has exact blocker/decision/owner/next action
-- set `SPEC.md` frontmatter `status: implemented`
-- set `PLAN.md` `**Status:** Complete` when that line exists
+- set `SPEC.md` frontmatter `status: implemented` and `PLAN.md` `**Status:**
+  Complete` only when every acceptance criterion is met, every reachable task is
+  complete, and any architecture-bearing plan has successful final architecture
+  closure
+- preserve the current blocked or incomplete `SPEC.md` and `PLAN.md` statuses
+  when any acceptance item, task, checkpoint, or final architecture closure is
+  unmet or blocked
 - ensure the PR body, PR comment, or PR-ready handoff snippet includes the same UI evidence links when UI changed
 
 ## 13. Final report shape

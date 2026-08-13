@@ -50,18 +50,20 @@ silently renaming them.
 10. For every implementation task, convert applicable scoped or named skill
     obligations into `implementation_skill_guidance`; preserve `assigned_skills`
     as planning provenance.
-11. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
-12. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-13. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
+11. Read `references/architecture-convergence.md`. Persist architecture applicability. For architecture-bearing
+    work, ground and author the complete architecture contract before finalizing task and wave boundaries.
+12. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
+13. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
+14. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
     backlog sync is eligible and in scope; otherwise record an explicit skip
     reason and continue plan completion.
-14. Invoke `$show-me` to present the task graph, dependencies, waves, and
+15. Invoke `$show-me` to present the task graph, dependencies, waves, and
     validation gates from the complete plan state before `$wait-what`. The
     presentation is a derived view; `PLAN.md` fields remain the execution authority.
-15. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
+16. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
     only when its language contract passes without changing the resolved
     decision ledger.
-16. Read `references/stop-conditions.md` and stop exactly there.
+17. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -87,6 +89,8 @@ silently renaming them.
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,
    `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
+    Architecture-bearing tasks also carry the convergence fields required by
+    `references/architecture-convergence.md`.
 11. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
 12. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
 13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
@@ -121,5 +125,6 @@ See [REFERENCE.md](REFERENCE.md) for the overview and graph map.
 - Planner / swarm graph: see [references/planner-task-graph.md](references/planner-task-graph.md)
 - TDD shaping: see [references/tdd-shaping.md](references/tdd-shaping.md)
 - `PLAN.md` schema and task contract: see [references/plan-schema.md](references/plan-schema.md)
+- Architecture applicability and convergence contract: see [references/architecture-convergence.md](references/architecture-convergence.md)
 - Backlog sync rules: see [references/backlog-sync.md](references/backlog-sync.md)
 - Stop conditions: see [references/stop-conditions.md](references/stop-conditions.md)

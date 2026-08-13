@@ -20,6 +20,16 @@ Every worker brief should include:
 - `tdd_target`
 - `tdd_status`
 - `codebase_design_notes`
+- `architecture_wave`
+- `behavior_owner`
+- `integration_surface`
+- `public_seam`
+- `topology_delta`
+- `forbidden_ownership`
+- `temporary_seams`
+- each temporary seam's `expiry_wave`
+- `responsibility_acceptance_criteria`
+- each criterion's `criterion_id` and `due_wave`
 - `red_command`
 - `expected_red_failure`
 - `green_command`
@@ -61,6 +71,7 @@ Each worker brief should require:
     `loaded`, `applied`, or `not_applicable` status, and a how/where pointer;
     `not_applicable` also states why and where it was assessed
 19. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
+20. for an architecture-bearing task, implementing toward the declared ownership topology and dependency graph, proving each due `responsibility_acceptance_criteria` item by `criterion_id`, and reporting every public-seam and migration-ledger delta with its architecture wave
 
 ## Worker output contract
 
@@ -77,6 +88,9 @@ Require the worker to return:
 - one skill-application evidence record for every forwarded guidance item,
   preserving the exact skill identity
 - anything blocked or risky, with exact reason and required decision
+- architecture evidence: observed ownership and dependency delta,
+  responsibility-acceptance proof keyed by `criterion_id`, public-seam delta,
+  and temporary-seam status including `expiry_wave`
 
 ## Scope rule
 

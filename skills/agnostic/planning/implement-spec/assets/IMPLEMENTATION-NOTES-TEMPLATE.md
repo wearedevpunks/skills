@@ -34,6 +34,16 @@ where the guidance was assessed.
 |------|-------|--------|-----------|-----------------------------------------------|
 | | | | | |
 
+## Architecture Conformance Evidence
+
+Persist the `$show-me` ownership tree, dependency graph, wave delta, or seam
+diff beside each conclusion. Use one row after every architecture wave and one
+for final closure. Local plans remove this section.
+
+| Architecture wave id | Target ownership topology and observed state | Declared dependency graph and observed state | Due criterion ids, evidence, and prior-met regression status | Public seam delta | Migration ledger delta, expiry waves, and final empty-ledger status | Validation evidence | Verdict or exact drift |
+|----------------------|----------------------------------------------|----------------------------------------------|------------------------------------------------------------|------------------|-------------------------------------------------------------------|---------------------|------------------------|
+| | | | | | | | |
+
 ## UI Evidence Links
 
 | Surface | Viewport | Before | After | Notes |

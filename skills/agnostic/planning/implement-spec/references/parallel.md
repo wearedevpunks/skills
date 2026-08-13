@@ -21,6 +21,9 @@ unblocked. Keep the wave boundary and parent validation.
 - unchanged guidance forwarding and exactly one verified skill-application
   evidence record per guidance entry
 - clear reporting of retries, issues, or blockers
+- for architecture-bearing plans, cumulative ownership, dependency,
+  responsibility-acceptance, public-seam, and migration-ledger evidence after
+  every architecture wave
 
 ## Loop rule
 
@@ -30,3 +33,7 @@ Keep iterating wave by wave until:
 - or a real blocker remains and is reported honestly
 
 Retry failed work or report the exact blocker before advancing.
+
+An architecture wave advances only after its cumulative conformance checkpoint
+passes. Final closure confirms zero drift and an empty migration ledger; it is
+never the first consolidation pass.

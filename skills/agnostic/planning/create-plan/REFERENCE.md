@@ -4,10 +4,9 @@
 
 ## Required inner skills
 
-- MUST use `$grilling`
-- MUST use `$swarm-planner`
-- MUST use `$tdd`
-- MUST use `$codebase-design`
+The required-inner-skills list in canonical [SKILL.md](SKILL.md) is authoritative and includes `$show-me`.
+Execute every listed skill; keep this reference focused on sequencing and disclosed rules.
+
 - `opensrc` provides source context for installed or external packages
 - scoped `AGENTS.md` files provide per-path skill requirements through `Skill | What / when` tables; select exact trigger matches and open each selected skill's complete `SKILL.md`
 
@@ -16,15 +15,17 @@
 1. Read current repo state and derive as much context as possible before asking.
 2. Reduce ambiguity before task synthesis:
    - see [references/grill-ambiguity.md](references/grill-ambiguity.md)
-3. Build the swarm graph of `Tn` tasks:
+3. Classify architecture applicability and persist convergence views when required:
+   - see [references/architecture-convergence.md](references/architecture-convergence.md)
+4. Build the swarm graph of `Tn` tasks from that contract:
    - see [references/planner-task-graph.md](references/planner-task-graph.md)
-4. Attach TDD shaping to each `Tn` task:
+5. Attach TDD shaping to each `Tn` task:
    - see [references/tdd-shaping.md](references/tdd-shaping.md)
-5. Normalize the saved plan using:
+6. Normalize the saved plan using:
    - [references/plan-schema.md](references/plan-schema.md)
-6. Sync backlog items using:
+7. Sync backlog items using:
    - [references/backlog-sync.md](references/backlog-sync.md)
-7. Stop using:
+8. Stop using:
    - [references/stop-conditions.md](references/stop-conditions.md)
 
 ## Global rules
