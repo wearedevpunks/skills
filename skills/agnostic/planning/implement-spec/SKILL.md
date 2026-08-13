@@ -21,6 +21,8 @@ description: Implement an agent-ready spec folder through plan-derived worker wa
 - MUST use `$codebase-design`
 - MUST use `$simplify`
 Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
+Use `$verify-behavior` in `verify` mode when acceptance criteria are visibly
+exercisable.
 
 ## Worker-wave responsibilities
 
@@ -46,7 +48,12 @@ implementation tasks.
 9. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
 10. For UI implementation changes, follow [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md) and use `repo-asset-management` for durable before/after asset links.
 11. For tasks with `runtime_validation: required`, follow [references/runtime-product-validation.md](references/runtime-product-validation.md) and do not mark them complete without conclusive runtime evidence; an exact blocker keeps the task blocked.
-12. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+12. After task and runtime checks, run `$verify-behavior` in `verify` mode for
+    visibly exercisable acceptance criteria before final acceptance
+    classification. A mismatch is runtime evidence: route it to
+    `debugging-phase`. If the required interaction capability is unavailable,
+    record the explicit blocker and keep affected acceptance criteria blocked.
+13. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
 
 ## Branch and PR invariant
 
