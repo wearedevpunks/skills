@@ -42,4 +42,4 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
 
-After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `create-spec`. If the frontier remains open, return to Wayfinder instead of implying backlog readiness.
+After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `create-spec`. If grilling remains incomplete, return to Wayfinder instead of implying backlog readiness.
