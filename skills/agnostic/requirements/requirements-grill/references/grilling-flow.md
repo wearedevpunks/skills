@@ -28,4 +28,4 @@ When the user asks to reduce scope or stop widening the design:
 - prefer app-layer projections before DB views or materialized layers
 - prefer ordinary text/enforced-in-code enums before DB-native enum churn
 
-When the frontier is empty, invoke `$domain-modeling` once more against the full active glossary before requesting shared-understanding confirmation.
+When `$grilling` completes, invoke `$domain-modeling` once more against the full active glossary before requesting shared-understanding confirmation.
