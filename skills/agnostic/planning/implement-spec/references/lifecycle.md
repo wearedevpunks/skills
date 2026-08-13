@@ -58,6 +58,8 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 - Keep it current during the run, not only at the end.
 - For UI implementation changes, load [ui-screenshot-evidence.md](ui-screenshot-evidence.md) and keep `## UI Evidence Links` current.
 - For tasks with `runtime_validation: required`, load [runtime-product-validation.md](runtime-product-validation.md) and keep `## Runtime Validation Evidence` current.
+- For visibly exercisable acceptance criteria, keep `## Behavior Verification
+  Evidence` current using the template contract.
 - Seed `## Skill Application Evidence` from every task's
   `implementation_skill_guidance`. Preserve each guidance item unchanged and
   create exactly one evidence row for it.
@@ -136,6 +138,11 @@ After each completed wave:
 - update `IMPLEMENTATION-NOTES.md` with non-obvious decisions, surprises, or deviations
 - for UI implementation changes, record durable before/after screenshot asset links in `IMPLEMENTATION-NOTES.md`
 - for required runtime validation, record the scenario, public action, correlation or provenance ids, observed result, durable evidence, cleanup, and status or exact blocker in `IMPLEMENTATION-NOTES.md`
+- persist each `$verify-behavior` result under `## Behavior Verification
+  Evidence`: map the story and acceptance criterion, branch or ref, channel,
+  scenario, status, and cited durable evidence or exact blocker. When it is the
+  same scenario as a `## Runtime Validation Evidence` row, cross-reference that
+  row; avoid duplicate evidence
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
@@ -178,6 +185,10 @@ Record a reason for every unmet or blocked item in `IMPLEMENTATION-NOTES.md`.
 
 Acceptance that depends on required runtime validation is `met` only when its recorded evidence is conclusive. An exact blocker makes it `blocked`.
 
+Visibly exercisable acceptance is `met` only when its Behavior Verification
+Evidence row cites interactive evidence for the mapped story and criterion.
+`not verified` is `unmet`; a verification blocker is `blocked`.
+
 ## 11. Write the manual review checklist
 
 Before finalization, `IMPLEMENTATION-NOTES.md` must contain `## Manual Review Checklist`.
@@ -205,6 +216,9 @@ Before reporting back:
 - ensure **Sanity checks** lists only commands actually run
 - ensure **UI Evidence Links** has durable before/after asset links for UI implementation changes, or an explicit reason no pair was possible
 - ensure **Runtime Validation Evidence** contains conclusive proof for every required task, or an exact blocker with the task and acceptance criterion still marked blocked
+- ensure **Behavior Verification Evidence** maps every visibly exercisable
+  criterion to cited interactive evidence or an exact blocker, cross-referencing
+  matching Runtime Validation Evidence instead of copying it
 - ensure **Manual Review Checklist** has at least one concrete row, or one explicit non-applicability row
 - ensure **Skill Application Evidence** has exact one-to-one cardinality with
   plan guidance; allowed statuses are `loaded`, `applied`, and
@@ -225,6 +239,7 @@ Summarize:
 - key deviations or surprises
 - acceptance-criteria status
 - runtime-validation evidence and exact blockers
+- behavior-verification evidence and exact blockers
 - manual review checklist
 - blocked tasks needing input
 - whether the spec-linked tech-debt file was created or updated

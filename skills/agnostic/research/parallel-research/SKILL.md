@@ -20,8 +20,8 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
    project wiki; findings must not remain response-only or context-only.
    Research lanes remain readonly. Only the coordinator or one designated
    consolidator may write and commit exactly one report after synthesis.
-   Finder child resolution uses this same mandatory durable mode. The writer
-   must push or explicitly retain `research/<slug>`, verify the retained ref contains the report commit, and do so before returning the immutable SHA and path.
+   Finder child resolution uses this same mandatory durable mode. Complete its
+   current-checkout retention gate before returning the immutable SHA and path.
 
 ## Split Cleanly
 

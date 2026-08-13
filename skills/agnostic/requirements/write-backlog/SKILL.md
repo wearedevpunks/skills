@@ -5,6 +5,11 @@ description: Materialize provider-native backlog items. Use for Finder-selected 
 
 # Write Backlog
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 ## Quick start
 
 1. Choose one branch: pre-spec intake creation; update-existing branch to claim, release, or resolve a decision ticket; or delivery projection, which may create `epic` or `story` and requires an authoritative `SPEC.md` with `readiness: agent-ready` at a verified stable blob URL before any provider mutation.
@@ -18,11 +23,19 @@ description: Materialize provider-native backlog items. Use for Finder-selected 
 9. Project one capability-boundary epic from the existing `SPEC.md`; derive product-facing stories from its `US-###` and `AC-###` records.
 10. Prove complete `US-###` / `AC-###` traceability and that each story is an agent-sized vertical tracer bullet.
 11. Resolve every blocker target. Reject missing targets, self-blockers, and cycles, then derive chronological milestones from the blocker DAG.
-12. Read the matching provider asset and validate the complete projection before the first provider write.
-13. If any readiness check fails, stop with zero provider mutations and name every failure.
-14. Once validation passes, write immediately without a separate approval stop.
-15. Resolve pre-spec intake items through the provider adapter with an immutable resolution pointer to the spec; never silently promote one into the delivery epic.
-16. Return created ids and URLs to `delivery-phase`; concrete planning remains downstream in `create-plan`.
+12. Use `$show-me` to present the proposed backlog topology before provider
+    writes so the human and agent share the same hierarchy and dependency view.
+    This presentation checks understanding, not authorization; it adds no
+    approval stop.
+13. Give every written ticket body a compact `$show-me` visual explainer, then
+    apply `$wait-what` to every ticket so its wording lands in the project's
+    ubiquitous language. The visual does not replace `US-###` / `AC-###`
+    traceability or provider-native parent and dependency relations.
+14. Read the matching provider asset and validate the complete projection before the first provider write.
+15. If any readiness check fails, stop with zero provider mutations and name every failure.
+16. Once validation passes, write immediately without a separate approval stop.
+17. Resolve pre-spec intake items through the provider adapter with an immutable resolution pointer to the spec; never silently promote one into the delivery epic.
+18. Return created ids and URLs to `delivery-phase`; concrete planning remains downstream in `create-plan`.
 
 ## Item-count rule
 

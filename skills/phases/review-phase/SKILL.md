@@ -17,6 +17,9 @@ one all-lens report and returns routing evidence; it never enters a repair.
 2. Recompute the current route from durable evidence, including on cold resume.
 3. Load exactly the one gate selected by the router, or return its single
    terminal, checkpoint, or blocked outcome.
-4. After a gate writes its durable outcome, stop or re-enter this bootstrap.
+4. Only after the retained report exists, use `$show-me` to present the retained
+   report's findings and routing outcome. The report remains the review
+   authority.
+5. After a gate writes its durable outcome, stop or re-enter this bootstrap.
 
 The router is the sole runtime route authority. Gate files own executable work.

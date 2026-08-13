@@ -12,7 +12,11 @@ description: Routes docs-affecting work into private/internal ingest and public-
 1. Read [phases/router.md](phases/router.md).
 2. Inspect only enough source, diff, spec, notes, wiki, public docs, and root docs state to choose the current docs path.
 3. Load exactly one phase file from `phases/`.
-4. Complete that path, write the docs-ingest outcome, then stop or re-enter `docs-ingest-phase` to route again.
+4. Complete that path. When the resulting docs describe a complex flow, use
+   `$show-me` to add the smallest useful visual view beside the authoritative
+   prose; keep simple flows textual.
+5. Write the docs-ingest outcome, then stop or re-enter `docs-ingest-phase` to
+   route again.
 
 Completion of one path does not imply loading the other path.
 
