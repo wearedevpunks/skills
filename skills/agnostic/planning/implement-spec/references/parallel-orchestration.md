@@ -30,6 +30,16 @@ For each task, extract:
   - acceptance criteria
   - validation
   - `tdd_target`
+  - `architecture_wave`
+  - `behavior_owner`
+  - `integration_surface`
+  - `public_seam`
+  - `topology_delta`
+  - `forbidden_ownership`
+  - `temporary_seams`
+  - each temporary seam's `expiry_wave`
+  - `responsibility_acceptance_criteria`
+  - each criterion's `criterion_id` and `due_wave`
   - `assigned_skills`
   - `implementation_skill_guidance`
   - `review_mode`
@@ -81,7 +91,10 @@ After the workers return:
    entry and no unmatched record
 5. verify each record against the worker result and changed artifacts
 6. ensure non-obvious deviations or surprises were written into `IMPLEMENTATION-NOTES.md`
-7. retry or escalate failed work instead of quietly advancing
+7. for an architecture wave, run the cumulative conformance checkpoint in
+   [architecture-conformance.md](architecture-conformance.md), render and persist
+   its `$show-me` evidence, and block dependent waves on any violation
+8. retry or escalate failed work instead of quietly advancing
 
 Move to the next wave only after the current wave is validated and logged.
 
@@ -108,6 +121,9 @@ A task is complete only when all of the following are true:
 - any non-obvious deviations are reflected in `IMPLEMENTATION-NOTES.md`
 - skill-application evidence has exact one-to-one cardinality with forwarded
   guidance
+- architecture-bearing tasks satisfy their responsibility acceptance criteria,
+  declared topology delta, dependency constraints, public seam contract, and
+  migration-ledger obligations at the cumulative checkpoint
 
 If any of these are missing, the task is not done yet.
 

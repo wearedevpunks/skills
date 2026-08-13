@@ -41,15 +41,15 @@ implementation tasks.
 
 1. Resolve the target spec folder by checking, in order: `apps/wiki/content/docs/project/specs/<domain>/<spec>/`, legacy `apps/wiki/specs/<domain>/<spec>/`, then `docs/specs/<domain>/<spec>/`.
 2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
-3. Read `references/parallel.md`, parse the plan graph, and build the first unblocked wave.
+3. Read `references/parallel.md`, parse the plan graph, and build the first unblocked wave. When the plan is architecture-bearing, also read and enforce `references/architecture-conformance.md`.
 4. Launch scoped workers for the current wave using
    `references/parallel-worker-brief.md`. Forward every guidance item unchanged,
    preserving its `implementation_skill_guidance` skill and behavior fields.
 5. After each validated wave, update `PLAN.md`, `IMPLEMENTATION-NOTES.md`, and
    spec-linked tech debt before advancing. Require exactly one skill-application
-   evidence record per guidance entry. Use `$show-me` for a derived wave board
-   when it materially improves operator orientation; the shared artifacts remain
-   authoritative.
+   evidence record per guidance entry. For architecture-bearing plans, run the
+   cumulative conformance checkpoint after every architecture wave and persist
+   its `$show-me` evidence; a failed checkpoint blocks dependent waves.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
@@ -61,7 +61,7 @@ implementation tasks.
     classification. A mismatch is runtime evidence: route it to
     `debugging-phase`. If the required interaction capability is unavailable,
     record the explicit blocker and keep affected acceptance criteria blocked.
-13. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract.
+13. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract. Architecture-bearing plans also require final zero-drift closure and an empty migration ledger.
 14. Invoke `$show-me` to present the implementation notes, final code changes,
     acceptance status, and manual review path from finalized
     `IMPLEMENTATION-NOTES.md`, the diff, and recorded evidence. The presentation
@@ -106,3 +106,4 @@ at the same gate. That branch owns the complete run.
 - Worker-wave execution: see [references/parallel.md](references/parallel.md)
 - Plan parsing and wave construction: see [references/parallel-orchestration.md](references/parallel-orchestration.md)
 - Worker brief contract: see [references/parallel-worker-brief.md](references/parallel-worker-brief.md)
+- Architecture-bearing wave checkpoints and final closure: see [references/architecture-conformance.md](references/architecture-conformance.md)

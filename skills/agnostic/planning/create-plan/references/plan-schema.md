@@ -8,6 +8,7 @@ The generated `PLAN.md` is the execution handoff. It must stand alone without hi
 
 Include:
 
+- `architecture_applicability: local | architecture-bearing` with evidence
 - initial situation
 - issue or problem statement
 - proposed solution shape
@@ -21,6 +22,12 @@ Include:
 - risks and mitigations
 - validation gates per `Tn` task and dependency wave
 - unresolved questions
+
+When `architecture_applicability: architecture-bearing`, also include the normative **Target Ownership
+Topology**, **Declared Dependency Graph**, **Responsibility Acceptance Criteria**, **Architecture Waves**,
+**Public Seam Contract**, and **Migration Ledger** defined in
+[architecture-convergence.md](architecture-convergence.md). Persist each view using `$show-me`; the migration
+ledger starts with every planned temporary seam and final closure requires it to be empty.
 
 `unresolved questions` is not a hiding place for skipped planning. Include only `$grilling`-deferred, externally blocked, or non-blocking questions, and state why each remains open.
 
@@ -61,6 +68,25 @@ Every task must include:
 - `runtime_target`
 - `runtime_evidence`
 - `runtime_cleanup`
+
+Every architecture-bearing task must also include:
+
+- `architecture_wave`
+- `behavior_owner`
+- `integration_surface`
+- `public_seam`
+- `topology_delta`
+- `forbidden_ownership`
+- `temporary_seams`
+- `responsibility_acceptance_criteria`
+
+These fields bind the task to cumulative ownership rather than file placement. Local-plan tasks omit them;
+their plan-level applicability evidence and ordinary `codebase_design_notes` are the explicit escape hatch.
+
+`architecture_wave` is a stable architecture sequence id, for example `A2`; `wave_boundary` remains the worker
+parallelism id. `responsibility_acceptance_criteria` lists the stable criterion ids this task advances or proves.
+Every listed id must exist in the plan-level Responsibility Acceptance Criteria view, whose entry declares its
+`due_architecture_wave`. Each criterion maps to at least one task and exactly one due architecture wave.
 
 `backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
 
@@ -142,4 +168,12 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **runtime_target**: Supported local API and background worker.
 - **runtime_evidence**: Public response plus correlated persisted state and worker completion.
 - **runtime_cleanup**: Tag fixtures with a unique run id; remove only resources carrying that id.
+- **architecture_wave**: A2
+- **behavior_owner**: Target domain or module responsible for the changed behavior.
+- **integration_surface**: Composition, transport, UI, or caller surface consuming the owner.
+- **public_seam**: Declared entrypoint and command/result/port contract, or unchanged.
+- **topology_delta**: Exact owner or dependency edge moved toward the target topology.
+- **forbidden_ownership**: Policy or mechanics this task must keep outside its owner.
+- **temporary_seams**: Ledger entries introduced or removed by this task, or none.
+- **responsibility_acceptance_criteria**: [RAC-2, RAC-3]
 ```

@@ -28,6 +28,9 @@ Before finalizing task boundaries:
    `implementation_skill_guidance` entry with the exact skill identity and its
    concise applicable behavior. Planning-only items remain provenance without a
    guidance entry.
+8. Classify architecture applicability using `architecture-convergence.md` before locking dependencies and
+   waves. For architecture-bearing plans, derive task boundaries and architecture waves from the persisted
+   target ownership topology, dependency graph, responsibility criteria, public seams, and migration ledger.
 
 If a task spans multiple scopes, include all selected skills from all touched
 scopes. If a matching row names a missing skill, keep the task planned but
@@ -54,6 +57,11 @@ Preserve `$swarm-planner` behavior:
   matches, with task design shaped by those skills
 - complete one-to-one `implementation_skill_guidance` for every
   implementation-applicable assigned skill
+- architecture-bearing task fields `architecture_wave`, `behavior_owner`, `integration_surface`, `public_seam`,
+  `topology_delta`, `forbidden_ownership`, `temporary_seams`, and `responsibility_acceptance_criteria`
+- stable criterion ids mapped to at least one task and exactly one due architecture wave
+- a continuous convergence checkpoint after every architecture wave that checks all criteria due through the
+  current wave and regression-checks previously met criteria
 - a final `plan-reviewer` subagent review for missing deps, missing
   `owned_paths`, missing `wave_boundary`, ordering issues, edge cases, invalid
   parallelism, unsafe write overlap, missing RED targets, missing validation,
