@@ -25,6 +25,11 @@ Use `$agent-browser` when any task `review_mode` is `browser` or `mixed`.
 Use `$verify-behavior` in `verify` mode when acceptance criteria are visibly
 exercisable.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 ## Worker-wave responsibilities
 
 Follow [references/parallel.md](references/parallel.md) as the execution contract.

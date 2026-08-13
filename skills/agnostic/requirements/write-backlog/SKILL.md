@@ -5,6 +5,11 @@ description: Materialize provider-native backlog items. Use for Finder-selected 
 
 # Write Backlog
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 ## Quick start
 
 1. Choose one branch: pre-spec intake creation; update-existing branch to claim, release, or resolve a decision ticket; or delivery projection, which may create `epic` or `story` and requires an authoritative `SPEC.md` with `readiness: agent-ready` at a verified stable blob URL before any provider mutation.

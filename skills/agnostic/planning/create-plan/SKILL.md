@@ -27,6 +27,11 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 Create a plan first. Never implement code in this skill.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 ## Quick start
 
 1. Read repo, git, existing plan, and backlog context before asking questions.
