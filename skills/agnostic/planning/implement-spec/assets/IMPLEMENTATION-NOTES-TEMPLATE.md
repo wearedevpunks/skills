@@ -46,6 +46,15 @@ where the guidance was assessed.
 |------|---------------------|---------------|---------------------------|-----------------|--------------------------------------|---------|-------------------------|
 | | | | | | | | |
 
+## Behavior Verification Evidence
+
+When this is the same scenario as a Runtime Validation Evidence row, cite that
+row in the final column instead of copying its evidence.
+
+| Story and criterion | Ref | Channel | Scenario | Status | Durable evidence or exact blocker |
+|---------------------|-----|---------|----------|--------|-----------------------------------|
+| | | | | | |
+
 ## Visual Evidence Acceptance Map
 
 | Source | Backlog attachment or fallback | PR-ready before/after evidence |
