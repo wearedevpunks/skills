@@ -7,7 +7,7 @@ description: Requirements grilling with durable branch artifacts, glossary/axiom
 
 Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-spec` can compile after closure.
 
-This skill blends the shared `$grilling` primitive with durable artifacts. Use `$grilling` for live interview behavior; use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
+This skill composes `$domain-modeling` and `$grilling` with durable artifacts. Invoke `$domain-modeling` before the first question, then use `$grilling` for live interview behavior. Use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
 
 This skill has three scoped references:
 
@@ -24,15 +24,15 @@ Use wiki synthesis when the user asks to turn closed grill decisions into high-l
 Both workflows can happen in one long session, but keep the responsibilities distinct:
 
 - `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` and `<topic>-grill-status.md` are the detailed requirements and glossary record
+- while the grill is active, the status glossary is `$domain-modeling`'s working persistence; leave canonical domain publication until explicit closure
 - other routed `<wiki-root>/content/docs/project/` pages are the synthesized project knowledge surface
 - closed shared understanding routes to `create-spec`; backlog projection is later and outside this skill's scope
 
 ## Core Behavior
 
 - Use `$wait-what` to present every grilling question and recommendation to the user. A round is complete only when every frontier item has been presented, answered, parked, or explicitly deferred, and the updated durable artifacts are persisted before continuing.
+- Give `$domain-modeling` the active status glossary before the first question. Invoke it whenever a round changes terminology, relationships, or domain decisions, and persist its accepted results through `artifact-output` before continuing.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
-- Challenge conflicting glossary, vague terms, and hidden tradeoffs immediately.
-- Pin canonical terms, rejected aliases, relationships, and domain axioms as decisions crystallize.
 - Prefer conservative defaults once enough context exists.
 - If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.
@@ -47,4 +47,4 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
 
-After `$grilling` completes with shared understanding and all branches closed or explicitly parked, hand the durable grill artifacts to `create-spec`. If the frontier remains open, return to Wayfinder instead of implying backlog readiness.
+After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `create-spec`. If grilling remains incomplete, return to Wayfinder instead of implying backlog readiness.
