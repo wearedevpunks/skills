@@ -33,6 +33,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - Use `$wait-what` to present every grilling question and recommendation to the user. A round is complete only when every frontier item has been presented, answered, parked, or explicitly deferred, and the updated durable artifacts are persisted before continuing.
 - Give `$domain-modeling` the active status glossary before the first question. Invoke it whenever a round changes terminology, relationships, or domain decisions, and persist its accepted results through `artifact-output` before continuing.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
+- Record whether the work has technical consequences. For code- or architecture-bearing work, close the applicable topology, dependencies, seams, boundaries, persistence, and module shape from current code evidence. Persist accepted design in the grill artifacts; keep `CONTEXT.md` glossary-only.
 - Prefer conservative defaults once enough context exists.
 - If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.

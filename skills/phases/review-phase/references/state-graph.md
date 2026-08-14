@@ -8,7 +8,7 @@ and clean handoff.
 | --- | --- | --- | --- | --- | --- | --- |
 | Current delivery state | Review considered | Unsupported target | Delivery caller | Return `review_failed` | None; zero handoff or status writes | Exact target failure; no report |
 | Current delivery state | Review considered | Invalid accepted bounds | Delivery caller | Return `review_failed` | None; zero handoff or status writes | Exact bounds failure; no report |
-| `review_due` | Explicit review invocation | Delivery; accepted bounds and target valid; recovered `review_count < 3` | Delivery caller | `review_running` | Preallocate ordinal `review_count + 1`; no completed-pass change | Lineage, run id, ordinal, bounds identity/hash, normalized target |
+| `review_due` | Authorized review invocation | Delivery; accepted bounds and target valid; recovered `review_count < 3` | Delivery caller | `review_running` | Preallocate ordinal `review_count + 1`; no completed-pass change | Lineage, run id, ordinal, bounds identity/hash, normalized target |
 | `review_due` | Explicit review invocation | Standalone; accepted bounds and target valid | Standalone caller | `review_running` | None | Lineage, run id, bounds identity/hash, normalized target |
 | Current delivery state | Review considered | Delivery; in-memory accepted bounds and target valid; recovered `review_count >= 3` | Delivery caller | Return `review_budget_exhausted` | None; zero handoff or status writes | Exact current route, lineage, counters; no report or status mutation |
 | `review_running` | All lenses and parent verification complete | One frozen snapshot; complete local report exists | `review-phase` | `report_retention_pending` | None; no completed-pass change | Complete report and fresh target/source hashes |

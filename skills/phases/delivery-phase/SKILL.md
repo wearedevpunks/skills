@@ -15,9 +15,9 @@ disable-model-invocation: true
    handoff, validation, and docs state to choose the current gate.
 3. If approved artifact links or UI Evidence links are present, carry them as routing evidence.
 4. Load exactly one phase file from `phases/`.
-5. Complete that phase, write the phase outcome, then stop or re-enter `delivery-phase` to route again.
+5. Complete that phase and write its outcome. Full delivery re-enters routing immediately; other modes stop at their selected boundary.
 
-Completion of one phase does not imply loading the rest of the chain.
+Full delivery grants its selected inner steps the authority needed to reach closeout. Progressive loading still exposes one phase at a time.
 
 ## Entry Modes
 
@@ -47,16 +47,14 @@ Completion of one phase does not imply loading the rest of the chain.
 - A phase may delegate to `create-spec`, `write-backlog`, `create-plan`,
   `implement-spec`, `debugging-phase`, or `docs-ingest-phase` only from
   its own phase file.
-- `review-phase` is user-invoked. Only below the three-pass budget may delivery
-  persist `review_due` and return the exact `$review-phase` invocation context,
-  then delivery stops. It never invokes that skill itself.
+- In full delivery, activate `review-phase` as an authorized inner step below the three-pass budget. Outside full delivery, return its exact explicit invocation context and stop.
+- After the third repair, run focused validation. Passing resumes routing toward closeout; terminal failure is a blocker.
 - After a phase completes, write enough state for future resume. Review-triggered
   repair uses the idempotent fields in
   [references/phase-handoff.md](references/phase-handoff.md).
 
 ## Stop Conditions
 
-- Selected phase completed and resumable state was written.
-- User requested a HITL checkpoint before the next phase.
+- User explicitly requested a HITL checkpoint or one-phase mode and its resumable state was written.
 - Router reaches closeout and final evidence is reported.
 - Scope is ambiguous, stale, contradictory, or blocked by missing access.

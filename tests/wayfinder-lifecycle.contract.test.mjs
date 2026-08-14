@@ -276,7 +276,7 @@ test("agent-ready compiler output is sufficient for downstream delivery", () => 
 
   assert.match(createSpec, /`readiness: agent-ready` is sufficient downstream/i);
   assert.match(router, /matching agent-ready `SPEC\.md`/i);
-  assert.match(router, /HITL checkpoint is explicit user control/i);
+  assert.match(router, /HITL checkpoint exists only when the user explicitly requests it/i);
   assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
   assert.doesNotMatch(all, /no reviewed matching spec/i);
 });

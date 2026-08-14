@@ -16,7 +16,7 @@ At each `$grilling` round boundary, apply the [round persistence contract](artif
 
 ## Domain Modeling
 
-Use `$domain-modeling` as the sole authority for modeling pressure and acceptance criteria. This workflow owns only when its accepted results are persisted: inline in the active grill glossary, then through wiki synthesis after explicit closure.
+Use `$domain-modeling` for terminology, relationships, and implementation pressure. Record whether technical consequences exist. When they do, ground the applicable topology, dependency direction, seams, boundaries, persistence, and module shape in current code. Persist accepted architecture in grill artifacts for `create-spec`; keep the active glossary implementation-free.
 
 ## Conservative Closure
 

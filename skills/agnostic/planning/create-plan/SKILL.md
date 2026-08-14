@@ -51,7 +51,7 @@ silently renaming them.
     obligations into `implementation_skill_guidance`; preserve `assigned_skills`
     as planning provenance.
 11. Read `references/architecture-convergence.md`. Persist architecture applicability. For architecture-bearing
-    work, ground and author the complete architecture contract before finalizing task and wave boundaries.
+   work, derive and validate the architecture contract accepted in `SPEC.md`; route missing or contradictory target design back to `requirements-grill`.
 12. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
 13. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
 14. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when

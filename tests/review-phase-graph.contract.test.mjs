@@ -188,7 +188,7 @@ const retainedPassFixture = (mode = "delivery") => {
 
 const standaloneRetainedPassFixture = () => retainedPassFixture("standalone");
 
-test("review phase is explicit-only, readonly, and ends after retained routing", () => {
+test("review phase is explicit-only except as a bounded full-delivery inner step", () => {
   const skill = reviewSkill();
   const router = reviewRouter();
   const prepare = reviewPrepare();
@@ -202,22 +202,18 @@ test("review phase is explicit-only, readonly, and ends after retained routing",
   const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
   assert.match(skill, /disable-model-invocation:\s*true/u);
   assert.match(metadata, /allow_implicit_invocation:\s*false/u);
-  assert.match(delivery, /`review-phase` is user-invoked/iu);
-  assert.match(delivery, /exact `\$review-phase` invocation context.{0,100}stops/isu);
-  assert.doesNotMatch(delivery, /delegate to `review-phase`/iu);
-  assert.match(deliveryReview, /persist `review_due`.{0,160}exact explicit `\$review-phase` invocation\s+context/isu);
-  assert.match(deliveryReview, /Return that invocation context and stop/iu);
-  assert.match(deliveryReview, /Only an explicit operator invocation.{0,160}enters `review_running`/isu);
+  assert.match(delivery, /full delivery, activate `review-phase` as an authorized inner step/iu);
+  assert.match(deliveryReview, /Full delivery invokes `\$review-phase`.{0,120}Other\s+modes return it and stop/isu);
   assert.doesNotMatch(deliveryReview, /explicitly invoke `review-phase`/iu);
   assert.match(deliveryRouter, /For durable `review_due`/iu);
   assert.match(
     deliveryRouter,
-    /exact explicit `\$review-phase`\s+invocation context.{0,50}stop/isu,
+    /Full delivery activates `\$review-phase`.{0,120}other modes return the exact explicit invocation context and stop/isu,
   );
-  assert.match(handoff, /explicit_operator_invocation_required: true/u);
+  assert.match(handoff, /review_invocation_authority: full_delivery \| explicit_operator/u);
   assert.match(handoff, /review_invocation_skill: \$review-phase/u);
   assert.match(handoff, /`review_due` handoff leaves `review_run_id` unset/iu);
-  assert.match(prepare, /explicit operator invocation/iu);
+  assert.match(prepare, /authorized full-delivery or explicit-operator invocation/iu);
   assert.match(prepare, /fresh `review_due` evidence/iu);
   assert.match(router, /Fresh `review_running` predecessor evidence/iu);
   assert.match(run, /reviewed target remains unchanged/iu);
@@ -230,7 +226,7 @@ test("review phase is explicit-only, readonly, and ends after retained routing",
   assert.match(returnRoute, /delegates no delivery transition.{0,100}owns no repair/isu);
 });
 
-test("all model-facing root and delivery guidance preserves explicit review invocation", () => {
+test("direct review remains explicit while full delivery can consume its context", () => {
   const rootRouting = read(
     "skills/phases/finder-phase/references/root-routing.md",
   );
@@ -240,9 +236,6 @@ test("all model-facing root and delivery guidance preserves explicit review invo
   const deliveryHandoff = read(
     "skills/phases/delivery-phase/references/phase-handoff.md",
   );
-  const modelGuidance = [rootRouting, delivery, deliveryReview, deliveryRouter];
-  modelGuidance.push(deliveryHandoff);
-
   assert.match(
     rootRouting,
     /Review requests persist.{0,160}exact explicit `\$review-phase` invocation/isu,
@@ -251,12 +244,10 @@ test("all model-facing root and delivery guidance preserves explicit review invo
     rootRouting,
     /never invoke, delegate to, or\s+model-select `review-phase`/iu,
   );
-  for (const document of modelGuidance) {
-    assert.doesNotMatch(document, /Reviews route to `review-phase`/iu);
-    assert.doesNotMatch(document, /load and call `review-phase`/iu);
-    assert.doesNotMatch(document, /explicitly invoke `review-phase`/iu);
-    assert.doesNotMatch(document, /delegate to `review-phase`/iu);
-  }
+  assert.match(delivery, /full delivery, activate `review-phase`/iu);
+  assert.match(deliveryReview, /Other\s+modes return it and stop/iu);
+  assert.match(deliveryRouter, /Full delivery consumes that context immediately/iu);
+  assert.match(deliveryHandoff, /review_invocation_authority: full_delivery \| explicit_operator/u);
 });
 
 test("review router exposes every runtime route class in deterministic precedence", () => {

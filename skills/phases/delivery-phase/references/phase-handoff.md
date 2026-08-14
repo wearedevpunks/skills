@@ -46,13 +46,12 @@ writes active state, primary route, `repair_count = review_count`, and
 idempotency `review_run_id`; complete the transition only after the write. A
 recorded run id resumes its state without increment or guard fallthrough.
 
-## Explicit Review Invocation Context
+## Review Invocation Context
 
-Delivery persists this block for `review_due` and returns it unchanged before
-stopping:
+Delivery persists this block for `review_due`:
 
 ```text
-explicit_operator_invocation_required: true
+review_invocation_authority: full_delivery | explicit_operator
 review_invocation_skill: $review-phase
 review_invocation_mode: delivery
 delivery_goal_identity:
@@ -64,14 +63,15 @@ current_route:
 normalized_target:
 ```
 
-The `review_due` handoff leaves `review_run_id` unset. Only the explicit operator
-invocation consumes this context, preallocates the next ordinal, fixes the run
-id, and enters `review_running`.
+The `review_due` handoff leaves `review_run_id` unset. Full delivery consumes the
+context immediately; other modes return it for explicit operator invocation.
+Consumption preallocates the next ordinal, fixes the run id, and enters
+`review_running`.
 
 For `report_retention_pending`, the explicit resume context additionally carries
 the existing `review_run_id`, ordinal, local report path and SHA-256, target hash,
-source hashes, and intended retained ref. Delivery returns it and stops; the
-operator invokes `$review-phase` to retry retention without rerunning lenses.
+source hashes, and intended retained ref. Full delivery resumes `$review-phase`;
+other modes return the context for explicit retry without rerunning lenses.
 
 After fix 3, `clean_handoff` is final authority. Link immutable review 3, final
 changes, the same passing focused validation, and clean status.
