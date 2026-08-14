@@ -19,12 +19,12 @@ state take precedence over inferred artifact order.
    `review_failed` even when a persisted counter is 3. Only after those checks
    may it recover `review_count` and evaluate the budget in memory. Exhaustion
    returns `review_budget_exhausted` with zero handoff or status writes. A count
-   below 3 persists `review_due` and returns the exact explicit `$review-phase`
-   invocation context. Then stop. Delivery never enters `review_running` itself.
-3. For `report_retention_pending`, load [review.md](review.md) only to return the
-   exact explicit `$review-phase` resume context, then stop. A fresh local report
-   resumes without rerunning lenses. Stop on terminal `review_failed` with its
-   exact evidence.
+   below 3 persists `review_due`. Full delivery activates `$review-phase` with
+   that context; other modes return the exact explicit invocation context and stop.
+3. For `report_retention_pending`, load [review.md](review.md) to resume
+   `$review-phase` in full delivery or return its exact resume context in other
+   modes. A fresh local report resumes without rerunning lenses. Stop on terminal
+   `review_failed` with its exact evidence.
 4. Otherwise recover review state by `review_lineage_id`: read the highest valid
    retained ordinal, reconcile the handoff `review_count` projection, then assess
    target and source freshness separately.
@@ -48,8 +48,8 @@ state take precedence over inferred artifact order.
 13. If implementation exists and its retained review is missing or stale, load
     [review.md](review.md). That phase validates accepted bounds and normalizes a
     supported target before any delivery-budget evaluation, then returns either
-    `review_failed`, `review_budget_exhausted`, or the exact explicit
-    `$review-phase` invocation context and stops.
+    `review_failed`, `review_budget_exhausted`, or a valid `$review-phase`
+    context. Full delivery consumes that context immediately; other modes stop.
 14. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
     otherwise [closeout.md](closeout.md).
 
@@ -59,9 +59,10 @@ revision, resume, rebase, commit, retry, and handoff preserve them.
 
 ## HITL And Resume
 
-A HITL checkpoint is explicit user control. Run only the requested phase and
-stop after its handoff. Earlier phases may have completed through direct skills;
-reuse fresh matching artifacts rather than rerunning them.
+A HITL checkpoint exists only when the user explicitly requests it. Full
+delivery otherwise continues across ordinary in-bounds operations without
+confirmation. Earlier phases may have completed through direct skills; reuse
+fresh matching artifacts rather than rerunning them.
 
 ## Output
 

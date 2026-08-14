@@ -1,7 +1,6 @@
 # Architecture Convergence
 
-Use this branch when a plan can change cumulative code ownership. The saved plan is the architecture
-contract; later execution checks conformance against it.
+Use this branch when a plan can change cumulative code ownership. `SPEC.md` owns the accepted target architecture; the saved plan derives its execution contract and later execution checks conformance against it.
 
 ## Classify Applicability
 
@@ -17,7 +16,9 @@ Persist `architecture_applicability: local | architecture-bearing` with evidence
 Classification is complete when every planned location and consumer is covered by one outcome. A plan
 cannot use `local` merely because each task looks small in isolation.
 
-## Ground the Contract
+## Derive the Contract
+
+Read the accepted technical decisions and verification seams in `SPEC.md`. If the target topology, dependency direction, boundaries, or public seams are absent or contradictory, return to `requirements-grill`; do not invent a competing target.
 
 For backend scope, invoke `$backend-domain-structure` and read its layout reference. Derive honest feature,
 platform/composition, integration, persistence, model, and public-boundary ownership from the repository.

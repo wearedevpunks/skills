@@ -32,6 +32,7 @@ If an expected artifact is missing, continue and report it.
 
 Then:
 
+- activate `$writing-for-agents`, then `$rule-authoring`
 - author the requested root, docs, and workspace guidance
 - treat `.devpunks/specs/prompts/**` as the complete prompt-authoring contract; apply every scoped-prompt criterion it contains
 - ground scoped prompts in current code evidence: structure, placement, dependencies, and boundaries first; applied coding conventions second; enforced constraints outrank the nearest stable module-family pattern
@@ -71,7 +72,7 @@ For a diff, inspect only paths changed or flagged by this run. Apply every match
 | Skill added, removed, or renamed | Reconcile affected IDs and their mirrors. |
 | `local-edited` conflict | Preserve local intent; ask when project and baseline intent conflict. |
 | Missing or stale path | Confirm the named recreation or deletion and direct references. |
-| Prompt input | Reconcile only affected prompt scopes and mirrors. |
+| Prompt or Rule Registry input | Activate `$writing-for-agents`, then `$rule-authoring`; reconcile only affected scopes and mirrors. |
 | Subagent input | Reconcile only generated and final subagent manifests. |
 | Lint, hook, or script input | Validate the affected config or command; ask before changing policy. |
 | Required tools | Check only added, changed, or failed tools. |
@@ -82,6 +83,8 @@ For a diff, inspect only paths changed or flagged by this run. Apply every match
 | First adoption or missing final output | Run applicable scaffold follow-through. |
 
 After write modes, run targeted validation and one fresh `hi check --json`. Rerun `hi update` once only when that check detects new CLI or baseline drift, then finish with one final `hi check --json`.
+
+Before completing a changed update, activate `$writing-for-agents`, then `$rule-authoring`. A no-op Rule Registry reconciliation is valid.
 
 ### Tools Ensure
 

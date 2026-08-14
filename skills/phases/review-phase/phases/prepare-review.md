@@ -3,7 +3,7 @@
 ## Entry Guard
 
 The router selected this gate from fresh `review_due` evidence supplied by an
-explicit operator invocation. The review mode is `delivery` or `standalone`,
+authorized full-delivery or explicit-operator invocation. The review mode is `delivery` or `standalone`,
 and no valid later-state evidence already owns the run.
 
 ## Inputs
