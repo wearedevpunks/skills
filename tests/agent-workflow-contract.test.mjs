@@ -4,14 +4,14 @@ import test from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("technical grilling closes accepted architecture outside CONTEXT.md", () => {
+test("technical grilling closes accepted architecture outside GLOSSARY.md", () => {
   const grill = read("skills/agnostic/requirements/requirements-grill/SKILL.md");
   const modeling = read("skills/agnostic/requirements/domain-modeling/SKILL.md");
   const plan = read("skills/agnostic/planning/create-plan/SKILL.md");
 
   assert.match(grill, /code- or architecture-bearing/u);
   assert.match(modeling, /Pressure-test implementation and architecture consequences/u);
-  assert.match(modeling, /Keep `CONTEXT\.md` glossary-only/u);
+  assert.match(modeling, /Keep `GLOSSARY\.md` glossary-only/u);
   assert.match(plan, /derive and validate the architecture contract accepted in `SPEC\.md`/u);
 });
 
