@@ -34,11 +34,11 @@ If the current code already passes the new test, do not fake RED. Isolate the pr
 
 **Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.
 
-For assertion choices, use [high-signal-tests.md](high-signal-tests.md): move tests one semantic level above the change and verify durable behavior through the nearest public seam.
+For test selection and assertions, use [high-signal-tests.md](high-signal-tests.md): keep tests only when they prove durable product or capability behavior through an owned public seam.
 
 **Good tests** are integration-style: they exercise real code paths through public APIs. They describe _what_ the system does, not _how_ it does it. A good test reads like a specification - "user can checkout with valid cart" tells you exactly what capability exists. These tests survive refactors because they don't care about internal structure.
 
-**Bad tests** are coupled to implementation. They mock internal collaborators, test private methods, or verify through external means (like querying a database directly instead of using the interface). The warning sign: your test breaks when you refactor, but behavior hasn't changed. If you rename an internal function and tests fail, those tests were testing implementation, not behavior.
+**Low-signal tests** spend maintenance without protecting owned behavior. Cull existence and registration checks, assertions already satisfied by typechecking, simulated third-party behavior or provider-shape assumptions, shape/contract checks standing in for a feature, low-value UI wiring, and regressions whose only value is blocking reversion. Keep the owned behavior and culling rules co-located in [high-signal-tests.md](high-signal-tests.md).
 
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
 
@@ -133,6 +133,7 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
 [ ] Assertions preserve the product/capability invariant
+[ ] Test proves behavior owned by this system; typechecking or a third party's suite cannot provide the same evidence
 [ ] Test would survive internal refactor
 [ ] Code is minimal for this test
 [ ] No speculative features added
