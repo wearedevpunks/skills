@@ -30,14 +30,19 @@ accepted_bounds_identity:
 accepted_bounds_hash:
 review_lineage_id:
 review_run_id:
-state: review_due | review_running | report_retention_pending | review_routed | debug_active | repair_active | focused_validation | clean_handoff
+state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff
 primary_route:
+secondary_architecture_follow_up:
+post_debt_route:
 review_count:
 repair_count:
 authoritative_report_path:
 authoritative_report_commit:
 verified_retained_ref:
 stable_finding_ids:
+debt_follow_up_artifact:
+debt_follow_up_keys:
+captured_debt_finding_ids:
 ```
 
 `review_count` is a projection of the highest valid retained report ordinal for
@@ -45,6 +50,19 @@ the lineage. Reconcile it on resume. An opening repair transition atomically
 writes active state, primary route, `repair_count = review_count`, and
 idempotency `review_run_id`; complete the transition only after the write. A
 recorded run id resumes its state without increment or guard fallthrough.
+
+Each debt follow-up key is the tuple of authoritative report commit,
+authoritative report path, and stable finding ID. The debt artifact links the
+delivery goal and accepted Spec, records those keys, and lives outside the
+immutable report. Replaying a recorded key reuses the existing entry. It never
+opens implementation work for unaccepted debt.
+
+`post_debt_route` is durable before debt capture starts. It is `debugging` or
+`implementation` for secondary debt, and `docs_ingest` or `closeout` for
+primary debt after capture. Resume follows this field after every debt key is
+present. For primary debt, the successful capture transition atomically records
+every debt key and sets state = `post_debt_route`. Resume continues from the
+recorded `docs_ingest` or `closeout` state without repeating capture.
 
 ## Review Invocation Context
 

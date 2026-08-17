@@ -16,12 +16,14 @@ Before finalizing task boundaries:
 
 1. List every concrete `location` each task may touch.
 2. For each location, inspect the `AGENTS.md` chain from repo root to the nearest scoped file.
-3. Read every applicable `Skill | What / when` table and select only rows whose
-   exact `What / when` trigger matches the task.
-4. Verify each selected skill exists in `.agents/skills/` or an installed skill
-   source visible to the agent.
-5. Open each selected skill's complete `SKILL.md` before finalizing the task's
-   boundary, validation, RED target, and review mode.
+3. Read the final `## Skills` table with `Skill | Exact trigger` in every
+   applicable scoped file and select only non-phase rows whose exact trigger
+   matches the task.
+4. Verify each selected skill exists in `.agents/skills/` or another installed
+   skill source visible to the agent.
+5. Open each selected installed skill's `SKILL.md`; that installed file is
+   workflow authority while finalizing the task's boundary, validation, RED
+   target, and review mode.
 6. Add the merged, deduplicated union from every touched scope to the task as
    `assigned_skills`.
 7. For every implementation-applicable item, add exactly one
@@ -31,6 +33,9 @@ Before finalizing task boundaries:
 8. Classify architecture applicability using `architecture-convergence.md` before locking dependencies and
    waves. For architecture-bearing plans, derive task boundaries and architecture waves from the persisted
    target ownership topology, dependency graph, responsibility criteria, public seams, and migration ledger.
+
+Root `AGENTS.md` stays table-free. Phase wrappers remain global orchestration
+entrypoints and are excluded from scoped tables.
 
 If a task spans multiple scopes, include all selected skills from all touched
 scopes. If a matching row names a missing skill, keep the task planned but
@@ -53,7 +58,7 @@ Preserve `$swarm-planner` behavior:
 - validations per task
 - parallel execution waves
 - risks and mitigations
-- explicit `assigned_skills` per task from exact scoped `What / when` trigger
+- explicit `assigned_skills` per task from exact scoped trigger
   matches, with task design shaped by those skills
 - complete one-to-one `implementation_skill_guidance` for every
   implementation-applicable assigned skill
