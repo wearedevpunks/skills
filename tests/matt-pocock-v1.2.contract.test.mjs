@@ -67,7 +67,7 @@ test("wait-what is the upstream user-invoked anti-jargon corrective", () => {
   assert.match(skill, /name: wait-what/);
   assert.match(skill, /disable-model-invocation: true/);
   assert.match(skill, /ASD-STE100 Simplified Technical English/);
-  assert.match(skill, /ubiquitous language from `CONTEXT\.md`/);
+  assert.match(skill, /ubiquitous language from `GLOSSARY\.md`/);
 });
 
 test("v1.2 imports retain immutable provenance and the upstream license", () => {
