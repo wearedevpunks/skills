@@ -40,8 +40,8 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - Apply the round persistence contract in `artifact-output` alongside `$grilling`.
 - After `$grilling` completes and the durable artifacts are current, invoke
   `$show-me` to present the persisted shared understanding before requesting
-  approval. The completion signal comes from `$grilling`; treat the presentation
-  as a derived view and persist any correction
+  approval. When `$grilling` reports completion, treat the presentation as a
+  derived view and persist any correction
   through `artifact-output`, then present the corrected state again. Approval
   applies to the durable artifacts, not the presentation.
 
