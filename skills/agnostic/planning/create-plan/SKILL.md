@@ -43,10 +43,12 @@ silently renaming them.
    remains step 13.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
 8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
-9. Locate scoped `AGENTS.md` files for every planned task path. Read each
-   applicable `Skill | What / when` table, select rows whose exact `What / when`
-   triggers match the task, and open each selected skill's complete `SKILL.md`
-   before finalizing task design.
+9. Locate scoped `AGENTS.md` files for every planned task path. Scoped guidance
+   uses one final `## Skills` table with `Skill | Exact trigger`. Select only
+   non-phase rows whose exact triggers match the task, then open each selected
+   installed skill's `SKILL.md`; that installed file is workflow authority.
+   Root `AGENTS.md` stays table-free. Phase wrappers remain global orchestration
+   entrypoints and are excluded from scoped tables.
 10. For every implementation task, convert applicable scoped or named skill
     obligations into `implementation_skill_guidance`; preserve `assigned_skills`
     as planning provenance.
@@ -76,8 +78,8 @@ silently renaming them.
 5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
-8. Assign each task the deduplicated union of skills whose exact `What / when`
-   triggers match in every touched scope, merging all touched scopes for
+8. Assign each task the deduplicated union of skills whose exact triggers match
+   in every touched scope, merging all touched scopes for
    cross-directory tasks.
 9. Build plan-derived worker waves: place every currently unblocked task with
    a disjoint write scope in the same wave. Use a one-task wave only when

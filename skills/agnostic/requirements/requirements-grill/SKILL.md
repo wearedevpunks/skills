@@ -33,19 +33,15 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - Use `$wait-what` to present every grilling question and recommendation to the user. A round is complete only when every frontier item has been presented, answered, parked, or explicitly deferred, and the updated durable artifacts are persisted before continuing.
 - Give `$domain-modeling` the active status glossary before the first question. Invoke it whenever a round changes terminology, relationships, or domain decisions, and persist its accepted results through `artifact-output` before continuing.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
-- Record whether the work has technical consequences. For code- or architecture-bearing work, close the applicable topology, dependencies, seams, boundaries, persistence, and module shape from current code evidence. Persist accepted design in the grill artifacts; keep `GLOSSARY.md` glossary-only.
+- Record whether the work has technical consequences. For code- or architecture-bearing work, close the applicable topology, dependency direction, seams, boundaries, persistence, and module shape from current code evidence. Persist accepted design in the grill artifacts; keep `GLOSSARY.md` glossary-only.
 - Prefer conservative defaults once enough context exists.
 - If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.
 - Apply the round persistence contract in `artifact-output` alongside `$grilling`.
-<<<<<<< HEAD
-- When `$grilling` reports completion and the durable artifacts are current,
-  invoke `$show-me` to present the persisted shared understanding before requesting
-=======
 - After `$grilling` completes and the durable artifacts are current, invoke
   `$show-me` to present the persisted shared understanding before requesting
->>>>>>> origin/team/stefan/grilling-contract-centralization-fix
-  approval. Treat the presentation as a derived view: persist any correction
+  approval. The completion signal comes from `$grilling`; treat the presentation
+  as a derived view and persist any correction
   through `artifact-output`, then present the corrected state again. Approval
   applies to the durable artifacts, not the presentation.
 

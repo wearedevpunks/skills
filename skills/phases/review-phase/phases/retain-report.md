@@ -11,6 +11,8 @@ returns the zero-write `review_budget_exhausted` terminal.
 ## Inputs
 
 - exact local report path and bytes
+- exact bytes resolved from `reportCommitSha:reportPath` for every retained
+  candidate, supplied to the validator as `resolvedReportBytes`
 - primitive accepted-bounds, normalized-target, and governing-source evidence
 - review mode, lineage, run ID, and delivery ordinal when applicable
 - expected report SHA-256 and allowed navigation/wiki-log envelope paths
@@ -51,8 +53,11 @@ accepting an exit.
    the report and allowed envelope, then push or use the approved ref. Preserve
    the report bytes exactly.
 6. Verify that the retained ref contains the exact report commit and that the
-   commit changed only approved envelope paths. Run the complete retained-pass
-   validator again against the retained blob and current primitive evidence.
+   commit changed only approved envelope paths. Resolve
+   `reportCommitSha:reportPath` from that commit, pass those exact committed
+   bytes to the retained-pass validator, and require exact equality with the
+   local report bytes. A local digest or caller assertion cannot replace this
+   commit-tree read.
 7. Only a unique valid retained delivery report establishes its ordinal.
    Reconcile the delivery `review_count` projection from the highest unique
    valid retained ordinal. Standalone retention changes no delivery counter.
@@ -81,6 +86,8 @@ accepting an exit.
 - same-run candidate inventory and uniqueness decision
 - report commit SHA and its exact changed-path set
 - approved retained ref and proof that it contains the report commit
+- exact `reportCommitSha:reportPath` resolution and committed/local byte
+  equality
 - delivery ordinal and reconciled counter projection, or standalone mode
 
 ## Declared Exits

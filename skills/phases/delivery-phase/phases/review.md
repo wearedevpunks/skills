@@ -30,17 +30,42 @@ resumes without rerunning lenses.
 
 After the retained report establishes the completed ordinal:
 
-1. Runtime evidence routes primarily to debugging.
-2. Otherwise, an in-scope non-runtime blocker routes primarily to implementation.
-3. Otherwise, broad architecture debt routes to debt follow-up.
-4. Otherwise, route to docs ingest or closeout by documentation completeness.
+1. Recompute aggregate routing from every finding's validated `return_route`
+   with the review contract helper. Reject a mismatch with the retained routing
+   object.
+2. When `secondary_architecture_follow_up` is true, enter `debt_follow_up`
+   first and persist the primary `debugging` or `implementation` route as
+   `post_debt_route`.
+3. Without secondary debt, `debugging` opens debugging and `implementation`
+   opens implementation.
+4. Primary `debt_follow_up` enters debt capture with `post_debt_route` set to
+   `docs_ingest` when documentation remains, otherwise `closeout`.
+5. `docs_ingest` enters docs ingest. `closeout` enters closeout.
 
 Architecture debt may remain a secondary follow-up beside debugging or
-implementation. Opening either repair route is one atomic durable handoff write
-of active state, route, `repair_count = review_count`, and idempotency
-`review_run_id`. Reject a mismatched or already-consumed repair ordinal.
-Complete the transition only after that write. Resume an already-recorded run
-directly without another increment.
+implementation. Open its repair only after debt capture. Opening either repair
+route is one atomic durable handoff write of active state, route,
+`repair_count = review_count`, and idempotency `review_run_id`. Reject a
+mismatched or already-consumed repair ordinal. Complete the transition only
+after that write. Resume an already-recorded run directly without another
+increment.
+
+## Capture Debt Follow-Up
+
+For each primary or secondary debt finding, enter `debt_follow_up` and upsert a
+goal/spec-linked debt artifact exactly once. Key each entry by retained report
+commit, retained report path, and stable finding ID. Persist the artifact path,
+keys, captured finding IDs, and `post_debt_route` in the review handoff before
+leaving this state. Set `post_debt_route` to the higher-priority `debugging` or
+`implementation` route for secondary debt. For primary debt, set it to
+`docs_ingest` when required documentation remains, otherwise `closeout`. On
+resume, reuse matching keys, add only missing entries, and follow the recorded
+route after every key is present.
+
+Debt capture records unaccepted work; it does not implement the debt or open an
+implementation task. Primary capture resumes `docs_ingest` or `closeout`;
+secondary capture resumes its recorded repair. Capture happens once before that
+route.
 
 ## Completion
 
