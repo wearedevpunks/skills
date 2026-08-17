@@ -38,8 +38,13 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.
 - Apply the round persistence contract in `artifact-output` alongside `$grilling`.
-- When `$grilling` reports completion, invoke `$show-me` to present the
-  persisted shared understanding before requesting
+<<<<<<< HEAD
+- When `$grilling` reports completion and the durable artifacts are current,
+  invoke `$show-me` to present the persisted shared understanding before requesting
+=======
+- After `$grilling` completes and the durable artifacts are current, invoke
+  `$show-me` to present the persisted shared understanding before requesting
+>>>>>>> origin/team/stefan/grilling-contract-centralization-fix
   approval. Treat the presentation as a derived view: persist any correction
   through `artifact-output`, then present the corrected state again. Approval
   applies to the durable artifacts, not the presentation.
