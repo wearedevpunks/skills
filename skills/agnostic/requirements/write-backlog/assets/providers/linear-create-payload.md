@@ -101,7 +101,7 @@ If workspace policy permits none of these, fail preflight. Do not create labels 
 
 - fog -> root-level issue with `Kind/fog`; no parent or capability module required until sharpened
 - capability module -> non-milestone capability metadata, such as a dedicated module label
-- execution milestone -> chronological Linear project milestone for overview-level items (`fog` through `epic`), not stories
+- execution milestone -> chronological Linear project milestone for overview-level items (`fog` through `epic`), inherited by containing stories when supported
 - grilling -> capability-module-scoped issue with `Kind/grilling`
 - research -> capability-module-scoped issue with `Kind/research`
 - prototype -> capability-module-scoped issue with `Kind/prototype`
@@ -134,17 +134,17 @@ Use these headings in `description`; do not substitute a mutable local spec path
 
 ## Chronological execution milestones
 
-Linear project milestones answer first/next/later at the project overview level. Name them chronologically, such as `M1`, `M2`, and `M3`, and use them only for `fog`, `grilling`, `research`, `prototype`, and `epic` issues. Keep stories unmilestoned; native `blockedBy` / `blocks` relations explain story order.
+Linear project milestones answer first/next/later at the project overview level. Name them chronologically, such as `M1`, `M2`, and `M3`, and derive them only for `fog`, `grilling`, `research`, `prototype`, and `epic` issues. When supported, stories inherit their containing overview milestone as one shared membership value; native `blockedBy` / `blocks` relations explain story order.
 
-The overview-level taxonomy from `fog` through `epic` is milestone-eligible: `fog`, `grilling`, `research`, `prototype`, and `epic`. Stories are never milestone-eligible. Capability-module metadata remains grouping and is not an execution relation.
+The overview-level taxonomy from `fog` through `epic` is milestone-eligible: `fog`, `grilling`, `research`, `prototype`, and `epic`. Stories never receive distinct derived milestones; when supported, they share the containing overview milestone. Capability-module metadata remains grouping and is not an execution relation.
 
 1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
-2. Keep every projected story unmilestoned; use native blocker relations for story ordering.
+2. Keep one containing overview milestone across each projected story set when supported; use native blocker relations for story ordering.
 3. Verify every blocker target is present and that the configured Linear representation supports the full graph.
 4. Only after preflight passes, create issues, map planned keys to provider ids, create native blocker relations, and create or reuse the derived overview milestones.
-5. Assign at most one verified milestone to each selected overview-level item.
+5. Assign at most one verified milestone to each selected overview-level item and propagate that same membership to its stories when supported; never derive story-specific milestones.
 
-Overview items in the same wave share a milestone. Capability grouping, parent/child hierarchy, and milestone assignment never determine story chronology. Native blocker relations remain authoritative for stories; recompute blockers when story relations change.
+Overview items in the same wave share a milestone. Containing stories may share that milestone, but capability grouping, parent/child hierarchy, and milestone assignment never determine story chronology. Native blocker relations remain authoritative for stories; recompute blockers when story relations change.
 
 ## Notes
 

@@ -17,7 +17,7 @@ Canonical mapping:
 
 - fog -> first-class root/backlog item
 - capability module -> board group
-- execution milestone -> dedicated Status or Dropdown column for overview-level items (`fog` through `epic`), not stories
+- execution milestone -> dedicated Status or Dropdown column for overview-level items (`fog` through `epic`), inherited by containing stories when supported
 - grilling/research/prototype -> parent item in a capability group
 - epic/capability -> parent item
 - story -> subitem under the epic item
@@ -105,7 +105,7 @@ Closure notes record the answer or verdict, evidence, observations, open decisio
 
 Use one stable board group per durable capability module. A group answers which product capability owns the item; it does not answer when the item executes.
 
-Fog stays in a root/backlog group until sharpening selects a capability module. Do not name capability groups `M1`, `M2`, or other chronological wave names. One capability group can contain overview items from multiple execution milestones; stories remain unmilestoned.
+Fog stays in a root/backlog group until sharpening selects a capability module. Do not name capability groups `M1`, `M2`, or other chronological wave names. One capability group can contain overview items from multiple execution milestones; containing stories may share their epic's milestone.
 
 ## Create a capability-module group
 
@@ -130,16 +130,16 @@ Use stable capability names. Do not create implementation-phase groups such as b
 
 ## Chronological execution milestones
 
-Use a separate Status or Dropdown column named `Execution milestone` for `M1`, `M2`, and later project-overview waves. Set it only on `fog`, `grilling`, `research`, `prototype`, and `epic` items; leave stories unmilestoned. The exact column ID comes from board metadata.
+Use a separate Status or Dropdown column named `Execution milestone` for `M1`, `M2`, and later project-overview waves. Set it on `fog`, `grilling`, `research`, `prototype`, and `epic` items, and propagate the same value to containing stories when supported; never derive story-specific values. The exact column ID comes from board metadata.
 
 1. Inspect both parent-item and subitem board metadata.
 2. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
 3. Prove every edge is representable by monday.com's same-board dependency constraint. If an edge crosses unsupported storage, stop before creation.
-4. Keep every projected story unmilestoned; use the dependency column for story ordering.
+4. Keep one containing overview milestone across each projected story set when supported; use the dependency column for story ordering.
 5. Verify every dependency target is present and that all required configured columns exist.
-6. Only after preflight passes, create items, map planned keys to provider ids, populate dependencies, and set at most one verified milestone value per selected overview-level item.
+6. Only after preflight passes, create items, map planned keys to provider ids, populate dependencies, and set at most one verified milestone value per selected overview-level item, propagating that same value to containing stories when supported.
 
-Overview items from different capability groups can share one execution milestone. Group membership, parent/subitem hierarchy, and current milestone value never create story dependency edges. Update the dependency column when story relations change.
+Overview items from different capability groups can share one execution milestone. Containing stories may share that value, but group membership, parent/subitem hierarchy, and current milestone value never create story dependency edges. Update the dependency column when story relations change.
 
 ## Create an epic item
 

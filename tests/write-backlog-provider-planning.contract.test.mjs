@@ -54,12 +54,12 @@ test("provider planning keeps milestones at overview level and story order in bl
     for (const concept of ["fog", "grilling", "research", "prototype", "epic"]) {
       assert.match(document, new RegExp("`" + concept + "`"), `${relativePath}: ${concept}`);
     }
-    assert.match(document, /(?:stories? (?:remain|are|stay|leave) unmilestoned|(?:keep|leave) stories unmilestoned|do not (?:create|assign) milestones? (?:to|for) stories)/iu, relativePath);
+    assert.match(document, /(?:same containing overview milestone|share (?:that|their containing|one) .*milestone|propagat(?:e|ing) (?:that )?same .*milestone|never derive (?:distinct )?story)/iu, relativePath);
     assert.match(document, /story (?:relations?|ordering|dependency edges)|dependency column for story ordering|native blocker/iu, relativePath);
   }
 
   const examples = readFileSync(path.join(skillRoot, "EXAMPLES.md"), "utf-8");
-  assert.match(examples, /Both stories remain unmilestoned/u);
+  assert.match(examples, /Both stories share their containing epic's milestone/u);
   assert.match(examples, /native blocker relation carries their ordering/u);
   assert.doesNotMatch(examples, /`US-001`[^\n]+`M1`|`US-002`[^\n]+`M2`/u);
 });
