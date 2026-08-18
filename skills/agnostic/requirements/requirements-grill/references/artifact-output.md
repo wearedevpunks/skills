@@ -65,6 +65,24 @@ Accepted answer:
 - <locked answer>
 ```
 
+For a technical question, add the grounding beside the decision:
+
+```md
+Evidence anchor:
+- `<path>:<symbol>`
+
+Observed constraint:
+- <what the current code requires or leaves unresolved>
+
+Question:
+<requirements decision>
+
+Code consequence:
+- <what contract, ownership, invariant, lifecycle, or boundary the answer determines>
+```
+
+Use the same question id and accepted-answer fields. Keep the question at requirements level; implementation sequence and task breakdown belong to planning.
+
 Group related decisions under branch headings.
 
 When the user changes an earlier decision, add a new entry that explicitly supersedes the old one.
@@ -126,15 +144,27 @@ Maintain a compact branch dashboard with:
 - pinned axioms
 - flagged ambiguities
 
+For active code- or architecture-bearing branches, also maintain:
+
+```md
+## Technical Grounding
+
+| Branch | Evidence anchors | Applicable dimensions | Open technical decisions | Grounding |
+| --- | --- | --- | --- | --- |
+| <branch> | `<path>:<symbol>` | <topology, persistence, ...> | <Q ids or `none`> | <unknown or grounded> |
+```
+
+`unknown` means current code evidence has not grounded the branch. `grounded` means evidence anchors exist and every applicable technical dimension is answered, parked, deferred, or marked not applicable with supporting evidence. Record those dispositions in `Applicable dimensions`. Parked or deferred branches stay visible but are outside the active closure calculation.
+
 Completion percentages are working signals:
 
 - `0-50%`: branch discovered but unsettled
 - `50-85%`: major direction set, important questions remain
 - `85-99%`: mostly closed, only constants/schema/naming remain
-- `100%`: no unanswered items remain, the frontier is empty, and shared understanding is explicitly confirmed; remaining work is implementation/tuning
+- `100%`: no unanswered items remain, the frontier is empty, shared understanding is explicitly confirmed, and every active technical branch is grounded with no open technical decisions; remaining work is implementation/tuning
 - `parked`: preserved for later, out of current scope
 
-Keep a branch below `100%` while it has unanswered items or while shared-understanding confirmation is pending.
+Keep a branch below `100%` while it has unanswered items, shared-understanding confirmation is pending, or its technical grounding is `unknown` or has open decisions.
 
 ## Glossary Snapshot Contract
 
@@ -169,7 +199,7 @@ When a branch closes:
 
 1. Update the grill log with final accepted decisions.
 2. Update the status file percentage, open items, round/frontier state, glossary snapshot, axioms, and ambiguities.
-3. Confirm no unanswered item or pending shared-understanding confirmation is represented as `100%`.
+3. Confirm no unanswered item, pending shared-understanding confirmation, unknown technical grounding, or open technical decision is represented as `100%`.
 4. Invoke `$domain-modeling` for a final consistency pass.
 5. After explicit user closure, run the wiki-output workflow for durable domain/product knowledge.
 6. Say exactly what changed, which routed artifacts were updated, and whether `meta.json` or wiki log bookkeeping changed.
