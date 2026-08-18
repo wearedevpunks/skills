@@ -7,7 +7,7 @@ Connector source:
 
 ## Preflight before creation
 
-Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in monday.com. A failed preflight writes nothing.
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify overview milestones only, and prove the configured hierarchy, classification, and dependency representation is representable in monday.com. A failed preflight writes nothing.
 
 ## Intent
 
@@ -17,7 +17,7 @@ Canonical mapping:
 
 - fog -> first-class root/backlog item
 - capability module -> board group
-- execution milestone -> dedicated Status or Dropdown column derived from dependency values
+- execution milestone -> dedicated Status or Dropdown column for overview-level items (`fog` through `epic`), not stories
 - grilling/research/prototype -> parent item in a capability group
 - epic/capability -> parent item
 - story -> subitem under the epic item
@@ -41,7 +41,7 @@ Expected board shape, subject to explicit board configuration:
 - one board group per capability module
 - parent items for epics/capabilities
 - subitems for stories
-- dedicated Status or Dropdown column named `Execution milestone` with `M1`, `M2`, and later derived values
+- dedicated Status or Dropdown column named `Execution milestone` with `M1`, `M2`, and later overview values
 - dependency column wherever selected work has blockers
 
 If the target group for a capability module is missing, create it before creating concrete items.
@@ -105,7 +105,7 @@ Closure notes record the answer or verdict, evidence, observations, open decisio
 
 Use one stable board group per durable capability module. A group answers which product capability owns the item; it does not answer when the item executes.
 
-Fog stays in a root/backlog group until sharpening selects a capability module. Do not name capability groups `M1`, `M2`, or other chronological wave names. One capability group can contain items from multiple execution milestones.
+Fog stays in a root/backlog group until sharpening selects a capability module. Do not name capability groups `M1`, `M2`, or other chronological wave names. One capability group can contain overview items from multiple execution milestones; stories remain unmilestoned.
 
 ## Create a capability-module group
 
@@ -130,16 +130,16 @@ Use stable capability names. Do not create implementation-phase groups such as b
 
 ## Chronological execution milestones
 
-Use a separate Status or Dropdown column named `Execution milestone` for `M1`, `M2`, and later dependency-derived waves. The exact column ID comes from board metadata.
+Use a separate Status or Dropdown column named `Execution milestone` for `M1`, `M2`, and later project-overview waves. Set it only on `fog`, `grilling`, `research`, `prototype`, and `epic` items; leave stories unmilestoned. The exact column ID comes from board metadata.
 
 1. Inspect both parent-item and subitem board metadata.
 2. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
 3. Prove every edge is representable by monday.com's same-board dependency constraint. If an edge crosses unsupported storage, stop before creation.
-4. Derive dependency-free items as `M1`; derive every other item as `M(1 + max(milestone number of each dependency))`.
-5. Verify every dependency points to a strictly earlier milestone and that all required configured columns exist.
-6. Only after preflight passes, create items, map planned keys to provider ids, populate dependencies, and set exactly one verified milestone value per eligible item.
+4. Keep every projected story unmilestoned; use the dependency column for story ordering.
+5. Verify every dependency target is present and that all required configured columns exist.
+6. Only after preflight passes, create items, map planned keys to provider ids, populate dependencies, and set at most one verified milestone value per selected overview-level item.
 
-Items from different capability groups can share one execution milestone. Group membership, parent/subitem hierarchy, and current milestone value never create dependency edges. Recompute milestone values whenever the dependency column changes.
+Overview items from different capability groups can share one execution milestone. Group membership, parent/subitem hierarchy, and current milestone value never create story dependency edges. Update the dependency column when story relations change.
 
 ## Create an epic item
 
@@ -226,7 +226,7 @@ Tool:
 3. Complete the in-memory hierarchy, graph, milestone, and representability preflight.
 4. Only after preflight passes, create required groups, items, and subitems.
 5. Set only explicitly configured classification metadata.
-6. Map planned keys to provider ids, add dependency values, and set already-derived milestones.
+6. Map planned keys to provider ids, add dependency values, and set already-derived overview milestones.
 
 ## Notes
 

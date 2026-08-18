@@ -15,7 +15,7 @@ Official source:
 
 ## Preflight before creation
 
-Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in Azure DevOps. A failed preflight writes nothing.
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify overview milestones only, and prove the configured hierarchy, classification, and dependency representation is representable in Azure DevOps. A failed preflight writes nothing.
 
 ## Raw request body
 
@@ -126,7 +126,7 @@ Render these sections in `System.Description`; do not substitute a mutable local
 
 - fog -> root-level work item with `Custom.DevpunksKind = fog`
 - capability module -> `System.AreaPath`
-- execution milestone -> chronological `System.IterationPath` derived from native Predecessor links
+- execution milestone -> chronological `System.IterationPath` for overview-level items (`fog` through `epic`), not stories
 - grilling -> capability-module-scoped work item with `Custom.DevpunksKind = grilling`
 - research -> capability-module-scoped work item with `Custom.DevpunksKind = research`
 - prototype -> capability-module-scoped work item with `Custom.DevpunksKind = prototype`
@@ -141,15 +141,15 @@ Do not encode execution waves in Area Path. One area can span multiple iteration
 
 ## Chronological execution milestones
 
-Use `/fields/System.IterationPath` for chronological `M1`, `M2`, and later execution waves only when the project has matching iteration nodes. Derive assignments from native Predecessor links:
+Use `/fields/System.IterationPath` for chronological `M1`, `M2`, and later project-overview waves only when the project has matching iteration nodes. Apply it only to `fog`, `grilling`, `research`, `prototype`, and `epic` items. Keep stories unmilestoned; native Predecessor links explain story ordering:
 
 1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
-2. Derive blocker-free work items as `M1`; derive every other item as `M(1 + max(iteration number of each predecessor))`.
-3. Verify every predecessor is in a strictly earlier iteration and that Azure DevOps can represent the complete hierarchy and graph.
+2. Keep every projected story without an Iteration Path; use native Predecessor links for story ordering.
+3. Verify every predecessor target is present and that Azure DevOps can represent the complete hierarchy and graph.
 4. Only after preflight passes, create work items, map planned keys to provider ids, and add each blocker with `System.LinkTypes.Dependency-Reverse`.
-5. Create or resolve the verified iteration nodes and patch `/fields/System.IterationPath` on every selected milestone-eligible item.
+5. Create or resolve the verified overview iteration nodes and patch `/fields/System.IterationPath` only on selected overview-level items.
 
-Capability Area Path, parent/child hierarchy, and current Iteration Path never create dependency edges. Recompute iteration assignment whenever Predecessor relations change.
+Capability Area Path, parent/child hierarchy, and current Iteration Path never create dependency edges. Keep story ordering in Predecessor relations; do not use Iteration Path to encode it.
 
 Apply the derived iteration with a follow-up JSON Patch operation:
 

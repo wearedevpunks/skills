@@ -39,3 +39,27 @@ test("provider planning keeps capability grouping separate from execution milest
     }
   }
 });
+
+test("provider planning keeps milestones at overview level and story order in blockers", () => {
+  for (const relativePath of [
+    "SKILL.md",
+    "REFERENCE.md",
+    "assets/concepts/backlog-model.md",
+    "assets/providers/linear-create-payload.md",
+    "assets/providers/github-projects-create-payload.md",
+    "assets/providers/azure-devops-create-payload.md",
+    "assets/providers/monday-create-payload.md",
+  ]) {
+    const document = readFileSync(path.join(skillRoot, relativePath), "utf-8");
+    for (const concept of ["fog", "grilling", "research", "prototype", "epic"]) {
+      assert.match(document, new RegExp("`" + concept + "`"), `${relativePath}: ${concept}`);
+    }
+    assert.match(document, /(?:stories? (?:remain|are|stay|leave) unmilestoned|(?:keep|leave) stories unmilestoned|do not (?:create|assign) milestones? (?:to|for) stories)/iu, relativePath);
+    assert.match(document, /story (?:relations?|ordering|dependency edges)|dependency column for story ordering|native blocker/iu, relativePath);
+  }
+
+  const examples = readFileSync(path.join(skillRoot, "EXAMPLES.md"), "utf-8");
+  assert.match(examples, /Both stories remain unmilestoned/u);
+  assert.match(examples, /native blocker relation carries their ordering/u);
+  assert.doesNotMatch(examples, /`US-001`[^\n]+`M1`|`US-002`[^\n]+`M2`/u);
+});

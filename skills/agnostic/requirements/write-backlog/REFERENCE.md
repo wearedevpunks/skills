@@ -62,7 +62,7 @@ Build and validate the complete intended projection in memory before the first p
 3. Validate every story as an agent-sized tracer bullet.
 4. Resolve every blocker to a projected story.
 5. Reject self-blockers, missing targets, and cycles.
-6. Derive chronological execution milestones from the complete blocker DAG.
+6. Assign milestones only across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) for project-level chronological precedence. Keep child stories unmilestoned; native blockers explain story relations.
 7. Validate provider representation and required native primitives.
 8. Only after every check passes, write immediately without a separate approval stop.
 
@@ -89,11 +89,12 @@ Backlog root
     epic
       story
 
-Execution milestones
+Project overview execution milestones
   M1 -> M2 -> M3 ...
+  (assigned only to overview-level items from fog through epic)
 ```
 
-Capability grouping is independent from chronology. Native blockers are authoritative. A story with no blockers is `M1`; every other story is `M(1 + max(blocker milestone))`.
+Capability grouping is independent from chronology. Native blockers are authoritative for story relations. Milestones are a project-overview signal only: assign them to overview-level `fog`, `grilling`, `research`, `prototype`, and `epic` items when chronological precedence is useful; leave stories unmilestoned.
 
 Provider representation is defined in [assets/providers/](assets/providers/). Use actual metadata and native hierarchy/dependency primitives. Do not invent fields, flatten child stories, or replace representable blockers with prose.
 

@@ -11,7 +11,7 @@ Official sources:
 
 ## Preflight before creation
 
-Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify every milestone, and prove the configured hierarchy, classification, and dependency representation is representable in GitHub. A failed preflight writes nothing.
+Before creating any item, build the complete in-memory projection. Resolve every dependency target, reject missing targets, self-edges, and cycles, derive and verify overview milestones only, and prove the configured hierarchy, classification, and dependency representation is representable in GitHub. A failed preflight writes nothing.
 
 ## Intent
 
@@ -20,7 +20,7 @@ Use GitHub Projects V2 and GitHub Issues together.
 Canonical mapping:
 
 - capability module -> Project V2 custom single-select field
-- execution milestone -> chronological repository milestone derived from native issue dependencies
+- execution milestone -> chronological repository milestone for overview-level items (`fog` through `epic`), not stories
 - epic/capability -> parent GitHub issue in the Project
 - story -> child issue/sub-issue in the Project
 - story ordering -> native issue dependency
@@ -96,23 +96,23 @@ If repository policy permits none of these, fail preflight. Do not create classi
 
 Store durable capability membership in a Project V2 custom single-select field named `Capability module`. This field answers which product capability owns the item. It is independent from repository milestones, parent/sub-issue hierarchy, and dependency order.
 
-Fog leaves `Capability module` empty until sharpening selects a module. Every selected concrete non-fog issue receives exactly one capability-module value. A module can contain issues from multiple execution milestones.
+Fog leaves `Capability module` empty until sharpening selects a module. Every selected concrete non-fog issue receives exactly one capability-module value. A module can contain overview items from multiple execution milestones; stories remain unmilestoned.
 
 ## Chronological execution milestones
 
-Use repository milestones named `M1`, `M2`, and so on only for dependency-derived execution waves. Do not create one repository milestone per capability module.
+Use repository milestones named `M1`, `M2`, and so on only for overview-level `fog`, `grilling`, `research`, `prototype`, and `epic` items. Do not assign milestones to stories or create one repository milestone per capability module.
 
 1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
-2. Derive blocker-free issues as `M1`; derive every other issue as `M(1 + max(milestone number of each blocker))`.
-3. Verify every blocker belongs to a strictly earlier milestone and that GitHub can represent the complete hierarchy and graph.
+2. Keep every projected story unmilestoned; use native issue dependencies for story ordering.
+3. Verify every blocker target is present and that GitHub can represent the complete hierarchy and graph.
 4. Only after preflight passes, create issues, map planned keys to provider ids, add every native blocker with `addBlockedBy`, and create or reuse milestones.
-5. Assign exactly one verified milestone to each selected milestone-eligible issue.
+5. Assign at most one verified milestone to each selected overview-level item.
 
-Issues from different capability modules can share one milestone, and one capability module can span multiple milestones. Recompute milestone assignment whenever native dependencies change.
+Overview items from different capability modules can share one milestone. Parent/sub-issue hierarchy and milestone assignment never determine story chronology; update native dependencies when story relations change.
 
 ## Create missing execution milestones
 
-Create only the chronological repository milestones derived above.
+Create only the chronological repository milestones derived above for overview-level items; stories remain unmilestoned.
 
 Endpoint:
 
@@ -139,8 +139,8 @@ Required field:
 
 - `title`
 
-For GraphQL milestone assignment after dependency derivation, use the returned milestone node ID as `milestoneId`.
-For REST milestone assignment after dependency derivation, use the returned milestone number as `milestone`.
+For GraphQL overview-item milestone assignment, use the returned milestone node ID as `milestoneId`.
+For REST overview-item milestone assignment, use the returned milestone number as `milestone`.
 
 ## Create a fog issue
 
@@ -299,4 +299,4 @@ mutation AddBlockedBy($issueId: ID!, $blockingIssueId: ID!) {
 
 - GitHub REST issue creation is still acceptable for plain issue creation, but GraphQL is preferred for backlog sync because it can attach Project V2 IDs, parent issues, and dependency relations.
 - Project fields store capability grouping metadata. Issue hierarchy remains the source for epic -> story.
-- Repository milestones store dependency-derived chronology only.
+- Repository milestones store project-overview chronology only; native issue dependencies store story relations.
