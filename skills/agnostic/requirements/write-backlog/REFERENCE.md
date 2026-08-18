@@ -62,7 +62,7 @@ Build and validate the complete intended projection in memory before the first p
 3. Validate every story as an agent-sized tracer bullet.
 4. Resolve every blocker to a projected story.
 5. Reject self-blockers, missing targets, and cycles.
-6. Assign milestones only across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) for project-level chronological precedence. Keep child stories unmilestoned; native blockers explain story relations.
+6. Assign milestones across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) for project-level chronological precedence. When supported, assign each child story the same containing overview milestone; never derive distinct story milestones. Native blockers explain story relations.
 7. Validate provider representation and required native primitives.
 8. Only after every check passes, write immediately without a separate approval stop.
 
@@ -94,7 +94,7 @@ Project overview execution milestones
   (assigned only to overview-level items from fog through epic)
 ```
 
-Capability grouping is independent from chronology. Native blockers are authoritative for story relations. Milestones are a project-overview signal only: assign them to overview-level `fog`, `grilling`, `research`, `prototype`, and `epic` items when chronological precedence is useful; leave stories unmilestoned.
+Capability grouping is independent from chronology. Native blockers are authoritative for story relations. Milestones are a project-overview signal: assign them to overview-level `fog`, `grilling`, `research`, `prototype`, and `epic` items when chronological precedence is useful, and let their containing stories share that milestone when the provider supports membership. Never use milestone values to order stories.
 
 Provider representation is defined in [assets/providers/](assets/providers/). Use actual metadata and native hierarchy/dependency primitives. Do not invent fields, flatten child stories, or replace representable blockers with prose.
 

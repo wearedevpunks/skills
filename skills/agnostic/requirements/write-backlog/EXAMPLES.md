@@ -28,7 +28,7 @@ This is a vertical tracer bullet: one agent can deliver and demonstrate the prod
 
 - `US-002 / Lead manages the unassigned queue` is blocked by `US-001 / Lead restores ownership`.
 - Both targets exist and the graph is acyclic.
-- Both stories remain unmilestoned; the native blocker relation carries their ordering.
+- Both stories share their containing epic's milestone when the provider supports membership; the native blocker relation carries their ordering.
 
 If a blocker target is missing or the graph cycles, write nothing.
 

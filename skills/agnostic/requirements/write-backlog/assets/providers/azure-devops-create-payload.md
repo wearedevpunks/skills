@@ -126,7 +126,7 @@ Render these sections in `System.Description`; do not substitute a mutable local
 
 - fog -> root-level work item with `Custom.DevpunksKind = fog`
 - capability module -> `System.AreaPath`
-- execution milestone -> chronological `System.IterationPath` for overview-level items (`fog` through `epic`), not stories
+- execution milestone -> chronological `System.IterationPath` for overview-level items (`fog` through `epic`), inherited by containing stories when supported
 - grilling -> capability-module-scoped work item with `Custom.DevpunksKind = grilling`
 - research -> capability-module-scoped work item with `Custom.DevpunksKind = research`
 - prototype -> capability-module-scoped work item with `Custom.DevpunksKind = prototype`
@@ -141,13 +141,13 @@ Do not encode execution waves in Area Path. One area can span multiple iteration
 
 ## Chronological execution milestones
 
-Use `/fields/System.IterationPath` for chronological `M1`, `M2`, and later project-overview waves only when the project has matching iteration nodes. Apply it only to `fog`, `grilling`, `research`, `prototype`, and `epic` items. Keep stories unmilestoned; native Predecessor links explain story ordering:
+Use `/fields/System.IterationPath` for chronological `M1`, `M2`, and later project-overview waves only when the project has matching iteration nodes. Apply it to `fog`, `grilling`, `research`, `prototype`, and `epic` items, and let containing stories inherit the same path when supported. Never derive distinct story iterations; native Predecessor links explain story ordering:
 
 1. In memory, resolve the complete selected graph and reject missing targets, self-edges, or cycles.
-2. Keep every projected story without an Iteration Path; use native Predecessor links for story ordering.
+2. Keep one containing overview Iteration Path across each projected story set when supported; use native Predecessor links for story ordering.
 3. Verify every predecessor target is present and that Azure DevOps can represent the complete hierarchy and graph.
 4. Only after preflight passes, create work items, map planned keys to provider ids, and add each blocker with `System.LinkTypes.Dependency-Reverse`.
-5. Create or resolve the verified overview iteration nodes and patch `/fields/System.IterationPath` only on selected overview-level items.
+5. Create or resolve the verified overview iteration nodes and patch `/fields/System.IterationPath` on selected overview-level items, propagating the same path to containing stories when supported.
 
 Capability Area Path, parent/child hierarchy, and current Iteration Path never create dependency edges. Keep story ordering in Predecessor relations; do not use Iteration Path to encode it.
 

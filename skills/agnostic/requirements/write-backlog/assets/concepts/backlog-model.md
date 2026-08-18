@@ -14,7 +14,7 @@ Backlog root
 
 Project overview execution milestones
   M1 -> M2 -> M3 ...
-  (assigned only to overview-level items from fog through epic)
+  (assigned to overview-level items from fog through epic; containing stories may share that value)
 ```
 
 The direct concepts are `fog`, `grilling`, `research`, `prototype`, `epic`, and `story`. Each is visible, assignable, searchable, linkable, and closeable. A provider adapter may represent them with native issue types, fields, labels, columns, or a stable title convention; no shared classification field is required. If no representation preserves the direct concept, preflight fails.
@@ -51,10 +51,10 @@ Before mutation:
 1. Resolve every blocker identifier to a projected story.
 2. Reject missing targets and self-blockers.
 3. Detect and reject cycles across the complete selected graph.
-4. Keep every projected story unmilestoned; native blockers explain story relations.
+4. Keep every story in the containing overview milestone when the provider supports membership; do not derive a distinct milestone for a story.
 5. Verify every blocker target is present in the selected projection.
 
-Use milestones only across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) when the project overview needs chronological precedence. Do not create milestones for stories or use milestone assignment to encode story order; update native blockers when story relations change.
+Use milestones across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) when the project overview needs chronological precedence. Stories may share their containing overview milestone when the provider supports membership, but never receive distinct derived milestones or use milestones to encode story order; update native blockers when story relations change.
 
 ## Mutation boundary
 
