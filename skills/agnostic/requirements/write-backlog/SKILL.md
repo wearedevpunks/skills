@@ -19,10 +19,11 @@ silently renaming them.
 5. For intake, validate the complete intake dependency graph for missing targets, self-edges, and cycles before mutation; then materialize only the Finder-supplied description or question, route, dependencies, and claim state.
 6. For delivery, use `backlog-shaper` only to draft the epic/story projection; keep final judgment in the parent thread.
 7. Classify each item directly as `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
-8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items in a capability module. Keep capability grouping separate from execution milestones.
+8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items in a capability module. Use provider execution milestones only across the overview-level taxonomy from `fog` through `epic` (never `story`) to provide project-level chronological precedence.
 9. Project one capability-boundary epic from the existing `SPEC.md`; derive product-facing stories from its `US-###` and `AC-###` records.
 10. Prove complete `US-###` / `AC-###` traceability and that each story is an agent-sized vertical tracer bullet.
-11. Resolve every blocker target. Reject missing targets, self-blockers, and cycles, then derive chronological milestones from the blocker DAG.
+11. Resolve every blocker target. Reject missing targets, self-blockers, and cycles. Use native blockers for story relations; do not derive or assign milestones between stories.
+   Stories remain unmilestoned; milestones are reserved for overview-level items from `fog` through `epic`.
 12. Use `$show-me` to present the proposed backlog topology before provider
     writes so the human and agent share the same hierarchy and dependency view.
     This presentation checks understanding, not authorization; it adds no
