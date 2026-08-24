@@ -69,8 +69,8 @@ Resume identity:
 
 `Review state` is exactly one of `review_due`, `review_running`,
 `report_retention_pending`, `retained_ref_approval_required`,
-`review_context_blocked`, `review_routed`, `review_complete`, or
-`review_failed`. `Next suggested route` is optional advice represented by
+`review_context_blocked`, `review_routed`, `review_complete`,
+`human_steering_required`, or `review_failed`. `Next suggested route` is optional advice represented by
 `none` when absent and is always lowest authority. `attempt` starts at 1 for a
 run and increases by one for each new stateful record. Persist locators and
 hashes, not reconstructible raw target, source, report, validation, or finding

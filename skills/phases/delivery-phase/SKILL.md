@@ -17,7 +17,7 @@ disable-model-invocation: true
 4. Load exactly one phase file from `phases/`.
 5. Complete that phase and write its outcome. Full delivery re-enters routing immediately; other modes stop at their selected boundary.
 
-Full delivery grants its selected inner steps the authority needed to reach closeout. Progressive loading still exposes one phase at a time.
+Within accepted bounds, full delivery grants its selected inner steps the authority needed to reach closeout. Progressive loading still exposes one phase at a time.
 
 ## Entry Modes
 
@@ -36,6 +36,7 @@ Full delivery grants its selected inner steps the authority needed to reach clos
 - [phases/review.md](phases/review.md): prepare the explicit review handoff or
   classify findings from a retained report.
 - [phases/debug.md](phases/debug.md): investigate runtime-evidence failures.
+- [phases/handback.md](phases/handback.md): return a scope or authority boundary for human steering.
 - [phases/docs-ingest.md](phases/docs-ingest.md): ingest docs-affecting changes or record a no-op.
 - [phases/closeout.md](phases/closeout.md): finish tracker, PR, validation, and final report state.
 
@@ -52,9 +53,12 @@ Full delivery grants its selected inner steps the authority needed to reach clos
 - After a phase completes, write enough state for future resume. Review-triggered
   repair uses the idempotent fields in
   [references/phase-handoff.md](references/phase-handoff.md).
+- Boundary evidence selects [handback.md](phases/handback.md). Persistence
+  remains autonomous only inside accepted bounds.
 
 ## Stop Conditions
 
 - User explicitly requested a HITL checkpoint or one-phase mode and its resumable state was written.
 - Router reaches closeout and final evidence is reported.
 - Scope is ambiguous, stale, contradictory, or blocked by missing access.
+- `human_steering_required` is durable while the `$handback` authority guard fails.

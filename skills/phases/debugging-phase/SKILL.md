@@ -17,7 +17,7 @@ description: >-
 - **Delivery-internal inputs:** `implement-spec` validation failure or `review-phase` runtime failure
 - **Wraps:** `$verify-behavior`, `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review
 - **Owns:** evidence matrices, cited log references, hypothesis status, fix verification
-- **Exit conditions:** bug fixed, concrete blocker proven, or scope proven to require a spec/delivery goal
+- **Exit conditions:** bug fixed, concrete blocker proven, or `human_steering_required`
 
 ## Use When
 
@@ -30,7 +30,7 @@ description: >-
 
 - The work is pure planning, requirements discovery, or design.
 - The failure is already proven and only needs implementation inside an active spec plan.
-- The fix would require broad product scope, architecture, or acceptance changes; exit to `create-spec`, `create-plan`, or a delivery goal instead.
+- The next action triggers `$handback`; return human steering instead.
 - The request is only static code review with no runtime symptom.
 
 ## Workflow
@@ -42,7 +42,7 @@ description: >-
 2. **Set bounds.**
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.
-   - If the evidence points outside that scope, record debt or open a separate debugging/debt goal.
+   - When the next action triggers `$handback`, invoke it and stop.
 3. **Reproduce visible behavior.**
    - Before forming hypotheses or starting fix work, run `$verify-behavior` in
      `reproduce` mode when the reported behavior is visibly exercisable.
@@ -71,7 +71,7 @@ description: >-
 8. **Exit.**
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
-   - Out of scope: report why this needs a spec/delivery goal or debt issue.
+   - Human steering: return the durable `$handback` outcome and stop.
 
 ## Parallel Rules
 
@@ -83,6 +83,7 @@ description: >-
 - Never let parallel workers make speculative fixes against unproven hypotheses.
 - Merge worker findings into one evidence matrix before deciding on a patch.
 - In delivery-internal mode, parallel workers must stay inside the delivery scope unless assigned readonly investigation.
+- A `$handback` trigger ends fix delegation.
 
 ## Output Contract
 
@@ -94,4 +95,4 @@ Return a concise debugging report with:
 - **Root cause:** confirmed cause or why none is proven
 - **Changes:** bounded patch summary, or none if blocked/out of scope
 - **Verification:** commands/scenarios rerun and result
-- **Exit:** fixed, blocked, or escalated to spec/delivery/debt
+- **Exit:** fixed, blocked, or `human_steering_required`

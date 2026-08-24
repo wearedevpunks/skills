@@ -187,6 +187,7 @@ const LENS_KEYS = [
 ];
 const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 const FINDING_ROUTES = [
+  "human_steering_required",
   "debugging",
   "implementation",
   "debt_follow_up",
@@ -571,6 +572,7 @@ const validateReportSemantics = (report, errors) => {
   if (
     !exactKeys(report.routing, ["primary", "secondary_architecture_follow_up"]) ||
     ![
+      "human_steering_required",
       "debugging",
       "implementation",
       "debt_follow_up",

@@ -43,18 +43,19 @@ output.
 
 | Priority | Current evidence | Output |
 | --- | --- | --- |
-| 1 | Unsupported target, invalid accepted bounds, non-retryable contract or infrastructure failure, malformed active retention candidate, or `same_run_conflict` | terminal `review_failed` |
-| 2 | Delivery entry is otherwise valid, recovered `review_count >= 3`, and no already-started run has valid predecessor evidence | terminal `review_budget_exhausted` |
-| 3 | A repository-approved retained ref is required but cannot be derived and requires an operator decision | checkpoint `retained_ref_approval_required` |
-| 4 | Same-authority admissible evidence conflicts and no declared tie-break resolves it | blocked `review_state_conflict` |
-| 5 | Required explicit invocation context, accepted bounds, target evidence, or reconstructible lineage inputs are missing | blocked `review_context_blocked` |
-| 6 | The caller is in delivery-owned `debug_active`, `repair_active`, `debt_follow_up`, `docs_ingest`, `closeout`, `focused_validation`, or `clean_handoff` without fresh `review_due` evidence | blocked `review_not_due` |
-| 7 | A valid retained standalone report and durable returned routing output exist | terminal `review_complete` |
-| 8 | A valid retained delivery report and durable returned routing output exist | terminal `review_routed` |
-| 9 | Retention is verified and fresh, but its returned routing output is absent | [`return-route.md`](return-route.md) |
-| 10 | A complete fresh local report exists without unique verified retention, including a retryable retention failure | [`retain-report.md`](retain-report.md) |
-| 11 | Fresh `review_running` predecessor evidence exists without a complete local report | [`run-review.md`](run-review.md) |
-| 12 | Fresh `review_due` evidence exists, or mutation, partial-run, retryable failure, or stale target/source evidence invalidated later work | [`prepare-review.md`](prepare-review.md) |
+| 1 | Durable `human_steering_required` while the `$handback` authority guard fails | terminal `human_steering_required` |
+| 2 | Unsupported target, invalid accepted bounds, non-retryable contract or infrastructure failure, malformed active retention candidate, or `same_run_conflict` | terminal `review_failed` |
+| 3 | Delivery entry is otherwise valid, recovered `review_count >= 3`, and no already-started run has valid predecessor evidence | terminal `review_budget_exhausted` |
+| 4 | A repository-approved retained ref is required but cannot be derived and requires an operator decision | checkpoint `retained_ref_approval_required` |
+| 5 | Same-authority admissible evidence conflicts and no declared tie-break resolves it | blocked `review_state_conflict` |
+| 6 | Required explicit invocation context, accepted bounds, target evidence, or reconstructible lineage inputs are missing | blocked `review_context_blocked` |
+| 7 | The caller is in delivery-owned `debug_active`, `repair_active`, `debt_follow_up`, `docs_ingest`, `closeout`, `focused_validation`, or `clean_handoff` without fresh `review_due` evidence | blocked `review_not_due` |
+| 8 | A valid retained standalone report and durable returned routing output exist | terminal `review_complete` |
+| 9 | A valid retained delivery report and durable returned routing output exist | terminal `review_routed` |
+| 10 | Retention is verified and fresh, but its returned routing output is absent | [`return-route.md`](return-route.md) |
+| 11 | A complete fresh local report exists without unique verified retention, including a retryable retention failure | [`retain-report.md`](retain-report.md) |
+| 12 | Fresh `review_running` predecessor evidence exists without a complete local report | [`run-review.md`](run-review.md) |
+| 13 | Fresh `review_due` evidence exists, or mutation, partial-run, retryable failure, or stale target/source evidence invalidated later work | [`prepare-review.md`](prepare-review.md) |
 
 ## State Coverage
 
@@ -67,7 +68,8 @@ output.
 - `review_routed` selects `return-route.md` until durable return evidence exists,
   then terminates as `review_complete` for standalone or `review_routed` for
   delivery.
-- `review_failed` and `review_budget_exhausted` are terminal router outcomes.
+- `human_steering_required`, `review_failed`, and `review_budget_exhausted` are
+  terminal router outcomes.
 - Review-owned mutation or retryable partial-run evidence projects back to
   `review_due`; retryable fresh retention evidence remains
   `report_retention_pending`.

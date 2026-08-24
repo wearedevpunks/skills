@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Graph-Based Skills"
+  short_description: "Write resumable graph-based skills"
+  default_prompt: "Use $write-graph-based-skills to write a resumable graph-based skill with evidence-derived routing, actor-like gate boundaries, and durable handoffs."

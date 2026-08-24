@@ -266,11 +266,12 @@ test("review router exposes every runtime route class in deterministic precedenc
 
   assert.deepEqual(
     rows.map(({ priority }) => priority),
-    Array.from({ length: 12 }, (_, index) => index + 1),
+    Array.from({ length: 13 }, (_, index) => index + 1),
   );
   assert.deepEqual(
     rows.map(({ output }) => output),
     [
+      "terminal `human_steering_required`",
       "terminal `review_failed`",
       "terminal `review_budget_exhausted`",
       "checkpoint `retained_ref_approval_required`",
@@ -285,9 +286,10 @@ test("review router exposes every runtime route class in deterministic precedenc
       "`prepare-review.md`",
     ],
   );
-  assert.match(rows[0].evidence, /Unsupported target/iu);
-  assert.match(rows[8].evidence, /routing output is absent/iu);
-  assert.match(rows[11].evidence, /stale target\/source evidence/iu);
+  assert.match(rows[0].evidence, /human_steering_required/iu);
+  assert.match(rows[1].evidence, /Unsupported target/iu);
+  assert.match(rows[9].evidence, /routing output is absent/iu);
+  assert.match(rows[12].evidence, /stale target\/source evidence/iu);
 });
 
 test("runtime handoff covers both storage modes and authoritative no-write outcomes", () => {
@@ -368,9 +370,11 @@ test("bounds and target validation precede delivery budget evaluation", () => {
   );
 });
 
-test("autoreview keeps ordinary closeout behavior and one bounded review-phase call", () => {
+test("autoreview is nonrecursive outside review-phase and bounded inside it", () => {
   const autoreview = read("skills/agnostic/quality/autoreview/SKILL.md");
-  assert.match(autoreview, /Outside `review-phase`.{0,100}keep going until structured review returns no\s+accepted\/actionable findings/isu);
+  assert.match(autoreview, /Outside `review-phase`.{0,100}structured review helper exactly once/isu);
+  assert.match(autoreview, /End this invocation without rerunning the\s+helper/iu);
+  assert.match(autoreview, /further direct pass requires formal `\$review-phase` or a new\s+explicit user instruction after this result/iu);
   assert.match(autoreview, /When `review-phase` supplies a frozen normalized target.{0,160}exactly\s+once as advisory candidate generation/isu);
   assert.match(autoreview, /Do not repair findings or rerun the helper in this bounded\s+call/iu);
 });
@@ -989,6 +993,16 @@ test("finding routes centrally derive aggregate routing", () => {
     primary: "debt_follow_up",
     secondary_architecture_follow_up: false,
   });
+  assert.deepEqual(
+    deriveReviewRouting([
+      finding("implementation"),
+      finding("human_steering_required"),
+    ]),
+    {
+      primary: "human_steering_required",
+      secondary_architecture_follow_up: false,
+    },
+  );
   assert.deepEqual(
     deriveReviewRouting([
       finding("debt_follow_up"),

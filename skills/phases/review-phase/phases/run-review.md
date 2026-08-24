@@ -51,8 +51,9 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 6. Parent-verify every advisory and lens candidate against the frozen target and
    adjacent evidence. Only verified candidates become findings. Give each
    accepted finding a stable identifier, lens, severity, location, impact,
-   evidence, action, and one explicit `return_route`: `debugging`,
-   `implementation`, `debt_follow_up`, or `docs_ingest`.
+   evidence, action, and one explicit `return_route`: `human_steering_required`,
+   `debugging`, `implementation`, `debt_follow_up`, or `docs_ingest`. Use
+   `human_steering_required` when the repair triggers `$handback`.
 7. Run only the smallest safe readonly validation needed to verify candidates or
    governing acceptance evidence. Broader checks require explicit accepted spec
    or plan authority. Record missing required RED/GREEN evidence as a finding;
