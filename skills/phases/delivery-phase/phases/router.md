@@ -13,51 +13,54 @@ state take precedence over inferred artifact order.
 
 ## Route
 
-1. Stop on unclear goal bounds and ask one concrete question.
-2. For durable `review_due`, load [review.md](review.md). It first validates
+1. For durable `human_steering_required`, stop until the `$handback` authority
+   guard passes.
+2. When current evidence triggers `$handback`, load [handback.md](handback.md).
+3. Stop on unclear goal bounds and ask one concrete question.
+4. For durable `review_due`, load [review.md](review.md). It first validates
    accepted bounds and normalizes a supported target. A rejection enters
    `review_failed` even when a persisted counter is 3. Only after those checks
    may it recover `review_count` and evaluate the budget in memory. Exhaustion
    returns `review_budget_exhausted` with zero handoff or status writes. A count
    below 3 persists `review_due`. Full delivery activates `$review-phase` with
    that context; other modes return the exact explicit invocation context and stop.
-3. For `report_retention_pending`, load [review.md](review.md) to resume
+5. For `report_retention_pending`, load [review.md](review.md) to resume
    `$review-phase` in full delivery or return its exact resume context in other
    modes. A fresh local report resumes without rerunning lenses. Stop on terminal
    `review_failed` with its exact evidence.
-4. Otherwise recover review state by `review_lineage_id`: read the highest valid
+6. Otherwise recover review state by `review_lineage_id`: read the highest valid
    retained ordinal, reconcile the handoff `review_count` projection, then assess
    target and source freshness separately.
-5. Route a fresh retained `review_routed` report through [review.md](review.md)
+7. Route a fresh retained `review_routed` report through [review.md](review.md)
    when no durable route handoff exists yet.
-6. Resume an atomic handoff already in `debug_active` through [debug.md](debug.md)
+8. Resume an atomic handoff already in `debug_active` through [debug.md](debug.md)
    or `repair_active` through [implement.md](implement.md). A recorded
    `review_run_id` cannot increment `repair_count` again.
-7. Resume `debt_follow_up` through [review.md](review.md). Its handler reuses or
+9. Resume `debt_follow_up` through [review.md](review.md). Its handler reuses or
    records the goal/spec-linked debt artifact, then follows durable
    `post_debt_route`: `debugging` or `implementation` for secondary debt;
    `docs_ingest` or `closeout` for primary debt. It never implements the debt.
-8. Route `focused_validation` to its recorded implementation or debugging owner.
+10. Route `focused_validation` to its recorded implementation or debugging owner.
    Passing becomes `clean_handoff`; failure remains repair epoch 3.
-9. Route `clean_handoff` to [docs-ingest.md](docs-ingest.md) when docs remain,
+11. Route `clean_handoff` to [docs-ingest.md](docs-ingest.md) when docs remain,
    otherwise [closeout.md](closeout.md).
-10. For durable `docs_ingest`, load [docs-ingest.md](docs-ingest.md).
-11. For durable `closeout`, load [closeout.md](closeout.md).
-12. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
+12. For durable `docs_ingest`, load [docs-ingest.md](docs-ingest.md).
+13. For durable `closeout`, load [closeout.md](closeout.md).
+14. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
    incomplete, or its remote retention or stable blob URL is missing or
    unverified, load [spec.md](spec.md).
-13. If the verified post-spec backlog projection is missing or stale, load
+15. If the verified post-spec backlog projection is missing or stale, load
    [backlog.md](backlog.md).
-14. If no execution-ready matching plan exists, or it lacks dependencies, owned
+16. If no execution-ready matching plan exists, or it lacks dependencies, owned
    paths, validation gates, or wave boundaries, load [plan.md](plan.md).
-15. If accepted plan work is incomplete, load [implement.md](implement.md).
-16. If implementation exists and its retained review is missing or stale, load
+17. If accepted plan work is incomplete, load [implement.md](implement.md).
+18. If implementation exists and its retained review is missing or stale, load
     [review.md](review.md). That phase validates accepted bounds and normalizes a
     supported target before any delivery-budget evaluation, then returns either
     `review_failed`, `review_budget_exhausted`, or a valid `$review-phase`
     context. Full delivery consumes that context immediately; other modes
     return the exact explicit invocation context and stop.
-17. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
+19. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
     otherwise [closeout.md](closeout.md).
 
 Only an explicitly new delivery goal with materially changed accepted bounds
@@ -70,6 +73,9 @@ A HITL checkpoint exists only when the user explicitly requests it. Full
 delivery otherwise continues across ordinary in-bounds operations without
 confirmation. Earlier phases may have completed through direct skills; reuse
 fresh matching artifacts rather than rerunning them.
+
+`human_steering_required` is a terminal boundary, not an optional HITL
+checkpoint.
 
 ## Output
 

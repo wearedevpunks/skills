@@ -6,7 +6,7 @@ Each phase leaves enough durable state for resume without guessing.
 
 ```text
 Phase:
-Status: complete | blocked | skipped
+Status: complete | blocked | skipped | human_steering_required
 Scope:
 Artifacts:
 Validation:
@@ -30,7 +30,7 @@ accepted_bounds_identity:
 accepted_bounds_hash:
 review_lineage_id:
 review_run_id:
-state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff
+state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff | human_steering_required
 primary_route:
 secondary_architecture_follow_up:
 post_debt_route:
@@ -93,3 +93,7 @@ other modes return the context for explicit retry without rerunning lenses.
 
 After fix 3, `clean_handoff` is final authority. Link immutable review 3, final
 changes, the same passing focused validation, and clean status.
+
+For `human_steering_required`, store the complete `$handback` outcome under
+`Blockers`. Keep the state terminal until the `$handback` authority guard
+passes.

@@ -78,16 +78,18 @@ as null or not applicable.
 exactly the fields `id`, `lens`, `severity`, `location`, `impact`, `evidence`,
 `action`, and `return_route`. Finding IDs are unique, severity is `critical`,
 `high`, `medium`, or `low`, and each lens outcome agrees with whether that lens
-has a finding. Each finding's `return_route` is exactly `debugging`,
-`implementation`, `debt_follow_up`, or `docs_ingest`.
+has a finding. Each finding's `return_route` is exactly
+`human_steering_required`, `debugging`, `implementation`, `debt_follow_up`, or
+`docs_ingest`.
 
 `routing` has exactly `primary` and `secondary_architecture_follow_up`.
-`primary` is `debugging`, `implementation`, `debt_follow_up`, `docs_ingest`, or
-`closeout`; the secondary flag is boolean. Aggregate routing is derived by the
-public `deriveReviewRouting` helper from the complete finding set. Precedence is
-`debugging` > `implementation` > `debt_follow_up` > `docs_ingest`; an empty set
-derives `closeout`, and debt is secondary only beside debugging or
-implementation. A supplied aggregate mismatch is invalid. `validation` is an
+`primary` is `human_steering_required`, `debugging`, `implementation`,
+`debt_follow_up`, `docs_ingest`, or `closeout`; the secondary flag is boolean.
+Aggregate routing is derived by the public `deriveReviewRouting` helper from
+the complete finding set. Precedence is
+`human_steering_required` > `debugging` > `implementation` > `debt_follow_up`
+> `docs_ingest`; an empty set derives `closeout`, and debt is secondary only
+beside debugging or implementation. A supplied aggregate mismatch is invalid. `validation` is an
 array of records with exactly command, isolation mode, before/after frozen
 hashes, outcome, and evidence. Isolation is proven no-write, disposable
 checkout, or disposable snapshot. Retained validation records require equal

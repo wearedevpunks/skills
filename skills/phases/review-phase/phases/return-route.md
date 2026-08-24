@@ -33,27 +33,30 @@ debug, debt, documentation, or closeout work.
    immutable authority block inside those retained bytes.
 2. Pass the complete retained finding set to the public `deriveReviewRouting`
    helper. Each non-empty finding already carries one validated `return_route`.
-   The helper applies `debugging` > `implementation` > `debt_follow_up` >
-   `docs_ingest`; an empty set returns `closeout`.
+   The helper applies `human_steering_required` > `debugging` >
+   `implementation` > `debt_follow_up` > `docs_ingest`; an empty set returns
+   `closeout`.
 3. Accept `secondary_architecture_follow_up` only when a `debt_follow_up`
    finding accompanies a higher-priority debugging or implementation route.
 4. Require the derived result to equal the retained report's `routing` object.
    A mismatch is invalid retained routing evidence and routes to
    `review_failed`.
-5. Write returned routing evidence containing the immutable report identity,
-   stable finding IDs, primary route, optional architecture follow-up, and
-   validation summary. Delivery returns `review_routed`; standalone returns
+5. If the primary route is `human_steering_required`, invoke `$handback`, write
+   its durable outcome, and stop.
+6. Otherwise write returned routing evidence containing the immutable report
+   identity, stable finding IDs, primary route, optional architecture follow-up,
+   and validation summary. Delivery returns `review_routed`; standalone returns
    `review_complete`.
 
 ## Invariants
 
 - Findings and routing come strictly from the retained report. Current delivery
   state, caller preference, and later unreviewed changes cannot rerank them.
-- Runtime outranks implementation, which outranks debt, which outranks
-  documentation or closeout.
+- Human steering outranks runtime, implementation, debt, documentation, and
+  closeout.
 - The retained report and reviewed target remain readonly.
-- This gate writes routing evidence only. Delivery owns any later route
-  mutation and every repair counter or active repair state.
+- This gate writes routing or `$handback` evidence only. Delivery owns any later
+  route mutation and every repair counter or active repair state.
 - One return does not invoke review again, run validation again, create review
   4, or enter repair.
 
@@ -71,6 +74,8 @@ debug, debt, documentation, or closeout work.
   explicit delivery resume.
 - `review_complete`: standalone routing evidence is durable and review is
   complete.
+- `human_steering_required`: the `$handback` outcome is durable and expanded
+  repair awaits that skill's authority guard.
 - `report_retention_pending`: retained containment or blob evidence became
   temporarily unverifiable; retry retention without rerunning lenses.
 - `review_due`: target, bounds, or governing sources are no longer fresh for

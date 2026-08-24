@@ -14,8 +14,8 @@ Load `debugging-phase` only after this phase is selected.
   trace, reproduction, or review finding.
 - Readonly parallel hypothesis research is allowed.
 - Speculative parallel fixes are not allowed.
-- If the bug is broader than delivery scope, capture debt or open a separate
-  debugging goal.
+- When current evidence triggers `$handback`, return it to the router without
+  opening another goal.
 - Preserve review lineage, `review_count`, `repair_count`, and the opening
   `review_run_id` through the repair.
 - After an ordinary fix with `review_count < 3`, stale the preceding report and

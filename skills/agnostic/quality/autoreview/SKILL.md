@@ -22,9 +22,12 @@ Use when:
 - Read dependency docs/source/types when the finding depends on external behavior.
 - Reject unrealistic edge cases, speculative risks, broad rewrites, and fixes that over-complicate the codebase.
 - Prefer small fixes at the right ownership boundary; no refactor unless it clearly improves the bug class.
-- Outside `review-phase`, keep going until structured review returns no
-  accepted/actionable findings. If a review-triggered fix changes code, rerun
-  focused tests and the structured review helper.
+- Outside `review-phase`, run the structured review helper exactly once. Verify
+  candidates, fix only accepted findings inside the accepted goal, and run
+  focused tests for changed code. End this invocation without rerunning the
+  helper. A further direct pass requires formal `$review-phase` or a new
+  explicit user instruction after this result.
+- When a finding triggers `$handback`, invoke it before any expanded repair.
 - For security-audit suppression changes, verify accepted findings remain auditable: suppressed findings stay in structured output, active output keeps an unsuppressible suppression notice, and aggregate findings cannot hide unrelated active risk.
 - Never switch or override the requested review engine/model. If the review hits model capacity, retry the same command a few times with the same engine/model.
 - Be patient with large bundles. Structured review can take up to 30 minutes while the model call is active, especially with Codex tools or web search.
@@ -109,7 +112,9 @@ Format first if formatting can change line locations. Then it is OK to run tests
 scripts/autoreview --parallel-tests "<focused test command>"
 ```
 
-Tradeoff: tests may force code changes that stale the review. If tests or review lead to code edits, rerun the affected tests and rerun review until no accepted/actionable findings remain. Once that rerun exits cleanly, stop; do not spend another long review cycle on redundant confirmation.
+Tradeoff: tests may force code changes that stale the review. If tests or review
+lead to code edits, rerun the affected tests, then apply the direct-call
+contract above.
 
 ## Review Panels
 
