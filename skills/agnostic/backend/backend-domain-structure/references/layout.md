@@ -78,7 +78,7 @@ Common local folders:
 - `services/`
 - `tests/`
 - `errors.ts`
-- `layer.ts`, `container.ts`, `module.ts`, or equivalent composition file
+- `container.ts`, `module.ts`, or the framework's equivalent composition file
 - `router.ts`, `controller.ts`, or equivalent transport adapter when the feature exposes endpoints
 
 Feature domains own use cases, policy, persistence contracts, and public behavior.
@@ -166,6 +166,19 @@ Composition roots own container wiring.
 - Keep domain models, events, actions, policies, and repository contracts free of container lookups.
 - Treat lazy imports as a smell when they avoid a cycle instead of fixing import direction.
 - Keep test wiring in test support or feature composition helpers, not inside production domain logic.
+
+### Recursive composition ownership
+
+A composition boundary belongs to the nearest honest parent that owns the coordination. Apply this rule recursively at every depth of a domain tree.
+
+- A leaf feature or module assembles only the capability it owns.
+- The nearest common parent feature composes its public child capabilities and owns product policy spanning them. Those children are siblings to one another.
+- The process composition root closes the application graph and selects runtime or external adapters across otherwise independent public contracts.
+- Parent composition imports public child entrypoints. Each child retains ownership of its internals.
+
+Classify coordination by meaning. Ordering, authorization, state transitions, and choices that change product behavior are parent-feature policy. Selecting an adapter, constructing a runtime, or binding independent public contracts is pure technical binding at the process root.
+
+**Complete when:** every boundary is classified exactly once as leaf/module capability assembly, nearest-common-parent business composition, or process-root technical binding.
 
 ## Public Boundaries
 

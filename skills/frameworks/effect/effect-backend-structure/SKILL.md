@@ -24,14 +24,21 @@ This skill adds Effect-specific backend topology, action ownership, source looku
 
 ## Workflow
 
-1. Identify the backend root from the current repo; do not assume a monorepo path.
-2. Read the nearest relevant `AGENTS.md` files.
-3. Read `$backend-domain-structure`, `$effect`, `$effect-service-design` when services or Layers are in scope, and `references/layout.md`.
-4. Run the relevant `effect-solutions` guides before coding.
-5. Check local `opensrc` Effect sources when docs are vague or an API surface is unfamiliar.
-6. Place code using the agnostic backend layers plus the Effect rules below.
-7. Keep transport thin and run business logic through Effects.
-8. Add or update colocated `@effect/vitest` tests for unit and integration coverage.
+1. Identify the backend root, read its nearest `AGENTS.md` files, `$backend-domain-structure`, `$effect`, this skill's layout reference, and `$effect-service-design` when services or Layers are in scope.
+
+   **Complete when:** the backend root and every governing instruction or reference used for the change are named.
+
+2. Run the smallest relevant `effect-solutions` guides, then inspect local `opensrc` Effect sources for unfamiliar or ambiguous APIs.
+
+   **Complete when:** every Effect API decision in scope is supported by a relevant guide or the current source.
+
+3. Classify each Layer exactly once as leaf/module capability implementation, nearest-common-parent business composition, or process production root. Keep transport thin and preserve dependency requirements until their truthful owner supplies them.
+
+   **Complete when:** every Layer in scope has exactly one owner and its public outputs and remaining requirements match that boundary.
+
+4. Add or update colocated `@effect/vitest` tests for the changed unit or integration boundary.
+
+   **Complete when:** focused tests validate the resulting public boundary and the repository's required checks pass or each failure is reported.
 
 ## Required Source Lookup
 
@@ -57,6 +64,8 @@ For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/re
 - Use `Config.*` instead of reading `process.env` inside Effect code.
 - Prefer `catchTag` / `catchTags`, not `catchAll`.
 - Avoid `any`.
+
+Read `references/layout.md` for the mutually exclusive Layer ownership classifier, composition terminology, and v4 operator rules.
 
 ## Testing Rules
 
