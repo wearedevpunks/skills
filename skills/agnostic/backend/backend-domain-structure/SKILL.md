@@ -16,7 +16,7 @@ routed `requirements-grill` status artifact. Preserve its canonical terms;
 route proposed terminology changes through `requirements-grill` instead of
 silently renaming them.
 
-Read `references/layout.md` before structure decisions or large refactors.
+Read `references/layout.md` before structure decisions or large refactors. It owns the recursive composition classifier and placement rules.
 
 ## Quick Classifier
 
@@ -65,3 +65,5 @@ Default to explicit use-case actions.
 - Keep dependencies flowing: transport/composition -> features -> integrations/infrastructure -> external systems.
 - Keep tests near the feature or module that owns the behavior.
 - Validate module import direction, import cycles, stale symbols after moves, architecture tests when available, and focused compile/type checks.
+
+**Complete when:** every file and composition boundary has one owner under the layout classifier and all applicable validation passes or each failure is reported.
