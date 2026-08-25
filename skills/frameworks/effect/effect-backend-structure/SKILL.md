@@ -3,8 +3,9 @@ name: effect-backend-structure
 description: |
   Apply Effect-specific backend structure on top of backend-domain-structure.
   Use when creating or changing Effect actions, repositories, transport adapters,
-  DB integrations, test placement, or backend boilerplate in any Effect backend
-  root. Enforces actions-own-orchestration, integration dependency direction,
+  DB integrations, test placement, backend boilerplate, or Layer composition
+  ownership in any Effect backend root. Enforces actions-own-orchestration,
+  integration dependency direction, three-level Layer composition operators,
   effect-solutions plus opensrc source lookup, and @effect/vitest conventions.
 compatibility: Requires Effect v4. Examples are reviewed against the version documented in this repository.
 ---
