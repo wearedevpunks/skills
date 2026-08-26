@@ -8,18 +8,22 @@ result. Callers do not select provider primitives or perform writes.
 Required input:
 
 - operation: initialize/reconstruct, Fog or pre-resolution grilling-child
-  ensure, Business projection, Functional projection, Technical projection,
-  Normalization, delivery status, or issue reconciliation
+  ensure, Research/Prototype support-child ensure, Business projection,
+  Functional projection, Technical projection, Normalization, delivery status,
+  or issue reconciliation
 - durable wiki identity for every intended object and stable provider identity
   for every known object
-- immutable accepted evidence that authorizes the selected operation
+- immutable accepted evidence that authorizes a projection, Normalization, or
+  delivery-status operation; Fog, grilling-shell, and support-child intake use
+  exact parent identity, kind, durable wiki identity, and cardinality instead
 - proposed semantic delta, source wording, source links, and expected current
   provider state
 - exact `V*` milestone for each Story and any explicit Fog target iteration
 - structural approval record when the delta crosses an approval boundary
 
-Missing evidence or conflicting authority returns every gap with zero provider
-mutations.
+Missing operation-specific authority or conflicting authority returns every gap
+with zero provider mutations. Intake requires no accepted evidence: it creates
+or resumes the unresolved shell that will later carry that evidence.
 
 ## Topology
 

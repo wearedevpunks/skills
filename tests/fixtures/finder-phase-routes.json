@@ -118,8 +118,8 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ]
     },
     "expectedRoute": "return-target"
@@ -135,7 +135,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ]
     },
     "expectedRoute": "functional-grilling"
@@ -167,7 +167,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -187,7 +187,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -208,12 +208,12 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back" }
+        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-a", "story": "story-a", "milestone": "v1", "blockedBy": [], "readback": "exact" }] }
       ]
     },
     "expectedRoute": "technical-grilling"
@@ -229,13 +229,13 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back" },
-        { "story": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 2, "projection": "read-back" }
+        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-a", "story": "story-a", "milestone": "v1", "blockedBy": [], "readback": "exact" }] },
+        { "story": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 2, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-b1", "story": "story-b", "milestone": "v1", "blockedBy": ["task-a"], "readback": "exact" }, { "id": "task-b2", "story": "story-b", "milestone": "v1", "blockedBy": ["task-b1"], "readback": "exact" }] }
       ]
     },
     "expectedRoute": "return-target"
@@ -251,8 +251,8 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
@@ -272,7 +272,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -292,7 +292,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -312,7 +312,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -332,7 +332,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -382,7 +382,7 @@
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
+        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "technical": "accepted",
       "technicalProjection": "read-back"

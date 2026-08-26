@@ -53,6 +53,7 @@ const technicalState = (technicalChildren) => ({
   functionalChildren: [
     {
       storyIntent: "intent-a",
+      projectedStory: "story-a",
       identity: "exact",
       status: "accepted",
       scope: "in-scope",
@@ -61,6 +62,7 @@ const technicalState = (technicalChildren) => ({
     },
     {
       storyIntent: "intent-b",
+      projectedStory: "story-b",
       identity: "exact",
       status: "accepted",
       scope: "in-scope",
@@ -82,6 +84,20 @@ const acceptedTechnicalChild = (story, projection = "read-back") => ({
   stableBlob: "verified",
   taskIntentCount: 1,
   projection,
+  ...(projection === "read-back"
+    ? {
+        taskGraphReadback: "exact",
+        projectedTasks: [
+          {
+            id: `${story}/task-a`,
+            story,
+            milestone: "v1",
+            blockedBy: [],
+            readback: "exact",
+          },
+        ],
+      }
+    : {}),
 });
 
 test("Finder reconciles one accepted Technical Story before selecting the next", () => {

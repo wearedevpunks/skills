@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -68,9 +68,14 @@ test("planning resolves its technical-projection authority pointer", () => {
   );
 
   assert.ok(pointer, "technical-projection pointer is present");
+  assert.equal(pointer[1], "../../write-backlog/references/technical-projection.md");
   assert.ok(
-    existsSync(resolve(dirname(backlogSyncPath), pointer[1])),
-    `technical-projection pointer resolves: ${pointer[1]}`,
+    existsSync(
+      resolve(
+        repositoryRoot,
+        "skills/agnostic/requirements/write-backlog/references/technical-projection.md",
+      ),
+    ),
   );
 });
 

@@ -27,9 +27,15 @@ silently renaming them.
 6. Activate `write-backlog`'s backlog-initialization branch to reconcile the
    Product/Backlog Root, Product Areas, Initiatives, `V*` context, and saved
    views from accepted wiki and provider evidence.
-7. Leave feature work to explicit human invocation of Business, Functional, or
-   Technical Finder. Onboarding does not invoke a Finder implicitly. Their
-   staged flow owns Epic, Story, specification, and provider Task projection.
+7. For every candidate existing flow accepted by the onboarding grill, invoke
+   `create-spec` and record its readiness result. Project an agent-ready spec
+   with `write-backlog` only when the reconstructed evidence already supplies
+   the exact existing Epic/Story and accepted projection authority required by
+   that branch. Otherwise record the missing authority and exact human Finder
+   invocation; retain the compiled spec without provider mutation.
+8. Leave new feature work to explicit human invocation of Business,
+   Functional, or Technical Finder. Onboarding never invokes a Finder
+   implicitly.
 
 For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).
 

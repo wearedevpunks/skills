@@ -37,15 +37,22 @@ Follow [references/parallel.md](references/parallel.md) as the execution contrac
 The parent owns wave orchestration and shared artifacts. Scoped workers own
 implementation tasks.
 
-## Provider Task state
+## Task identity state
 
-Each `Tn` aliases one stable provider Task identity from the plan. Immediately
-activate `write-backlog` through its
-[delivery-status.md](../../requirements/write-backlog/references/delivery-status.md)
-branch for a directly observed work start, blocker, pull request, merge,
-staging deployment, or production deployment. Require exact readback before
-advancing that Task. Preserve the stable provider Task identity unchanged;
-provider mechanics remain inside `write-backlog`.
+Read the plan's uniform `task_identity_mode` before execution.
+
+- `provider-task`: each `Tn` aliases one stable provider Task. Immediately
+  activate `write-backlog` through its
+  [delivery-status.md](../write-backlog/references/delivery-status.md) branch for
+  a directly observed work start, blocker, pull request, merge, staging
+  deployment, or production deployment. Require exact readback before
+  advancing that Task and preserve its identity unchanged.
+- `planning-only`: each `Tn` is the execution identity. Keep
+  `backlog_item_id` and `backlog_item_url` as `not_applicable`, preserve
+  `relation_mode: unprojected` and the skip reason, and advance from plan
+  dependencies and validation. Emit no provider Task status or readback claim.
+
+Provider mechanics remain inside `write-backlog`.
 
 ## Quick start
 

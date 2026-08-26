@@ -14,12 +14,17 @@ silently renaming them.
 
 ## Rules
 
-- Each `Tn` preserves one stable provider Task identity, the same `V*`, and its
-  native blocker edges.
-- Immediately route each directly observed work start, blocker, pull request,
-  merge, staging deployment, or production deployment through `write-backlog`'s
-  [delivery-status.md](../../../agnostic/requirements/write-backlog/references/delivery-status.md)
-  branch. Require exact readback before advancing the Task.
+- Read the plan's uniform `task_identity_mode`. Provider-task work preserves
+  one stable provider Task identity per `Tn`, the same `V*`, and native blocker
+  edges. Planning-only work preserves `Tn` as the execution identity,
+  `not_applicable` identity slots, `unprojected` relations, and its sync-skip
+  reason.
+- For provider-task work, immediately route each directly observed work start,
+  blocker, pull request, merge, staging deployment, or production deployment
+  through `write-backlog`'s
+  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch.
+  Require exact readback before advancing the Task. Planning-only work emits no
+  provider lifecycle mutation or readback claim.
 - Merge is never deployment evidence. Merge, staging, and production remain
   distinct directly observed facts. Complete a Fog only when production
   evidence covers every accepted resulting Story and Task.
@@ -52,7 +57,8 @@ Write or verify:
 - validation commands and results
 - UI Evidence links for changed user-visible surfaces, or explicit no-op reason
 - remaining blockers or follow-up debt
-- exact provider readback for every observed Task fact
+- exact provider readback for every observed provider-task fact; explicit
+  planning-only non-applicability otherwise
 - resulting state: `review_due`, `debug_active`, `focused_validation`,
   `clean_handoff`, or blocked
 

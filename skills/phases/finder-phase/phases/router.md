@@ -10,8 +10,11 @@ workflow-native artifacts, committed handoff, suggested route.
 1. Durable `human_steering_required` while the `$handback` authority guard
    fails -> terminal `human_steering_required`.
 2. Missing or invalid target depth -> [handback](handback.md).
-3. Ambiguous or conflicting Fog, child, relation, or accepted-evidence identity
-   -> [handback](handback.md), with zero mutation intent.
+3. Ambiguous or conflicting Fog, child, relation, or accepted-evidence identity;
+   duplicate Business children; a Functional or Technical child missing its
+   stable cardinality key; duplicate projected Story or Task identities; or
+   incomplete Story/Task projection readback -> [handback](handback.md), with
+   zero mutation intent.
 4. No exact Fog readback -> [ensure-fog](ensure-fog.md).
 5. Product Area or Initiative expansion lacks a split-or-proceed decision ->
    checkpoint `scope-expansion-checkpoint`; persist it and stop.
@@ -31,12 +34,15 @@ workflow-native artifacts, committed handoff, suggested route.
 12. Target depth is `Business` -> [return-target](return-target.md).
 13. Accepted Functional evidence lacks an exact child identity or immutable
     resolution pointer -> [handback](handback.md), with zero mutation intent.
-14. Accepted Functional evidence lacks exact projection readback ->
+14. Accepted Functional evidence lacks one distinct stable projected Story
+    identity and exact projection readback ->
     [reconcile](reconcile.md).
 15. Required Functional evidence is missing or invalid ->
     [functional-grilling](functional-grilling.md).
 16. Target depth is `Functional` -> [return-target](return-target.md).
-17. Accepted Technical evidence lacks exact projection readback ->
+17. Accepted Technical evidence lacks stable projected Task identities, exact
+    parent and `V*` membership, blocker-graph readback, or exact projection
+    readback ->
     [reconcile](reconcile.md).
 18. Any selected Story lacks valid Technical evidence ->
     [technical-grilling](technical-grilling.md).
