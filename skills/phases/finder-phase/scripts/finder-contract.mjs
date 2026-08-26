@@ -1,6 +1,20 @@
 const DEPTHS = ["Business", "Functional", "Technical"];
 const CONFLICT_IDENTITIES = ["ambiguous", "duplicate", "conflict"];
 
+const childCollectionConflicts = (children, foreignKey) => {
+  if (!Array.isArray(children)) return false;
+
+  const seen = new Set();
+  for (const child of children) {
+    if (!child || CONFLICT_IDENTITIES.includes(child.identity)) return true;
+    const key = child[foreignKey];
+    if (seen.has(key)) return true;
+    seen.add(key);
+  }
+
+  return false;
+};
+
 const deriveChildStageRoute = ({
   selected,
   children,
@@ -36,7 +50,12 @@ const deriveChildStageRoute = ({
           matches[0].status === "accepted" &&
           matches[0].scope === "in-scope",
       )
-      .some(([child]) => !validateAcceptedChild(child))
+      .some(
+        ([child]) =>
+          child.identity !== "exact" ||
+          child.resolution !== "immutable" ||
+          !validateAcceptedChild(child),
+      )
   ) {
     return "human-steering";
   }
@@ -74,6 +93,12 @@ export const deriveFinderRoute = (state) => {
   if (CONFLICT_IDENTITIES.includes(state.fogIdentity)) {
     return "human-steering";
   }
+  if (
+    childCollectionConflicts(state.functionalChildren, "storyIntent") ||
+    childCollectionConflicts(state.technicalChildren, "story")
+  ) {
+    return "human-steering";
+  }
   if (state.fogIdentity !== "exact") return "ensure-fog";
   if (CONFLICT_IDENTITIES.includes(state.businessIdentity)) {
     return "human-steering";
@@ -87,7 +112,23 @@ export const deriveFinderRoute = (state) => {
   if (state.businessEvidenceScope === "out-of-scope") {
     return "business-grilling";
   }
-  if (!["accepted"].includes(state.business)) return "business-grilling";
+  if (state.business !== "accepted") {
+    if (
+      state.targetDepth !== "Business" &&
+      state.business === "missing" &&
+      state.businessPathIdentity === "exact" &&
+      state.businessPathDecision === "reuse-unchanged"
+    ) {
+      return "adopt-business-path";
+    }
+    return "business-grilling";
+  }
+  if (
+    state.businessIdentity !== "exact" ||
+    state.businessResolution !== "immutable"
+  ) {
+    return "human-steering";
+  }
   if (state.businessProjection !== "read-back") return "reconcile";
   if (state.targetDepth === "Business") return "return-target";
 
@@ -106,7 +147,6 @@ export const deriveFinderRoute = (state) => {
     foreignKey: "story",
     grillingRoute: "technical-grilling",
     validateAcceptedChild: (child) =>
-      child.resolution === "immutable" &&
       child.specReadiness === "agent-ready" &&
       child.stableBlob === "verified" &&
       Number.isInteger(child.taskIntentCount) &&

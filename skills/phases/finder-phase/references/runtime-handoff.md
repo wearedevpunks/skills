@@ -25,6 +25,8 @@ Provider snapshot identity:
 Selected gate or outcome:
 Stage child identities:
 Immutable resolution pointers:
+Business path identities:
+Business path decision:
 Intended projection:
 Exact readback identities:
 Support evidence:

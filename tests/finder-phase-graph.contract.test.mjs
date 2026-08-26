@@ -44,6 +44,7 @@ test("Finder persists one resumable graph with explicit gates and exact exits", 
   const router = read("skills/phases/finder-phase/phases/router.md");
   const gateNames = [
     "ensure-fog",
+    "adopt-business-path",
     "business-grilling",
     "functional-grilling",
     "technical-grilling",
@@ -107,6 +108,118 @@ test("Finder persists one resumable graph with explicit gates and exact exits", 
     assert.match(gate, /Declared exits/iu);
     assert.match(gate, /Durable handoff/iu);
   }
+});
+
+test("Functional Finder adopts an exact unchanged Business path without a Business grill", () => {
+  assert.equal(
+    deriveFinderRoute({
+      targetDepth: "Functional",
+      fogIdentity: "exact",
+      business: "missing",
+      businessPathIdentity: "exact",
+      businessPathDecision: "reuse-unchanged",
+    }),
+    "adopt-business-path",
+  );
+
+  const gate = read(
+    "skills/phases/finder-phase/phases/adopt-business-path.md",
+  ).replace(/\s+/gu, " ");
+  assert.match(gate, /exact Business child identity/iu);
+  assert.match(gate, /immutable accepted Business resolution/iu);
+  assert.match(gate, /runs no Business grill/iu);
+});
+
+test("Finder rejects accepted Business and Functional stages without exact immutable authority", () => {
+  const acceptedBusiness = {
+    targetDepth: "Business",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+  };
+
+  assert.equal(
+    deriveFinderRoute({ ...acceptedBusiness, businessIdentity: "missing" }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({ ...acceptedBusiness, businessResolution: "missing" }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...acceptedBusiness,
+      targetDepth: "Functional",
+      selectedStoryIntents: ["intent-a"],
+      functionalChildren: [
+        {
+          storyIntent: "intent-a",
+          identity: "exact",
+          status: "accepted",
+          scope: "in-scope",
+          resolution: "missing",
+          projection: "read-back",
+        },
+      ],
+    }),
+    "human-steering",
+  );
+});
+
+test("Finder rejects duplicate stage children outside the selected subset", () => {
+  const acceptedBusiness = {
+    targetDepth: "Functional",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+  };
+  const duplicateFunctional = {
+    storyIntent: "intent-unselected",
+    identity: "exact",
+    status: "active",
+    scope: "in-scope",
+  };
+
+  assert.equal(
+    deriveFinderRoute({
+      ...acceptedBusiness,
+      functionalChildren: [
+        ...acceptedBusiness.functionalChildren,
+        duplicateFunctional,
+        { ...duplicateFunctional },
+      ],
+    }),
+    "human-steering",
+  );
+
+  const duplicateTechnical = {
+    story: "story-unselected",
+    identity: "exact",
+    status: "active",
+    scope: "in-scope",
+  };
+  assert.equal(
+    deriveFinderRoute({
+      ...acceptedBusiness,
+      technicalChildren: [duplicateTechnical, { ...duplicateTechnical }],
+    }),
+    "human-steering",
+  );
 });
 
 test("Business depth grills one child against existing product structure", () => {

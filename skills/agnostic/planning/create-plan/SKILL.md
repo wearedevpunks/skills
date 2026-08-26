@@ -82,13 +82,15 @@ silently renaming them.
 8. Assign each task the deduplicated union of skills whose exact triggers match
    in every touched scope, merging all touched scopes for
    cross-directory tasks.
-9. Build worker waves from the provider Tasks and their native blocker edges,
-   then place every currently unblocked Task with a disjoint write scope in the
-   same wave. Use a one-Task wave only when blockers or ownership leave one Task
-   unblocked.
+9. Build worker waves from the selected task-identity mode. Projected work uses
+   provider Tasks and native blocker edges. Planning-only work uses the explicit
+   unprojected `Tn` graph. Place every currently unblocked Task with a disjoint
+   write scope in the same wave. Use a one-Task wave only when blockers or
+   ownership leave one Task unblocked.
 10. Normalize every task with stable ids, `depends_on`, `location`,
    `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
-   `files edited/created`, stable provider Task references, `assigned_skills`,
+   `files edited/created`, task-identity mode and its required identity fields,
+   `assigned_skills`,
    `implementation_skill_guidance`,
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,

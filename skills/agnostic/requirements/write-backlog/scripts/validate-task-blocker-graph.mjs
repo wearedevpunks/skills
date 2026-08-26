@@ -48,6 +48,7 @@ export const validateTaskBlockerGraph = ({ milestoneOrder, stories, tasks } = {}
   }
 
   const orderedTasks = [...tasksById.values()].sort((left, right) => left.id.localeCompare(right.id));
+  const taskCountByStory = new Map([...storiesById.keys()].map((storyId) => [storyId, 0]));
   for (const task of orderedTasks) {
     if (!Array.isArray(task.milestoneIds) || task.milestoneIds.length !== 1) {
       return failure("MILESTONE_CARDINALITY", { taskId: task.id });
@@ -72,6 +73,11 @@ export const validateTaskBlockerGraph = ({ milestoneOrder, stories, tasks } = {}
       });
     }
     if (!Array.isArray(task.blockedBy)) return failure("BLOCKERS_REQUIRED", { taskId: task.id });
+    taskCountByStory.set(task.storyId, taskCountByStory.get(task.storyId) + 1);
+  }
+
+  for (const [storyId, taskCount] of taskCountByStory) {
+    if (taskCount === 0) return failure("STORY_TASK_REQUIRED", { storyId });
   }
 
   const edges = [];

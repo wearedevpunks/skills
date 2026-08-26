@@ -117,7 +117,7 @@ resume, returns one gate/checkpoint/blocked/terminal outcome, names only flat
 phase files, and preserves the handback terminal. Human-only metadata remains
 unchanged.
 
-Domain state: Ten required route classes plus identity-conflict variants are
+Domain state: Eleven required route classes plus identity-conflict variants are
 covered by the route fixture.
 
 Next suggested route: `write-phases.md`
@@ -130,9 +130,9 @@ Resume identity: current target depth and Fog snapshot
 
 Status: complete
 
-Scope: Nine flat executable Finder gates.
+Scope: Ten flat executable Finder gates.
 
-Artifacts: `phases/ensure-fog.md`, `business-grilling.md`,
+Artifacts: `phases/ensure-fog.md`, `adopt-business-path.md`, `business-grilling.md`,
 `functional-grilling.md`, `technical-grilling.md`, `research.md`,
 `prototype.md`, `reconcile.md`, `return-target.md`, and `handback.md`.
 

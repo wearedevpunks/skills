@@ -25,11 +25,15 @@ Directly compose [the Finder engine](../finder-phase/SKILL.md) with target
 depth: `Functional`. This is cumulative Business and Functional depth over one
 Fog; this adapter supplies only its audience, presentation, and return profile.
 
-Reuse a fresh accepted Business child. An exact existing Product Area ->
-Initiative -> Epic path is the fast path without changing business scope.
-Otherwise let the engine complete Business grilling before Functional
-grilling. When accepted lower-stage evidence needs repair, the engine may
-enrich existing Business structures before it continues. The engine's
+Reuse a fresh accepted Business child. When none exists, an exact existing
+Product Area -> Initiative -> Epic path from provider readback plus the
+human's explicit `reuse-unchanged` decision takes the fast path without
+changing business scope. Its Business-path adoption gate creates the required
+Business child and immutable resolution without a Business grill. Otherwise
+let the engine complete Business grilling
+before Functional grilling. When accepted lower-stage evidence needs repair,
+the engine may enrich existing Business structures before it continues. The
+engine's
 [Functional gate](../finder-phase/phases/functional-grilling.md) composes atomic
 `$grilling` and resolves one Functional child per accepted Story intent.
 

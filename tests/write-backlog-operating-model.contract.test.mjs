@@ -333,6 +333,27 @@ test("Task blocker graph validation requires an existing same-V* parent Story", 
   );
 });
 
+test("Task blocker graph validation requires at least one Task for every Story", () => {
+  assert.deepEqual(
+    validateTaskBlockerGraph({
+      milestoneOrder: ["v1"],
+      stories: [
+        { id: "story-covered", milestoneIds: ["v1"] },
+        { id: "story-uncovered", milestoneIds: ["v1"] },
+      ],
+      tasks: [
+        {
+          id: "task-covered",
+          storyId: "story-covered",
+          milestoneIds: ["v1"],
+          blockedBy: [],
+        },
+      ],
+    }),
+    { ok: false, code: "STORY_TASK_REQUIRED", storyId: "story-uncovered" },
+  );
+});
+
 test("Task blocker graph validation rejects missing, self, future, and cyclic edges", () => {
   const cases = [
     {

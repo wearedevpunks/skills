@@ -14,7 +14,7 @@ evidence cannot satisfy a gate.
 
 ```text
 ensure-fog
-  -> business-grilling <-> research | prototype
+  -> (business-grilling <-> research | prototype) | adopt-business-path
   -> reconcile
   -> return-target [Business]
   -> functional-grilling <-> research | prototype
@@ -28,6 +28,12 @@ any identity or authority conflict -> handback -> human_steering_required
 scope boundary expansion -> scope-expansion-checkpoint -> router re-entry
 ```
 
+`adopt-business-path` is available only for Functional or Technical depth when
+the human supplies exact provider readback for one Product Area -> Initiative
+-> Epic path and accepts `reuse-unchanged`. It creates the required Business
+child and immutable resolution without a Business grill, then rejoins normal
+reconciliation.
+
 `return-target` is successful return from this invocation, not Fog completion.
 The Fog remains open until separate production evidence covers all accepted
 resulting Stories and Tasks.
@@ -36,6 +42,7 @@ resulting Stories and Tasks.
 
 For each stage, record `missing`, `active`, `accepted`, or `invalid`; its exact
 child identity; immutable resolution pointer; supported-by relations; intended
-semantic projection; and exact provider readback. Invalid accepted evidence
-routes to that stage again. An accepted stage without readback routes to
-reconciliation.
+semantic projection; and exact provider readback. Accepted state without an
+exact child identity or immutable pointer is an authority conflict. Invalid
+stage evidence routes to that stage again. Accepted evidence without readback
+routes to reconciliation.
