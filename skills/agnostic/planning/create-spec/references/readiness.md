@@ -14,6 +14,10 @@ Required inputs:
   accepted branch/base intent with concrete evidence; blocked or unevidenced
   dependencies fail compilation
 
+Technical Finder adds one conditional input: the exact selected Story context
+established by its accepted Functional child. Non-Finder compilation has no
+provider Story precondition.
+
 ## Dependency output contract
 
 Serialize both sections in every compiled spec:

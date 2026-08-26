@@ -43,6 +43,9 @@ resulting Stories and Tasks.
 For each stage, record `missing`, `active`, `accepted`, or `invalid`; its exact
 child identity; immutable resolution pointer; supported-by relations; intended
 semantic projection; and exact provider readback. Accepted state without an
-exact child identity or immutable pointer is an authority conflict. Invalid
-stage evidence routes to that stage again. Accepted evidence without readback
-routes to reconciliation.
+exact child identity or immutable pointer is an authority conflict. Business
+completion requires exactly one valid Business child from the fresh complete
+direct-child collection. Every selected Technical Story must equal the distinct
+projected Story of one selected accepted Functional child. Invalid stage
+evidence routes to that stage again. Accepted evidence without readback routes
+to reconciliation.

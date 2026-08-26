@@ -14,7 +14,8 @@ no questions, runs no local grill, and performs no backlog mutation.
 Accept confirmed user decisions and their evidence: grill status/logs, research
 reports, prototype verdicts, ADRs, glossary, axioms, constraints, system facts,
 accepted implementation or testing decisions, dependency evidence, and accepted
-parent/base constraints.
+parent/base constraints. A Technical Finder invocation also supplies the exact
+selected Story context required by the readiness contract.
 
 ## Steps
 
@@ -48,11 +49,13 @@ silently renaming them.
 
 ## Boundaries
 
-- `SPEC.md` is provider-neutral authority for one resolved Story. Business and
-  Functional Finder establish its Area, Initiative, Epic, and Story before the
-  Technical stage compiles the spec. After stable retention, `write-backlog`'s
-  technical projection enriches that exact Story and creates its provider Task
-  graph. `create-plan` preserves those Task identities and owns files, commands,
+- `SPEC.md` is provider-neutral authority for resolved requirements. During a
+  Technical Finder invocation, Business and Functional Finder establish the
+  Area, Initiative, Epic, and exact Story before the Technical stage compiles
+  the Story-scoped spec. Non-Finder compilation requires no provider Story.
+  In that Finder path, stable retention lets `write-backlog`'s Technical
+  projection enrich the exact Story and create its provider Task graph.
+  `create-plan` preserves those Task identities and owns files, commands,
   workers, and validation detail.
 - A mutable path or local-only commit is not a backlog handoff. `write-backlog`
   receives only the verified stable blob URL.
