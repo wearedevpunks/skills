@@ -7,8 +7,22 @@ when a retained review opened `repair_active` for in-scope non-runtime blockers.
 
 Load `implement-spec` only after this phase is selected.
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 ## Rules
 
+- Each `Tn` preserves one stable provider Task identity, the same `V*`, and its
+  native blocker edges.
+- Immediately route each directly observed work start, blocker, pull request,
+  merge, staging deployment, or production deployment through `write-backlog`'s
+  [delivery-status.md](../../../agnostic/requirements/write-backlog/references/delivery-status.md)
+  branch. Require exact readback before advancing the Task.
+- Merge is never deployment evidence. Merge, staging, and production remain
+  distinct directly observed facts. Complete a Fog only when production
+  evidence covers every accepted resulting Story and Task.
 - Preserve the plan's dependencies, owned paths, validation gates, and wave boundaries.
 - Launch every currently unblocked task whose write scope is disjoint as the
   active worker wave.
@@ -38,6 +52,7 @@ Write or verify:
 - validation commands and results
 - UI Evidence links for changed user-visible surfaces, or explicit no-op reason
 - remaining blockers or follow-up debt
+- exact provider readback for every observed Task fact
 - resulting state: `review_due`, `debug_active`, `focused_validation`,
   `clean_handoff`, or blocked
 

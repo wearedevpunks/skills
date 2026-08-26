@@ -1,107 +1,86 @@
-# Write Backlog Reference
+# Write Backlog Mutation Envelope
 
-## Purpose
+## Public Seam
 
-`write-backlog` is the provider-mutation adapter for three bounded branches: pre-spec decision intake, update-existing claim/release/resolution, and post-spec delivery projection. It does not compile specifications or create concrete implementation plans. Updating requires a provider id or URL, reads current state first, rejects conflicting claims, and writes the immutable resolution pointer supplied by Finder.
+`write-backlog` accepts one semantic operation and returns its exact provider
+result. Callers do not select provider primitives or perform writes.
 
-The direct backlog concepts are:
+Required input:
 
-- `fog`
-- `grilling`
-- `research`
-- `prototype`
-- `epic`
-- `story`
+- operation: initialize/reconstruct, Fog or pre-resolution grilling-child
+  ensure, Business projection, Functional projection, Technical projection,
+  Normalization, delivery status, or issue reconciliation
+- durable wiki identity for every intended object and stable provider identity
+  for every known object
+- immutable accepted evidence that authorizes the selected operation
+- proposed semantic delta, source wording, source links, and expected current
+  provider state
+- exact `V*` milestone for each Story and any explicit Fog target iteration
+- structural approval record when the delta crosses an approval boundary
 
-No shared cross-provider classification field is required. Every adapter must still make the direct concept visible and searchable through configured native representation or its documented nearest-native fallback. If neither preserves the concept, fail before mutation. Provider vocabulary does not become canonical domain vocabulary.
+Missing evidence or conflicting authority returns every gap with zero provider
+mutations.
 
-## Pre-spec intake contract
-
-Finder may request one `fog`, `grilling`, `research`, or `prototype` item before
-a spec exists. A `fog` item requires a frontier or uncertainty description; it
-does not require a precise question. A `grilling`, `research`, or `prototype`
-item requires the precise question derived when fog graduates. Every intake
-also requires its selected classification, map link, dependencies, and claim
-state. Validate the complete intake dependency graph for missing targets,
-self-edges, and cycles before mutation. Materialize exactly that intake item;
-do not infer or create delivery epics/stories.
-
-## Delivery input contract
-
-Before inspecting or mutating provider state for an `epic` or `story` delivery projection, require:
-
-- a verified stable blob URL to an authoritative `SPEC.md`; local SHA plus path is insufficient
-- frontmatter `readiness: agent-ready`
-- stable `US-###` user stories
-- stable `AC-###` acceptance criteria
-- every criterion carrying `Covers: US-###`
-- no uncovered story and no criterion pointing to a missing story
-- accepted technical/testing decisions and verification seams
-- prototype verdict links when prototypes informed the decisions
-
-If any requirement is missing, return a readiness failure naming every gap. Write nothing to the provider.
-
-## Projection contract
-
-Create one capability-boundary epic for the spec. Derive the fewest product-facing stories that preserve all `US-###` outcomes and `AC-###` evidence. Every story must:
-
-- name its source `US-###` records
-- name its covered `AC-###` records
-- be agent-sized
-- be a vertical tracer bullet with one demonstrable user, operator, or system outcome
-- remain understandable without the implementation plan
-
-Split only across distinct product outcomes, acceptance signals, provider boundaries, or true dependencies. Technical layers are not stories.
-
-## Readiness before mutation
-
-Build and validate the complete intended projection in memory before the first provider write:
-
-1. Resolve the target from `.devpunks/settings.json`.
-2. Validate the spec and traceability.
-3. Validate every story as an agent-sized tracer bullet.
-4. Resolve every blocker to a projected story.
-5. Reject self-blockers, missing targets, and cycles.
-6. Assign milestones across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) for project-level chronological precedence. When supported, assign each child story the same containing overview milestone; never derive distinct story milestones. Native blockers explain story relations.
-7. Validate provider representation and required native primitives.
-8. Only after every check passes, write immediately without a separate approval stop.
-
-A validation failure produces zero mutations. If a provider fails during the write sequence, stop, report created identifiers, and do not claim atomicity or readiness.
-
-## Intake resolution
-
-When the work began as a pre-spec `fog`, `grilling`, `research`, or `prototype` item:
-
-- keep that intake item as historical decision evidence
-- resolve it with the immutable spec link and the accepted outcome
-- create a separate delivery epic projection
-- never silently promote or relabel the intake item as the delivery epic
-
-## Provider model
+## Topology
 
 ```text
-Backlog root
-  fog
-  capability module
-    grilling
-    research
-    prototype
-    epic
-      story
+Product/Backlog Root
+└── Product Area
+    └── Initiative
+        └── Epic
+            └── Story [exactly one contextual V*]
+                └── Task 1..n [same V* + blocker relations]
 
-Project overview execution milestones
-  M1 -> M2 -> M3 ...
-  (assigned only to overview-level items from fog through epic)
+Fog ──lateral provenance/enrichment──> Product Area | Initiative | Epic | Story | Task
 ```
 
-Capability grouping is independent from chronology. Native blockers are authoritative for story relations. Milestones are a project-overview signal: assign them to overview-level `fog`, `grilling`, `research`, `prototype`, and `epic` items when chronological precedence is useful, and let their containing stories share that milestone when the provider supports membership. Never use milestone values to order stories.
+Product Areas are durable product responsibilities. Initiatives are business
+goals. Epics are long-lived business slices and may span iterations. Stories
+are shippable product outcomes. Tasks are required atomic, independently
+ownable delivery units.
 
-Provider representation is defined in [assets/providers/](assets/providers/). Use actual metadata and native hierarchy/dependency primitives. Do not invent fields, flatten child stories, or replace representable blockers with prose.
+Business projection creates or enriches Product Area, Initiative, and Epic.
+Functional projection creates Stories. Technical projection creates mandatory
+Tasks only after one authoritative agent-ready `SPEC.md` exists for the Story.
+Fog remains lateral provenance throughout all three stages.
 
-## Body ownership
+Every Story belongs to exactly one contextual `V*` milestone iteration, and
+every Task belongs to the same iteration as its Story. A Fog may target one
+fitting iteration. Product Areas, Initiatives, and Epics span iterations.
 
-Epic bodies contain outcome, scope, cross-story constraints, the immutable spec link, and child story links.
+## Validation Envelope
 
-Story bodies contain product outcome, `US-###` sources, `AC-###` coverage, demonstration signal, non-goals, dependencies, and durable accepted-artifact links.
+Before the first provider write:
 
-Keep `PLAN.md` task ids, file paths, validation commands, worker assignments, and code structure out of backlog bodies. Concrete planning remains downstream in `delivery-phase` / `create-plan`.
+1. Resolve destination, Product/Backlog Root, repository, wiki, and provider
+   workspace identity.
+2. Read every target and relation from the provider.
+3. Apply the exact create/enrich/stop decision table from
+   [issue reconciliation](references/issue-reconciliation.md). A title is
+   discovery evidence only.
+4. Reuse the exact existing structure and fitting `V*` milestone. Propose a new
+   structure only when no exact or fitting one exists.
+5. Validate hierarchy, metadata representation, provider membership, source
+   links, accepted evidence, and approval state.
+6. For Technical projection, validate every parent Story and the complete
+   reachable Task graph. Reject a missing parent Story, Task/Story milestone
+   mismatch, missing blocker target, self-edge, future-iteration dependency, or
+   cycle. Real blockers may cross Stories and Epics.
+7. Preview material topology changes with `$show-me`; wait for explicit approval
+   where required.
+
+## Result Envelope
+
+Return:
+
+- provider and Product/Backlog Root identities
+- operation and immutable evidence identity
+- each durable wiki identity and stable provider ID/URL
+- created, enriched, repaired, or unchanged classification
+- exact parents, relations, `V*` membership, fields, views, source links, and
+  statuses read back from the provider
+- applied approval record and unresolved delta
+- partial writes and recovery point when a provider request fails
+
+Only exact readback proves success. A successful request without matching
+readback is an unresolved reconciliation, not completion.

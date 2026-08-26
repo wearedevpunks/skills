@@ -88,7 +88,15 @@ parallelism id. `responsibility_acceptance_criteria` lists the stable criterion 
 Every listed id must exist in the plan-level Responsibility Acceptance Criteria view, whose entry declares its
 `due_architecture_wave`. Each criterion maps to at least one task and exactly one due architecture wave.
 
-`backlog_item_id` and `backlog_item_url` reference the owning product-facing story, not a task-owned backlog record.
+`backlog_item_id` records the stable provider Task identity and
+`backlog_item_url` records that exact Task's provider URL. Each `Tn` is a plan
+alias for one provider Task, never a second execution identity. Preserve the
+Task's exact parent Story, same `V*`, source links, and provider readback in the
+plan context.
+
+`depends_on` preserves or mirrors native provider Task blocker edges through
+the `Tn` alias map. Worker waves derive from those blockers and disjoint
+ownership; planning does not invent sequencing edges.
 
 `owned_paths` lists the exact write scope assigned to the task. Tasks in the
 same wave must have disjoint `owned_paths`.
@@ -96,9 +104,8 @@ same wave must have disjoint `owned_paths`.
 `wave_boundary` names the explicit execution wave derived from completed
 dependencies and disjoint ownership, for example `W1`.
 
-Multiple tasks may point to the same story when one story needs several execution steps.
-
-Do not create a new backlog item only because a task boundary exists in the plan.
+Multiple provider Tasks may share one parent Story. Planning preserves those
+separate provider identities and cannot create another Task identity for them.
 
 `assigned_skills` must list the skills used to shape the task during planning, not only skills expected during implementation. Skill guidance should be reflected in the task's boundary, validation, `tdd_target`, `codebase_design_notes`, and `review_mode`.
 
@@ -146,7 +153,7 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **log**:
 - **files edited/created**:
 - **backlog_item_id**: CP-128
-- **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-story
+- **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-task
 - **relation_mode**: native | body-links
 - **assigned_skills**: [`effect`, `tdd`]
 - **implementation_skill_guidance**:

@@ -1,31 +1,48 @@
 # Backlog Sync
 
-Use this reference only when an authoritative agent-ready `SPEC.md` exists at a verified stable blob URL and `write-backlog` has projected or must project it into provider-native delivery items. Concrete planning is downstream from both the spec and backlog projection.
+Use this reference only when an authoritative agent-ready `SPEC.md` exists at a
+verified stable blob URL and `write-backlog` has projected it into
+provider-native delivery items. Concrete planning follows exact provider
+readback.
 
-Backlog sync is eligible and in scope only when the planning input retains that
-agent-ready spec and its provider projection relation, and the requested work
-includes maintaining that relation. A planning-only request with no retained
-spec/projection relation has no backlog mutation requirement: record an explicit
-skip reason in `PLAN.md` and continue plan completion.
+Backlog sync is eligible and in scope when the planning input retains that spec, its
+projection relation, and a request to maintain the relation. A planning-only
+request without retained projection records an explicit skip reason in
+`PLAN.md`.
 
-## Sync rules
+## Task identity handoff
 
-Use the backlog model owned by `write-backlog` at [backlog-model.md](https://github.com/wearedevpunks/skills/blob/main/skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md). Do not restate its readiness, taxonomy, traceability, or mutation contracts here.
+Use the backlog model owned by `write-backlog` at
+[backlog-model.md](https://github.com/wearedevpunks/skills/blob/main/skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md).
+Read its [technical projection
+branch](../../../requirements/write-backlog/references/technical-projection.md)
+when the handoff includes implementation Tasks. Those references own taxonomy,
+readiness, Task splitting, milestone rules, provider mutation, and readback.
 
-Sync at epic/story level, never at plan-task level:
+Provider Tasks are the one execution graph. Before task synthesis, require the
+exact `write-backlog` readback for every reachable Task:
 
-- epic = capability-boundary projection of one existing spec
-- story = product-facing tracer bullet derived from `US-###` / `AC-###`
-- task = internal `PLAN.md` execution unit
+- stable provider Task ID and URL
+- stable parent Story identity and the same contextual `V*`
+- native blocker edges resolved by stable provider Task ID
+- immutable spec and Fog provenance links
 
-Plan tasks reference their owning story through `backlog_item_id` and `backlog_item_url`. Multiple tasks may reference one story. Never create another backlog item merely because delivery needs several execution tasks.
+`Tn` is a short plan alias for exactly one provider Task. Copy its ID into
+`backlog_item_id`, its URL into `backlog_item_url`, and translate each native
+blocker edge into `depends_on` through that one-to-one alias map. Preserve the
+Task's same `V*` membership in the plan context. Worker waves derive from these
+provider Tasks and native blockers, with disjoint `owned_paths` deciding which
+unblocked Tasks may run in parallel.
 
-Create or update backlog items only through `write-backlog`, and only when:
+Planning cannot create a second Task identity or private execution graph. When
+a required provider Task, milestone membership, parent, source link, or blocker
+edge is missing or stale, route the delta through `write-backlog` and resume
+only from its exact readback. Planning performs no provider mutation.
 
-- a required epic or story projection is missing
-- native story blockers need correction
-- immutable spec or plan links need refresh
+## Completion criterion
 
-Keep bodies product-facing. Store files, commands, test cases, worker assignments, and implementation sequencing in `PLAN.md`.
-
-Record referenced or created epic/story ids and URLs in the plan. Use the selected provider's native CLI or tool when available.
+Backlog sync is complete when every `Tn` resolves one stable provider Task ID
+and URL, every `depends_on` mirrors one native blocker edge, every Task retains
+its Story's `V*`, and provider readback proves the graph. Keep files, commands,
+tests, workers, and validation evidence in `PLAN.md`; keep provider bodies
+owner-ready and product-facing through `write-backlog`.

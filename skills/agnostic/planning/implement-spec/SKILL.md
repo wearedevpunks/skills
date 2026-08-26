@@ -37,6 +37,16 @@ Follow [references/parallel.md](references/parallel.md) as the execution contrac
 The parent owns wave orchestration and shared artifacts. Scoped workers own
 implementation tasks.
 
+## Provider Task state
+
+Each `Tn` aliases one stable provider Task identity from the plan. Immediately
+activate `write-backlog` through its
+[delivery-status.md](../../requirements/write-backlog/references/delivery-status.md)
+branch for a directly observed work start, blocker, pull request, merge,
+staging deployment, or production deployment. Require exact readback before
+advancing that Task. Preserve the stable provider Task identity unchanged;
+provider mechanics remain inside `write-backlog`.
+
 ## Quick start
 
 1. Resolve the target spec folder by checking, in order: `apps/wiki/content/docs/project/specs/<domain>/<spec>/`, legacy `apps/wiki/specs/<domain>/<spec>/`, then `docs/specs/<domain>/<spec>/`.
@@ -53,7 +63,9 @@ implementation tasks.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
 8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
-9. If backlog sync is in scope, keep epic/story bodies product-facing and use native metadata or comments instead of execution handoff rewrites.
+9. Keep provider Task bodies owner-ready. Route lifecycle facts through
+   `write-backlog` instead of rewriting Epic, Story, or Task bodies with
+   execution handoff detail.
 10. For UI implementation changes, follow [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md) and use `repo-asset-management` for durable before/after asset links.
 11. For tasks with `runtime_validation: required`, follow [references/runtime-product-validation.md](references/runtime-product-validation.md) and do not mark them complete without conclusive runtime evidence; an exact blocker keeps the task blocked.
 12. After task and runtime checks, run `$verify-behavior` in `verify` mode for

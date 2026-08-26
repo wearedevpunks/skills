@@ -1,107 +1,104 @@
 ---
 name: write-backlog
-description: Materialize provider-native backlog items. Use for Finder-selected pre-spec intake or an agent-ready post-spec delivery projection in Linear, GitHub Projects V2, Azure DevOps, or monday.com.
+description: Reconcile or materialize a coherent Linear or GitHub product backlog from accepted Finder, project-initialization, Normalization, planning, or delivery intent.
 ---
 
 # Write Backlog
+
+`write-backlog` is the sole physical provider mutation authority. Callers supply
+semantic intent and evidence; this skill owns reconciliation, provider writes,
+and readback. It preserves the user's ticket wording, canonical project terms,
+source links, and durable traceability while structuring the ticket correctly.
 
 Before naming or rewriting domain concepts, read the canonical glossary in the
 routed `requirements-grill` status artifact. Preserve its canonical terms;
 route proposed terminology changes through `requirements-grill` instead of
 silently renaming them.
 
-## Quick start
+## Mutation Pipeline
 
-1. Choose one branch: pre-spec intake creation; update-existing branch to claim, release, or resolve a decision ticket; or delivery projection, which may create `epic` or `story` and requires an authoritative `SPEC.md` with `readiness: agent-ready` at a verified stable blob URL before any provider mutation.
-2. Read `.devpunks/settings.json` and resolve the destination from `backlogProvider` plus `backlogProjectUrl`.
-3. If either setting is missing, or `backlogProjectUrl` is not an absolute HTTP(S) URL, stop and ask the operator to run `hi ensure`. Do not discover or guess a backlog destination.
-4. Read [REFERENCE.md](REFERENCE.md) and [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md).
-5. For intake, validate the complete intake dependency graph for missing targets, self-edges, and cycles before mutation; then materialize only the Finder-supplied description or question, route, dependencies, and claim state.
-6. For delivery, use `backlog-shaper` only to draft the epic/story projection; keep final judgment in the parent thread.
-7. Classify each item directly as `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
-8. Place `fog` at the backlog root; place concrete `grilling`, `research`, `prototype`, `epic`, and `story` items in a capability module. Use provider execution milestones across the overview-level taxonomy from `fog` through `epic` to provide project-level chronological precedence; when supported, stories inherit their containing overview milestone as one shared membership value.
-9. Project one capability-boundary epic from the existing `SPEC.md`; derive product-facing stories from its `US-###` and `AC-###` records.
-10. Prove complete `US-###` / `AC-###` traceability and that each story is an agent-sized vertical tracer bullet.
-11. Resolve every blocker target. Reject missing targets, self-blockers, and cycles. Use native blockers for story relations; never derive distinct story milestones or use milestone assignment to encode story order. Keep one containing overview milestone across the story set when the provider supports membership.
-12. Use `$show-me` to present the proposed backlog topology before provider
-    writes so the human and agent share the same hierarchy and dependency view.
-    This presentation checks understanding, not authorization; it adds no
-    approval stop.
-13. Give every written ticket body a compact `$show-me` visual explainer, then
-    apply `$wait-what` to every ticket so its wording lands in the project's
-    ubiquitous language. The visual does not replace `US-###` / `AC-###`
-    traceability or provider-native parent and dependency relations.
-14. Read the matching provider asset and validate the complete projection before the first provider write.
-15. If any readiness check fails, stop with zero provider mutations and name every failure.
-16. Once validation passes, write immediately without a separate approval stop.
-17. Resolve pre-spec intake items through the provider adapter with an immutable resolution pointer to the spec; never silently promote one into the delivery epic.
-18. Return created ids and URLs to `delivery-phase`; concrete planning remains downstream in `create-plan`.
+1. Read [project context](references/project-context.md). Resolve
+   `.devpunks/settings.json`, the Product/Backlog Root, project wiki,
+   repository identity, and current provider workspace. Missing or legacy
+   destination settings stop with exact `hi ensure` guidance; never discover or
+   guess another destination.
+2. Read project context, repository identity, and fresh provider state. Read
+   every intended target, parent, relation, milestone, field, and view before
+   deciding whether the operation creates, enriches, or repairs anything.
+3. Read [the mutation envelope](REFERENCE.md) and
+   [identity reconciliation](references/issue-reconciliation.md). After a
+   complete provider search, create on zero stable matches, enrich one stable
+   match carrying the same durable wiki identity, and stop on any ambiguity,
+   conflict, or incomplete search.
+4. Load exactly one semantic branch:
+   - [initialize or reconstruct a backlog](references/backlog-initialization.md)
+   - [ensure Fog or pre-resolution grilling child shell](references/fog-intake.md)
+   - [project accepted Business grilling](references/business-projection.md)
+   - [project accepted Functional grilling](references/functional-projection.md)
+   - [project accepted Technical grilling from a verified stable blob URL](references/technical-projection.md)
+   - [normalize existing backlog state](references/normalization.md)
+   - [record directly observed delivery state](references/delivery-status.md)
+5. Construct the complete intended mutation in memory. Validate authority,
+   stable identity, hierarchy, provider representation, source links,
+   contextual `V*` membership, and the full reachable Task blocker graph.
+6. Use `$show-me` to preview the authority-derived topology. Boundary, goal,
+   parent, roadmap, milestone movement, duplicate closure, merge, split,
+   reparenting, or reorganization changes require explicit approval. The visual
+   explains the proposal; it is not approval. Unambiguous additive links and
+   stale-state repairs may continue after preflight.
+7. Apply `$wait-what` when proposed ticket wording or project terms do not land.
+   Re-pitch in the project's language; preserve accepted meaning and user
+   wording instead of silently renaming it.
+8. Select exactly one adapter from `backlogProvider`:
+   - `Linear`: read [the Linear provider branch](references/providers/linear.md).
+   - `GitHub`: read [the GitHub provider branch](references/providers/github.md).
+   If exact hierarchy, metadata, milestone, relation, or readback representation
+   is unavailable, stop with zero provider mutations and setup guidance.
+9. Write only the approved, validated delta. Then perform exact readback of
+   every intended identity, parent, relation, source link, field, view,
+   milestone, status, and provider object. A partial provider failure returns
+   the observed writes and unresolved delta; it never claims atomic success.
+10. Return the stable provider IDs and URLs, durable wiki identities, branch,
+    created/enriched/unchanged classification, approved structural decisions,
+    exact readback, and any remaining blocker to the caller.
 
-## Item-count rule
+## Invariants
 
-Within durable capability modules, produce the fewest epics and stories that preserve all accepted requirements. Split only when merging would lose a distinct product outcome, acceptance signal, dependency, or provider boundary; otherwise fold requirements into the existing item body as scope, constraints, or acceptance signals.
+```text
+Product/Backlog Root
+└── Product Area
+    └── Initiative
+        └── Epic
+            └── Story [one contextual V*]
+                └── Task 1..n [required, same V* + blockers]
 
-## Direct taxonomy
+Fog ──provenance/enrichment──> Area | Initiative | Epic | Story | Task
+```
 
-Every supported concept is a first-class provider backlog item that is visible, assignable, searchable, linkable, and closeable.
+- Business projection creates or enriches Product Area, Initiative, and Epic.
+- Functional projection creates one Story per accepted Functional child.
+- Technical projection requires an authoritative agent-ready `SPEC.md`, then
+  creates one or more mandatory, atomic, owner-ready Tasks per Story.
+- Every Story belongs to exactly one contextual `V*` milestone iteration. Each
+  Task inherits the same iteration. Product Areas, Initiatives, and Epics span
+  iterations. A Fog may target a fitting iteration.
+- Reuse a fitting existing structure or milestone before proposing a new one.
+- Blockers, not milestone order, define precedence. Reject missing targets,
+  future-iteration edges, self-edges, and cycles across the complete reachable
+  Task graph before any provider mutation.
+- Fog is lateral provenance, not a delivery parent. Its accepted stage children
+  and every enriched or produced provider object remain linked to it.
+- Project views are Product Map, Roadmap, Fogs, and Current Delivery. This skill
+  does not design CI/CD pipelines, sprints, provider Cycles, or scheduling.
 
-- `fog`: root-level uncertainty; not delivery-eligible, not a `SPEC.md` anchor, and not an execution container.
-- `grilling`: capability-module-scoped human decision work.
-- `research`: capability-module-scoped readonly fact-finding.
-- `prototype`: capability-module-scoped artifact or experiment learning.
-- `epic`: capability-module-scoped projection of one authoritative `SPEC.md`.
-- `story`: product-facing accepted implementation slice under one epic.
+## Body Contract
 
-`grilling`, `research`, and `prototype` close with the answer or verdict, artifacts or evidence, observations, open decisions, and resolution pointer. Evidence returns to Wayfinder for reconciliation; closure does not authorize delivery.
+Every written ticket stays independently understandable and retains its source
+authority. Add a compact `$show-me` visual when the relationships are harder to
+understand than the prose. The visual does not replace product outcome,
+`US-###`/`AC-###` traceability, immutable evidence, or provider-native
+relations. Concrete files, commands, workers, and
+execution notes stay in planning and delivery artifacts.
 
-## Workflows
-
-### Pre-spec intake
-
-1. Accept a Finder-selected direct classification: `fog`, `grilling`, `research`, or `prototype`.
-2. For `fog`, preserve the frontier or uncertainty description. For `grilling`,
-   `research`, or `prototype`, preserve the precise question. Also preserve the
-   capability module when known, dependencies, claim state, and map link.
-3. Validate the complete intake dependency graph for missing targets, self-edges, and cycles before the first provider write.
-4. Create exactly the requested intake item. Do not create an epic or story.
-5. Return the immutable provider id and URL to Finder.
-
-### Agent-ready delivery projection
-
-1. Read the authoritative spec, never raw grill artifacts as a substitute.
-2. Project one epic and the fewest traceable vertical stories.
-3. Validate the complete projection and blocker graph before mutation.
-4. Write immediately when valid, then resolve any named intake item with the immutable spec link.
-
-### Update-existing decision ticket
-
-1. Require the provider id or URL plus the expected current claim state.
-2. Read the existing item before mutation; fail on a conflicting claimant or stale state.
-3. Use the matching provider adapter to claim, release, or resolve it.
-4. Resolution requires an immutable resolution pointer and terminal outcome; claim/release changes only ownership state.
-5. Return the updated id, URL, and observed state to Finder for reconciliation.
-
-### Provider payload selection
-
-1. Read the provider payload asset:
-   - [Linear](assets/providers/linear-create-payload.md)
-   - [GitHub Projects and Issues](assets/providers/github-projects-create-payload.md)
-   - [Azure DevOps](assets/providers/azure-devops-create-payload.md)
-   - [monday.com](assets/providers/monday-create-payload.md)
-2. Use the raw provider request shape documented there.
-3. Do not invent provider fields from memory when the asset already defines them.
-
-### Approved visual artifacts
-
-1. Treat approved artifact links as backlog source evidence, not execution detail.
-2. Attach approved visuals to the backlog item when the provider supports durable attachments.
-3. If backlog attachments are unavailable, size-limited, or visibility-mismatched, use `repo-asset-management` for repo-provider durable links.
-4. Include fallback links in epic/story bodies only as product-facing acceptance context.
-
-## Advanced features
-
-- Canonical hierarchy and handoff contract: see [REFERENCE.md](REFERENCE.md)
-- Backlog model and body ownership: see [assets/concepts/backlog-model.md](assets/concepts/backlog-model.md)
-- Epic/story body shape: see [assets/concepts/story-shape.md](assets/concepts/story-shape.md)
-- Provider create payloads: see [assets/providers/](assets/providers/)
-- Intake and post-spec delivery branches: see [REFERENCE.md](REFERENCE.md)
+See [examples](EXAMPLES.md) for representative initialization and staged
+projection results. Provider mechanics remain behind this mutation seam; Finder and delivery callers never perform provider writes themselves.

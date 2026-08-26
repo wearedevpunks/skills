@@ -1,55 +1,46 @@
 ---
 name: finder-phase
-description: Route loose oversized foggy work before requirements or delivery. Use when an idea is too large for one agent session, wrapped in fog, or needs backlog-native frontier shaping before requirements-phase.
+description: Run the shared human-driven Finder engine at an explicit target depth.
+disable-model-invocation: true
 ---
 
-# Finder Phase
+# Finder Engine
 
-Harness phase wrapper for backlog-native frontier routing.
+One durable graph creates or resumes one Fog and advances it to the human's
+chosen decision depth. The three Finder wrappers compose this engine directly;
+they do not own lifecycle state.
 
-Use this before `requirements-phase` when the work is too big or foggy to grill
-directly. Compose the lean `wayfinder` primitive and preserve a resumable map.
+## Bootstrap
 
-## Core Loop
+1. Read [the direct-composition contract](references/entrypoint-contract.md).
+2. Read [the state and route model](references/state-graph.md) before deriving
+   any state.
+3. Read [the runtime handoff schema](references/runtime-handoff.md) before
+   discovering or updating a Finder handoff.
+4. Reconstruct current state from fresh Fog, child, relation, provider-object,
+   immutable-evidence, and runtime-handoff reads.
+5. Read [the Finder router](phases/router.md) on every entry and cold resume.
+6. Load exactly one gate selected by the router, or return its one checkpoint,
+   blocked, or terminal outcome.
+7. After the gate writes its durable handoff, stop or re-enter this bootstrap.
 
-1. Choose a destination and mode. In **chart mode**, repair the map and sharpen
-   fog. In **work mode**, claim and execute exactly one frontier ticket.
-2. Read the backlog root plus any resumable ticket and immutable evidence links.
-   If provider state is unavailable, use docs as temporary evidence and say so.
-3. Use `wayfinder` to compute the frontier and select one route.
-4. In chart mode, use `write-backlog` only when provider mutation is in scope.
-   In work mode, produce a claim and use `write-backlog` for its physical
-   provider mutation before dispatching one bounded child flow.
-5. Reconcile the child result semantically, repair invalidated scope, recompute
-   the frontier, and use `$show-me` to present that frontier before returning
-   the next route or completion state. The visual explains the living map; the
-   backlog root remains authoritative.
+The router is the sole route authority. Gate files own executable work.
+`write-backlog` is the sole provider mutation authority.
 
-## Always-Needed Rules
+## Gates
 
-- The backlog root is the living map; do not create a separate map issue.
-- `fog` is not delivery-eligible and is not a `SPEC.md` anchor.
-- A `fog` item records a frontier or uncertainty description. Once Finder can
-  derive a precise question, graduate it into `grilling`, `research`, or
-  `prototype`; the question belongs to that concrete item, not the fog intake.
-- Frontier tickets are open, unblocked, and unclaimed. Dependencies and claims
-  use provider-native relations and assignment/state.
-- Child flows return immutable resolution pointers. Finder produces semantic
-  claim/resolution outputs; `write-backlog` owns their provider writes. The phase does not infer a
-  product decision from research or impersonate the human in grilling or
-  prototyping.
-- `finder-phase` owns frontier lifecycle and root routing; `write-backlog` owns provider materialization.
+- [Ensure Fog](phases/ensure-fog.md)
+- [Business grilling](phases/business-grilling.md)
+- [Functional grilling](phases/functional-grilling.md)
+- [Technical grilling](phases/technical-grilling.md)
+- [Research support](phases/research.md)
+- [Prototype support](phases/prototype.md)
+- [Reconcile stage](phases/reconcile.md)
+- [Return target depth](phases/return-target.md)
+- [Human steering](phases/handback.md)
 
-## References
+## Runtime References
 
-- Frontier lifecycle: [references/frontier-lifecycle.md](references/frontier-lifecycle.md)
-- Convergence and resumption: [references/convergence.md](references/convergence.md)
-- Root routing: [references/root-routing.md](references/root-routing.md)
-- Backlog taxonomy and provider materialization: use the `write-backlog` skill.
-
-## Completion Criteria
-
-- The frontier is represented as backlog-root state or as a temporary evidence-backed handoff when provider state is unavailable.
-- The destination, current mode, frontier, claims, and next route are explicit.
-- Any backlog writes were delegated to `write-backlog`.
-- The final handoff names the next skill or phase and any unresolved blocker.
+- [State and route model](references/state-graph.md)
+- [Runtime handoff](references/runtime-handoff.md)
+- [Root routing boundary](references/root-routing.md)

@@ -9,6 +9,11 @@ Use this skill to turn an existing repository into initial Harness wiki context 
 
 ## Workflow
 
+Before naming or rewriting domain concepts, read the canonical glossary in the
+routed `requirements-grill` status artifact. Preserve its canonical terms;
+route proposed terminology changes through `requirements-grill` instead of
+silently renaming them.
+
 1. Read repo guidance and the scaffolded wiki guidance.
 2. Read `<wiki-root>/backlog-provider.md` and `<wiki-root>/wiki-framework.md`.
 3. Discover backlog context:
@@ -17,9 +22,14 @@ Use this skill to turn an existing repository into initial Harness wiki context 
    - Treat remote backlog evidence and local clues as equally important and mandatory when available.
    - If either lane is missing or inaccessible, ask the developer for the backlog location or access path before assuming no backlog exists.
 4. Build and persist the Project Map before asking developer questions.
-5. Run a targeted `requirements-grill` against the Project Map.
-6. Compile confirmed grill decisions with `create-spec`. It writes agent-ready specs only when its readiness contract passes; preserve `spec-not-ready` gaps upstream.
-7. Only after each spec is written and exposed at a verified stable blob URL, activate `write-backlog` to project it into provider-native delivery items.
+5. Run a targeted `requirements-grill` against the Project Map for project-wide
+   reconstruction decisions.
+6. Activate `write-backlog`'s backlog-initialization branch to reconcile the
+   Product/Backlog Root, Product Areas, Initiatives, `V*` context, and saved
+   views from accepted wiki and provider evidence.
+7. Leave feature work to explicit human invocation of Business, Functional, or
+   Technical Finder. Onboarding does not invoke a Finder implicitly. Their
+   staged flow owns Epic, Story, specification, and provider Task projection.
 
 For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).
 
@@ -44,4 +54,4 @@ Persist the Project Map and grill status before developer questions. On resume, 
 - Code can prove observed behavior, not original intent.
 - Reconstructed spec history must be evidence-backed.
 - Do not invent implementation notes, rationale, or tech-debt history without supporting artifacts.
-- Never mutate backlog before a spec is written and agent-ready.
+- Use only `write-backlog` for physical provider mutation.

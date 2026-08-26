@@ -1,155 +1,52 @@
 # Backlog Item Body Shape
 
-## Shared rules
+## Shared Rules
 
-Keep every backlog item body product-facing and appropriate to its direct classification.
+Preserve the user's title and wording unless accepted evidence changes the
+meaning. Use canonical project terms and `$wait-what` to re-pitch unclear text.
+Keep every body independently understandable, product-facing at its level, and
+linked to durable source authority.
 
-All bodies may include durable source links, accepted evidence, and closure notes. Do not include execution plans, file-level implementation notes, or validation commands.
+Add a compact `$show-me` visual when hierarchy, alternatives, or dependencies
+are harder to understand in prose. The visual is explanatory. Native parent,
+milestone, blocker, provenance, source, and approval records remain authority.
 
-Every written ticket body includes a compact `$show-me` visual explainer suited
-to its classification. Keep the body independently understandable in text: the
-visual supplements its product outcome and never replaces source-story or
-acceptance-criteria traceability, authority links, or provider-native relations.
+## Fog Body
 
-## Fog body
+- uncertainty or request
+- why it is still Fog
+- accepted and open decisions
+- Business, Functional, and Technical child identities
+- supporting Research or Prototype evidence
+- affected or produced backlog objects
+- target and completion iteration when known
 
-Use a short root-level body.
+## Grilling Body
 
-Recommended sections:
+- Stage: Business, Functional, or Technical
+- question and accepted decision
+- evidence, observations, and open decisions
+- immutable resolution pointer
+- supported-by and produced-or-enriched relations
 
-```md
-## Frontier
+Research and Prototype bodies preserve the exact supported grilling child,
+question or learning goal, answer or verdict, evidence, observations, open
+decisions, and immutable resolution pointer.
 
-[What is real but still unclear]
+## Epic Body
 
-## Why This Is Fog
+- business outcome and why it matters
+- scope, boundaries, constraints, and non-goals
+- Initiative parent and Fog provenance
+- child Story links when available
+- durable Business evidence
 
-- ...
-
-## Suspected Directions
-
-- ...
-
-## Next Route
-
-- `grilling` | `research` | `prototype` | Finder reconciliation
-```
-
-Fog bodies must not define child tickets or delivery scope.
-
-## Grilling body
-
-Recommended sections:
-
-```md
-## Decision
-
-[The human decision to close]
-
-## Context
-
-- ...
-
-## Options
-
-- ...
-
-## Closure
-
-Answer:
-Artifacts:
-Observations:
-Open decisions:
-Resolution pointer:
-```
-
-## Research body
-
-Recommended sections:
-
-```md
-## Question
-
-[The fact to establish]
-
-## Evidence Sources
-
-- ...
-
-## Answer Criteria
-
-- ...
-
-## Closure
-
-Answer:
-Evidence:
-Observations:
-Open decisions:
-Resolution pointer:
-```
-
-## Prototype body
-
-Recommended sections:
-
-```md
-## Learning Goal
-
-[What the artifact must teach]
-
-## Artifact Expectations
-
-- ...
-
-## Result Signal
-
-- ...
-
-## Closure
-
-Artifacts:
-Observations:
-Open decisions:
-Resolution pointer:
-```
-
-## Epic body
-
-Use a short bounded body.
-
-Recommended sections:
+## Story Body
 
 ```md
 ## Outcome
 
-[What capability this epic delivers and why it matters]
-
-## Scope
-
-- ...
-
-## Constraints
-
-- ...
-
-## Authority
-
-- Immutable spec: ...
-```
-
-Epic bodies may summarize the capability boundary, but should not re-copy every child story verbatim once the child stories exist.
-
-## Story body
-
-Keep stories product-facing and independently understandable.
-
-Recommended sections:
-
-```md
-## Outcome
-
-[What this story enables]
+[One shippable product result]
 
 ## Source stories
 
@@ -161,27 +58,64 @@ Recommended sections:
 
 ## Demonstration
 
-[One end-to-end observable result]
+[One observable end-to-end result]
+
+## Boundaries
+
+- ...
 
 ## Non-goals
 
 - ...
 
-## Links
+## Dependencies
 
-- Parent epic
-- Immutable spec
+- Stable product or provider identity
+
+## Durable accepted-artifact links
+
+- Immutable evidence or approved visual: ...
+
+## Authority
+
+- Parent Epic: ...
+- Fog and Functional resolution: ...
+- Immutable spec: ... when compiled
+- Milestone iteration: `V*`
 ```
 
-## Body anti-patterns
+## Task Body
 
-Do not put these in backlog bodies:
+```md
+## Responsibility
 
-- `Plan task: T123`
-- `TDD target`
-- `Validation`
-- file paths
-- package names as pseudo-scope
-- worker handoff notes
+[One atomic shippable unit]
 
-Those belong in `PLAN.md`, execution comments, or implementation notes instead.
+## Owner
+
+[One explicit ownership boundary]
+
+## Acceptance
+
+- Source Story and `AC-###`
+
+## Verification
+
+[Observable evidence]
+
+## Blockers
+
+- Stable provider Task identity
+
+## Authority
+
+- Parent Story: ...
+- Immutable spec: ...
+- Technical resolution and Fog: ...
+- Milestone iteration: same `V*` as Story
+```
+
+Task bodies may name the owned delivery responsibility and proof seam. Private
+worker handoffs, transient commands, or plan-only identities remain in planning
+and execution notes. The provider Task ID is the durable identity that planning
+preserves.

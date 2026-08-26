@@ -14,52 +14,48 @@ const contracts = JSON.parse(
   ),
 );
 
-test("canonical skill guidance separates capability grouping from execution chronology", () => {
-  for (const relativePath of ["SKILL.md", "REFERENCE.md", "assets/concepts/backlog-model.md"]) {
-    const document = readFileSync(path.join(skillRoot, relativePath), "utf-8");
-    assert.ok(document.includes("capability module"), relativePath);
-    assert.ok(document.includes("execution milestone"), relativePath);
-    assert.doesNotMatch(document, /module\/milestone/u, relativePath);
-  }
-});
-
-test("provider planning keeps capability grouping separate from execution milestones", () => {
+test("provider planning routes only Linear and GitHub through disclosed adapters", () => {
   assert.deepEqual(
     contracts.map(({ provider }) => provider),
-    ["github", "azure-devops", "monday"],
+    ["linear", "github"],
   );
 
   for (const contract of contracts) {
-    assert.notEqual(contract.capabilityGrouping, contract.executionMilestone, contract.provider);
-    const document = readFileSync(path.join(skillRoot, contract.document), "utf-8");
-    assert.match(document, /^## Capability grouping$/mu, contract.provider);
-    assert.match(document, /^## Chronological execution milestones$/mu, contract.provider);
-    for (const evidence of contract.evidence) {
-      assert.ok(document.includes(evidence), `${contract.provider}: ${evidence}`);
-    }
+    assert.equal(contract.document, `references/providers/${contract.provider}.md`);
+    assert.ok(readFileSync(path.join(skillRoot, contract.document), "utf-8").trim());
   }
+
+  const fixture = JSON.stringify(contracts);
+  assert.doesNotMatch(fixture, /azure|monday|assets\/providers/iu);
 });
 
-test("provider planning keeps milestones at overview level and story order in blockers", () => {
-  for (const relativePath of [
-    "SKILL.md",
-    "REFERENCE.md",
-    "assets/concepts/backlog-model.md",
-    "assets/providers/linear-create-payload.md",
-    "assets/providers/github-projects-create-payload.md",
-    "assets/providers/azure-devops-create-payload.md",
-    "assets/providers/monday-create-payload.md",
-  ]) {
-    const document = readFileSync(path.join(skillRoot, relativePath), "utf-8");
-    for (const concept of ["fog", "grilling", "research", "prototype", "epic"]) {
-      assert.match(document, new RegExp("`" + concept + "`"), `${relativePath}: ${concept}`);
-    }
-    assert.match(document, /(?:same containing overview milestone|share (?:that|their containing|one) .*milestone|propagat(?:e|ing) (?:that )?same .*milestone|never derive (?:distinct )?story)/iu, relativePath);
-    assert.match(document, /story (?:relations?|ordering|dependency edges)|dependency column for story ordering|native blocker/iu, relativePath);
-  }
+test("GitHub planning preserves semantic hierarchy, V membership, and exact readback", () => {
+  const contract = contracts.find(({ provider }) => provider === "github");
+  assert.ok(contract);
+  assert.deepEqual(contract.hierarchy, {
+    root: "one Projects V2",
+    areasAndInitiatives: "configured semantic fields",
+    epic: "Issue",
+    story: "sub-issue",
+    task: "nested sub-issue",
+  });
+  assert.equal(contract.milestone, "one repository V* per Story and Task graph");
+  assert.equal(contract.precedence, "native blockers");
+  assert.deepEqual(contract.viewCapability, {
+    automatic: ["name", "layout", "visibleFieldIds", "filter"],
+    manual: ["grouping", "sorting"],
+  });
+  assert.equal(contract.semanticIdentity, "stable option ID + durable wiki identity");
+  assert.deepEqual(contract.runtimeProof, [
+    "Product Area",
+    "Initiative",
+    "Kind",
+    "Fog backlink",
+    "immutable source",
+  ]);
 
-  const examples = readFileSync(path.join(skillRoot, "EXAMPLES.md"), "utf-8");
-  assert.match(examples, /Both stories share their containing epic's milestone/u);
-  assert.match(examples, /native blocker relation carries their ordering/u);
-  assert.doesNotMatch(examples, /`US-001`[^\n]+`M1`|`US-002`[^\n]+`M2`/u);
+  const document = readFileSync(path.join(skillRoot, contract.document), "utf-8");
+  for (const evidence of contract.evidence) {
+    assert.ok(document.includes(evidence), evidence);
+  }
 });

@@ -48,9 +48,12 @@ silently renaming them.
 
 ## Boundaries
 
-- `SPEC.md` is provider-neutral authority. `write-backlog` projects epics and
-  stories afterward; `create-plan` owns concrete files, commands, workers, and
-  execution order.
+- `SPEC.md` is provider-neutral authority for one resolved Story. Business and
+  Functional Finder establish its Area, Initiative, Epic, and Story before the
+  Technical stage compiles the spec. After stable retention, `write-backlog`'s
+  technical projection enriches that exact Story and creates its provider Task
+  graph. `create-plan` preserves those Task identities and owns files, commands,
+  workers, and validation detail.
 - A mutable path or local-only commit is not a backlog handoff. `write-backlog`
   receives only the verified stable blob URL.
 - Accepted technical and testing decisions belong in the spec. Detailed task

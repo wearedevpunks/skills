@@ -5,6 +5,18 @@ docs ingest or no-op, and validation are complete.
 
 ## Checks
 
+- After review and docs ingest or its verified no-op, create the final path-limited commit
+  from delivery-owned paths. Preserve unrelated dirty user
+  files and exclude them from staging.
+- Compare the trees. When the final tree differs from the pre-review candidate,
+  rerun every required release classification and exact-tree provider proof against
+  the final commit. A failed or unavailable required proof blocks closeout.
+- After exact-tree proof passes, route final directly observed delivery facts
+  through `write-backlog`'s
+  [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md).
+  Close provider work and the
+  goal only when their acceptance conditions pass. Fog completion additionally
+  requires production evidence for every accepted resulting Story and Task.
 - Summarize goal outcome and remaining blockers.
 - Report phase path actually taken; do not imply skipped phases ran.
 - Report validation commands, browser checks, smoke tests, or manual scenarios.

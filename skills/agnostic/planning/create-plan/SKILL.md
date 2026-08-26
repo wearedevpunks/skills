@@ -56,9 +56,10 @@ silently renaming them.
    work, derive and validate the architecture contract accepted in `SPEC.md`; route missing or contradictory target design back to `requirements-grill`.
 12. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
 13. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
-14. Read `references/backlog-sync.md`. Sync backlog at epic/story level only when
-    backlog sync is eligible and in scope; otherwise record an explicit skip
-    reason and continue plan completion.
+14. Read `references/backlog-sync.md`. For eligible projected work, preserve the
+    provider Task identities and native blocker graph returned by
+    `write-backlog`; otherwise record an explicit skip reason and continue plan
+    completion.
 15. Invoke `$show-me` to present the task graph, dependencies, waves, and
     validation gates from the complete plan state before `$wait-what`. The
     presentation is a derived view; `PLAN.md` fields remain the execution authority.
@@ -81,12 +82,13 @@ silently renaming them.
 8. Assign each task the deduplicated union of skills whose exact triggers match
    in every touched scope, merging all touched scopes for
    cross-directory tasks.
-9. Build plan-derived worker waves: place every currently unblocked task with
-   a disjoint write scope in the same wave. Use a one-task wave only when
-   dependencies or ownership leave one task unblocked.
+9. Build worker waves from the provider Tasks and their native blocker edges,
+   then place every currently unblocked Task with a disjoint write scope in the
+   same wave. Use a one-Task wave only when blockers or ownership leave one Task
+   unblocked.
 10. Normalize every task with stable ids, `depends_on`, `location`,
    `owned_paths`, `wave_boundary`, `description`, `validation`, `status`, `log`,
-   `files edited/created`, owning-story backlog references, `assigned_skills`,
+   `files edited/created`, stable provider Task references, `assigned_skills`,
    `implementation_skill_guidance`,
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,
@@ -106,8 +108,9 @@ sections into `PLAN.md` and validate that they are internally consistent.
 
 - Preserve `No Stack Required` or `Ready` plus its dependency evidence.
 - Do not decide stack topology in `create-plan`.
-- Do not convert task-level `depends_on` into stacked PRs. Intra-epic task
-  dependencies stay inside one PR and only control implementation order.
+- `depends_on` preserves provider-native Task blocker edges. Those delivery
+  blockers do not imply stacked PRs; accepted branch/base intent owns PR
+  topology separately.
 - `Blocked` is invalid agent-ready input. Stop planning and report the stale or
   contradictory spec instead of producing an execution-ready plan.
 - If `Branch/Base Intent` is not `Not applicable`, make implementation tasks
