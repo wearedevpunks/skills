@@ -133,6 +133,15 @@ test("Technical Finder preserves full requirements authority before projection",
       businessIdentity: "exact",
       businessResolution: "immutable",
       businessProjection: "read-back",
+      businessChildren: [
+        {
+          identity: "exact",
+          status: "accepted",
+          scope: "in-scope",
+          resolution: "immutable",
+          projection: "read-back",
+        },
+      ],
       selectedStoryIntents: ["intent-a"],
       functionalChildren: [
         {

@@ -7,11 +7,29 @@ const businessChildCollectionConflicts = (children) => {
   if (!Array.isArray(children)) return false;
   return (
     children.length > 1 ||
-    children.some(
-      (child) =>
-        !child || CONFLICT_IDENTITIES.includes(child.identity),
-    )
+    children.some((child) => !child || child.identity !== "exact")
   );
+};
+
+const deriveBusinessStageRoute = (state) => {
+  if (!Array.isArray(state.businessChildren)) {
+    return state.business === "accepted"
+      ? "human-steering"
+      : "business-grilling";
+  }
+  if (state.businessChildren.length === 0) {
+    return state.business === "accepted"
+      ? "human-steering"
+      : "business-grilling";
+  }
+
+  const [child] = state.businessChildren;
+  if (child.status !== "accepted" || child.scope !== "in-scope") {
+    return "business-grilling";
+  }
+  if (child.resolution !== "immutable") return "human-steering";
+  if (child.projection !== "read-back") return "reconcile";
+  return "ready";
 };
 
 const childCollectionConflicts = (children, foreignKey) => {
@@ -84,6 +102,40 @@ const technicalProjectionConflicts = (children) => {
     }
   }
   return false;
+};
+
+const technicalSelectionConflicts = ({
+  selectedStoryIntents,
+  selectedStories,
+  functionalChildren,
+}) => {
+  if (!Array.isArray(selectedStories) || selectedStories.length === 0) {
+    return false;
+  }
+
+  const selectedIntents = new Set(
+    Array.isArray(selectedStoryIntents) ? selectedStoryIntents : [],
+  );
+  const selectedFunctionalChildren = (
+    Array.isArray(functionalChildren) ? functionalChildren : []
+  ).filter(
+    (child) =>
+      selectedIntents.has(child.storyIntent) &&
+      child.status === "accepted" &&
+      child.scope === "in-scope" &&
+      child.projection === "read-back",
+  );
+
+  return (
+    new Set(selectedStories).size !== selectedStories.length ||
+    selectedStories.some(
+      (story) =>
+        !isStableIdentity(story) ||
+        selectedFunctionalChildren.filter(
+          (child) => child.projectedStory === story,
+        ).length !== 1,
+    )
+  );
 };
 
 const deriveChildStageRoute = ({
@@ -197,13 +249,8 @@ export const deriveFinderRoute = (state) => {
     }
     return "business-grilling";
   }
-  if (
-    state.businessIdentity !== "exact" ||
-    state.businessResolution !== "immutable"
-  ) {
-    return "human-steering";
-  }
-  if (state.businessProjection !== "read-back") return "reconcile";
+  const businessRoute = deriveBusinessStageRoute(state);
+  if (businessRoute !== "ready") return businessRoute;
   if (state.targetDepth === "Business") return "return-target";
 
   const functionalRoute = deriveChildStageRoute({
@@ -214,6 +261,7 @@ export const deriveFinderRoute = (state) => {
   });
   if (functionalRoute !== "ready") return functionalRoute;
   if (state.targetDepth === "Functional") return "return-target";
+  if (technicalSelectionConflicts(state)) return "human-steering";
 
   const technicalRoute = deriveChildStageRoute({
     selected: state.selectedStories,

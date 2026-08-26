@@ -6,6 +6,14 @@ import { deriveFinderRoute } from "../skills/phases/finder-phase/scripts/finder-
 const read = (path) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
+const acceptedBusinessChild = (projection = "read-back") => ({
+  identity: "exact",
+  status: "accepted",
+  scope: "in-scope",
+  resolution: "immutable",
+  projection,
+});
+
 test("Business Finder is a human-only adapter over one human-only Finder engine", () => {
   const finder = read("skills/phases/finder-phase/SKILL.md");
   const finderMetadata = read("skills/phases/finder-phase/agents/openai.yaml");
@@ -31,8 +39,18 @@ test("Finder derives one deterministic route from current evidence on every entr
   );
 
   for (const scenario of scenarios) {
+    const state =
+      scenario.state.business === "accepted" &&
+      !Array.isArray(scenario.state.businessChildren)
+        ? {
+            ...scenario.state,
+            businessChildren: [
+              acceptedBusinessChild(scenario.state.businessProjection),
+            ],
+          }
+        : scenario.state;
     assert.equal(
-      deriveFinderRoute(scenario.state),
+      deriveFinderRoute(state),
       scenario.expectedRoute,
       scenario.name,
     );
@@ -138,14 +156,25 @@ test("Finder rejects accepted Business and Functional stages without exact immut
     businessIdentity: "exact",
     businessResolution: "immutable",
     businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
   };
 
   assert.equal(
-    deriveFinderRoute({ ...acceptedBusiness, businessIdentity: "missing" }),
+    deriveFinderRoute({
+      ...acceptedBusiness,
+      businessChildren: [
+        { ...acceptedBusinessChild(), identity: "missing" },
+      ],
+    }),
     "human-steering",
   );
   assert.equal(
-    deriveFinderRoute({ ...acceptedBusiness, businessResolution: "missing" }),
+    deriveFinderRoute({
+      ...acceptedBusiness,
+      businessChildren: [
+        { ...acceptedBusinessChild(), resolution: "missing" },
+      ],
+    }),
     "human-steering",
   );
   assert.equal(
@@ -177,6 +206,7 @@ test("Finder rejects duplicate stage children outside the selected subset", () =
     businessIdentity: "exact",
     businessResolution: "immutable",
     businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
     selectedStoryIntents: ["intent-a"],
     functionalChildren: [
       {
@@ -232,6 +262,7 @@ test("Finder rejects duplicate Business children and missing stage cardinality k
     businessIdentity: "exact",
     businessResolution: "immutable",
     businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
   };
 
   assert.equal(
@@ -259,6 +290,71 @@ test("Finder rejects duplicate Business children and missing stage cardinality k
   );
 });
 
+test("Finder completes Business only from one valid fresh Business child", () => {
+  const staleAcceptedSummary = {
+    targetDepth: "Business",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+  };
+
+  assert.equal(deriveFinderRoute(staleAcceptedSummary), "human-steering");
+  assert.equal(
+    deriveFinderRoute({
+      ...staleAcceptedSummary,
+      businessChildren: [],
+    }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...staleAcceptedSummary,
+      businessChildren: [
+        {
+          identity: "missing",
+          status: "accepted",
+          scope: "in-scope",
+          resolution: "immutable",
+          projection: "read-back",
+        },
+      ],
+    }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...staleAcceptedSummary,
+      businessChildren: [
+        {
+          identity: "exact",
+          status: "accepted",
+          scope: "in-scope",
+          resolution: "immutable",
+          projection: "pending",
+        },
+      ],
+    }),
+    "reconcile",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...staleAcceptedSummary,
+      businessChildren: [
+        {
+          identity: "exact",
+          status: "accepted",
+          scope: "in-scope",
+          resolution: "immutable",
+          projection: "read-back",
+        },
+      ],
+    }),
+    "return-target",
+  );
+});
+
 test("Finder requires one distinct projected Story identity per accepted Functional child", () => {
   const state = {
     targetDepth: "Functional",
@@ -267,6 +363,7 @@ test("Finder requires one distinct projected Story identity per accepted Functio
     businessIdentity: "exact",
     businessResolution: "immutable",
     businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
     selectedStoryIntents: ["intent-a", "intent-b"],
     functionalChildren: [
       {
@@ -310,6 +407,7 @@ test("Finder requires exact Technical Task and relation readback", () => {
     businessIdentity: "exact",
     businessResolution: "immutable",
     businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
     selectedStoryIntents: ["intent-a"],
     functionalChildren: [
       {
@@ -359,6 +457,53 @@ test("Finder requires exact Technical Task and relation readback", () => {
       ],
     }),
     "human-steering",
+  );
+});
+
+test("Finder joins every selected Technical Story to a selected Functional projection", () => {
+  const state = {
+    targetDepth: "Technical",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+      {
+        storyIntent: "intent-b",
+        projectedStory: "story-b",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+    technicalChildren: [],
+  };
+
+  assert.equal(
+    deriveFinderRoute({ ...state, selectedStories: ["story-stale"] }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({ ...state, selectedStories: ["story-b"] }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({ ...state, selectedStories: ["story-a"] }),
+    "technical-grilling",
   );
 });
 

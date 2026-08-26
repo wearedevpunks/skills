@@ -189,6 +189,28 @@ test("create-spec no-interview compiler", () => {
   assert.doesNotMatch(skill, /ask(?:ing)? (?:the user|questions)|questioning\.md/i);
 });
 
+test("create-spec requires Story context only for Technical Finder", () => {
+  const skill = read("skills/agnostic/planning/create-spec/SKILL.md");
+  const readiness = read(
+    "skills/agnostic/planning/create-spec/references/readiness.md",
+  );
+  const all = `${skill}\n${readiness}`;
+  const normalized = all.replace(/\s+/gu, " ");
+
+  assert.match(
+    all,
+    /Technical Finder.{0,180}exact selected Story context/isu,
+  );
+  assert.match(
+    normalized,
+    /Non-Finder compilation (?:requires|has) no provider Story precondition/iu,
+  );
+  assert.doesNotMatch(
+    skill,
+    /`SPEC\.md` is provider-neutral authority for one resolved Story/iu,
+  );
+});
+
 test("spec compiler emits agent-ready traceable specs or one atomic failure", () => {
   const skill = read("skills/agnostic/planning/create-spec/SKILL.md");
   const readiness = read(

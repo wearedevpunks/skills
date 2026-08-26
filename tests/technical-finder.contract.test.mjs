@@ -49,6 +49,15 @@ const technicalState = (technicalChildren) => ({
   businessIdentity: "exact",
   businessResolution: "immutable",
   businessProjection: "read-back",
+  businessChildren: [
+    {
+      identity: "exact",
+      status: "accepted",
+      scope: "in-scope",
+      resolution: "immutable",
+      projection: "read-back",
+    },
+  ],
   selectedStoryIntents: ["intent-a", "intent-b"],
   functionalChildren: [
     {
