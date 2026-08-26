@@ -156,6 +156,7 @@ test("Finder rejects accepted Business and Functional stages without exact immut
       functionalChildren: [
         {
           storyIntent: "intent-a",
+          projectedStory: "story-a",
           identity: "exact",
           status: "accepted",
           scope: "in-scope",
@@ -180,6 +181,7 @@ test("Finder rejects duplicate stage children outside the selected subset", () =
     functionalChildren: [
       {
         storyIntent: "intent-a",
+        projectedStory: "story-a",
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -217,6 +219,144 @@ test("Finder rejects duplicate stage children outside the selected subset", () =
     deriveFinderRoute({
       ...acceptedBusiness,
       technicalChildren: [duplicateTechnical, { ...duplicateTechnical }],
+    }),
+    "human-steering",
+  );
+});
+
+test("Finder rejects duplicate Business children and missing stage cardinality keys", () => {
+  const base = {
+    targetDepth: "Business",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+  };
+
+  assert.equal(
+    deriveFinderRoute({
+      ...base,
+      businessChildren: [{ identity: "exact" }, { identity: "exact" }],
+    }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...base,
+      targetDepth: "Functional",
+      selectedStoryIntents: ["intent-a"],
+      functionalChildren: [{ identity: "exact", status: "active" }],
+    }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...base,
+      technicalChildren: [{ identity: "exact", status: "active" }],
+    }),
+    "human-steering",
+  );
+});
+
+test("Finder requires one distinct projected Story identity per accepted Functional child", () => {
+  const state = {
+    targetDepth: "Functional",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    selectedStoryIntents: ["intent-a", "intent-b"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+      {
+        storyIntent: "intent-b",
+        projectedStory: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+  };
+
+  assert.equal(deriveFinderRoute(state), "human-steering");
+  assert.equal(
+    deriveFinderRoute({
+      ...state,
+      functionalChildren: state.functionalChildren.map((child) => ({
+        ...child,
+        projectedStory: "story-a",
+      })),
+    }),
+    "human-steering",
+  );
+});
+
+test("Finder requires exact Technical Task and relation readback", () => {
+  const state = {
+    targetDepth: "Technical",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+    selectedStories: ["story-a"],
+    technicalChildren: [
+      {
+        story: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        specReadiness: "agent-ready",
+        stableBlob: "verified",
+        taskIntentCount: 1,
+        projection: "read-back",
+      },
+    ],
+  };
+
+  assert.equal(deriveFinderRoute(state), "human-steering");
+  assert.equal(
+    deriveFinderRoute({
+      ...state,
+      technicalChildren: [
+        {
+          ...state.technicalChildren[0],
+          taskGraphReadback: "exact",
+          projectedTasks: [
+            {
+              id: "task-a",
+              story: "wrong-story",
+              milestone: "v1",
+              blockedBy: [],
+              readback: "exact",
+            },
+          ],
+        },
+      ],
     }),
     "human-steering",
   );

@@ -12,8 +12,12 @@ Use this reference when deciding whether a phase is complete enough to skip.
 ## Plan Complete
 
 - `PLAN.md` exists and matches the spec.
-- Every `Tn` resolves one stable provider Task ID and URL, preserves the same
-  `V*`, and mirrors native blocker edges through `depends_on`.
+- One uniform `task_identity_mode` applies. In `provider-task` mode every `Tn`
+  resolves one stable provider Task ID and URL, preserves the same `V*`, and
+  mirrors native blocker edges through `depends_on`. In `planning-only` mode
+  each `Tn` is the execution identity, provider identity slots are `not_applicable`,
+  relation mode is `unprojected`, a nonempty sync-skip reason is present, and
+  `depends_on` names plan `Tn` identities.
 - Tasks have owned paths, validation gates, and wave boundaries.
 - Each wave contains every currently unblocked task with a disjoint write scope;
   one-task waves are justified by dependencies or ownership.

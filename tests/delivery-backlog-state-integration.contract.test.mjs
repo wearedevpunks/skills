@@ -38,6 +38,18 @@ test("implementation immediately routes directly observed Task facts through wri
   );
 });
 
+test("implementation preserves planning-only Task execution without provider claims", () => {
+  assert.match(implementation, /task_identity_mode[\s\S]*provider-task[\s\S]*planning-only/iu);
+  assert.match(
+    implementation,
+    /planning-only[\s\S]*`Tn`[\s\S]*execution identity[\s\S]*not_applicable[\s\S]*unprojected/iu,
+  );
+  assert.match(
+    implementation,
+    /planning-only[\s\S]*(?:emit|performs?)[\s\S]*no provider[\s\S]*(?:mutation|lifecycle|readback)/iu,
+  );
+});
+
 test("Delivery keeps merge, staging, production, and Fog completion distinct", () => {
   assert.match(
     delivery,

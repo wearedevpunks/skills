@@ -13,7 +13,7 @@ docs ingest or no-op, and validation are complete.
   the final commit. A failed or unavailable required proof blocks closeout.
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
-  [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md).
+  [delivery-status branch](../../write-backlog/references/delivery-status.md).
   Close provider work and the
   goal only when their acceptance conditions pass. Fog completion additionally
   requires production evidence for every accepted resulting Story and Task.

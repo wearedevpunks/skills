@@ -16,7 +16,7 @@ identity modes in one plan is invalid.
 Use the backlog model owned by `write-backlog` at
 [backlog-model.md](https://github.com/wearedevpunks/skills/blob/main/skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md).
 Read its [technical projection
-branch](../../../requirements/write-backlog/references/technical-projection.md)
+branch](../../write-backlog/references/technical-projection.md)
 when the handoff includes implementation Tasks. Those references own taxonomy,
 readiness, Task splitting, milestone rules, provider mutation, and readback.
 

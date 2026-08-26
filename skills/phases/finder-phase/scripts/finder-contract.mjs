@@ -1,5 +1,18 @@
 const DEPTHS = ["Business", "Functional", "Technical"];
 const CONFLICT_IDENTITIES = ["ambiguous", "duplicate", "conflict"];
+const isStableIdentity = (value) =>
+  typeof value === "string" && value.trim().length > 0;
+
+const businessChildCollectionConflicts = (children) => {
+  if (!Array.isArray(children)) return false;
+  return (
+    children.length > 1 ||
+    children.some(
+      (child) =>
+        !child || CONFLICT_IDENTITIES.includes(child.identity),
+    )
+  );
+};
 
 const childCollectionConflicts = (children, foreignKey) => {
   if (!Array.isArray(children)) return false;
@@ -8,10 +21,68 @@ const childCollectionConflicts = (children, foreignKey) => {
   for (const child of children) {
     if (!child || CONFLICT_IDENTITIES.includes(child.identity)) return true;
     const key = child[foreignKey];
+    if (!isStableIdentity(key)) return true;
     if (seen.has(key)) return true;
     seen.add(key);
   }
 
+  return false;
+};
+
+const functionalProjectionConflicts = (children) => {
+  if (!Array.isArray(children)) return false;
+
+  const stories = new Set();
+  for (const child of children) {
+    if (
+      child?.status !== "accepted" ||
+      child.scope !== "in-scope" ||
+      child.projection !== "read-back"
+    ) {
+      continue;
+    }
+    if (!isStableIdentity(child.projectedStory)) return true;
+    if (stories.has(child.projectedStory)) return true;
+    stories.add(child.projectedStory);
+  }
+  return false;
+};
+
+const technicalProjectionConflicts = (children) => {
+  if (!Array.isArray(children)) return false;
+
+  const taskIds = new Set();
+  for (const child of children) {
+    if (
+      child?.status !== "accepted" ||
+      child.scope !== "in-scope" ||
+      child.projection !== "read-back"
+    ) {
+      continue;
+    }
+    if (
+      child.taskGraphReadback !== "exact" ||
+      !Array.isArray(child.projectedTasks) ||
+      child.projectedTasks.length !== child.taskIntentCount
+    ) {
+      return true;
+    }
+    for (const task of child.projectedTasks) {
+      if (
+        !task ||
+        !isStableIdentity(task.id) ||
+        task.story !== child.story ||
+        !isStableIdentity(task.milestone) ||
+        task.readback !== "exact" ||
+        !Array.isArray(task.blockedBy) ||
+        task.blockedBy.some((identity) => !isStableIdentity(identity)) ||
+        taskIds.has(task.id)
+      ) {
+        return true;
+      }
+      taskIds.add(task.id);
+    }
+  }
   return false;
 };
 
@@ -94,8 +165,11 @@ export const deriveFinderRoute = (state) => {
     return "human-steering";
   }
   if (
+    businessChildCollectionConflicts(state.businessChildren) ||
     childCollectionConflicts(state.functionalChildren, "storyIntent") ||
-    childCollectionConflicts(state.technicalChildren, "story")
+    childCollectionConflicts(state.technicalChildren, "story") ||
+    functionalProjectionConflicts(state.functionalChildren) ||
+    technicalProjectionConflicts(state.technicalChildren)
   ) {
     return "human-steering";
   }

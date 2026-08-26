@@ -22,8 +22,9 @@ test("write-backlog owns one fail-closed mutation pipeline", () => {
   assert.match(skill, /zero provider mutations/iu);
   assert.match(
     envelope,
-    /operation:[\s\S]*initialize\/reconstruct[\s\S]*pre-resolution grilling-child[\s\S]*Business projection[\s\S]*Functional projection[\s\S]*Technical projection[\s\S]*Normalization[\s\S]*delivery status[\s\S]*issue reconciliation/iu,
+    /operation:[\s\S]*initialize\/reconstruct[\s\S]*pre-resolution grilling-child[\s\S]*support-child[\s\S]*Business projection[\s\S]*Functional projection[\s\S]*Technical projection[\s\S]*Normalization[\s\S]*delivery status[\s\S]*issue reconciliation/iu,
   );
+  assert.match(envelope, /intake[\s\S]*no accepted evidence/iu);
 });
 
 test("write-backlog discloses each semantic branch once", () => {
@@ -182,7 +183,7 @@ test("Fog intake ensures one unresolved grilling child by stage cardinality", ()
     read(`${writerRoot}/references/technical-projection.md`),
   ];
 
-  assert.match(skill, /ensure Fog or pre-resolution grilling child shell[\s\S]*references\/fog-intake\.md/iu);
+  assert.match(skill, /ensure Fog[\s\S]*pre-resolution grilling child shell[\s\S]*references\/fog-intake\.md/iu);
   assert.match(
     fog,
     /exact Fog identity[\s\S]*Stage[\s\S]*durable child wiki identity[\s\S]*cardinality key[\s\S]*before accepted evidence exists/iu,
@@ -197,6 +198,20 @@ test("Fog intake ensures one unresolved grilling child by stage cardinality", ()
   for (const projection of projections) {
     assert.match(projection, /immutable accepted .*grilling/iu);
   }
+});
+
+test("Fog intake owns unresolved Research and Prototype support-child creation", () => {
+  const skill = read(`${writerRoot}/SKILL.md`);
+  const fog = read(`${writerRoot}/references/fog-intake.md`);
+
+  assert.match(skill, /Research\/Prototype support child[\s\S]*references\/fog-intake\.md/iu);
+  assert.match(
+    fog,
+    /exact unresolved grilling-child identity[\s\S]*Research[\s\S]*Prototype[\s\S]*durable support-child wiki identity/iu,
+  );
+  assert.match(fog, /complete read[\s\S]*zero matches[\s\S]*unresolved support child/iu);
+  assert.match(fog, /no accepted answer[\s\S]*verdict[\s\S]*resolution pointer/iu);
+  assert.match(fog, /duplicate[\s\S]*ambiguous[\s\S]*wrong parent[\s\S]*zero writes/iu);
 });
 
 test("inherited provider objects require explicit identity adoption", () => {

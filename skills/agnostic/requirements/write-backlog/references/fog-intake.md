@@ -30,6 +30,23 @@ can host the interview and support relations, but cannot authorize backlog
 projection. Business, Functional, and Technical projection still require the
 immutable accepted grilling resolution persisted on that exact child.
 
+## Ensure Research or Prototype Support Child
+
+An exact Fog identity, exact unresolved grilling-child identity, support kind
+(`Research` or `Prototype`), durable support-child wiki identity, and one
+support identity key authorize ensuring the direct Fog support child before its
+answer or verdict exists. Read every direct Fog child and every relation first.
+Reuse one exact kind, identity-key, grilling-child relation match. Create one
+unresolved support child only when the complete read proves zero matches, then
+read back its stable provider identity and exact relation. A duplicate,
+ambiguous identity, wrong parent, or conflicting support relation authorizes
+zero writes.
+
+The unresolved support child carries no accepted answer, verdict, or immutable
+resolution pointer. Research or Prototype owns producing that evidence; this
+intake operation only establishes the stable child and relation needed to host
+the support cycle.
+
 Fog is lateral provenance. Preserve the user's uncertainty, accepted decisions,
 evidence links, and every Product Area, Initiative, Epic, Story, or Task the Fog
 enriched or produced. Fog never becomes a parent in the product hierarchy.

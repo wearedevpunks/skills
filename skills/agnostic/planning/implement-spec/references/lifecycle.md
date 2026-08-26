@@ -105,9 +105,11 @@ Do not create the file when nothing durable must survive the run.
 ## 6. Shared execution invariants
 
 - Require every planned task to declare dependencies, owned paths, validation gates, and a wave boundary.
-- Require every `Tn` to resolve one stable provider Task ID and URL. Preserve
-  that identity, its same `V*`, and its native blocker edges throughout
-  execution.
+- Read the plan's uniform `task_identity_mode`. In `provider-task` mode, require
+  every `Tn` to resolve one stable provider Task ID and URL and preserve that
+  identity, its same `V*`, and native blocker edges. In `planning-only` mode,
+  keep `Tn` as the execution identity, provider fields `not_applicable`,
+  `relation_mode: unprojected`, and the nonempty backlog-sync skip reason.
 - Build each wave from tasks whose dependencies are complete and whose write scopes are disjoint.
 - Workers own implementation changes. The parent coordinates, reviews, validates, updates shared artifacts, and finalizes.
 - A wave may contain one worker when dependencies or owned paths leave one task unblocked.
@@ -129,12 +131,13 @@ Do not create the file when nothing durable must survive the run.
 - Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
 - When unclear debt affects the current implementation and the answer is not already in the spec/plan/backlog, pause for a tiny `$requirements-phase` clarification instead of guessing.
-- Load `write-backlog`'s
-  [delivery-status.md](../../../requirements/write-backlog/references/delivery-status.md)
-  branch for lifecycle facts. When work starts, becomes blocked, gains a pull
-  request, merges, or receives staging or production evidence, immediately call
+- In `provider-task` mode, load `write-backlog`'s
+  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch
+  for lifecycle facts. When work starts, becomes blocked, gains a pull request,
+  merges, or receives staging or production evidence, immediately call
   `write-backlog` with only the directly observed fact and require exact
-  readback before advancing the Task.
+  readback before advancing the Task. Planning-only tasks emit no provider
+  lifecycle mutation or readback claim.
 - Merge, staging, and production are distinct observations. Merge is never
   deployment evidence. Fog completion remains production-only and requires
   production evidence for every accepted resulting Story and Task.
@@ -168,8 +171,8 @@ After each completed wave:
 - resolve any in-goal debt before advancing
 - update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
-- verify every observed provider Task fact has exact `write-backlog` readback;
-  a missing readback keeps that Task blocked
+- in `provider-task` mode, verify every observed provider Task fact has exact
+  `write-backlog` readback; a missing readback keeps that Task blocked
 
 ## 8. Handle blockers honestly
 

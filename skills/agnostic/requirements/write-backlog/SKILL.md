@@ -32,7 +32,7 @@ silently renaming them.
    conflict, or incomplete search.
 4. Load exactly one semantic branch:
    - [initialize or reconstruct a backlog](references/backlog-initialization.md)
-   - [ensure Fog or pre-resolution grilling child shell](references/fog-intake.md)
+   - [ensure Fog, pre-resolution grilling child shell, or Research/Prototype support child](references/fog-intake.md)
    - [project accepted Business grilling](references/business-projection.md)
    - [project accepted Functional grilling](references/functional-projection.md)
    - [project accepted Technical grilling from a verified stable blob URL](references/technical-projection.md)
