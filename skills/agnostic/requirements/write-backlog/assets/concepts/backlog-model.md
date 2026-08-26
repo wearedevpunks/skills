@@ -1,69 +1,60 @@
 # Backlog Model
 
-## Canonical model
+## Canonical Topology
 
 ```text
-Backlog root
-  fog
-  capability module
-    grilling
-    research
-    prototype
-    epic
-      story
+Product/Backlog Root
+└── Product Area
+    └── Initiative
+        └── Epic
+            └── Story [exactly one contextual V*]
+                └── Task 1..n [same V* + blocker relations]
 
-Project overview execution milestones
-  M1 -> M2 -> M3 ...
-  (assigned to overview-level items from fog through epic; containing stories may share that value)
+Fog ──lateral provenance/enrichment──> Product Area | Initiative | Epic | Story | Task
 ```
 
-The direct concepts are `fog`, `grilling`, `research`, `prototype`, `epic`, and `story`. Each is visible, assignable, searchable, linkable, and closeable. A provider adapter may represent them with native issue types, fields, labels, columns, or a stable title convention; no shared classification field is required. If no representation preserves the direct concept, preflight fails.
+- Product Area: stable product responsibility.
+- Initiative: business goal within one Product Area.
+- Epic: long-lived business slice within one Initiative.
+- Story: one shippable product outcome within one Epic.
+- Task: required atomic, owner-ready Story work.
+- Fog: external intake, evidence, decision history, and delivery provenance.
 
-## Placement
+## Staged Projection
 
-- `fog`: root-level uncertainty, never delivery scope or a parent container
-- `grilling`: capability-scoped human decision work
-- `research`: capability-scoped readonly evidence work
-- `prototype`: capability-scoped experiment work
-- `epic`: one capability-boundary projection of an authoritative agent-ready spec
-- `story`: product-facing child tracer bullet derived from spec stories and criteria
+- Business grilling may reuse, enrich, or create the resolved Product Area,
+  Initiative, and Epic path.
+- Functional grilling creates exactly one Story per accepted Functional child.
+- Technical grilling requires an authoritative agent-ready Story `SPEC.md`, then
+  creates one or more mandatory Tasks and native blocker relations.
 
-Each capability module groups durable product ownership. It stays separate from project-overview milestones and does not determine implementation order.
+Every stage preserves its immutable resolution pointer and the exact provider
+objects it enriched or produced. Fog is lateral provenance; it is not another
+ownership level and does not replace native parent relations.
 
-## Traceability and story readiness
+## Iterations And Blockers
 
-Every projected story names its source `US-###` records and covered `AC-###` records. Before mutation, prove:
+Every Story belongs to exactly one contextual `V*` milestone iteration. Every Task belongs to the same iteration as its Story. A Fog may target a fitting
+iteration. Product Areas, Initiatives, and Epics span iterations.
 
-- every spec story is represented
-- every criterion maps to an existing story
-- every criterion is covered by at least one projected story
-- every projected story has a demonstrable end-to-end outcome
-- each story is small enough for one prepared agent session
+Reuse a fitting existing milestone before proposing another. Moving work to a
+different iteration requires explicit approval. Milestones do not encode Task
+precedence.
 
-Do not create layer stories such as database, API, frontend, tests, or wiring. Fold those concerns into a vertical story or leave them for concrete planning.
+Validate the complete reachable Task graph before mutation:
 
-## Blocker graph
+1. Resolve every blocker target by stable identity.
+2. Reject missing targets and self-edges.
+3. Reject a dependency on a future `V*` milestone iteration.
+4. Reject cycles across all reachable Tasks.
+5. Preserve real blockers across Stories and Epics.
 
-Use native `blockedBy` / `blocks` relations where available.
+## Mutation Boundary
 
-Before mutation:
+Construct and validate the full intended provider delta before the first write.
+An identity, hierarchy, milestone, relation, representation, or approval
+failure produces zero provider mutations. After writing, exact provider
+readback must prove every intended object and relation.
 
-1. Resolve every blocker identifier to a projected story.
-2. Reject missing targets and self-blockers.
-3. Detect and reject cycles across the complete selected graph.
-4. Keep every story in the containing overview milestone when the provider supports membership; do not derive a distinct milestone for a story.
-5. Verify every blocker target is present in the selected projection.
-
-Use milestones across the overview-level taxonomy from `fog` through `epic` (`fog`, `grilling`, `research`, `prototype`, `epic`) when the project overview needs chronological precedence. Stories may share their containing overview milestone when the provider supports membership, but never receive distinct derived milestones or use milestones to encode story order; update native blockers when story relations change.
-
-## Mutation boundary
-
-Validate the full agent-ready projection, graph, provider destination, hierarchy support, and dependency representation before the first provider write. A failed validation writes nothing. After validation, write immediately without an approval checkpoint.
-
-Provider execution can still fail mid-sequence. Report every created identifier and the failure honestly; never describe a multi-request provider as transactionally atomic.
-
-## Intake and downstream handoff
-
-Resolve any pre-spec intake item with the immutable spec link and accepted outcome. Preserve it as history; do not silently promote it into the delivery epic.
-
-The delivery epic and stories link back to `SPEC.md`. Concrete files, commands, tests, worker assignments, and execution order belong later in `delivery-phase` / `create-plan`.
+Provider writes may fail between requests. Return all observed provider IDs and
+the unresolved delta; never claim transactional atomicity.

@@ -5,236 +5,109 @@ import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
 const read = (relativePath) => readFileSync(path.join(root, relativePath), "utf-8");
+const writerRoot = "skills/agnostic/requirements/write-backlog";
 
-test("write-backlog requires agent-ready spec", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  assert.match(skill, /authoritative `SPEC\.md`/u);
-  assert.match(skill, /`readiness: agent-ready`/u);
-  assert.match(skill, /before any provider mutation/u);
+test("write-backlog remains the ticket-structuring entrypoint and sole writer", () => {
+  const skill = read(`${writerRoot}/SKILL.md`);
+  assert.match(skill, /sole physical provider mutation authority/iu);
+  assert.match(skill, /preserves the user's ticket wording/iu);
+  assert.match(skill, /structuring the ticket correctly/iu);
+  assert.match(skill, /Finder and delivery callers never perform provider writes/iu);
 });
 
-test("write-backlog uses direct backlog concepts", () => {
-  for (const relativePath of [
-    "skills/agnostic/requirements/write-backlog/SKILL.md",
-    "skills/agnostic/requirements/write-backlog/REFERENCE.md",
-    "skills/agnostic/requirements/write-backlog/assets/concepts/backlog-model.md",
-  ]) {
-    const document = read(relativePath);
-    assert.match(document, /`fog`[\s\S]*`grilling`[\s\S]*`research`[\s\S]*`prototype`[\s\S]*`epic`[\s\S]*`story`/u, relativePath);
-    assert.doesNotMatch(document, /\b(?:kind|kinds|Kind)\b/u, relativePath);
-  }
+test("Fog intake preserves child evidence without authorizing projection", () => {
+  const fog = read(`${writerRoot}/references/fog-intake.md`);
+  assert.match(fog, /kind: `grilling`[\s\S]*Stage: Business, Functional, or Technical/iu);
+  assert.match(fog, /Research or Prototype[\s\S]*exact grilling child/iu);
+  assert.match(fog, /answer or verdict[\s\S]*immutable resolution pointer/iu);
+  assert.match(fog, /cannot authorize[\s\S]*projection/iu);
+  assert.match(fog, /lateral provenance/iu);
 });
 
-test("write-backlog preserves spec traceability and tracer bullets", () => {
-  const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
-  assert.match(reference, /stable `US-###` user stories/u);
-  assert.match(reference, /stable `AC-###` acceptance criteria/u);
-  assert.match(reference, /`Covers: US-###`/u);
-  assert.match(reference, /vertical tracer bullet/u);
-  assert.match(reference, /agent-sized/u);
+test("Functional Stories preserve product traceability and one shippable outcome", () => {
+  const functional = read(`${writerRoot}/references/functional-projection.md`);
+  const shape = read(`${writerRoot}/assets/concepts/story-shape.md`);
+  assert.match(functional, /one Story per Functional child/iu);
+  assert.match(functional, /user wording/iu);
+  assert.match(functional, /`US-###`\/`AC-###` traceability/iu);
+  assert.match(shape, /Story body[\s\S]*Outcome[\s\S]*Source stories[\s\S]*Acceptance criteria[\s\S]*Demonstration/iu);
+  assert.match(shape, /Story body[\s\S]*Non-goals[\s\S]*Dependencies[\s\S]*Durable accepted-artifact links/iu);
 });
 
-test("write-backlog validates the complete blocker graph before mutation", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  assert.match(skill, /Resolve every blocker target/u);
-  assert.match(skill, /Reject missing targets, self-blockers, and cycles/u);
-  assert.match(skill, /complete projection before the first provider write/u);
-});
-
-test("provider adapters do not require a canonical classification field", () => {
-  for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.doesNotMatch(document, /Canonical `kind` storage|canonical Harness kind|`Kind` is canonical|canonical when/u, name);
-    assert.match(document, /adapter-specific/u, name);
-  }
-});
-
-test("create-plan preserves spec before backlog", () => {
-  const reference = read("skills/agnostic/planning/create-plan/references/backlog-sync.md");
-  assert.match(reference, /authoritative agent-ready `SPEC\.md`/u);
-  assert.match(reference, /verified stable blob URL/u);
-  assert.match(reference, /write-backlog/u);
-  assert.match(reference, /Concrete planning is downstream/u);
-  assert.doesNotMatch(reference, /future `SPEC\.md`/u);
-});
-
-test("design backlog handoff requires the compiled spec", () => {
-  const phase = read("skills/phases/design-phase/phases/backlog.md");
-  assert.match(phase, /authoritative agent-ready `SPEC\.md`/u);
-  assert.match(phase, /verified stable blob URL/u);
-  assert.match(phase, /Activate `write-backlog`/u);
-  assert.match(phase, /spec -> backlog -> delivery/u);
-});
-
-test("docs onboarding compiles before backlog projection", () => {
-  const skill = read("skills/agnostic/docs/docs-onboarding/SKILL.md");
-  assert.match(skill, /confirmed grill decisions/u);
-  assert.match(skill, /agent-ready specs/u);
-  assert.match(skill, /Only after each spec is written[^\n]+activate `write-backlog`/u);
-  assert.match(skill, /verified stable blob URL/u);
-  assert.doesNotMatch(skill, /Backlog mutation is out of scope/u);
-});
-
-test("write-backlog examples demonstrate spec projection", () => {
-  const examples = read("skills/agnostic/requirements/write-backlog/EXAMPLES.md");
-  assert.match(examples, /readiness: agent-ready/u);
-  assert.match(examples, /US-001/u);
-  assert.match(examples, /AC-001/u);
-  assert.match(examples, /immutable spec link/u);
-  assert.doesNotMatch(examples, /From `requirements-grill` artifacts to backlog/u);
-});
-
-test("shared consumers do not reintroduce backlog-first lifecycle", () => {
-  for (const relativePath of [
-    "skills/agnostic/requirements/write-backlog/SKILL.md",
-    "skills/agnostic/planning/create-plan/references/backlog-sync.md",
-    "skills/phases/design-phase/phases/backlog.md",
-    "skills/agnostic/docs/docs-onboarding/SKILL.md",
-    "skills/agnostic/requirements/requirements-grill/SKILL.md",
-  ]) {
-    const document = read(relativePath);
-    assert.doesNotMatch(document, /epics? anchor future|one future `SPEC\.md`|From `requirements-grill` artifacts/u, relativePath);
-  }
-  const grill = read("skills/agnostic/requirements/requirements-grill/SKILL.md");
-  assert.match(grill, /closed shared understanding routes to `create-spec`/u);
-  assert.doesNotMatch(grill, /backlog\/user-story creation is the next phase|usually backlog\/user-story creation/u);
-});
-
-test("story bodies carry spec authority and demonstration seams", () => {
-  const shape = read("skills/agnostic/requirements/write-backlog/assets/concepts/story-shape.md");
-  assert.match(shape, /Immutable spec/u);
-  assert.match(shape, /Source stories/u);
-  assert.match(shape, /Acceptance criteria/u);
-  assert.match(shape, /Demonstration/u);
-  assert.doesNotMatch(shape, /once it exists/u);
-});
-
-test("provider adapters preflight the complete graph before creation", () => {
-  for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    const preflight = document.indexOf("## Preflight before creation");
-    const creation = document.indexOf("## Create ");
-    assert.ok(preflight >= 0 && (creation < 0 || preflight < creation), `${name}: preflight order`);
-    assert.match(document, /complete in-memory projection/u, name);
-    assert.match(document, /missing targets, self-edges, and cycles/u, name);
-    assert.match(document, /milestone/u, name);
-    assert.match(document, /representable/u, name);
-    assert.doesNotMatch(
-      document,
-      /Create (?:the milestone-eligible|selected concrete)[\s\S]{0,240}Stop (?:materialization )?on a missing/u,
-      `${name}: no create-then-validate ordering`,
-    );
-  }
-});
-
-test("provider classification is configured and never bootstrapped by default", () => {
-  for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.match(document, /Inspect configured provider metadata/u, name);
-    assert.match(document, /Only when explicitly configured/u, name);
-    assert.match(document, /Classification examples assume explicit configuration/u, name);
-    assert.doesNotMatch(document, /Resolve or create the `Kind`|If .*`Kind`.*absent, create|does not exist, create a project\/process custom/u, name);
-  }
-});
-
-test("provider adapters preserve visible direct taxonomy without custom fields", () => {
-  for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.match(document, /Fallback order:/u, name);
-    assert.match(document, /stable title prefix/u, name);
-    assert.match(document, /fail preflight/u, name);
-    assert.doesNotMatch(document, /omit classification|otherwise omit that value/u, name);
-  }
-});
-
-test("pre-spec intake dependency graph is validated before mutation", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
-  for (const document of [skill, reference]) {
-    assert.match(document, /complete intake dependency graph/u);
-    assert.match(document, /missing targets,\s+self-edges, and cycles/u);
-    assert.match(document, /before (?:the first provider write|mutation)/u);
-  }
-});
-
-test("fog intake carries uncertainty while graduated intake carries a precise question", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  const reference = read("skills/agnostic/requirements/write-backlog/REFERENCE.md");
-  for (const document of [skill, reference]) {
-    assert.match(
-      document,
-      /`fog`.{0,200}frontier or uncertainty description/is,
-    );
-    assert.match(
-      document,
-      /`grilling`, `research`, or `prototype`.{0,200}precise question/is,
-    );
-    assert.doesNotMatch(document, /(?:each|one) `fog`[^.]{0,200}precise question/is);
-  }
-});
-
-test("write-backlog invocation advertises both lifecycle branches", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  const description = skill.match(/^description: (.+)$/mu)?.[1] ?? "";
-  assert.match(description, /pre-spec intake/u);
-  assert.match(description, /agent-ready post-spec delivery projection/u);
-});
-
-test("design backlog bodies exclude implementation notes", () => {
-  const phase = read("skills/phases/design-phase/phases/backlog.md");
-  assert.match(phase, /accepted product and design constraints, acceptance context, and artifact links/u);
-  assert.doesNotMatch(phase, /implementation notes/u);
-});
-
-test("write-backlog physically updates existing decision tickets", () => {
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  assert.match(skill, /update-existing branch/u);
-  assert.match(skill, /claim, release, or resolve/u);
-  assert.match(skill, /immutable resolution pointer/u);
-
-  const providerSignals = new Map([
-    ["linear", /issueUpdate/u],
-    ["github-projects", /updateIssue/u],
-    ["azure-devops", /JSON Patch update/u],
-    ["monday", /change_item_column_values/u],
-  ]);
-  for (const [name, signal] of providerSignals) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.match(document, /## Update existing decision tickets/u, name);
-    assert.match(document, /claim, release, and resolve/u, name);
-    assert.match(document, signal, name);
-  }
-});
-
-test("learning closure returns evidence to Wayfinder without delivery authorization", () => {
-  for (const relativePath of [
-    "skills/agnostic/requirements/write-backlog/SKILL.md",
-    "skills/agnostic/requirements/write-backlog/assets/concepts/story-shape.md",
-    "skills/agnostic/requirements/write-backlog/assets/providers/linear-create-payload.md",
-    "skills/agnostic/requirements/write-backlog/assets/providers/github-projects-create-payload.md",
-    "skills/agnostic/requirements/write-backlog/assets/providers/azure-devops-create-payload.md",
-    "skills/agnostic/requirements/write-backlog/assets/providers/monday-create-payload.md",
-  ]) {
-    const document = read(relativePath);
-    assert.doesNotMatch(document, /accepted direction|created or updated (?:implementation )?(?:items|epics\/stories)/iu, relativePath);
-  }
-  const skill = read("skills/agnostic/requirements/write-backlog/SKILL.md");
-  assert.match(skill, /Evidence returns to Wayfinder for reconciliation; closure does not authorize delivery/u);
-});
-
-test("all provider bodies preserve immutable spec and story traceability", () => {
-  for (const name of ["linear", "github-projects", "azure-devops", "monday"]) {
-    const document = read(`skills/agnostic/requirements/write-backlog/assets/providers/${name}-create-payload.md`);
-    assert.match(document, /Epic body ownership:[\s\S]*immutable spec link/u, name);
-    assert.match(document, /Story body ownership:[\s\S]*source `US-###`[\s\S]*covered `AC-###`[\s\S]*demonstration[\s\S]*accepted artifact links/u, name);
-  }
-});
-
-test("create-plan backlog reference links to the canonical model", () => {
-  const document = read("skills/agnostic/planning/create-plan/references/backlog-sync.md");
-  const match = document.match(
-    /\(https:\/\/github\.com\/wearedevpunks\/skills\/blob\/main\/(skills\/agnostic\/requirements\/write-backlog\/assets\/concepts\/backlog-model\.md)\)/u,
+test("Technical projection requires immutable spec authority before Tasks", () => {
+  const technical = read(`${writerRoot}/references/technical-projection.md`);
+  assert.match(technical, /verified stable blob URL/iu);
+  assert.match(technical, /authoritative agent-ready `SPEC\.md`/iu);
+  assert.match(technical, /stable user stories[\s\S]*acceptance criteria/iu);
+  assert.match(technical, /enrich(?:es)? the existing Epic and Story[\s\S]*verified immutable spec authority/iu);
+  assert.match(technical, /one or more mandatory[\s\S]*Tasks/iu);
+  assert.match(technical, /write\s+nothing/iu);
+  assert.ok(
+    technical.indexOf("## Authority Enrichment") < technical.indexOf("## Task Split"),
+    "authority enrichment precedes Task split",
   );
-  assert.ok(match, "backlog model link is projection-independent");
-  assert.doesNotThrow(() => read(match[1]));
+});
+
+test("Task bodies are owner-ready and preserve planning identity", () => {
+  const technical = read(`${writerRoot}/references/technical-projection.md`);
+  const shape = read(`${writerRoot}/assets/concepts/story-shape.md`);
+  assert.match(technical, /provider execution graph that downstream planning preserves/iu);
+  assert.match(shape, /Task body[\s\S]*Responsibility[\s\S]*Owner[\s\S]*Acceptance[\s\S]*Verification[\s\S]*Blockers/iu);
+  assert.match(shape, /Immutable spec/iu);
+});
+
+test("writer validates the complete reachable blocker graph before mutation", () => {
+  const technical = read(`${writerRoot}/references/technical-projection.md`);
+  assert.match(technical, /full reachable Task graph/iu);
+  assert.match(technical, /missing targets/iu);
+  assert.match(technical, /future-iteration dependencies/iu);
+  assert.match(technical, /self-edges/iu);
+  assert.match(technical, /cycles/iu);
+  assert.match(technical, /before[\s\S]*provider write|write nothing/iu);
+});
+
+test("milestone iteration membership and metadata fallback stay coherent", () => {
+  const initialization = read(`${writerRoot}/references/backlog-initialization.md`);
+  const model = read(`${writerRoot}/assets/concepts/backlog-model.md`);
+  assert.match(model, /Every Story belongs to exactly one contextual `V\*`/iu);
+  assert.match(model, /Every Task belongs to the same iteration/iu);
+  assert.match(initialization, /Version name[\s\S]*One-sentence product goal[\s\S]*Included product outcomes or capability changes/iu);
+  assert.match(initialization, /unsupported[\s\S]*name only/iu);
+  assert.doesNotMatch(`${initialization}\n${model}`, /\bM\d+\b|execution milestone/iu);
+});
+
+test("topology previews explain authority without granting approval", () => {
+  const skill = read(`${writerRoot}/SKILL.md`);
+  assert.match(skill, /`\$show-me`[\s\S]*authority-derived topology/iu);
+  assert.match(skill, /visual[\s\S]*not approval/iu);
+  assert.match(skill, /require explicit approval/iu);
+  assert.match(skill, /`\$wait-what`[\s\S]*project terms/iu);
+});
+
+test("examples demonstrate reuse, staged projection, and exact readback", () => {
+  const examples = read(`${writerRoot}/EXAMPLES.md`);
+  assert.match(examples, /Existing structure is reused/iu);
+  assert.match(examples, /Business[\s\S]*Functional[\s\S]*Technical/u);
+  assert.match(examples, /Story[\s\S]*Task/u);
+  assert.match(examples, /exact readback/iu);
+  assert.match(examples, /zero writes/iu);
+});
+
+test("active writer guidance excludes the retired monolith", () => {
+  const active = [
+    "SKILL.md",
+    "REFERENCE.md",
+    "EXAMPLES.md",
+    "assets/concepts/backlog-model.md",
+    "assets/concepts/story-shape.md",
+    "references/project-context.md",
+    "references/backlog-initialization.md",
+    "references/fog-intake.md",
+    "references/business-projection.md",
+    "references/functional-projection.md",
+    "references/technical-projection.md",
+    "references/issue-reconciliation.md",
+  ].map((file) => read(`${writerRoot}/${file}`)).join("\n");
+
+  assert.doesNotMatch(active, /capability module|fog graduates|M1 -> M2|Azure DevOps|monday\.com/iu);
 });

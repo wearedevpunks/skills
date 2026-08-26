@@ -1,45 +1,22 @@
 ---
 name: wayfinder
-description: Route a foggy decision frontier. Use when work is too unclear for requirements, too broad for one delivery session, or needs classification as fog, grilling, research, prototype, epic, or story.
+description: Recommend grilling, readonly research, or a prototype for one precise unknown already owned by an active workflow.
 ---
 
 # Wayfinder
 
-Lean route-selection primitive for unclear work.
+Nonmutating decision-support primitive for one precise unknown already owned by
+a Finder grilling child or another active workflow.
 
-`wayfinder` selects the next concept and route. It does not write provider
-payloads, create specs, plan implementation, or own backlog schema.
+## Selection
 
-## Route Selection
+1. Read the precise unknown, owning item, current evidence, and decision owner.
+2. Recommend exactly one route:
+   - `grilling` when a human choice closes the unknown;
+   - `research` when readonly evidence can answer it;
+   - `prototype` when learning requires an artifact and human verdict.
+3. Return one recommendation, the evidence that selected it, the owning item,
+   and the result required before the active workflow can resume.
 
-1. Name the frontier.
-   - Capture the loose idea, current evidence, and why it is too foggy or broad for immediate delivery.
-
-2. Inspect the current operating surface.
-   - Prefer provider backlog state when available.
-   - Treat docs, specs, grill logs, and notes as evidence, not the living map.
-
-3. Classify the next item.
-   - `fog`: root-level uncertainty; no capability module or execution shape is clear yet.
-   - `grilling`: a human decision must close ambiguity.
-   - `research`: readonly investigation can answer the unknown.
-   - `prototype`: learning requires an artifact or experiment.
-   - `epic`: post-spec capability projection.
-   - `story`: accepted product-facing slice belongs under an epic.
-
-4. Choose placement.
-   - Keep `fog` at the backlog root.
-   - For every non-fog item, choose or propose a capability module first.
-   - Keep stories under epics.
-   - Execution milestones are separately blocker-derived chronology; they do
-     not determine capability placement.
-
-5. Return a route.
-   - State the selected concept, placement, evidence, unresolved questions, and recommended next skill.
-
-## Completion Criteria
-
-- One route is selected.
-- The selected concept is one of `fog`, `grilling`, `research`, `prototype`, `epic`, or `story`.
-- Provider materialization is explicitly delegated to `write-backlog` when backlog writes are needed.
-- The handoff says whether the next move is requirements, research, prototype, backlog writing, spec creation, or delivery.
+The active workflow owns state, placement, lifecycle, and mutation. Wayfinder
+creates no item, changes no provider, and authorizes no projection or delivery.

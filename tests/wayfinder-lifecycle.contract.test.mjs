@@ -67,90 +67,50 @@ test("prototype evidence is remotely retained before immutable handoff", () => {
   }
 });
 
-test("finder implicit invocation is consistent", () => {
-  const skill = read("skills/phases/finder-phase/SKILL.md");
-  const metadata = read("skills/phases/finder-phase/agents/openai.yaml");
-  assert.doesNotMatch(skill, /disable-model-invocation:\s*true/);
-  assert.match(metadata, /allow_implicit_invocation:\s*true/);
+test("Finder surfaces require explicit human invocation", () => {
+  for (const name of ["finder-phase", "business-finder"]) {
+    const skill = read(`skills/phases/${name}/SKILL.md`);
+    const metadata = read(`skills/phases/${name}/agents/openai.yaml`);
+    assert.match(skill, /disable-model-invocation:\s*true/u);
+    assert.match(metadata, /allow_implicit_invocation:\s*false/u);
+  }
 });
 
-test("wayfinder and finder expose a resumable decision lifecycle", () => {
+test("Wayfinder advises one support route without owning Finder lifecycle", () => {
   const primitive = read("skills/agnostic/planning/wayfinder/SKILL.md");
   const phase = read("skills/phases/finder-phase/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
-  const all = `${phase}\n${frontier}\n${convergence}`;
-  assert.match(phase, /destination/i);
-  assert.match(phase, /chart mode/i);
-  assert.match(phase, /work mode/i);
-  assert.match(all, /backlog root is the living map/i);
-  assert.match(all, /precise question/i);
-  assert.match(all, /open, unblocked, and unclaimed/i);
-  assert.match(all, /claim.{0,160}before/is);
-  assert.match(convergence, /Resume Input/);
-  assert.match(convergence, /immutable child-flow resolution pointers/i);
-  assert.match(convergence, /one bounded child flow/i);
-  assert.match(convergence, /Repair claims, dependencies, or scope invalidated/i);
-  assert.match(convergence, /recompute open, unblocked, unclaimed/i);
-  assert.match(convergence, /out-of-scope/i);
-  assert.doesNotMatch(primitive, /next (planning |work )?kind/i);
-});
-
-test("finder keeps fog broad until it graduates to a precise question", () => {
-  const phase = read("skills/phases/finder-phase/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
-  const all = `${phase}\n${frontier}`;
-  assert.match(all, /fog.{0,160}frontier or uncertainty description/is);
-  assert.match(all, /precise question.{0,160}(?:grilling|research|prototype)/is);
-  assert.doesNotMatch(
-    all,
-    /fog item graduates when it can be stated as a precise question now/i,
-  );
-});
-
-test("wayfinder separates capability placement from execution chronology", () => {
-  const primitive = read("skills/agnostic/planning/wayfinder/SKILL.md");
-  const frontier = read(
-    "skills/phases/finder-phase/references/frontier-lifecycle.md",
-  );
-  const all = `${primitive}\n${frontier}`;
-  assert.match(all, /capability module/i);
-  assert.match(all, /execution milestones.{0,160}blocker-derived chronology/is);
-  assert.doesNotMatch(all, /module\/milestone/i);
-});
-
-test("finder routes physical claim and resolution mutation through write-backlog", () => {
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
+  const graph = read("skills/phases/finder-phase/references/state-graph.md");
+  assert.match(primitive, /nonmutating decision-support primitive/iu);
+  for (const route of ["grilling", "research", "prototype"]) {
+    assert.ok(primitive.includes(`\`${route}\``));
+  }
+  assert.match(primitive, /Recommend exactly one route/iu);
   assert.match(
-    convergence,
-    /claim is a semantic output.{0,160}`write-backlog`/is,
+    primitive,
+    /precise unknown already owned by\s+(?:a )?Finder grilling child/iu,
   );
-  assert.match(
-    convergence,
-    /resolution is a semantic output.{0,160}`write-backlog`/is,
-  );
+  assert.match(primitive, /Return one recommendation/iu);
+  assert.doesNotMatch(primitive, /chart mode|work mode|epic|story/iu);
+  assert.match(phase, /one durable graph/iu);
+  assert.match(graph, /Fog remains open/iu);
 });
 
-test("finder research dispatch requires durable report evidence", () => {
-  const convergence = read(
-    "skills/phases/finder-phase/references/convergence.md",
-  );
+test("Finder routes every physical mutation through write-backlog", () => {
+  const ensure = read("skills/phases/finder-phase/phases/ensure-fog.md");
+  const reconcile = read("skills/phases/finder-phase/phases/reconcile.md");
+  assert.match(ensure, /semantic Fog upsert intent.{0,120}`\$write-backlog`/isu);
+  assert.match(reconcile, /`\$write-backlog`.{0,160}provider mutation.{0,100}readback/isu);
+  assert.match(reconcile, /No provider mechanics live here/iu);
+});
+
+test("Finder research support requires durable report evidence", () => {
+  const gate = read("skills/phases/finder-phase/phases/research.md");
   const research = read(
     "skills/agnostic/research/parallel-research/SKILL.md",
   );
-  assert.match(
-    convergence,
-    /`research` -> `parallel-research` in durable-report mode/i,
-  );
-  assert.match(convergence, /immutable commit SHA and path/i);
+  assert.match(gate, /`\$parallel-research` in durable-report mode/iu);
+  assert.match(gate, /immutable commit SHA and path/iu);
+  assert.match(gate, /cannot accept product direction or authorize backlog\s+projection/iu);
   assert.match(research, /durable-report mode is mandatory/i);
   assert.match(research, /Every run writes one consolidated report\s+to the\s+project wiki/is);
 });

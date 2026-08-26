@@ -1,41 +1,57 @@
 # Write Backlog Examples
 
-## Agent-ready spec projection
+## Reconstruct An Existing Product
 
-Input:
+The wiki identifies the product goal, owner, repository, two Product Areas, and
+three Initiatives. Fresh provider reads find the same Product/Backlog Root and
+one current and one future `V*` milestone under stable identities.
 
-```yaml
-readiness: agent-ready
-```
+Existing structure is reused. The proposal enriches missing root metadata,
+links the wiki and repository, and adds the missing Fogs view. `$show-me`
+presents that structural delta. After explicit approval, exact readback proves
+the metadata, links, milestone context, and Product Map, Roadmap, Fogs, and
+Current Delivery views.
 
-- immutable spec link: `<repository-url>/blob/<commit>/SPEC.md`
-- `US-001`: Team lead restores ownership of an unassigned submission.
-- `AC-001` — `Covers: US-001`: Reassignment preserves notes and evidence.
-- `AC-002` — `Covers: US-001`: The new owner sees the submission in their queue.
+## Cumulative Finder Projection
 
-Output:
+One Fog records a product owner's request.
 
-- capability module: `Intake and review`
-- epic: `Submission lifecycle management`, linked to the immutable spec
-- story: `Lead restores ownership of an unassigned submission`
-  - source: `US-001`
-  - covers: `AC-001`, `AC-002`
-  - demonstration: reassign one unassigned submission and observe preserved evidence plus the new owner's queue
+1. **Business**: accepted Business grilling reuses Product Area `Knowledge` and
+   Initiative `Reliable answers`, then enriches Epic `Source quality`. The Fog
+   links to all three; no duplicate structure is created.
+2. **Functional**: one accepted Functional child creates Story `Reader sees why
+   an answer is trustworthy` in `V4.0`. Its body preserves the product outcome,
+   `US-001`, `AC-001`, demonstration, evidence, and Fog provenance.
+3. **Technical**: an authoritative agent-ready `SPEC.md` at a stable blob URL
+   enriches the existing Epic and Story with immutable spec authority, then
+   creates required Task `Expose source confidence` and Task `Render confidence
+   explanation`. Both inherit `V4.0`; the second is blocked by the first.
 
-This is a vertical tracer bullet: one agent can deliver and demonstrate the product outcome without splitting database, API, UI, and tests into separate backlog stories.
+The Task graph has stable provider identities, no missing target, no
+future-iteration dependency, no self-edge, and no cycle. Exact readback proves
+the Story parent and milestone, both Task parents and milestones, the native
+blocker, source links, and Fog relations.
 
-## Blocker graph
+## Existing Milestone Wins
 
-- `US-002 / Lead manages the unassigned queue` is blocked by `US-001 / Lead restores ownership`.
-- Both targets exist and the graph is acyclic.
-- Both stories share their containing epic's milestone when the provider supports membership; the native blocker relation carries their ordering.
+The accepted Functional resolution targets the current product increment. A
+fresh provider read finds a fitting `V4.0` milestone with the same goal and
+outcomes. Reuse it. Do not propose another milestone because its display title
+differs from the draft wording.
 
-If a blocker target is missing or the graph cycles, write nothing.
+If milestone metadata is supported, preserve Version name, One-sentence product
+goal, and Included product outcomes or capability changes. Otherwise preserve
+the version name alone.
 
-## Pre-spec intake resolution
+## Ambiguous Identity
 
-An earlier `prototype` item established the review-screen direction. Resolve that intake item with its verdict plus the immutable spec link. Create a separate epic projection. Do not relabel or silently promote the prototype item into the epic.
+Two Epics share a similar title, and neither carries the Fog's durable wiki
+identity. Show both candidates and return the identity gap with zero writes.
+Title similarity cannot select an upsert target.
 
-## Invalid input
+## Partial Provider Failure
 
-If readiness is absent, `AC-001` lacks `Covers: US-###`, a story is not demonstrable, or provider hierarchy cannot represent the required projection, return every gap before any mutation.
+The Story write succeeds and the second Task relation fails. Stop, read back the
+Story, Tasks, milestone memberships, and blockers, then return observed IDs plus
+the missing relation. A retry reconciles fresh state and writes only that
+validated relation.

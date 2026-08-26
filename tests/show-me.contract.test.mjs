@@ -67,26 +67,55 @@ test("requirements grill delegates completion scheduling while retaining present
 test("phase entrypoints present complex state without taking authority", () => {
   const docs = read("skills/phases/docs-ingest-phase/SKILL.md");
   const finder = read("skills/phases/finder-phase/SKILL.md");
+  const businessFinderGate = read(
+    "skills/phases/finder-phase/phases/business-grilling.md",
+  );
+  const functionalFinder = read("skills/phases/functional-finder/SKILL.md");
   const debugging = read("skills/phases/debugging-phase/SKILL.md");
   const review = read("skills/phases/review-phase/SKILL.md");
   const prototype = read("skills/phases/prototype-phase/SKILL.md");
 
   assert.match(docs, /\$show-me.*complex.*flow|complex.*flow.*\$show-me/is);
-  assert.match(finder, /\$show-me.*frontier/is);
+  assert.match(
+    finder,
+    /\[Business grilling\]\(phases\/business-grilling\.md\)/u,
+  );
+  assert.match(
+    businessFinderGate,
+    /\$show-me[\s\S]*all relevant existing Product Areas, Initiatives,[\s\S]*Epics, and milestones[\s\S]*proposed impact/iu,
+  );
+  assert.match(
+    businessFinderGate,
+    /\$show-me[\s\S]*scope-expansion-checkpoint/iu,
+  );
+  assert.match(
+    functionalFinder,
+    /\$show-me[\s\S]*each decision[\s\S]*observable workflow[\s\S]*Story split[\s\S]*milestone iteration[\s\S]*final Story write/iu,
+  );
   assert.match(debugging, /\$show-me.*evidence matrix/is);
   assert.match(review, /\$show-me.*retained.*report/is);
   assert.match(prototype, /\$show-me.*variant.*verdict/is);
 });
 
-test("backlog uses show-me for topology and every ticket while handoff stays untouched", () => {
+test("backlog visualizes material topology decisions while handoff stays untouched", () => {
   const backlog = read(
     "skills/agnostic/requirements/write-backlog/SKILL.md",
   );
   const handoff = read("skills/agnostic/generic/handoff/SKILL.md");
 
-  assert.match(backlog, /\$show-me.*topolog/is);
-  assert.match(backlog, /every.*written.*ticket.*\$show-me/is);
-  assert.match(backlog, /\$wait-what.*every.*ticket/is);
-  assert.match(backlog, /visual.*does not replace.*traceability/is);
+  assert.match(backlog, /\$show-me.*authority-derived topology/isu);
+  assert.match(
+    backlog,
+    /Boundary, goal,[\s\S]*reparenting, or reorganization changes require explicit approval/iu,
+  );
+  assert.match(
+    backlog,
+    /\$show-me` visual when the relationships are harder to[\s\S]*understand than the prose/iu,
+  );
+  assert.match(backlog, /visual does not replace[\s\S]*traceability/iu);
+  assert.match(
+    backlog,
+    /\$wait-what` when proposed ticket wording or project terms do not land/iu,
+  );
   assert.doesNotMatch(handoff, /show-me/);
 });

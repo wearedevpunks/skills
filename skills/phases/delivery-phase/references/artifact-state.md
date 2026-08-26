@@ -12,14 +12,17 @@ Use this reference when deciding whether a phase is complete enough to skip.
 ## Plan Complete
 
 - `PLAN.md` exists and matches the spec.
-- Tasks have dependencies, owned paths, validation gates, and wave boundaries.
+- Every `Tn` resolves one stable provider Task ID and URL, preserves the same
+  `V*`, and mirrors native blocker edges through `depends_on`.
+- Tasks have owned paths, validation gates, and wave boundaries.
 - Each wave contains every currently unblocked task with a disjoint write scope;
   one-task waves are justified by dependencies or ownership.
 
 ## Backlog Projection Complete
 
-- Projection evidence names the immutable spec URL, provider destination,
-  epic/story ids and URLs, and verified observed state.
+- Projection evidence names the immutable spec URL, provider destination, exact
+  Epic and Story identities, provider Task IDs and URLs, same `V*`, native
+  blocker edges, and verified observed state.
 - Evidence matches the current spec; otherwise the projection is stale.
 
 ## Implementation Complete
@@ -27,6 +30,11 @@ Use this reference when deciding whether a phase is complete enough to skip.
 - Plan tasks are complete or explicitly deferred.
 - Implementation notes or equivalent evidence describe changed files, validation,
   blockers, and debt.
+- Exact `write-backlog` delivery-status readback exists for each directly
+  observed work start, blocker, pull request, merge, staging deployment, or
+  production deployment. Merge is never deployment evidence.
+- Fog completion exists only when production evidence covers every accepted
+  resulting Story and Task.
 
 ## Review Complete
 
@@ -53,3 +61,6 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 - Final report names what ran, what was skipped, validation evidence, docs
   outcome, stack state when relevant, and remaining blockers.
+- The final path-limited commit includes review and docs-ingest changes while
+  preserving unrelated dirty user files. Required release classification and
+  exact-tree provider proof match that final tree.

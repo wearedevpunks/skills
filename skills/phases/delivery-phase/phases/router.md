@@ -63,6 +63,14 @@ state take precedence over inferred artifact order.
 19. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
     otherwise [closeout.md](closeout.md).
 
+When staged Finder authority is missing, report the exact Business, Functional,
+or Technical Finder invocation the human must make. Every Finder surface is
+human-only; this router never invokes one implicitly.
+
+When a linked provider Task has a newly observed work start, blocker, pull
+request, merge, staging deployment, or production deployment without exact
+readback, route to [implement.md](implement.md) before any later phase.
+
 Only an explicitly new delivery goal with materially changed accepted bounds
 creates a new lineage and resets review/repair counters. Same-goal bounds
 revision, resume, rebase, commit, retry, and handoff preserve them.

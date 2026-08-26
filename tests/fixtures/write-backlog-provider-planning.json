@@ -1,36 +1,41 @@
 [
   {
+    "provider": "linear",
+    "document": "references/providers/linear.md"
+  },
+  {
     "provider": "github",
-    "document": "assets/providers/github-projects-create-payload.md",
-    "capabilityGrouping": "Project V2 Capability module field",
-    "executionMilestone": "repository milestone",
+    "document": "references/providers/github.md",
+    "hierarchy": {
+      "root": "one Projects V2",
+      "areasAndInitiatives": "configured semantic fields",
+      "epic": "Issue",
+      "story": "sub-issue",
+      "task": "nested sub-issue"
+    },
+    "milestone": "one repository V* per Story and Task graph",
+    "precedence": "native blockers",
+    "viewCapability": {
+      "automatic": ["name", "layout", "visibleFieldIds", "filter"],
+      "manual": ["grouping", "sorting"]
+    },
+    "semanticIdentity": "stable option ID + durable wiki identity",
+    "runtimeProof": [
+      "Product Area",
+      "Initiative",
+      "Kind",
+      "Fog backlink",
+      "immutable source"
+    ],
     "evidence": [
-      "Project V2 custom single-select field named `Capability module`",
-      "repository milestones named `M1`",
-      "addBlockedBy"
-    ]
-  },
-  {
-    "provider": "azure-devops",
-    "document": "assets/providers/azure-devops-create-payload.md",
-    "capabilityGrouping": "System.AreaPath",
-    "executionMilestone": "System.IterationPath",
-    "evidence": [
-      "`/fields/System.AreaPath`",
-      "`/fields/System.IterationPath`",
-      "`System.LinkTypes.Dependency-Reverse`"
-    ]
-  },
-  {
-    "provider": "monday",
-    "document": "assets/providers/monday-create-payload.md",
-    "capabilityGrouping": "board group",
-    "executionMilestone": "Execution milestone column",
-    "evidence": [
-      "board group",
-      "`Execution milestone`",
-      "dependency column",
-      "same-board dependency"
+      "one Projects V2",
+      "configured **Product Area**",
+      "configured **Initiative**",
+      "required nested sub-issue",
+      "same repository milestone named `V*`",
+      "`addBlockedBy`",
+      "`createProjectV2View`",
+      "Project membership"
     ]
   }
 ]
