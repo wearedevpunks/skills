@@ -19,22 +19,29 @@ workflow-native artifacts, committed handoff, suggested route.
    [research](research.md).
 7. Current stage has selected unresolved Prototype support ->
    [prototype](prototype.md).
-8. Business evidence is missing or invalid ->
+8. Functional or Technical depth starts from an exact accepted Product Area ->
+   Initiative -> Epic path with an explicit `reuse-unchanged` decision but no
+   Business child -> [adopt-business-path](adopt-business-path.md).
+9. Business evidence is missing or invalid ->
    [business-grilling](business-grilling.md).
-9. Accepted Business evidence lacks exact projection readback ->
+10. Accepted Business evidence lacks an exact child identity or immutable
+    resolution pointer -> [handback](handback.md), with zero mutation intent.
+11. Accepted Business evidence lacks exact projection readback ->
    [reconcile](reconcile.md).
-10. Target depth is `Business` -> [return-target](return-target.md).
-11. Accepted Functional evidence lacks exact projection readback ->
+12. Target depth is `Business` -> [return-target](return-target.md).
+13. Accepted Functional evidence lacks an exact child identity or immutable
+    resolution pointer -> [handback](handback.md), with zero mutation intent.
+14. Accepted Functional evidence lacks exact projection readback ->
     [reconcile](reconcile.md).
-12. Required Functional evidence is missing or invalid ->
+15. Required Functional evidence is missing or invalid ->
     [functional-grilling](functional-grilling.md).
-13. Target depth is `Functional` -> [return-target](return-target.md).
-14. Accepted Technical evidence lacks exact projection readback ->
+16. Target depth is `Functional` -> [return-target](return-target.md).
+17. Accepted Technical evidence lacks exact projection readback ->
     [reconcile](reconcile.md).
-15. Any selected Story lacks valid Technical evidence ->
+18. Any selected Story lacks valid Technical evidence ->
     [technical-grilling](technical-grilling.md).
-16. Target depth is `Technical` -> [return-target](return-target.md).
-17. Any other state -> [handback](handback.md).
+19. Target depth is `Technical` -> [return-target](return-target.md).
+20. Any other state -> [handback](handback.md).
 
 Exactly one route is legal. A suggested route never breaks precedence. No route
 marks the Fog complete.

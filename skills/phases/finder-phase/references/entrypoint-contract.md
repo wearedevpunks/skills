@@ -21,6 +21,9 @@ route, lifecycle state, or provider mutation instructions.
   children. They cannot authorize backlog projection.
 - Current provider and immutable evidence defeat stale artifacts and route
   suggestions.
+- Functional or Technical depth may adopt an exact existing Product Area ->
+  Initiative -> Epic path only after the human accepts `reuse-unchanged`; the
+  engine still persists one exact Business child and immutable resolution.
 - Ambiguous identity or conflicting accepted evidence produces zero writes and
   routes to human steering.
 - Reaching target depth returns control without completing the Fog.

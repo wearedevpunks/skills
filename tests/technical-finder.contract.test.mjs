@@ -46,6 +46,8 @@ const technicalState = (technicalChildren) => ({
   targetDepth: "Technical",
   fogIdentity: "exact",
   business: "accepted",
+  businessIdentity: "exact",
+  businessResolution: "immutable",
   businessProjection: "read-back",
   selectedStoryIntents: ["intent-a", "intent-b"],
   functionalChildren: [
@@ -54,6 +56,7 @@ const technicalState = (technicalChildren) => ({
       identity: "exact",
       status: "accepted",
       scope: "in-scope",
+      resolution: "immutable",
       projection: "read-back",
     },
     {
@@ -61,6 +64,7 @@ const technicalState = (technicalChildren) => ({
       identity: "exact",
       status: "accepted",
       scope: "in-scope",
+      resolution: "immutable",
       projection: "read-back",
     },
   ],

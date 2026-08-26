@@ -2,8 +2,8 @@
 
 ## Entry guard
 
-Every stage required by the chosen target depth has fresh accepted evidence and
-matching exact provider readback.
+Every stage required by the chosen target depth has an exact child identity,
+immutable accepted resolution pointer, and matching exact provider readback.
 
 ## Inputs
 

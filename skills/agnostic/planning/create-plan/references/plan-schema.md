@@ -49,9 +49,11 @@ Every task must include:
 - `status`
 - `log`
 - `files edited/created`
+- `task_identity_mode`
 - `backlog_item_id`
 - `backlog_item_url`
 - `relation_mode`
+- `backlog_sync_skip_reason`
 - `assigned_skills`
 - `implementation_skill_guidance`
 - `tdd_status`
@@ -88,15 +90,23 @@ parallelism id. `responsibility_acceptance_criteria` lists the stable criterion 
 Every listed id must exist in the plan-level Responsibility Acceptance Criteria view, whose entry declares its
 `due_architecture_wave`. Each criterion maps to at least one task and exactly one due architecture wave.
 
-`backlog_item_id` records the stable provider Task identity and
-`backlog_item_url` records that exact Task's provider URL. Each `Tn` is a plan
-alias for one provider Task, never a second execution identity. Preserve the
-Task's exact parent Story, same `V*`, source links, and provider readback in the
-plan context.
+`task_identity_mode` is uniform across the plan:
 
-`depends_on` preserves or mirrors native provider Task blocker edges through
-the `Tn` alias map. Worker waves derive from those blockers and disjoint
-ownership; planning does not invent sequencing edges.
+- `provider-task`: `backlog_item_id` records the stable provider Task identity,
+  `backlog_item_url` records that exact Task's provider URL, `relation_mode` is
+  `native` or `body-links`, and `backlog_sync_skip_reason` is blank. Each `Tn`
+  is a plan alias for one provider Task, never a second execution identity.
+  Preserve the Task's exact parent Story, same `V*`, source links, and provider
+  readback in the plan context.
+- `planning-only`: `Tn` is the execution identity. Set `backlog_item_id` and
+  `backlog_item_url` to `not_applicable`, `relation_mode` to `unprojected`, and
+  record a nonempty `backlog_sync_skip_reason`. Provider parent, milestone,
+  provenance, blocker, and readback claims are absent.
+
+In `provider-task` mode, `depends_on` preserves or mirrors native provider Task
+blocker edges through the `Tn` alias map. In `planning-only` mode, it names
+other `Tn` identities in the same plan. Worker waves derive from the applicable
+graph and disjoint ownership.
 
 `owned_paths` lists the exact write scope assigned to the task. Tasks in the
 same wave must have disjoint `owned_paths`.
@@ -152,9 +162,11 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **status**: Planned
 - **log**:
 - **files edited/created**:
+- **task_identity_mode**: provider-task | planning-only
 - **backlog_item_id**: CP-128
 - **backlog_item_url**: https://linear.app/workspace/issue/CP-128/example-task
-- **relation_mode**: native | body-links
+- **relation_mode**: native | body-links | unprojected
+- **backlog_sync_skip_reason**:
 - **assigned_skills**: [`effect`, `tdd`]
 - **implementation_skill_guidance**:
   - **skill**: `effect`

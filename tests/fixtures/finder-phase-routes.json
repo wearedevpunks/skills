@@ -16,7 +16,7 @@
   },
   {
     "name": "accepted stage is reconciled before target return",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessProjection": "pending" },
+    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "pending" },
     "expectedRoute": "reconcile"
   },
   {
@@ -51,7 +51,7 @@
   },
   {
     "name": "cold resume returns at accepted Business depth",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessProjection": "read-back" },
+    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "read-back" },
     "expectedRoute": "return-target"
   },
   {
@@ -61,7 +61,7 @@
   },
   {
     "name": "out-of-scope Business evidence is inadmissible",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessEvidenceScope": "out-of-scope", "businessProjection": "read-back" },
+    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessEvidenceScope": "out-of-scope", "businessProjection": "read-back" },
     "expectedRoute": "business-grilling"
   },
   {
@@ -71,7 +71,7 @@
   },
   {
     "name": "target return never completes the Fog prematurely",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessProjection": "read-back", "fogCompletion": "requested" },
+    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "read-back", "fogCompletion": "requested" },
     "expectedRoute": "return-target"
   },
   {
@@ -80,6 +80,8 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
@@ -94,11 +96,13 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ]
     },
     "expectedRoute": "human-steering"
@@ -109,11 +113,13 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ]
     },
     "expectedRoute": "return-target"
@@ -124,10 +130,12 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ]
     },
     "expectedRoute": "functional-grilling"
@@ -138,6 +146,8 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
@@ -152,10 +162,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -170,10 +182,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -189,11 +203,13 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
@@ -208,11 +224,13 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
@@ -228,11 +246,13 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a", "intent-b"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
+        { "storyIntent": "intent-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a", "story-b"],
       "technicalChildren": [
@@ -247,10 +267,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -265,10 +287,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -283,10 +307,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -301,10 +327,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "selectedStories": ["story-a"],
       "technicalChildren": [
@@ -319,6 +347,8 @@
       "targetDepth": "Functional",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "functional": "accepted",
       "functionalProjection": "read-back"
@@ -331,6 +361,8 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "functional": "accepted",
       "functionalProjection": "read-back",
@@ -345,10 +377,12 @@
       "targetDepth": "Technical",
       "fogIdentity": "exact",
       "business": "accepted",
+      "businessIdentity": "exact",
+      "businessResolution": "immutable",
       "businessProjection": "read-back",
       "selectedStoryIntents": ["intent-a"],
       "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
+        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
       ],
       "technical": "accepted",
       "technicalProjection": "read-back"

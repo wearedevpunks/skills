@@ -8,7 +8,8 @@ readback.
 Backlog sync is eligible and in scope when the planning input retains that spec, its
 projection relation, and a request to maintain the relation. A planning-only
 request without retained projection records an explicit skip reason in
-`PLAN.md`.
+`PLAN.md` and uses `task_identity_mode: planning-only` for every `Tn`. Mixing
+identity modes in one plan is invalid.
 
 ## Task identity handoff
 
@@ -39,10 +40,24 @@ a required provider Task, milestone membership, parent, source link, or blocker
 edge is missing or stale, route the delta through `write-backlog` and resume
 only from its exact readback. Planning performs no provider mutation.
 
+## Planning-only identity handoff
+
+When provider projection is not retained, `Tn` is the only execution identity.
+Set `task_identity_mode: planning-only`, `backlog_item_id: not_applicable`,
+`backlog_item_url: not_applicable`, and `relation_mode: unprojected`. Record one
+nonempty `backlog_sync_skip_reason` on every task. In this mode, `depends_on`
+names other `Tn` identities in the same plan, and each task still carries exact
+ownership, validation, and evidence fields. Provider parent, milestone,
+provenance, blocker, mutation, and readback claims are absent because no
+provider projection exists.
+
 ## Completion criterion
 
-Backlog sync is complete when every `Tn` resolves one stable provider Task ID
-and URL, every `depends_on` mirrors one native blocker edge, every Task retains
-its Story's `V*`, and provider readback proves the graph. Keep files, commands,
-tests, workers, and validation evidence in `PLAN.md`; keep provider bodies
+Backlog sync is complete when the plan uses exactly one identity mode. In
+`provider-task` mode, every `Tn` resolves one stable provider Task ID and URL,
+every `depends_on` mirrors one native blocker edge, every Task retains its
+Story's `V*`, and provider readback proves the graph. In `planning-only` mode,
+every `Tn` carries the required `not_applicable` provider fields, `unprojected`
+relation mode, and a nonempty skip reason. Keep files, commands, tests, workers,
+and validation evidence in `PLAN.md`; keep projected provider bodies
 owner-ready and product-facing through `write-backlog`.

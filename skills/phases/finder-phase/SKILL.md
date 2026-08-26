@@ -30,6 +30,7 @@ The router is the sole route authority. Gate files own executable work.
 ## Gates
 
 - [Ensure Fog](phases/ensure-fog.md)
+- [Adopt exact Business path](phases/adopt-business-path.md)
 - [Business grilling](phases/business-grilling.md)
 - [Functional grilling](phases/functional-grilling.md)
 - [Technical grilling](phases/technical-grilling.md)

@@ -73,3 +73,23 @@ test("planning resolves its technical-projection authority pointer", () => {
     `technical-projection pointer resolves: ${pointer[1]}`,
   );
 });
+
+test("planning-only requests have a schema-valid unprojected Task mode", () => {
+  const sync = read(
+    "skills/agnostic/planning/create-plan/references/backlog-sync.md",
+  );
+  const schema = read(
+    "skills/agnostic/planning/create-plan/references/plan-schema.md",
+  );
+  const planningOnly = `${sync}\n${schema}`;
+
+  assert.match(planningOnly, /task_identity_mode:\s*planning-only/iu);
+  assert.match(planningOnly, /backlog_item_id(?:`|:)?.{0,80}not_applicable/isu);
+  assert.match(planningOnly, /backlog_item_url(?:`|:)?.{0,80}not_applicable/isu);
+  assert.match(planningOnly, /relation_mode(?:`|:)?.{0,80}unprojected/isu);
+  assert.match(planningOnly, /nonempty `?backlog_sync_skip_reason`?/iu);
+  assert.match(
+    planningOnly,
+    /`depends_on`.{0,120}other `Tn` identities in the same plan/isu,
+  );
+});
