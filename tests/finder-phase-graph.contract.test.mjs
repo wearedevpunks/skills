@@ -12,7 +12,24 @@ const acceptedBusinessChild = (projection = "read-back") => ({
   scope: "in-scope",
   resolution: "immutable",
   projection,
+  ...(projection === "read-back"
+    ? {
+        projectedProductArea: "area-a",
+        projectedInitiative: "initiative-a",
+        projectedEpic: "epic-a",
+        hierarchyReadback: "exact",
+      }
+    : {}),
 });
+
+const exactFunctionalProjection = {
+  projectedStoryParentEpic: "epic-a",
+  projectedStoryMilestone: "v1",
+  projectedStoryMilestoneKind: "V*",
+  projectedStoryFogLink: "exact",
+  projectedStorySourceLink: "exact",
+  projectedStoryMembershipReadback: "exact",
+};
 
 const withFixtureStoryMilestones = (state) => ({
   ...state,
@@ -24,10 +41,14 @@ const withFixtureStoryMilestones = (state) => ({
         const taskMilestones = new Set(
           technicalChild?.projectedTasks?.map((task) => task.milestone) ?? [],
         );
-        return taskMilestones.size === 1
+        return child.status === "accepted" && child.projection === "read-back"
           ? {
+              ...exactFunctionalProjection,
               ...child,
-              projectedStoryMilestone: taskMilestones.values().next().value,
+              projectedStoryMilestone:
+                taskMilestones.size === 1
+                  ? taskMilestones.values().next().value
+                  : "v1",
             }
           : child;
       })
@@ -207,6 +228,7 @@ test("Finder rejects accepted Business and Functional stages without exact immut
         {
           storyIntent: "intent-a",
           projectedStory: "story-a",
+          ...exactFunctionalProjection,
           identity: "exact",
           status: "accepted",
           scope: "in-scope",
@@ -233,6 +255,7 @@ test("Finder rejects duplicate stage children outside the selected subset", () =
       {
         storyIntent: "intent-a",
         projectedStory: "story-a",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -362,18 +385,27 @@ test("Finder completes Business only from one valid fresh Business child", () =>
   assert.equal(
     deriveFinderRoute({
       ...staleAcceptedSummary,
-      businessChildren: [
-        {
-          identity: "exact",
-          status: "accepted",
-          scope: "in-scope",
-          resolution: "immutable",
-          projection: "read-back",
-        },
-      ],
+      businessChildren: [acceptedBusinessChild()],
     }),
     "return-target",
   );
+
+  for (const invalidProjection of [
+    { projectedProductArea: "" },
+    { projectedInitiative: "" },
+    { projectedEpic: "" },
+    { hierarchyReadback: "partial" },
+  ]) {
+    assert.equal(
+      deriveFinderRoute({
+        ...staleAcceptedSummary,
+        businessChildren: [
+          { ...acceptedBusinessChild(), ...invalidProjection },
+        ],
+      }),
+      "human-steering",
+    );
+  }
 });
 
 test("Finder requires one distinct projected Story identity per accepted Functional child", () => {
@@ -389,6 +421,7 @@ test("Finder requires one distinct projected Story identity per accepted Functio
     functionalChildren: [
       {
         storyIntent: "intent-a",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -398,6 +431,7 @@ test("Finder requires one distinct projected Story identity per accepted Functio
       {
         storyIntent: "intent-b",
         projectedStory: "story-a",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -420,6 +454,51 @@ test("Finder requires one distinct projected Story identity per accepted Functio
   );
 });
 
+test("Finder validates Functional Story placement and provenance before completion", () => {
+  const state = {
+    targetDepth: "Functional",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        ...exactFunctionalProjection,
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+  };
+
+  assert.equal(deriveFinderRoute(state), "return-target");
+  for (const invalidProjection of [
+    { projectedStoryParentEpic: "epic-b" },
+    { projectedStoryMilestone: "" },
+    { projectedStoryMilestoneKind: "iteration" },
+    { projectedStoryFogLink: "missing" },
+    { projectedStorySourceLink: "missing" },
+    { projectedStoryMembershipReadback: "partial" },
+  ]) {
+    assert.equal(
+      deriveFinderRoute({
+        ...state,
+        functionalChildren: [
+          { ...state.functionalChildren[0], ...invalidProjection },
+        ],
+      }),
+      "human-steering",
+    );
+  }
+});
+
 test("Finder requires exact Technical Task and relation readback", () => {
   const state = {
     targetDepth: "Technical",
@@ -434,6 +513,7 @@ test("Finder requires exact Technical Task and relation readback", () => {
       {
         storyIntent: "intent-a",
         projectedStory: "story-a",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -481,6 +561,98 @@ test("Finder requires exact Technical Task and relation readback", () => {
   );
 });
 
+test("Finder rejects invalid Technical blocker targets, self-edges, and cycles", () => {
+  const state = {
+    targetDepth: "Technical",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        ...exactFunctionalProjection,
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+    selectedStories: ["story-a"],
+    technicalChildren: [
+      {
+        story: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        specReadiness: "agent-ready",
+        stableBlob: "verified",
+        taskIntentCount: 2,
+        projection: "read-back",
+        taskGraphReadback: "exact",
+        projectedTasks: [
+          {
+            id: "task-a",
+            story: "story-a",
+            milestone: "v1",
+            blockedBy: [],
+            readback: "exact",
+          },
+          {
+            id: "task-b",
+            story: "story-a",
+            milestone: "v1",
+            blockedBy: ["task-a"],
+            readback: "exact",
+          },
+        ],
+      },
+    ],
+  };
+
+  assert.equal(deriveFinderRoute(state), "return-target");
+  for (const blockedBy of [["missing"], ["task-b"]]) {
+    assert.equal(
+      deriveFinderRoute({
+        ...state,
+        technicalChildren: [
+          {
+            ...state.technicalChildren[0],
+            projectedTasks: state.technicalChildren[0].projectedTasks.map(
+              (task) =>
+                task.id === "task-b" ? { ...task, blockedBy } : task,
+            ),
+          },
+        ],
+      }),
+      "human-steering",
+    );
+  }
+  assert.equal(
+    deriveFinderRoute({
+      ...state,
+      technicalChildren: [
+        {
+          ...state.technicalChildren[0],
+          projectedTasks: state.technicalChildren[0].projectedTasks.map(
+            (task) =>
+              task.id === "task-a"
+                ? { ...task, blockedBy: ["task-b"] }
+                : task,
+          ),
+        },
+      ],
+    }),
+    "human-steering",
+  );
+});
+
 test("Finder requires every projected Task to share its parent Story milestone", () => {
   const state = {
     targetDepth: "Technical",
@@ -496,6 +668,7 @@ test("Finder requires every projected Task to share its parent Story milestone",
         storyIntent: "intent-a",
         projectedStory: "story-a",
         projectedStoryMilestone: "v1",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -575,6 +748,7 @@ test("Finder joins every selected Technical Story to a selected Functional proje
       {
         storyIntent: "intent-a",
         projectedStory: "story-a",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",
@@ -584,6 +758,7 @@ test("Finder joins every selected Technical Story to a selected Functional proje
       {
         storyIntent: "intent-b",
         projectedStory: "story-b",
+        ...exactFunctionalProjection,
         identity: "exact",
         status: "accepted",
         scope: "in-scope",

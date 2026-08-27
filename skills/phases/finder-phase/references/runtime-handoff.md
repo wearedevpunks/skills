@@ -29,6 +29,9 @@ Business path identities:
 Business path decision:
 Intended projection:
 Exact readback identities:
+Business hierarchy readback:
+Functional Story placement readback:
+Technical Task graph readback:
 Support evidence:
 Checkpoint or blocker:
 Last verified at:
@@ -45,3 +48,10 @@ is advisory.
 Each gate updates only fields it proves. Preserve prior exact identities and
 immutable pointers. Record checkpoint, blocked, skip, target-return, and
 `human_steering_required` outcomes before stopping.
+
+Business hierarchy readback names the exact Product Area, Initiative, and Epic
+identities plus exact parent membership. Functional Story placement readback
+names the Story, parent Epic, contextual `V*` milestone, exact milestone
+membership, and exact Fog and source links. Technical Task graph readback names
+each Task, its parent Story, the same `V*` milestone as that Story, and an exact
+acyclic blocker graph whose targets all exist.

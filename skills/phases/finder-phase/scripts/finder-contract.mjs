@@ -3,11 +3,25 @@ const CONFLICT_IDENTITIES = ["ambiguous", "duplicate", "conflict"];
 const isStableIdentity = (value) =>
   typeof value === "string" && value.trim().length > 0;
 
+const hasExactBusinessProjection = (child) =>
+  isStableIdentity(child?.projectedProductArea) &&
+  isStableIdentity(child.projectedInitiative) &&
+  isStableIdentity(child.projectedEpic) &&
+  child.hierarchyReadback === "exact";
+
 const businessChildCollectionConflicts = (children) => {
   if (!Array.isArray(children)) return false;
   return (
     children.length > 1 ||
-    children.some((child) => !child || child.identity !== "exact")
+    children.some(
+      (child) =>
+        !child ||
+        child.identity !== "exact" ||
+        (child.status === "accepted" &&
+          child.scope === "in-scope" &&
+          child.projection === "read-back" &&
+          !hasExactBusinessProjection(child)),
+    )
   );
 };
 
@@ -29,6 +43,7 @@ const deriveBusinessStageRoute = (state) => {
   }
   if (child.resolution !== "immutable") return "human-steering";
   if (child.projection !== "read-back") return "reconcile";
+  if (!hasExactBusinessProjection(child)) return "human-steering";
   return "ready";
 };
 
@@ -47,9 +62,10 @@ const childCollectionConflicts = (children, foreignKey) => {
   return false;
 };
 
-const functionalProjectionConflicts = (children) => {
+const functionalProjectionConflicts = (children, businessChildren) => {
   if (!Array.isArray(children)) return false;
 
+  const projectedEpic = businessChildren?.[0]?.projectedEpic;
   const stories = new Set();
   for (const child of children) {
     if (
@@ -59,7 +75,18 @@ const functionalProjectionConflicts = (children) => {
     ) {
       continue;
     }
-    if (!isStableIdentity(child.projectedStory)) return true;
+    if (
+      !isStableIdentity(projectedEpic) ||
+      !isStableIdentity(child.projectedStory) ||
+      child.projectedStoryParentEpic !== projectedEpic ||
+      !isStableIdentity(child.projectedStoryMilestone) ||
+      child.projectedStoryMilestoneKind !== "V*" ||
+      child.projectedStoryFogLink !== "exact" ||
+      child.projectedStorySourceLink !== "exact" ||
+      child.projectedStoryMembershipReadback !== "exact"
+    ) {
+      return true;
+    }
     if (stories.has(child.projectedStory)) return true;
     stories.add(child.projectedStory);
   }
@@ -82,6 +109,7 @@ const technicalProjectionConflicts = (children, functionalChildren) => {
       .map((child) => [child.projectedStory, child.projectedStoryMilestone]),
   );
   const taskIds = new Set();
+  const tasks = [];
   for (const child of children) {
     if (
       child?.status !== "accepted" ||
@@ -113,8 +141,34 @@ const technicalProjectionConflicts = (children, functionalChildren) => {
         return true;
       }
       taskIds.add(task.id);
+      tasks.push(task);
     }
   }
+
+  const taskGraph = new Map(tasks.map((task) => [task.id, task.blockedBy]));
+  for (const task of tasks) {
+    if (
+      new Set(task.blockedBy).size !== task.blockedBy.length ||
+      task.blockedBy.includes(task.id) ||
+      task.blockedBy.some((identity) => !taskGraph.has(identity))
+    ) {
+      return true;
+    }
+  }
+
+  const visiting = new Set();
+  const visited = new Set();
+  const hasCycle = (taskId) => {
+    if (visiting.has(taskId)) return true;
+    if (visited.has(taskId)) return false;
+    visiting.add(taskId);
+    if (taskGraph.get(taskId).some(hasCycle)) return true;
+    visiting.delete(taskId);
+    visited.add(taskId);
+    return false;
+  };
+  if ([...taskGraph.keys()].some(hasCycle)) return true;
+
   return false;
 };
 
@@ -234,7 +288,10 @@ export const deriveFinderRoute = (state) => {
     businessChildCollectionConflicts(state.businessChildren) ||
     childCollectionConflicts(state.functionalChildren, "storyIntent") ||
     childCollectionConflicts(state.technicalChildren, "story") ||
-    functionalProjectionConflicts(state.functionalChildren) ||
+    functionalProjectionConflicts(
+      state.functionalChildren,
+      state.businessChildren,
+    ) ||
     technicalProjectionConflicts(
       state.technicalChildren,
       state.functionalChildren,
