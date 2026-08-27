@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architect Pipeline"
+  short_description: "Design secure, repository-aware CI/CD pipelines"
+  default_prompt: "Use $architect-pipeline to design or implement a repository-aware CI/CD pipeline with explicit release, deployment, and recovery decisions."

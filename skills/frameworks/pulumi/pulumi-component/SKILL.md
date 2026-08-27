@@ -8,7 +8,9 @@ description: Guide for authoring Pulumi ComponentResource classes. Use when crea
 
 A ComponentResource groups related infrastructure resources into a reusable, logical unit. Components make infrastructure easier to understand, reuse, and maintain. Components appear as a single node with children nested underneath in `pulumi preview`/`pulumi up` output and in the Pulumi Cloud console.
 
-This skill covers the full component authoring lifecycle. For general Pulumi coding patterns (Output handling, secrets, aliases, preview workflows), use the `pulumi-best-practices` skill instead.
+This skill covers the full component authoring lifecycle. For general Pulumi coding patterns
+(Output handling, secrets, aliases, and preview semantics), use `pulumi-best-practices`.
+For the containing CI/CD or release workflow, use `$architect-pipeline`.
 
 ## When to Use This Skill
 
@@ -698,7 +700,6 @@ Choose a distribution method based on your audience:
 | Same project | Direct import | Standard language import |
 | Same organization | Private registry | `pulumi package publish` to Pulumi Cloud |
 | Same organization | Git repository | `pulumi package add <repo>` with version tags |
-| Language ecosystem | Package manager | Publish to npm, PyPI, NuGet, or Maven |
 | Public community | Pulumi Registry | Submit via pulumi/registry GitHub repo |
 
 ### Pulumi Private Registry
@@ -711,75 +712,34 @@ Publish a component to the private registry:
 pulumi package publish https://github.com/myorg/my-component --publisher myorg
 ```
 
-Version components using git tags with a `v` prefix:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
 A README file is required when publishing. Pulumi uses it as the component's documentation page in the registry.
 
-Automate publishing from GitHub Actions using OIDC authentication:
-
-```yaml
-name: Publish Component
-on:
-  push:
-    tags:
-      - "v*"
-
-permissions:
-  id-token: write
-  contents: read
-
-jobs:
-  publish:
-    runs-on: ubuntu-latest
-    env:
-      PULUMI_ORG: myorg
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: pulumi/auth-actions@v1
-        with:
-          organization: ${{ env.PULUMI_ORG }}
-          requested-token-type: urn:pulumi:token-type:access_token:organization
-      - run: pulumi package publish https://github.com/${{ github.repository }} --publisher ${{ env.PULUMI_ORG }}
-```
-
-**Prerequisites**: Configure GitHub OIDC integration with Pulumi Cloud before using this workflow.
-
-The registry supports private GitHub and GitLab repositories. For non-OIDC setups, authenticate with `GITHUB_TOKEN` or `GITLAB_TOKEN` environment variables.
+The registry supports private GitHub and GitLab repositories. Pulumi Cloud authentication is
+Pulumi-specific: use CLI login or supported automation; `pulumi/auth-actions@v1` can exchange
+workflow OIDC for an organization token; and `GITHUB_TOKEN` or `GITLAB_TOKEN` can authenticate
+private source repositories where supported. Pulumi Cloud OIDC organization configuration,
+registry behavior, and package command syntax remain here. Generic trust-boundary, trigger,
+job, and publishing workflow design belong to `$architect-pipeline`.
 
 The private registry automatically generates SDK documentation for each published component. Enrich the generated docs by adding type annotations to your component's inputs and outputs (JSDoc in TypeScript, docstrings in Python, `Annotate()` methods in Go).
 
-**Reference**: https://www.pulumi.com/docs/idp/get-started/private-registry/
+**References**:
+
+- https://www.pulumi.com/docs/idp/get-started/private-registry/
+- https://www.pulumi.com/docs/pulumi-cloud/access-management/oidc/
+- https://github.com/pulumi/auth-actions
 
 ### Git Repository Distribution
 
-Tag releases for consumers to pin versions:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+Consumers install a repository-backed component with `pulumi package add`. The repository
+URL may include a version tag or other supported version ref; use an immutable version for
+repeatable consumer resolution.
 
 Consumers install with:
 
 ```bash
 pulumi package add https://github.com/myorg/my-component@v1.0.0
 ```
-
-### Package Manager Distribution
-
-Publish language-specific packages for native dependency management:
-
-- **npm**: `npm publish` for TypeScript/JavaScript
-- **PyPI**: `twine upload` for Python
-- **NuGet**: `dotnet nuget push` for .NET
-- **Maven Central**: Standard Maven publishing for Java
 
 **Reference**: https://www.pulumi.com/docs/iac/using-pulumi/pulumi-packages/
 
@@ -813,7 +773,7 @@ Publish language-specific packages for native dependency management:
 | Defaults | Use `??` operator to apply sensible defaults in constructor |
 | Composition | Lower-level components composed into higher-level ones |
 | Multi-language | `PulumiPlugin.yaml` + entry point; consumers use `pulumi package add` |
-| Distribution | Private registry, git tags, package managers, or public Pulumi Registry |
+| Distribution | Private registry, repository version refs, or public Pulumi Registry |
 
 ## Related Skills
 
