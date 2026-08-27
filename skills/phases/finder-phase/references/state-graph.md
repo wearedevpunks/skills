@@ -45,7 +45,11 @@ child identity; immutable resolution pointer; supported-by relations; intended
 semantic projection; and exact provider readback. Accepted state without an
 exact child identity or immutable pointer is an authority conflict. Business
 completion requires exactly one valid Business child from the fresh complete
-direct-child collection. Every selected Technical Story must equal the distinct
-projected Story of one selected accepted Functional child. Invalid stage
-evidence routes to that stage again. Accepted evidence without readback routes
-to reconciliation.
+direct-child collection and exact Product Area -> Initiative -> Epic identity
+and hierarchy readback. Functional completion requires each Story's exact
+parent Epic, contextual `V*` milestone membership, and Fog/source links. Every
+selected Technical Story must equal the distinct projected Story of one
+selected accepted Functional child. Technical completion also requires every
+Task to retain its Story milestone and a complete acyclic blocker graph with no
+self-edge or missing target. Invalid stage evidence routes to that stage again.
+Accepted evidence without readback routes to reconciliation.
