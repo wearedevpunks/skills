@@ -16,7 +16,10 @@ support intent, prior provider identities, and current wiki/provider state.
 2. Send the semantic intent to `$write-backlog`; that skill owns identity
    reconciliation, structural preview/approval, provider mutation, and readback.
 3. Consume exact readback for every created or enriched object, relationship,
-   source link, and stage field.
+   source link, and stage field. Technical reconciliation also consumes the
+   exact successful provider-neutral Task graph validator result from
+   `$write-backlog`, covering the full reachable graph and resolved milestone
+   order at the same provider snapshot.
 4. Link the Fog and stage child to every enriched or produced object through the
    writer result. Preserve Fog as lateral provenance.
 5. If accepted evidence conflicts or identity is ambiguous, emit no further
@@ -32,6 +35,8 @@ agree.
 
 Accepted child identity and resolution pointer, exact created-or-enriched
 identities and relations, source links, stage fields, and provider snapshot.
+Technical completion also retains the bound full-reachable Task graph validator
+result and proves that it covers every returned Task and outgoing edge.
 
 ## Declared exits
 

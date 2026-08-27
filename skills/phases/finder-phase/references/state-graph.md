@@ -50,6 +50,11 @@ and hierarchy readback. Functional completion requires each Story's exact
 parent Epic, contextual `V*` milestone membership, and Fog/source links. Every
 selected Technical Story must equal the distinct projected Story of one
 selected accepted Functional child. Technical completion also requires every
-Task to retain its Story milestone and a complete acyclic blocker graph with no
-self-edge or missing target. Invalid stage evidence routes to that stage again.
-Accepted evidence without readback routes to reconciliation.
+Task to retain its Story milestone and the exact successful result of
+`write-backlog`'s provider-neutral validator over the full reachable Task
+graph, resolved milestone order, and current provider snapshot. The result must
+cover every projected Task and outgoing edge. It rejects future-iteration,
+self, missing-target, duplicate, and cyclic edges while preserving valid
+same-or-earlier-milestone blockers across Stories and Epics. Invalid stage
+evidence routes to that stage again. Accepted evidence without readback routes
+to reconciliation.

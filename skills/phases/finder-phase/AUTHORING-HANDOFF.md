@@ -4,16 +4,16 @@ Mode: Convert the former chart/work lifecycle into the accepted Fog-child graph.
 
 ## Obligation Map
 
-| Obligation | Mandatory | Survives interruption | Evidence artifact | Owner | Audit criterion |
-| --- | --- | --- | --- | --- | --- |
-| Explicit human invocation | yes | yes | both `SKILL.md` files and OpenAI metadata | engine and wrapper | invocation flags agree |
-| One exact Fog | yes | yes | durable wiki identity, provider readback | ensure gate | create/resume cardinality is one |
-| One Business child | yes | yes | child identity and Stage readback | Business gate | ambiguity produces zero writes |
-| Deterministic resume | yes | yes | router, runtime handoff, provider snapshot | router | one route from current evidence |
-| Business decision depth | yes | yes | immutable resolution pointer | Business gate | atomic grill settles placement without technical policy |
-| Support cycles | yes | yes | Research/Prototype child and immutable evidence | support gates | support returns to its named grilling child |
-| Provider mutation boundary | yes | yes | semantic intent plus exact readback | reconciliation | all physical writes route through `write-backlog` |
-| Exact target return | yes | yes | `target_depth_reached` handoff | return gate | chosen depth returns without Fog completion |
+| Obligation                 | Mandatory | Survives interruption | Evidence artifact                               | Owner              | Audit criterion                                         |
+| -------------------------- | --------- | --------------------- | ----------------------------------------------- | ------------------ | ------------------------------------------------------- |
+| Explicit human invocation  | yes       | yes                   | both `SKILL.md` files and OpenAI metadata       | engine and wrapper | invocation flags agree                                  |
+| One exact Fog              | yes       | yes                   | durable wiki identity, provider readback        | ensure gate        | create/resume cardinality is one                        |
+| One Business child         | yes       | yes                   | child identity and Stage readback               | Business gate      | ambiguity produces zero writes                          |
+| Deterministic resume       | yes       | yes                   | router, runtime handoff, provider snapshot      | router             | one route from current evidence                         |
+| Business decision depth    | yes       | yes                   | immutable resolution pointer                    | Business gate      | atomic grill settles placement without technical policy |
+| Support cycles             | yes       | yes                   | Research/Prototype child and immutable evidence | support gates      | support returns to its named grilling child             |
+| Provider mutation boundary | yes       | yes                   | semantic intent plus exact readback             | reconciliation     | all physical writes route through `write-backlog`       |
+| Exact target return        | yes       | yes                   | `target_depth_reached` handoff                  | return gate        | chosen depth returns without Fog completion             |
 
 Survivor artifacts: stable wiki/provider Fog identities, exact child identities,
 immutable resolution pointers, provider snapshots/readbacks, support evidence,
@@ -43,16 +43,16 @@ Resume identity: canonical source tree at current working revision
 
 ## State Model
 
-| State | Scope | Entry guard | Exit guard | Next |
-| --- | --- | --- | --- | --- |
-| Fog absent | invocation | no exact readback | one exact Fog read back | Business or handback |
-| Business active | one Fog | Business evidence missing/invalid | accepted pointer plus intent | support, reconcile, checkpoint, handback |
-| Support active | named grilling child | precise support unknown | immutable report or verdict | reconcile or handback |
-| Stage accepted | one stage | immutable evidence exists | exact projection readback | target return or next depth |
-| Functional active | one Story intent | target includes Functional | accepted pointer plus intent | support, reconcile, handback |
-| Technical active | one Story | target is Technical | accepted pointer plus intent | support, reconcile, handback |
-| Target reached | invocation | all target evidence/readback fresh | durable return written | terminal return |
-| Human steering | conflict | admissible evidence cannot resolve | `$handback` guard passes | terminal or router re-entry |
+| State             | Scope                | Entry guard                        | Exit guard                   | Next                                     |
+| ----------------- | -------------------- | ---------------------------------- | ---------------------------- | ---------------------------------------- |
+| Fog absent        | invocation           | no exact readback                  | one exact Fog read back      | Business or handback                     |
+| Business active   | one Fog              | Business evidence missing/invalid  | accepted pointer plus intent | support, reconcile, checkpoint, handback |
+| Support active    | named grilling child | precise support unknown            | immutable report or verdict  | reconcile or handback                    |
+| Stage accepted    | one stage            | immutable evidence exists          | exact projection readback    | target return or next depth              |
+| Functional active | one Story intent     | target includes Functional         | accepted pointer plus intent | support, reconcile, handback             |
+| Technical active  | one Story            | target is Technical                | accepted pointer plus intent | support, reconcile, handback             |
+| Target reached    | invocation           | all target evidence/readback fresh | durable return written       | terminal return                          |
+| Human steering    | conflict             | admissible evidence cannot resolve | `$handback` guard passes     | terminal or router re-entry              |
 
 Graph forms: baseline depth path, target-depth branches, Research/Prototype
 cycles, accepted-stage reuse skips, structural approval checkpoint, blocked
@@ -196,6 +196,29 @@ Blockers: none
 
 Resume identity: current target artifact set
 
+## Phase: router (2026-08-27 repair)
+
+Status: complete
+
+Scope: Technical Task graph completion evidence.
+
+Artifacts: Current Finder router, contract, runtime handoff, writer validator,
+and fresh PR review evidence.
+
+Validation: Direct-child Task collection rejected valid cross-Epic blockers and
+could not prove future-milestone rejection. Current artifacts therefore made
+`test-routes` stale while prior authority, gates, and disclosure remained
+consistent.
+
+Domain state: Selected `test-routes.md`; no provider mutation or wider topology
+change was authorized.
+
+Next suggested route: `test-routes.md`
+
+Blockers: none
+
+Resume identity: exact upstream source revision and current PR review threads
+
 ## Phase: test-routes
 
 Status: complete
@@ -210,10 +233,15 @@ branch, Research executor cycle, reconciliation repair, structural checkpoint,
 handback terminal, cold resume, stale/invalid/out-of-scope evidence,
 contradictory suggestion, and premature completion rejection. The planned
 checkpoint remains distinct from human steering. The out-of-scope case first
-failed as target return, then was repaired to reject inadmissible evidence.
+failed as target return, then was repaired to reject inadmissible evidence. The
+2026-08-27 repair adds RED/GREEN cases proving the exact `write-backlog`
+full-reachable validator result rejects a future-iteration edge and accepts a
+same-or-earlier-milestone blocker whose target belongs to another Epic.
 
 Domain state: Route fixture contains expected route before the executable
-contract derives it; every row matches after the recorded repair.
+contract derives it. Technical target return now requires the successful writer
+validator result, its complete Task/edge coverage, exact milestone-order
+readback, and matching provider snapshot.
 
 Next suggested route: `audit.md`
 
@@ -232,9 +260,9 @@ fixtures, and focused contract tests.
 
 Validation: All mandatory obligations, route precedence, cold resume, pointers,
 gate exits, handoffs, target-depth return, and human-steering authority guard
-pass. `node --test tests/finder-phase-graph.contract.test.mjs
-tests/wayfinder-lifecycle.contract.test.mjs` passes 35/35. `git diff --check`
-passes. No separate skill validator exists in this canonical repository.
+pass. The 2026-08-27 repair passes `node --test tests/*.test.mjs` at 212/212 and
+`git diff --check`. No separate skill validator exists in this canonical
+repository.
 
 Domain state: Audit complete. The no-op pass removed the old chart/work map,
 Fog-graduation rules, placement classification, and duplicate convergence

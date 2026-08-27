@@ -31,7 +31,9 @@ current Technical children, and wrapper presentation profile.
 7. Derive a nonempty Task intent containing at least one atomic Task and its
    blocker relationships from that authoritative SPEC.
 8. Only then emit one semantic technical projection intent to `$write-backlog`
-   for exact Task and relation readback.
+   for exact Task and relation readback. Require its successful
+   `validate-task-blocker-graph` result over the full reachable graph, resolved
+   milestone order, and resulting provider snapshot.
 
 ## Invariants
 
@@ -46,7 +48,8 @@ duplicate identity produces zero writes and routes to human steering.
 
 One exact Technical child for the Story, immutable accepted resolution pointer,
 agent-ready SPEC, verified stable blob URL, nonempty Task intent, semantic
-projection intent, and exact Task/relation readback.
+projection intent, exact Task/relation readback, and the successful
+full-reachable Task graph validator result bound to that provider snapshot.
 
 ## Declared exits
 

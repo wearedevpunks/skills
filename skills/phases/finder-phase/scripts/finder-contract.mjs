@@ -1,7 +1,6 @@
 const DEPTHS = ["Business", "Functional", "Technical"];
 const CONFLICT_IDENTITIES = ["ambiguous", "duplicate", "conflict"];
-const isStableIdentity = (value) =>
-  typeof value === "string" && value.trim().length > 0;
+const isStableIdentity = (value) => typeof value === "string" && value.trim().length > 0;
 
 const hasExactBusinessProjection = (child) =>
   isStableIdentity(child?.projectedProductArea) &&
@@ -27,14 +26,10 @@ const businessChildCollectionConflicts = (children) => {
 
 const deriveBusinessStageRoute = (state) => {
   if (!Array.isArray(state.businessChildren)) {
-    return state.business === "accepted"
-      ? "human-steering"
-      : "business-grilling";
+    return state.business === "accepted" ? "human-steering" : "business-grilling";
   }
   if (state.businessChildren.length === 0) {
-    return state.business === "accepted"
-      ? "human-steering"
-      : "business-grilling";
+    return state.business === "accepted" ? "human-steering" : "business-grilling";
   }
 
   const [child] = state.businessChildren;
@@ -93,7 +88,70 @@ const functionalProjectionConflicts = (children, businessChildren) => {
   return false;
 };
 
-const technicalProjectionConflicts = (children, functionalChildren) => {
+const hasExactWriterTaskGraphValidation = (state, projectedTasks) => {
+  const validation = state.taskGraphValidation;
+  const result = validation?.result;
+  if (
+    !isStableIdentity(state.providerSnapshotIdentity) ||
+    validation?.validator !== "write-backlog/validate-task-blocker-graph" ||
+    validation.scope !== "full-reachable" ||
+    validation.milestoneOrderReadback !== "exact" ||
+    validation.providerSnapshotIdentity !== state.providerSnapshotIdentity ||
+    result?.ok !== true ||
+    !Array.isArray(result.taskIds) ||
+    !Array.isArray(result.edges)
+  ) {
+    return false;
+  }
+
+  const validatedTaskIds = new Set();
+  for (const taskId of result.taskIds) {
+    if (!isStableIdentity(taskId) || validatedTaskIds.has(taskId)) return false;
+    validatedTaskIds.add(taskId);
+  }
+
+  const validatedEdges = new Set();
+  for (const edge of result.edges) {
+    if (
+      !isStableIdentity(edge?.blockedTaskId) ||
+      !isStableIdentity(edge.blockingTaskId) ||
+      !validatedTaskIds.has(edge.blockedTaskId) ||
+      !validatedTaskIds.has(edge.blockingTaskId)
+    ) {
+      return false;
+    }
+    const key = `${edge.blockedTaskId}\u0000${edge.blockingTaskId}`;
+    if (validatedEdges.has(key)) return false;
+    validatedEdges.add(key);
+  }
+
+  const projectedTaskIds = new Set(projectedTasks.map((task) => task.id));
+  const projectedEdges = new Set();
+  for (const task of projectedTasks) {
+    if (!validatedTaskIds.has(task.id)) return false;
+    for (const blockingTaskId of task.blockedBy) {
+      if (!validatedTaskIds.has(blockingTaskId)) return false;
+      projectedEdges.add(`${task.id}\u0000${blockingTaskId}`);
+    }
+  }
+  if ([...projectedEdges].some((edge) => !validatedEdges.has(edge))) {
+    return false;
+  }
+  if (
+    [...validatedEdges].some((edge) => {
+      const [blockedTaskId] = edge.split("\u0000");
+      return projectedTaskIds.has(blockedTaskId) && !projectedEdges.has(edge);
+    })
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const technicalProjectionConflicts = (state) => {
+  const children = state.technicalChildren;
+  const functionalChildren = state.functionalChildren;
   if (!Array.isArray(children)) return false;
 
   const storyMilestones = new Map(
@@ -144,32 +202,17 @@ const technicalProjectionConflicts = (children, functionalChildren) => {
       tasks.push(task);
     }
   }
+  if (tasks.length === 0) return false;
 
-  const taskGraph = new Map(tasks.map((task) => [task.id, task.blockedBy]));
   for (const task of tasks) {
     if (
       new Set(task.blockedBy).size !== task.blockedBy.length ||
-      task.blockedBy.includes(task.id) ||
-      task.blockedBy.some((identity) => !taskGraph.has(identity))
+      task.blockedBy.includes(task.id)
     ) {
       return true;
     }
   }
-
-  const visiting = new Set();
-  const visited = new Set();
-  const hasCycle = (taskId) => {
-    if (visiting.has(taskId)) return true;
-    if (visited.has(taskId)) return false;
-    visiting.add(taskId);
-    if (taskGraph.get(taskId).some(hasCycle)) return true;
-    visiting.delete(taskId);
-    visited.add(taskId);
-    return false;
-  };
-  if ([...taskGraph.keys()].some(hasCycle)) return true;
-
-  return false;
+  return !hasExactWriterTaskGraphValidation(state, tasks);
 };
 
 const technicalSelectionConflicts = ({
@@ -181,9 +224,7 @@ const technicalSelectionConflicts = ({
     return false;
   }
 
-  const selectedIntents = new Set(
-    Array.isArray(selectedStoryIntents) ? selectedStoryIntents : [],
-  );
+  const selectedIntents = new Set(Array.isArray(selectedStoryIntents) ? selectedStoryIntents : []);
   const selectedFunctionalChildren = (
     Array.isArray(functionalChildren) ? functionalChildren : []
   ).filter(
@@ -199,9 +240,7 @@ const technicalSelectionConflicts = ({
     selectedStories.some(
       (story) =>
         !isStableIdentity(story) ||
-        selectedFunctionalChildren.filter(
-          (child) => child.projectedStory === story,
-        ).length !== 1,
+        selectedFunctionalChildren.filter((child) => child.projectedStory === story).length !== 1,
     )
   );
 };
@@ -226,8 +265,7 @@ const deriveChildStageRoute = ({
   if (
     matchesBySelected.some(
       (matches) =>
-        matches.length > 1 ||
-        matches.some((child) => CONFLICT_IDENTITIES.includes(child.identity)),
+        matches.length > 1 || matches.some((child) => CONFLICT_IDENTITIES.includes(child.identity)),
     )
   ) {
     return "human-steering";
@@ -267,9 +305,7 @@ const deriveChildStageRoute = ({
   if (
     matchesBySelected.some(
       (matches) =>
-        matches.length !== 1 ||
-        matches[0].status !== "accepted" ||
-        matches[0].scope !== "in-scope",
+        matches.length !== 1 || matches[0].status !== "accepted" || matches[0].scope !== "in-scope",
     )
   ) {
     return grillingRoute;
@@ -288,14 +324,8 @@ export const deriveFinderRoute = (state) => {
     businessChildCollectionConflicts(state.businessChildren) ||
     childCollectionConflicts(state.functionalChildren, "storyIntent") ||
     childCollectionConflicts(state.technicalChildren, "story") ||
-    functionalProjectionConflicts(
-      state.functionalChildren,
-      state.businessChildren,
-    ) ||
-    technicalProjectionConflicts(
-      state.technicalChildren,
-      state.functionalChildren,
-    )
+    functionalProjectionConflicts(state.functionalChildren, state.businessChildren) ||
+    technicalProjectionConflicts(state)
   ) {
     return "human-steering";
   }

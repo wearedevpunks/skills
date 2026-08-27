@@ -31,7 +31,7 @@ workflow-native artifacts, committed handoff, suggested route.
 10. Accepted Business evidence lacks an exact child identity or immutable
     resolution pointer -> [handback](handback.md), with zero mutation intent.
 11. Accepted Business evidence lacks exact projection readback ->
-   [reconcile](reconcile.md).
+    [reconcile](reconcile.md).
 12. Target depth is `Business` -> [return-target](return-target.md).
 13. Accepted Functional evidence lacks an exact child identity or immutable
     resolution pointer -> [handback](handback.md), with zero mutation intent.
@@ -45,7 +45,8 @@ workflow-native artifacts, committed handoff, suggested route.
     selected accepted Functional child -> [handback](handback.md), with zero
     mutation intent.
 18. Accepted Technical evidence lacks stable projected Task identities, exact
-    parent and `V*` membership, blocker-graph readback, or exact projection
+    parent and `V*` membership, or an exact `write-backlog` full-reachable Task
+    graph validation bound to the current provider snapshot and milestone-order
     readback ->
     [reconcile](reconcile.md).
 19. Any selected Story lacks valid Technical evidence ->

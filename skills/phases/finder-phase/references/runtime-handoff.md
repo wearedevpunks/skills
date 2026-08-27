@@ -32,6 +32,7 @@ Exact readback identities:
 Business hierarchy readback:
 Functional Story placement readback:
 Technical Task graph readback:
+Technical Task graph validator result:
 Support evidence:
 Checkpoint or blocker:
 Last verified at:
@@ -53,5 +54,9 @@ Business hierarchy readback names the exact Product Area, Initiative, and Epic
 identities plus exact parent membership. Functional Story placement readback
 names the Story, parent Epic, contextual `V*` milestone, exact milestone
 membership, and exact Fog and source links. Technical Task graph readback names
-each Task, its parent Story, the same `V*` milestone as that Story, and an exact
-acyclic blocker graph whose targets all exist.
+each Task, its parent Story, the same `V*` milestone as that Story, and the exact
+provider snapshot. Technical Task graph validator result preserves the
+successful `write-backlog/validate-task-blocker-graph` result over every
+reachable Story and Task, the resolved milestone-order readback, and its bound
+provider snapshot identity. It covers every returned Task and outgoing edge;
+connected blockers may live under other Stories or Epics.
