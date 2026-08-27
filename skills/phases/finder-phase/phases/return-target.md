@@ -8,7 +8,8 @@ immutable accepted resolution pointer, and matching exact provider readback.
 ## Inputs
 
 Target depth, exact Fog and child identities, immutable resolution pointers,
-provider readbacks, and unresolved accepted resulting scope.
+provider readbacks, any required full-reachable Task graph validator result,
+and unresolved accepted resulting scope.
 
 ## Bounded action
 
@@ -25,7 +26,8 @@ Every returned child includes its accepted projection readback.
 
 ## Completion evidence
 
-All required stage identities, immutable pointers, exact readbacks, and a
+All required stage identities, immutable pointers, exact readbacks, required
+Task graph validator result bound to the current provider snapshot, and a
 runtime handoff whose outcome is `target_depth_reached` rather than Fog
 completion.
 

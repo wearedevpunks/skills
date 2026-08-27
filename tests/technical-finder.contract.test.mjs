@@ -4,8 +4,7 @@ import { test } from "node:test";
 import { deriveFinderRoute } from "../skills/phases/finder-phase/scripts/finder-contract.mjs";
 import { validateTaskBlockerGraph } from "../skills/agnostic/requirements/write-backlog/scripts/validate-task-blocker-graph.mjs";
 
-const read = (path) =>
-  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("Technical Finder is a human-only cumulative adapter over Finder", () => {
   const skill = read("skills/phases/technical-finder/SKILL.md");
@@ -17,20 +16,14 @@ test("Technical Finder is a human-only cumulative adapter over Finder", () => {
   assert.match(skill, /technical user/iu);
   assert.match(skill, /target\s+depth:\s*`Technical`/iu);
   assert.match(skill, /Directly compose.{0,120}Finder engine/isu);
-  assert.match(
-    normalized,
-    /cumulative Business, Functional, and Technical depth/iu,
-  );
+  assert.match(normalized, /cumulative Business, Functional, and Technical depth/iu);
 });
 
 test("Technical Finder reuses lower stages and resumes one Story-scoped child", () => {
   const skill = read("skills/phases/technical-finder/SKILL.md");
   const normalized = skill.replace(/\s+/gu, " ");
 
-  assert.match(
-    normalized,
-    /reuse.{0,100}accepted Business and Functional (?:children|stages)/iu,
-  );
+  assert.match(normalized, /reuse.{0,100}accepted Business and Functional (?:children|stages)/iu);
   assert.match(normalized, /first missing or invalid(?:ated)? stage/iu);
   assert.match(normalized, /(?:one selected Story|selects one Story) at a time/iu);
   assert.match(
@@ -42,62 +35,96 @@ test("Technical Finder reuses lower stages and resumes one Story-scoped child", 
   assert.match(normalized, /re-enter.{0,100}Finder router/iu);
 });
 
-const technicalState = (technicalChildren) => ({
-  targetDepth: "Technical",
-  fogIdentity: "exact",
-  business: "accepted",
-  businessIdentity: "exact",
-  businessResolution: "immutable",
-  businessProjection: "read-back",
-  businessChildren: [
-    {
-      identity: "exact",
-      status: "accepted",
-      scope: "in-scope",
-      resolution: "immutable",
-      projection: "read-back",
-      projectedProductArea: "area-a",
-      projectedInitiative: "initiative-a",
-      projectedEpic: "epic-a",
-      hierarchyReadback: "exact",
+const technicalState = (technicalChildren) => {
+  const state = {
+    targetDepth: "Technical",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    businessChildren: [
+      {
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+        projectedProductArea: "area-a",
+        projectedInitiative: "initiative-a",
+        projectedEpic: "epic-a",
+        hierarchyReadback: "exact",
+      },
+    ],
+    selectedStoryIntents: ["intent-a", "intent-b"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        projectedStoryMilestone: "v1",
+        projectedStoryParentEpic: "epic-a",
+        projectedStoryMilestoneKind: "V*",
+        projectedStoryFogLink: "exact",
+        projectedStorySourceLink: "exact",
+        projectedStoryMembershipReadback: "exact",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+      {
+        storyIntent: "intent-b",
+        projectedStory: "story-b",
+        projectedStoryMilestone: "v1",
+        projectedStoryParentEpic: "epic-a",
+        projectedStoryMilestoneKind: "V*",
+        projectedStoryFogLink: "exact",
+        projectedStorySourceLink: "exact",
+        projectedStoryMembershipReadback: "exact",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+    selectedStories: ["story-a", "story-b"],
+    technicalChildren,
+  };
+  const tasks = technicalChildren.flatMap((child) =>
+    (child.projectedTasks ?? []).map((task) => ({
+      id: task.id,
+      storyId: task.story,
+      milestoneIds: [task.milestone],
+      blockedBy: task.blockedBy,
+    })),
+  );
+  if (tasks.length === 0) return state;
+  const taskStoryIds = new Set(tasks.map((task) => task.storyId));
+  const stories = state.functionalChildren
+    .filter((child) => taskStoryIds.has(child.projectedStory))
+    .map((child) => ({
+      id: child.projectedStory,
+      milestoneIds: [child.projectedStoryMilestone],
+    }));
+  const providerSnapshotIdentity = "snapshot-a";
+  return {
+    ...state,
+    providerSnapshotIdentity,
+    taskGraphValidation: {
+      validator: "write-backlog/validate-task-blocker-graph",
+      scope: "full-reachable",
+      milestoneOrderReadback: "exact",
+      providerSnapshotIdentity,
+      result: validateTaskBlockerGraph({
+        milestoneOrder: ["v1"],
+        stories,
+        tasks,
+      }),
     },
-  ],
-  selectedStoryIntents: ["intent-a", "intent-b"],
-  functionalChildren: [
-    {
-      storyIntent: "intent-a",
-      projectedStory: "story-a",
-      projectedStoryMilestone: "v1",
-      projectedStoryParentEpic: "epic-a",
-      projectedStoryMilestoneKind: "V*",
-      projectedStoryFogLink: "exact",
-      projectedStorySourceLink: "exact",
-      projectedStoryMembershipReadback: "exact",
-      identity: "exact",
-      status: "accepted",
-      scope: "in-scope",
-      resolution: "immutable",
-      projection: "read-back",
-    },
-    {
-      storyIntent: "intent-b",
-      projectedStory: "story-b",
-      projectedStoryMilestone: "v1",
-      projectedStoryParentEpic: "epic-a",
-      projectedStoryMilestoneKind: "V*",
-      projectedStoryFogLink: "exact",
-      projectedStorySourceLink: "exact",
-      projectedStoryMembershipReadback: "exact",
-      identity: "exact",
-      status: "accepted",
-      scope: "in-scope",
-      resolution: "immutable",
-      projection: "read-back",
-    },
-  ],
-  selectedStories: ["story-a", "story-b"],
-  technicalChildren,
-});
+  };
+};
 
 const acceptedTechnicalChild = (story, projection = "read-back") => ({
   story,
@@ -127,9 +154,7 @@ const acceptedTechnicalChild = (story, projection = "read-back") => ({
 
 test("Finder reconciles one accepted Technical Story before selecting the next", () => {
   assert.equal(
-    deriveFinderRoute(
-      technicalState([acceptedTechnicalChild("story-a", "pending")]),
-    ),
+    deriveFinderRoute(technicalState([acceptedTechnicalChild("story-a", "pending")])),
     "reconcile",
   );
   assert.equal(
@@ -138,10 +163,7 @@ test("Finder reconciles one accepted Technical Story before selecting the next",
   );
   assert.equal(
     deriveFinderRoute(
-      technicalState([
-        acceptedTechnicalChild("story-a"),
-        acceptedTechnicalChild("story-b"),
-      ]),
+      technicalState([acceptedTechnicalChild("story-a"), acceptedTechnicalChild("story-b")]),
     ),
     "return-target",
   );
@@ -190,11 +212,7 @@ test("Technical Finder returns required same-version Tasks and a validated block
     }),
     {
       ok: true,
-      taskIds: [
-        "epic-a/story-a/task-a",
-        "epic-b/story-b/task-b",
-        "epic-c/story-c/task-c",
-      ],
+      taskIds: ["epic-a/story-a/task-a", "epic-b/story-b/task-b", "epic-c/story-c/task-c"],
       edges: [
         {
           blockedTaskId: "epic-b/story-b/task-b",
@@ -211,16 +229,12 @@ test("Technical Finder returns required same-version Tasks and a validated block
   const rejected = [
     {
       stories: [{ id: "story", milestoneIds: ["v1"] }],
-      tasks: [
-        { id: "task", storyId: "story", milestoneIds: ["v1"], blockedBy: ["missing"] },
-      ],
+      tasks: [{ id: "task", storyId: "story", milestoneIds: ["v1"], blockedBy: ["missing"] }],
       code: "BLOCKER_TARGET_MISSING",
     },
     {
       stories: [{ id: "story", milestoneIds: ["v1"] }],
-      tasks: [
-        { id: "task", storyId: "story", milestoneIds: ["v1"], blockedBy: ["task"] },
-      ],
+      tasks: [{ id: "task", storyId: "story", milestoneIds: ["v1"], blockedBy: ["task"] }],
       code: "SELF_EDGE",
     },
     {
@@ -249,9 +263,7 @@ test("Technical Finder returns required same-version Tasks and a validated block
     },
     {
       stories: [{ id: "story", milestoneIds: ["v1"] }],
-      tasks: [
-        { id: "task", storyId: "missing-story", milestoneIds: ["v1"], blockedBy: [] },
-      ],
+      tasks: [{ id: "task", storyId: "missing-story", milestoneIds: ["v1"], blockedBy: [] }],
       code: "PARENT_STORY_MISSING",
     },
     {
