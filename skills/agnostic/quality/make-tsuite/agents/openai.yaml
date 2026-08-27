@@ -1,0 +1,4 @@
+interface:
+  display_name: "Make TSuite"
+  short_description: "Audit or improve test portfolios"
+  default_prompt: "Use $make-tsuite to audit this test portfolio or implement authorized test-only suite changes while preserving behavior semantics."
