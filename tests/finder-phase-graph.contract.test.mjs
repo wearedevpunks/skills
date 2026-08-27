@@ -14,6 +14,26 @@ const acceptedBusinessChild = (projection = "read-back") => ({
   projection,
 });
 
+const withFixtureStoryMilestones = (state) => ({
+  ...state,
+  functionalChildren: Array.isArray(state.functionalChildren)
+    ? state.functionalChildren.map((child) => {
+        const technicalChild = state.technicalChildren?.find(
+          (candidate) => candidate.story === child.projectedStory,
+        );
+        const taskMilestones = new Set(
+          technicalChild?.projectedTasks?.map((task) => task.milestone) ?? [],
+        );
+        return taskMilestones.size === 1
+          ? {
+              ...child,
+              projectedStoryMilestone: taskMilestones.values().next().value,
+            }
+          : child;
+      })
+    : state.functionalChildren,
+});
+
 test("Business Finder is a human-only adapter over one human-only Finder engine", () => {
   const finder = read("skills/phases/finder-phase/SKILL.md");
   const finderMetadata = read("skills/phases/finder-phase/agents/openai.yaml");
@@ -39,16 +59,17 @@ test("Finder derives one deterministic route from current evidence on every entr
   );
 
   for (const scenario of scenarios) {
+    const fixtureState = withFixtureStoryMilestones(scenario.state);
     const state =
       scenario.state.business === "accepted" &&
       !Array.isArray(scenario.state.businessChildren)
         ? {
-            ...scenario.state,
+            ...fixtureState,
             businessChildren: [
               acceptedBusinessChild(scenario.state.businessProjection),
             ],
           }
-        : scenario.state;
+        : fixtureState;
     assert.equal(
       deriveFinderRoute(state),
       scenario.expectedRoute,
@@ -457,6 +478,86 @@ test("Finder requires exact Technical Task and relation readback", () => {
       ],
     }),
     "human-steering",
+  );
+});
+
+test("Finder requires every projected Task to share its parent Story milestone", () => {
+  const state = {
+    targetDepth: "Technical",
+    fogIdentity: "exact",
+    business: "accepted",
+    businessIdentity: "exact",
+    businessResolution: "immutable",
+    businessProjection: "read-back",
+    businessChildren: [acceptedBusinessChild()],
+    selectedStoryIntents: ["intent-a"],
+    functionalChildren: [
+      {
+        storyIntent: "intent-a",
+        projectedStory: "story-a",
+        projectedStoryMilestone: "v1",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        projection: "read-back",
+      },
+    ],
+    selectedStories: ["story-a"],
+    technicalChildren: [
+      {
+        story: "story-a",
+        identity: "exact",
+        status: "accepted",
+        scope: "in-scope",
+        resolution: "immutable",
+        specReadiness: "agent-ready",
+        stableBlob: "verified",
+        taskIntentCount: 1,
+        projection: "read-back",
+        taskGraphReadback: "exact",
+        projectedTasks: [
+          {
+            id: "task-a",
+            story: "story-a",
+            milestone: "v2",
+            blockedBy: [],
+            readback: "exact",
+          },
+        ],
+      },
+    ],
+  };
+
+  assert.equal(deriveFinderRoute(state), "human-steering");
+  assert.equal(
+    deriveFinderRoute({
+      ...state,
+      functionalChildren: state.functionalChildren.map(
+        ({ projectedStoryMilestone: _, ...child }) => child,
+      ),
+      technicalChildren: state.technicalChildren.map((child) => ({
+        ...child,
+        projectedTasks: child.projectedTasks.map((task) => ({
+          ...task,
+          milestone: "v1",
+        })),
+      })),
+    }),
+    "human-steering",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...state,
+      technicalChildren: state.technicalChildren.map((child) => ({
+        ...child,
+        projectedTasks: child.projectedTasks.map((task) => ({
+          ...task,
+          milestone: "v1",
+        })),
+      })),
+    }),
+    "return-target",
   );
 });
 

@@ -63,6 +63,7 @@ const technicalState = (technicalChildren) => ({
     {
       storyIntent: "intent-a",
       projectedStory: "story-a",
+      projectedStoryMilestone: "v1",
       identity: "exact",
       status: "accepted",
       scope: "in-scope",
@@ -72,6 +73,7 @@ const technicalState = (technicalChildren) => ({
     {
       storyIntent: "intent-b",
       projectedStory: "story-b",
+      projectedStoryMilestone: "v1",
       identity: "exact",
       status: "accepted",
       scope: "in-scope",

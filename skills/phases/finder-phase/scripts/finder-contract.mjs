@@ -66,9 +66,21 @@ const functionalProjectionConflicts = (children) => {
   return false;
 };
 
-const technicalProjectionConflicts = (children) => {
+const technicalProjectionConflicts = (children, functionalChildren) => {
   if (!Array.isArray(children)) return false;
 
+  const storyMilestones = new Map(
+    (Array.isArray(functionalChildren) ? functionalChildren : [])
+      .filter(
+        (child) =>
+          child?.status === "accepted" &&
+          child.scope === "in-scope" &&
+          child.projection === "read-back" &&
+          isStableIdentity(child.projectedStory) &&
+          isStableIdentity(child.projectedStoryMilestone),
+      )
+      .map((child) => [child.projectedStory, child.projectedStoryMilestone]),
+  );
   const taskIds = new Set();
   for (const child of children) {
     if (
@@ -78,7 +90,9 @@ const technicalProjectionConflicts = (children) => {
     ) {
       continue;
     }
+    const storyMilestone = storyMilestones.get(child.story);
     if (
+      !isStableIdentity(storyMilestone) ||
       child.taskGraphReadback !== "exact" ||
       !Array.isArray(child.projectedTasks) ||
       child.projectedTasks.length !== child.taskIntentCount
@@ -90,7 +104,7 @@ const technicalProjectionConflicts = (children) => {
         !task ||
         !isStableIdentity(task.id) ||
         task.story !== child.story ||
-        !isStableIdentity(task.milestone) ||
+        task.milestone !== storyMilestone ||
         task.readback !== "exact" ||
         !Array.isArray(task.blockedBy) ||
         task.blockedBy.some((identity) => !isStableIdentity(identity)) ||
@@ -221,7 +235,10 @@ export const deriveFinderRoute = (state) => {
     childCollectionConflicts(state.functionalChildren, "storyIntent") ||
     childCollectionConflicts(state.technicalChildren, "story") ||
     functionalProjectionConflicts(state.functionalChildren) ||
-    technicalProjectionConflicts(state.technicalChildren)
+    technicalProjectionConflicts(
+      state.technicalChildren,
+      state.functionalChildren,
+    )
   ) {
     return "human-steering";
   }
