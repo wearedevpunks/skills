@@ -45,7 +45,7 @@ consequence to accept.
 flowchart TD
     A[Bump version] --> B[Run preview with env vars]
     B --> C{Clean?}
-    C -->|Yes| D[Create PR]
+    C -->|Yes| D[Report upgrade ready]
     C -->|No| E[Diff Checkpoint: categorize every diff]
     E --> F{Any Category A?}
     F -->|Yes| G[Fix wrong translations]
@@ -63,7 +63,8 @@ flowchart TD
 4. **Fix Category A** - code changes that didn't produce `same`
 5. **Investigate Category B** - diffs on resources you didn't change
 6. **Repeat** until clean or remaining diffs are fully investigated
-7. **Create PR** with upgrade summary
+7. **Report** the upgrade summary and preview evidence; use `$architect-pipeline` for
+   CI/CD or release orchestration
 
 ---
 
@@ -235,8 +236,8 @@ Every line changed could introduce a regression. Prefer the smallest change that
 
 ### Do not run pulumi up
 
-Provider upgrades modify source code and need code review before deployment.
-PR -> review -> merge -> deploy via CI/CD.
+Provider upgrades modify source code. Preview validates the Pulumi translation; CI/CD and
+release orchestration belong to `$architect-pipeline`.
 
 ---
 
@@ -269,7 +270,8 @@ Run `pulumi preview --refresh --run-program` immediately after updating the depe
 Do not research breaking changes first - many upgrades just work, especially minor
 versions.
 
-If the preview is clean (only the provider version bump), create a PR.
+If the preview is clean (only the provider version bump), report the exact bump and
+preview evidence. Use `$architect-pipeline` for any CI/CD or release workflow.
 
 ---
 
@@ -320,8 +322,9 @@ upstream GitHub issue). "I believe this is expected" is not a source.
 ```
 
 If the preview is clean (or all remaining diffs are documented no-ops with cited sources),
-create a pull request. If unresolved diffs remain, present the summary as an exception
-report and ask the user how they'd like to proceed before creating a PR.
+report the upgrade as ready for review. If unresolved diffs remain, present the summary as
+an exception report and ask the user how they would like to proceed. Use `$architect-pipeline`
+for the surrounding CI/CD or release workflow.
 
 ---
 

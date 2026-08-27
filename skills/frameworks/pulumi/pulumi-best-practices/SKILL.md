@@ -1,7 +1,7 @@
 ---
 name: pulumi-best-practices
 version: 1.0.0
-description: Load when the user is writing, reviewing, or debugging Pulumi TypeScript/Python programs; asks about Output<T> or apply() usage; wants to create ComponentResource classes; needs to refactor resources without destroying them (aliases); is setting up secrets or config; or is configuring a pulumi preview/up CI workflow. Also load for questions about resource dependency order, parent/child resource relationships, or pulumi.interpolate.
+description: Load when the user is writing, reviewing, or debugging Pulumi TypeScript/Python programs; asks about Output<T> or apply() usage; wants to create ComponentResource classes; needs to refactor resources without destroying them (aliases); is setting up secrets or config; or needs Pulumi-specific preview/up semantics. Also load for questions about resource dependency order, parent/child resource relationships, or pulumi.interpolate.
 ---
 
 # Pulumi Best Practices
@@ -385,15 +385,15 @@ aliases: ["urn:pulumi:stack::project::aws:s3/bucket:Bucket::old-name"]
 
 ---
 
-### 7. Preview Before Every Deployment
+### 7. Preview Before Every `pulumi up`
 
 **Why**: `pulumi preview` shows exactly what will be created, updated, or destroyed. Surprises in production come from skipping preview. A resource showing "replace" when you expected "update" means imminent destruction and recreation.
 
 **Detection signals**:
 
 - Running `pulumi up --yes` interactively without reviewing changes
-- No preview step anywhere in the CI/CD workflow for a given change
-- Preview output not reviewed before merge or deployment approval
+- Running `pulumi up` without first inspecting a preview for the same stack and configuration
+- Preview output not retained as evidence for the corresponding `pulumi up`
 
 **Wrong**:
 
@@ -426,46 +426,14 @@ pulumi up
 - Resources being deleted that shouldn't be
 - More changes than expected from your code diff
 
-**CI/CD integration**:
-
-```yaml
-# GitHub Actions example
-jobs:
-  preview:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Pulumi Preview
-        uses: pulumi/actions@v5
-        with:
-          command: preview
-          stack-name: production
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-  deploy:
-    needs: preview
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Pulumi Up
-        uses: pulumi/actions@v5
-        with:
-          command: up
-          stack-name: production
-```
-
-**PR workflow**:
-
-- Run preview on every PR
-- Post preview output as PR comment
-- Require preview review before merge
-- Deploy only on merge to main
+Pipeline triggers, approvals, preview promotion, credentials, and provider-specific
+workflow configuration belong to `$architect-pipeline`. This section owns the Pulumi
+operation boundary: preview the exact stack and configuration, inspect its resource
+operations, then run `pulumi up` only after that result is accepted.
 
 **References**:
 
 - https://www.pulumi.com/docs/cli/commands/pulumi_preview/
-- https://www.pulumi.com/docs/iac/packages-and-automation/continuous-delivery/github-actions/
 
 ---
 
@@ -479,7 +447,7 @@ jobs:
 | Set parent: this | Component children at root level | Pass `{ parent: this }` to all child resources |
 | Secrets from day one | Plaintext passwords/keys in config | Use `--secret` flag, ESC |
 | Aliases when refactoring | Delete+create in preview | Add alias with old name/parent |
-| Preview before deploy | `pulumi up --yes` | Always run `pulumi preview` first |
+| Preview before `pulumi up` | `pulumi up --yes` | Always run `pulumi preview` first for the same stack and configuration |
 
 ## Validation Checklist
 
@@ -491,7 +459,7 @@ When reviewing Pulumi code, verify:
 - [ ] Child resources have `{ parent: this }`
 - [ ] Sensitive values use `config.requireSecret()` or `--secret`
 - [ ] Refactored resources have aliases preserving identity
-- [ ] Deployment process includes preview step
+- [ ] Every `pulumi up` has a reviewed preview for the same stack and configuration
 
 ## Related Skills
 
