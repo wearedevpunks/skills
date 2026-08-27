@@ -13,15 +13,14 @@ Use this skill only for readonly workflows. Goal: widen coverage fast, keep prom
 2. Confirm the work can be split into independent questions or areas.
 3. Keep the immediate blocking step local. Delegate only sidecar work that can run in parallel.
 4. Skip this skill for source or code mutation, patching, rebases, unrelated
-   writes, or tightly coupled debugging that needs one continuous thread. The
-   one retained durable-report commit required below does not trigger this skip.
+   writes, or tightly coupled debugging that needs one continuous thread.
 5. Durable-report mode is mandatory. Read [DURABLE-REPORT.md](DURABLE-REPORT.md)
-   before dispatching lanes. Every run writes one consolidated report to the
-   project wiki; findings must not remain response-only or context-only.
+   before dispatching lanes. Every run persists one consolidated report in the
+   repository at the intended project-wiki folder or path; findings must not
+   remain response-only or context-only.
    Research lanes remain readonly. Only the coordinator or one designated
-   consolidator may write and commit exactly one report after synthesis.
-   Finder child resolution uses this same mandatory durable mode. Complete its
-   current-checkout retention gate before returning the immutable SHA and path.
+   consolidator may write the report after synthesis. Finder child resolution
+   uses this same mandatory durable mode.
 
 ## Split Cleanly
 
@@ -78,4 +77,4 @@ Return:
 - conflicts or uncertainty
 - the synthesized conclusion
 - the next local action
-- durable report immutable SHA, path, and verified retention reference
+- durable report path in the intended project-wiki folder
