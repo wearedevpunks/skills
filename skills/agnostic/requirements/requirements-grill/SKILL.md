@@ -7,7 +7,7 @@ description: Requirements grilling with durable branch artifacts, glossary/axiom
 
 Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-spec` can compile after closure.
 
-This skill composes `$domain-modeling`, `$brainstorm`, and `$grilling` with durable artifacts. Invoke `$domain-modeling` before the first question, run the mandatory `$brainstorm` pass after technical grounding and before the first frontier, then use `$grilling` for live interview behavior. Use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
+This skill composes `$domain-modeling`, `$brainstorm`, and `$grilling` with durable artifacts. Use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
 
 This skill has three scoped references:
 
@@ -35,7 +35,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - Give `$domain-modeling` the active status glossary before the first question. Invoke it whenever a round changes terminology, relationships, or domain decisions, and persist its accepted results through `artifact-output` before continuing.
 - Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
 - Before `$grilling` constructs the first frontier, identify every active code- or architecture-bearing branch and complete the technical grounding in `grilling-flow`. Ground each branch in current code evidence, then ask code-grounded questions about its applicable topology, dependency direction and injection, seams, boundaries, persistence, and module shape. Each technical question states the observed constraint and the code consequence of the decision. Persist accepted design in the grill artifacts; keep `GLOSSARY.md` glossary-only.
-- After technical grounding, invoke `$brainstorm` as a mandatory standalone system-coherence pass before `$grilling` constructs or presents the first frontier. Block the first frontier until it completes. Route its candidate observations, decisions, and unresolved choices into the ordinary dependency-ordered design tree and durable grill artifacts; candidates are not requirements, authorization, or approval. Rerun only when accepted decisions materially reshape the active system boundary.
+- After technical grounding, complete `$brainstorm` before the first frontier. Add its unresolved decisions to the design tree; treat all output as candidate material until accepted. Rerun only when accepted decisions change the active system boundary.
 - Prefer conservative defaults once enough context exists.
 - If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
 - Treat parked branches as preserved knowledge, not deleted scope.
