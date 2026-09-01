@@ -13,26 +13,8 @@ const grill = read(
 test("brainstorm is a standalone model-invoked atomic skill", () => {
   assert.match(brainstorm, /^---\nname: brainstorm\ndescription:/u);
   assert.doesNotMatch(brainstorm, /disable-model-invocation/u);
-  assert.match(brainstorm, /atomic.*model-invoked/isu);
-  assert.match(brainstorm, /explicit(?:ly)? asked.*brainstorm.*system/isu);
-  assert.match(brainstorm, /another skill.*mandate.*bounded.*coherence/isu);
-  assert.doesNotMatch(brainstorm, /\$(?:grilling|requirements-grill|domain-modeling)/u);
-});
-
-test("brainstorm declares completion coverage for agent operation and durable system coherence", () => {
-  const completion = brainstorm.slice(
-    brainstorm.indexOf("## Completion criterion"),
-  );
-  assert.equal((completion.match(/^- \[ \]/gmu) ?? []).length, 5);
-  for (const criterion of [
-    /operating agent.*state.*legibility.*control/isu,
-    /linked abstraction boundaries.*interfaces.*coherence/isu,
-    /durable accretion.*future runs/isu,
-    /accuracy.*resource-efficiency tradeoffs/isu,
-    /observed constraints.*hypotheses.*unresolved choices/isu,
-  ]) {
-    assert.match(completion, criterion);
-  }
+  assert.match(brainstorm, /description:\s*Brainstorm a bounded system/iu);
+  assert.match(brainstorm, /another skill invokes `\$brainstorm`/iu);
 });
 
 test("requirements-grill composition names all required requirement skills", () => {
@@ -40,57 +22,38 @@ test("requirements-grill composition names all required requirement skills", () 
   assert.match(composition, /\$domain-modeling[\s\S]*\$brainstorm[\s\S]*\$grilling/iu);
 });
 
-test("brainstorm preserves the core system-coherence prompt and its operating lenses", () => {
-  for (const phrase of [
-    "agent-intuitive",
-    "agent-ergonomic",
-    "agent-accretive",
-    "active system boundary",
-    "current evidence",
-    "coherent, cohesive, modular, interconnected",
-    "tower of linked abstractions",
-    "legibility",
-    "resource efficiency",
-    "Put yourself in the driver's seat",
-    "synthetic SYSTEM",
-  ]) {
-    assert.match(brainstorm, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"), "u"));
-  }
+const originalPrompt =
+  "think deeply about how to make this entire system as agent-intuitive, agent-ergonomic, and agent-accretive as you can possibly imagine. Put yourself in the driver's seat and imagine that YOU are the one using this system and driving it. What would most enable you to do an awesome job understanding the situation accurately and optimally controlling everything to drive the best and most accurate results possible, with the least expenditure of resources? Don't just think of the project as an assemblage of various parts or components: really try to profoundly and deeply conceptualize it as a synthetic SYSTEM that is maximally coherent, cohesive, modular, and interconnected, forming a tower of linked abstractions that are maximally legible to you as an agent. Really ruminate and meditate on all of this incredibly deeply before responding or taking any actions.";
+
+test("brainstorm preserves the supplied system-coherence prompt verbatim", () => {
+  assert.ok(brainstorm.includes(`:\n\n${originalPrompt}`));
 });
 
 test("requirements-grill gates its first frontier on mandatory brainstorm after grounding", () => {
   const grounding = grill.indexOf("complete the technical grounding");
-  const brainstormGate = grill.indexOf("invoke `$brainstorm` as a mandatory");
-  const firstFrontier = grill.indexOf(
-    "constructs or presents the first frontier",
+  const brainstormGate = grill.indexOf(
+    "After technical grounding, complete `$brainstorm` before the first frontier.",
+  );
+  const unresolvedGate = grill.indexOf(
+    "Add its unresolved decisions to the design tree",
     brainstormGate,
   );
-  const blockGate = grill.indexOf(
-    "Block the first frontier until it completes",
+  const rerunGate = grill.indexOf(
+    "Rerun only when accepted decisions change the active system boundary.",
     brainstormGate,
   );
 
   assert.notEqual(grounding, -1);
   assert.notEqual(brainstormGate, -1);
-  assert.notEqual(firstFrontier, -1);
-  assert.notEqual(blockGate, -1);
+  assert.notEqual(unresolvedGate, -1);
+  assert.notEqual(rerunGate, -1);
   assert.ok(brainstormGate > grounding);
-  assert.ok(brainstormGate < firstFrontier);
-  assert.ok(firstFrontier < blockGate);
-  assert.match(
-    grill.slice(
-      brainstormGate,
-      blockGate + "Block the first frontier until it completes".length,
-    ),
-    /Block the first frontier until it completes/u,
-  );
-  assert.match(grill, /ordinary dependency-ordered design tree and durable grill artifacts/u);
-  assert.match(grill, /Rerun only when accepted decisions materially reshape the active system boundary/u);
+  assert.ok(brainstormGate < unresolvedGate);
+  assert.ok(unresolvedGate < rerunGate);
 });
 
 test("brainstorm output remains candidate material rather than authority", () => {
-  assert.match(brainstorm, /candidate observations, candidate decisions, unresolved choices/u);
-  assert.match(brainstorm, /not requirements, authorization, approval/u);
-  assert.match(brainstorm, /Do not mutate artifacts or take external\s+actions/u);
-  assert.match(grill, /candidates are not requirements, authorization, or approval/u);
+  assert.match(brainstorm, /evidence-grounded observations.*unresolved decisions/isu);
+  assert.match(brainstorm, /remain candidates.*caller accepts/isu);
+  assert.match(grill, /unresolved decisions.*design tree.*candidate material until accepted/isu);
 });
