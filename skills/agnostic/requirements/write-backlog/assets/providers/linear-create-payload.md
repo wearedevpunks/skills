@@ -123,7 +123,7 @@ Epic body ownership:
 Story body ownership:
 
 - outcome
-- source `US-###`
+- source outcome `OUT-###`
 - covered `AC-###`
 - demonstration
 - non-goals and dependencies

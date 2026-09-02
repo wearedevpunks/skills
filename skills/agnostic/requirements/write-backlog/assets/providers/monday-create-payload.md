@@ -183,7 +183,7 @@ Tool:
       "boardId": 123456789,
       "parentItemId": 987654321,
       "name": "Lead reassigns ownership to another reviewer",
-      "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nSource stories: US-001\\n\\nAcceptance criteria: AC-001\\n\\nDemonstration: ...\\n\\nAccepted artifacts: ...\",\"kind\":{\"label\":\"story\"}}"
+      "columnValues": "{\"long_text\":\"Outcome: ...\\n\\nSource outcomes: OUT-001\\n\\nAcceptance criteria: AC-001\\n\\nDemonstration: ...\\n\\nAccepted artifacts: ...\",\"kind\":{\"label\":\"story\"}}"
   }
 }
 ```
@@ -191,7 +191,7 @@ Tool:
 Story body ownership:
 
 - outcome
-- source `US-###`
+- source outcome `OUT-###`
 - covered `AC-###`
 - demonstration
 - non-goals

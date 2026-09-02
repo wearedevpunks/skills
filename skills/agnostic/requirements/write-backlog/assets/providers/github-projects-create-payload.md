@@ -240,14 +240,14 @@ mutation CreateStory(
 Story body ownership:
 
 - outcome
-- source `US-###`
+- source outcome `OUT-###`
 - covered `AC-###`
 - demonstration
 - non-goals
 - immutable spec link
 - accepted artifact links
 
-Minimum body headings: `Outcome`, `Source stories`, `Acceptance criteria`, `Demonstration`, `Non-goals`, and `Links`.
+Minimum body headings: `Outcome`, `Source outcomes`, `Acceptance criteria`, `Demonstration`, `Non-goals`, and `Links`.
 
 After creation, set Project fields:
 
