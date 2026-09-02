@@ -1,13 +1,13 @@
 ---
 name: autoreview
-description: "Auto Review closeout. Codex review is the default when no engine is set and is the recommended reviewer."
+description: "Auto Review closeout. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
 ---
 
 # Auto Review
 
 Run the bundled structured review helper as a closeout check. This is code review, not Guardian `auto_review` approval routing.
 
-Codex review is the default when no engine is set. It usually delivers the best review results and should remain the normal final closeout engine.
+Codex review is the default when no engine is set, using gpt-5.6-terra with high reasoning unless explicitly overridden. It usually delivers the best review results and should remain the normal final closeout engine.
 
 Use when:
 
