@@ -5,7 +5,7 @@ const conflicts = (value) => CONFLICTS.includes(value);
 const stable = (value) => typeof value === "string" && value.trim().length > 0;
 
 const childConflict = (children) => {
-  if (!Array.isArray(children)) return false;
+  if (!Array.isArray(children)) return true;
   const ids = new Set();
   for (const child of children) {
     if (!child || child.identity !== "exact" || !stable(child.id) || ids.has(child.id)) {
@@ -35,6 +35,9 @@ export const deriveFinderRoute = (state) => {
   }
 
   if (state.support?.decision === "ambiguous") return "human-steering";
+  if (["requested", "pending"].includes(state.support?.status)) {
+    return "human-steering";
+  }
   if (state.support?.status === "unresolved") {
     if (
       !state.grillingChildren?.some(

@@ -162,6 +162,54 @@ test("Finder returns a bounded result without completing the Fog or exceeding it
   };
 
   assert.equal(
+    deriveFinderRoute({
+      ...functional,
+      grillingChildren: undefined,
+      projection: { status: "skipped" },
+    }),
+    "human-steering",
+    "bounded return requires durable Grilling-child readback",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...functional,
+      grillingChildren: { id: "grill-a", identity: "exact" },
+      projection: { status: "skipped" },
+    }),
+    "human-steering",
+    "malformed Grilling-child readback fails closed",
+  );
+
+  assert.equal(
+    deriveFinderRoute({
+      ...functional,
+      support: {
+        kind: "Research",
+        decision: "reuse",
+        supports: "grill-a",
+        status: "pending",
+      },
+      projection: { status: "skipped" },
+    }),
+    "human-steering",
+    "pending support cannot be omitted from a bounded return",
+  );
+  assert.equal(
+    deriveFinderRoute({
+      ...functional,
+      support: {
+        kind: "Prototype",
+        decision: "create",
+        supports: "grill-a",
+        status: "requested",
+      },
+      projection: { status: "skipped" },
+    }),
+    "human-steering",
+    "requested support cannot be omitted from a bounded return",
+  );
+
+  assert.equal(
     deriveFinderRoute({ ...functional, projection: { status: "skipped" } }),
     "return-target",
   );
