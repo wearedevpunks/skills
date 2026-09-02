@@ -115,3 +115,15 @@ test("active writer guidance excludes the retired monolith", () => {
 
   assert.doesNotMatch(active, /capability module|fog graduates|M1 -> M2|Azure DevOps|monday\.com/iu);
 });
+
+test("provider payload assets use neutral source outcomes", () => {
+  const payloads = [
+    "linear-create-payload.md",
+    "github-projects-create-payload.md",
+    "azure-devops-create-payload.md",
+    "monday-create-payload.md",
+  ].map((file) => read(`${writerRoot}/assets/providers/${file}`)).join("\n");
+
+  assert.match(payloads, /Source outcomes?[\s\S]*OUT-###/iu);
+  assert.doesNotMatch(payloads, /US-###|US-\d{3}/u);
+});
