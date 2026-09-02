@@ -1,31 +1,26 @@
 # Business Projection
 
-Require one immutable accepted Business grilling resolution, its Fog identity,
-and fresh reads of relevant Product Areas, Initiatives, Epics, and `V*`
-milestones.
+Require immutable accepted Business evidence, its Fog identity when Finder
+supplied one, and fresh reads of relevant Product Areas and Initiatives.
 
-## Resolve The Path
+Business projection has a strict Product Area → Initiative ceiling. It creates
+or enriches neither Epic, Story, nor Task delivery depth.
 
-1. Identify the requested business outcome and affected product responsibility.
-2. Complete the provider search using durable wiki identity and any known stable
+## Resolve the Path
+
+1. Identify the business outcome and affected product responsibility.
+2. Complete the provider search by durable wiki identity and known stable
    provider identity.
-3. Reuse or enrich the exact Product Area → Initiative → Epic path when one
-   stable match carries the same durable wiki identity.
-4. Enrich the exact existing structure when the accepted meaning adds durable
-   context without changing its boundary.
-5. Exact-create only the missing level when the complete search has zero stable
-   matches and the accepted resolution authorizes it.
+3. Reuse or enrich the exact Product Area → Initiative path when one stable
+   match carries the same durable wiki identity.
+4. Exact-create only a missing Product Area or Initiative when a complete
+   search finds zero matches and accepted evidence authorizes it.
+5. Treat a cross-Area or cross-Initiative request as scope expansion. Preview
+   the split with `$show-me` and require explicit approval.
 
-One Fog normally targets one Product Area and one Initiative. A request that
-crosses either boundary is scope expansion: use `$show-me` to expose the split,
-warn about the larger product scope, and require explicit approval to split or
-proceed. New Product Areas, Initiatives, and material Epic boundaries use the
-same approval gate. Never duplicate an Initiative or Product Area.
+## Write and Read Back
 
-## Write And Read Back
-
-Preserve the Business resolution's user wording, product goal, outcomes,
-boundaries, constraints, non-goals, source links, and Fog backlink. Write only
-the validated created or enriched delta. Read back the complete resolved path,
-all provenance links, and any selected fitting milestone relation. Return those
-identities to Finder without creating lower-stage delivery work.
+Preserve accepted wording, goal, outcomes, boundaries, constraints, non-goals,
+source links, and Fog provenance. Write only the validated delta. Read back the
+resolved Product Area and Initiative identities and provenance. Return them to
+Finder without creating an Epic, Story, Task, or milestone-bound structure.

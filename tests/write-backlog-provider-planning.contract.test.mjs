@@ -13,49 +13,41 @@ const contracts = JSON.parse(
     "utf-8",
   ),
 );
+const read = (relativePath) => readFileSync(path.join(skillRoot, relativePath), "utf-8");
 
-test("provider planning routes only Linear and GitHub through disclosed adapters", () => {
+test("provider planning exposes only Linear and GitHub representation adapters", () => {
   assert.deepEqual(
     contracts.map(({ provider }) => provider),
     ["linear", "github"],
   );
-
-  for (const contract of contracts) {
-    assert.equal(contract.document, `references/providers/${contract.provider}.md`);
-    assert.ok(readFileSync(path.join(skillRoot, contract.document), "utf-8").trim());
+  for (const { provider, document } of contracts) {
+    assert.equal(document, `references/providers/${provider}.md`);
+    assert.ok(read(document).trim(), provider);
   }
-
-  const fixture = JSON.stringify(contracts);
-  assert.doesNotMatch(fixture, /azure|monday|assets\/providers/iu);
+  assert.doesNotMatch(JSON.stringify(contracts), /azure|monday|assets\/providers/iu);
 });
 
-test("GitHub planning preserves semantic hierarchy, V membership, and exact readback", () => {
-  const contract = contracts.find(({ provider }) => provider === "github");
-  assert.ok(contract);
-  assert.deepEqual(contract.hierarchy, {
-    root: "one Projects V2",
-    areasAndInitiatives: "configured semantic fields",
-    epic: "Issue",
-    story: "sub-issue",
-    task: "nested sub-issue",
-  });
-  assert.equal(contract.milestone, "one repository V* per Story and Task graph");
-  assert.equal(contract.precedence, "native blockers");
-  assert.deepEqual(contract.viewCapability, {
-    automatic: ["name", "layout", "visibleFieldIds", "filter"],
-    manual: ["grouping", "sorting"],
-  });
-  assert.equal(contract.semanticIdentity, "stable option ID + durable wiki identity");
-  assert.deepEqual(contract.runtimeProof, [
-    "Product Area",
-    "Initiative",
-    "Kind",
-    "Fog backlink",
-    "immutable source",
-  ]);
+test("both adapters consume one semantic policy and return exact residual state", () => {
+  const envelope = read("REFERENCE.md");
+  const linear = read("references/providers/linear.md");
+  const github = read("references/providers/github.md");
 
-  const document = readFileSync(path.join(skillRoot, contract.document), "utf-8");
-  for (const evidence of contract.evidence) {
-    assert.ok(document.includes(evidence), evidence);
+  assert.match(envelope, /Semantic Topology[\s\S]*Product\/Backlog Root[\s\S]*Task/iu);
+  assert.match(envelope, /Provider-Neutral|provider write/iu);
+  for (const adapter of [linear, github]) {
+    assert.match(adapter, /stable provider identity[\s\S]*durable wiki identity/iu);
+    assert.match(adapter, /preview[\s\S]*explicit approval/iu);
+    assert.match(adapter, /exact readback/iu);
+    assert.match(adapter, /partial provider failure[\s\S]*observed writes[\s\S]*residual\s+delta/iu);
   }
+});
+
+test("adapter mappings preserve accepted provider-specific hierarchy", () => {
+  const linear = read("references/providers/linear.md");
+  const github = read("references/providers/github.md");
+
+  assert.match(linear, /linear-free-v1[\s\S]*Product Area[\s\S]*Linear Project[\s\S]*Kind\/initiative/iu);
+  assert.match(github, /one Projects V2[\s\S]*Product Area[\s\S]*Initiative[\s\S]*Epic[\s\S]*sub-issue/iu);
+  assert.match(linear, /`blockedBy`/u);
+  assert.match(github, /`addBlockedBy`/u);
 });

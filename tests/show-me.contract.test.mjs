@@ -67,9 +67,8 @@ test("requirements grill delegates completion scheduling while retaining present
 test("phase entrypoints present complex state without taking authority", () => {
   const docs = read("skills/phases/docs-ingest-phase/SKILL.md");
   const finder = read("skills/phases/finder-phase/SKILL.md");
-  const businessFinderGate = read(
-    "skills/phases/finder-phase/phases/business-grilling.md",
-  );
+  const businessFinder = read("skills/phases/business-finder/SKILL.md");
+  const grillingGate = read("skills/phases/finder-phase/phases/grilling.md");
   const functionalFinder = read("skills/phases/functional-finder/SKILL.md");
   const debugging = read("skills/phases/debugging-phase/SKILL.md");
   const review = read("skills/phases/review-phase/SKILL.md");
@@ -78,19 +77,20 @@ test("phase entrypoints present complex state without taking authority", () => {
   assert.match(docs, /\$show-me.*complex.*flow|complex.*flow.*\$show-me/is);
   assert.match(
     finder,
-    /\[Business grilling\]\(phases\/business-grilling\.md\)/u,
+    /\[Generic Grilling\]\(phases\/grilling\.md\)/u,
   );
   assert.match(
-    businessFinderGate,
-    /\$show-me[\s\S]*all relevant existing Product Areas, Initiatives,[\s\S]*Epics, and milestones[\s\S]*proposed impact/iu,
+    businessFinder,
+    /\$show-me[\s\S]*all relevant existing Product Areas and Initiatives[\s\S]*proposed impact/iu,
   );
   assert.match(
-    businessFinderGate,
-    /\$show-me[\s\S]*scope-expansion-checkpoint/iu,
+    businessFinder,
+    /\$wait-what[\s\S]*repitch/iu,
   );
+  assert.match(grillingGate, /wrapper's intake[\s\S]*presentation profile/iu);
   assert.match(
     functionalFinder,
-    /\$show-me[\s\S]*each decision[\s\S]*observable workflow[\s\S]*Story split[\s\S]*milestone iteration[\s\S]*final Story write/iu,
+    /\$show-me[\s\S]*each decision[\s\S]*observable workflow[\s\S]*milestone context[\s\S]*final Epic projection/iu,
   );
   assert.match(debugging, /\$show-me.*evidence matrix/is);
   assert.match(review, /\$show-me.*retained.*report/is);

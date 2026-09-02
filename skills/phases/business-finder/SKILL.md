@@ -1,30 +1,43 @@
 ---
 name: business-finder
-description: Structure one product request through Business grilling and stop at its business backlog depth.
+description: Capture uncertain product intent in business language and optionally project structure through Initiative.
 disable-model-invocation: true
 ---
 
 # Business Finder
 
-Human entrypoint for a nontechnical product owner. Use plain business language
-and the project's accepted terms. Preserve the user's words when they already
-land; explain unfamiliar backlog terms before using them.
+Explicit human entrypoint for a colleague without technical capability. Use
+familiar business language and explain backlog terms before using them.
+Unknown values remain explicit.
 
-## Inputs
+## Intake profile
 
-- one product request
-- optional stable provider or durable wiki Fog identity
-- product context the human supplied
+Capture the actor or affected party, problem or opportunity, desired outcome
+and value, evidence, constraints, non-goals, urgency, and open questions.
+Preserve the human's wording when it already lands. This profile asks no
+implementation or architecture questions.
+
+Use `$wait-what` when a request or project term does not land: pause, repitch it
+in familiar language, and ask again. Use `$show-me` before each structure
+decision to present all relevant existing Product Areas and Initiatives with
+the proposed impact. Presentation informs the human and grants no mutation
+authority.
 
 ## Composition
 
-Directly compose [the Finder engine](../finder-phase/SKILL.md) with target
-depth: `Business`. Its [Business grilling gate](../finder-phase/phases/business-grilling.md)
-owns the atomic grill, visual decisions, support cycles, and accepted evidence.
-This adapter supplies only the audience presentation profile.
+Compose [the shared Finder engine](../finder-phase/SKILL.md) with immutable
+intake lens `Business`, this presentation profile, and projection ceiling
+`Initiative`. The engine alone owns the Fog lifecycle, generic support work,
+resume routing, and durable handoff.
 
-## Return
+Optional structure may reuse, enrich, or create Product Areas and Initiatives
+through `$write-backlog`. The ceiling is Initiative: Business Finder never
+projects an Epic, Story, or Task. Skipping projection, or returning an
+unresolved projection, never blocks a valid Fog result.
 
-Return the exact Fog identity, accepted Business resolution, resolved Product
-Area -> Initiative -> Epic path, exact created-or-enriched readback identities,
-and unresolved decisions. Stop at the engine's `target_depth_reached` outcome.
+## Bounded return
+
+Return the exact Fog identity, immutable Business intake lens, generic support
+work and evidence, optional exact Product Area and Initiative readback,
+unresolved decisions, and durable Finder handoff. Return control without
+asserting that the Fog is resolved or complete.

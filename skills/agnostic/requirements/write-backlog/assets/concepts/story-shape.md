@@ -16,14 +16,14 @@ milestone, blocker, provenance, source, and approval records remain authority.
 - uncertainty or request
 - why it is still Fog
 - accepted and open decisions
-- Business, Functional, and Technical child identities
+- generic Grilling child identities and immutable intake lens
 - supporting Research or Prototype evidence
 - affected or produced backlog objects
 - target and completion iteration when known
 
 ## Grilling Body
 
-- Stage: Business, Functional, or Technical
+- bounded unknown closed by this generic Grilling child
 - question and accepted decision
 - evidence, observations, and open decisions
 - immutable resolution pointer
@@ -48,9 +48,9 @@ decisions, and immutable resolution pointer.
 
 [One shippable product result]
 
-## Source stories
+## Source outcomes
 
-- `US-###`
+- `OUT-###`
 
 ## Acceptance criteria
 
@@ -111,7 +111,7 @@ decisions, and immutable resolution pointer.
 
 - Parent Story: ...
 - Immutable spec: ...
-- Technical resolution and Fog: ...
+- Compiled outcome and Fog provenance: ...
 - Milestone iteration: same `V*` as Story
 ```
 

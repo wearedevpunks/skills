@@ -17,15 +17,15 @@ Current Delivery views.
 One Fog records a product owner's request.
 
 1. **Business**: accepted Business grilling reuses Product Area `Knowledge` and
-   Initiative `Reliable answers`, then enriches Epic `Source quality`. The Fog
-   links to all three; no duplicate structure is created.
-2. **Functional**: one accepted Functional child creates Story `Reader sees why
-   an answer is trustworthy` in `V4.0`. Its body preserves the product outcome,
-   `US-001`, `AC-001`, demonstration, evidence, and Fog provenance.
-3. **Technical**: an authoritative agent-ready `SPEC.md` at a stable blob URL
-   enriches the existing Epic and Story with immutable spec authority, then
-   creates required Task `Expose source confidence` and Task `Render confidence
-   explanation`. Both inherit `V4.0`; the second is blocked by the first.
+   Initiative `Reliable answers`. The Fog links to both; no duplicate structure
+   is created and the Business ceiling is not exceeded.
+2. **Functional**: accepted Functional grilling reuses that Business structure
+   and creates Epic `Source quality`. It never creates a Story or Task.
+3. **Requirements delivery projection**: an authoritative agent-ready `SPEC.md`
+   at a stable blob URL derives Story `Reader sees why an answer is trustworthy`
+   and the required Tasks `Expose source confidence` and `Render confidence
+   explanation`. The Story retains `OUT-001` and `AC-001` traceability. All
+   delivery items inherit `V4.0`; the second Task is blocked by the first.
 
 The Task graph has stable provider identities, no missing target, no
 future-iteration dependency, no self-edge, and no cycle. Exact readback proves

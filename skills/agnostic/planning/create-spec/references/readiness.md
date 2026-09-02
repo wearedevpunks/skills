@@ -1,7 +1,7 @@
 # Readiness
 
-Compile only when the decision frontier is closed or every remaining item is
-explicitly parked with owner and resume trigger.
+Compile only when the decision frontier is closed and every remaining item is
+explicitly parked with an owner and resume trigger.
 
 Required inputs:
 
@@ -9,21 +9,20 @@ Required inputs:
 - accepted functional behavior and observable success
 - accepted implementation and testing decisions, when any were made upstream
 - every applicable prototype verdict by immutable commit SHA and path
-- a verification-seam decision, or an explicit not-applicable rationale
-- dependency readiness for every declared dependency: proven landed, or an
+- verification-seam decision, or an explicit not-applicable rationale
+- dependency readiness for every declared dependency: proven landing, or an
   accepted branch/base intent with concrete evidence; blocked or unevidenced
   dependencies fail compilation
 
-Technical Finder adds one conditional input: the exact selected Story context
-established by its accepted Functional child. Non-Finder compilation has no
-provider Story precondition.
+Provider backlog items may supply evidence. Compilation never requires a
+preselected provider delivery item.
 
 ## Dependency output contract
 
 Serialize both sections in every compiled spec:
 
 - `Dependency Readiness`: write `No Stack Required` when no dependency exists.
-  Otherwise write `Ready` and list every dependency with immutable landing or
+  Otherwise write `Ready` and list every dependency's immutable landing or
   branch/base evidence.
 - `Branch/Base Intent`: when accepted intent exists, record the intended parent
   or base, child branch constraint, and supporting evidence. Otherwise write
@@ -32,13 +31,15 @@ Serialize both sections in every compiled spec:
 Never emit `Blocked` with `readiness: agent-ready`; blocked or unevidenced
 dependencies produce `spec-not-ready` instead.
 
+## Outcome coverage contract
+
 Validate the compiled traceability graph before writing:
 
-- every `US-###` has at least one `AC-###` whose `Covers` list names it
-- every `Covers` reference resolves to an existing `US-###`; a reference to a
-  nonexistent `US-###` fails compilation
-- identifiers are unique and coverage is one-way from acceptance criterion to
-  user story
+- every unique `OUT-###` has at least one `AC-###`
+- every `Covers` reference resolves to an existing `OUT-###`
+- all `OUT-###` and `AC-###` identifiers are unique
+- coverage is one-way from each acceptance criterion to its covered outcome;
+  outcomes do not identify or prescribe provider delivery items
 
 On failure, return one `spec-not-ready` result listing every missing decision or
 evidence item and its upstream route: `finder-phase`, `parallel-research`,

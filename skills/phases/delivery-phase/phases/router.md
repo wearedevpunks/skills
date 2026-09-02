@@ -46,11 +46,13 @@ state take precedence over inferred artifact order.
    otherwise [closeout.md](closeout.md).
 12. For durable `docs_ingest`, load [docs-ingest.md](docs-ingest.md).
 13. For durable `closeout`, load [closeout.md](closeout.md).
-14. If no matching agent-ready `SPEC.md` exists, it is stale, contradictory, or
-   incomplete, or its remote retention or stable blob URL is missing or
-   unverified, load [spec.md](spec.md).
-15. If the verified post-spec backlog projection is missing or stale, load
-   [backlog.md](backlog.md).
+14. If no matching agent-ready `SPEC.md` exists for bounded requirements, or the
+   specification is stale, contradictory, incomplete, or lacks verified remote
+   retention, route them to Requirements Phase. Requirements Phase owns the
+   Requirements Grill, Create Spec, and Write Backlog sequence.
+15. If a verified specification lacks its current Write Backlog result, route
+   the retained specification authority to Requirements Phase for
+   delivery-depth projection and exact readback.
 16. If no execution-ready matching plan exists, or it lacks dependencies, owned
    paths, validation gates, or wave boundaries, load [plan.md](plan.md).
 17. If accepted plan work is incomplete, load [implement.md](implement.md).
@@ -63,9 +65,9 @@ state take precedence over inferred artifact order.
 19. Route remaining docs-affecting work to [docs-ingest.md](docs-ingest.md),
     otherwise [closeout.md](closeout.md).
 
-When staged Finder authority is missing, report the exact Business, Functional,
-or Technical Finder invocation the human must make. Every Finder surface is
-human-only; this router never invokes one implicitly.
+Finder context is optional. Route direct bounded input to Requirements Phase
+without creating a Finder artifact. When the caller supplies Finder context,
+pass only its exact handle for Requirements Phase to resolve.
 
 When a linked provider Task has a newly observed work start, blocker, pull
 request, merge, staging deployment, or production deployment without exact

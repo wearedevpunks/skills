@@ -1,42 +1,31 @@
-# Return Target Gate
+# Bounded Return Gate
 
 ## Entry guard
 
-Every stage required by the chosen target depth has an exact child identity,
-immutable accepted resolution pointer, and matching exact provider readback.
-
-## Inputs
-
-Target depth, exact Fog and child identities, immutable resolution pointers,
-provider readbacks, any required full-reachable Task graph validator result,
-and unresolved accepted resulting scope.
+One exact Fog, immutable intake lens, retained bounded evidence, and every
+requested support result exist. Optional projection is skipped, unresolved, or
+read back within the wrapper's projection ceiling.
 
 ## Bounded action
 
-Assemble the direct-composition return shape. State the depth reached, accepted
-evidence, enriched or produced provider objects, and the next explicit human
-option. Preserve remaining scope and production-evidence obligations.
+Assemble the direct-composition result: exact Fog identity, immutable lens,
+generic Grilling and support identities, retained evidence, optional structure
+readback, unresolved decisions, and next explicit human options.
 
-## Invariants
-
-This gate never marks the Fog complete. Business returns exactly one Business
-child; Functional returns one or more Functional children selected for this
-invocation; Technical returns exactly one Technical child per selected Story.
-Every returned child includes its accepted projection readback.
+Return control without asserting that the Fog is resolved or complete. Delivery
+truth remains outside Finder.
 
 ## Completion evidence
 
-All required stage identities, immutable pointers, exact readbacks, required
-Task graph validator result bound to the current provider snapshot, and a
-runtime handoff whose outcome is `target_depth_reached` rather than Fog
-completion.
+A durable result containing every identity and evidence pointer the gate claims,
+plus outcome `bounded_result_returned` and no Fog-completion assertion.
 
 ## Declared exits
 
-- `target_depth_reached` -> return control to the invoking human wrapper.
+- `bounded_result_returned` -> invoking human wrapper.
 - `blocked` -> router re-entry when required evidence is incomplete.
 
 ## Durable handoff
 
-Persist the returned identities, target depth, remaining accepted scope,
-production-evidence obligations, and exact return outcome.
+Persist returned identities, immutable lens, optional projection status,
+unresolved decisions, exact outcome, and remaining evidence obligations.

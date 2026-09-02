@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { deriveFinderRoute } from "../skills/phases/finder-phase/scripts/finder-contract.mjs";
 
 const skill = readFileSync(
   new URL(
@@ -106,68 +105,21 @@ test("technical grounding blocks premature branch closure", () => {
   );
 });
 
-test("Technical Finder preserves full requirements authority before projection", () => {
-  const technicalFinder = readFileSync(
-    new URL("../skills/phases/technical-finder/SKILL.md", import.meta.url),
+test("Requirements Phase preserves full requirements authority before projection", () => {
+  const requirementsPhase = readFileSync(
+    new URL("../skills/phases/requirements-phase/SKILL.md", import.meta.url),
     "utf8",
-  ).replace(/\s+/gu, " ");
-  const technicalGate = readFileSync(
-    new URL(
-      "../skills/phases/finder-phase/phases/technical-grilling.md",
-      import.meta.url,
-    ),
-    "utf8",
-  ).replace(/\s+/gu, " ");
+  );
 
-  assert.match(technicalFinder, /full `\$requirements-grill`/u);
-  assert.match(technicalFinder, /once per Story/iu);
-  assert.match(technicalFinder, /open or resume exactly one durable/iu);
-  assert.match(technicalGate, /full `\$requirements-grill`/u);
-  assert.match(technicalGate, /`\$create-spec`/u);
+  assert.match(requirementsPhase, /only\s+orchestration\s+route/iu);
 
-  assert.equal(
-    deriveFinderRoute({
-      targetDepth: "Technical",
-      fogIdentity: "exact",
-      business: "accepted",
-      businessIdentity: "exact",
-      businessResolution: "immutable",
-      businessProjection: "read-back",
-      businessChildren: [
-        {
-          identity: "exact",
-          status: "accepted",
-          scope: "in-scope",
-          resolution: "immutable",
-          projection: "read-back",
-        },
-      ],
-      selectedStoryIntents: ["intent-a"],
-      functionalChildren: [
-        {
-          storyIntent: "intent-a",
-          identity: "exact",
-          status: "accepted",
-          scope: "in-scope",
-          resolution: "immutable",
-          projection: "read-back",
-        },
-      ],
-      selectedStories: ["story-a"],
-      technicalChildren: [
-        {
-          story: "story-a",
-          identity: "exact",
-          status: "accepted",
-          scope: "in-scope",
-          resolution: "immutable",
-          specReadiness: "spec-not-ready",
-          stableBlob: "missing",
-          taskIntentCount: 0,
-          projection: "not-emitted",
-        },
-      ],
-    }),
-    "human-steering",
+  const grill = requirementsPhase.indexOf("`requirements-grill`");
+  const spec = requirementsPhase.indexOf("`create-spec`", grill);
+  const backlog = requirementsPhase.indexOf("`write-backlog`", spec);
+  assert.ok(grill >= 0 && spec > grill && backlog > spec);
+
+  assert.doesNotMatch(
+    requirementsPhase,
+    /Technical Finder|once per Story|exact existing Story/iu,
   );
 });

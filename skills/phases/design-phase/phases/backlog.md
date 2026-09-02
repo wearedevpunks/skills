@@ -1,6 +1,6 @@
 # Backlog Phase
 
-Convert approved design artifacts into backlog work.
+Route approved design evidence into the accepted delivery scope.
 
 Before naming or rewriting domain concepts, read the canonical glossary in the
 routed `requirements-grill` status artifact. Preserve its canonical terms;
@@ -9,28 +9,37 @@ silently renaming them.
 
 ## Prerequisite
 
-An authoritative agent-ready `SPEC.md` at a verified stable blob URL that includes or links at least one fresh approved artifact set with its artifact contract.
+An authoritative agent-ready `SPEC.md` with a verified stable blob URL links at
+least one fresh approved artifact set and its artifact contract.
 
 ## Steps
 
-1. Verify the spec is authoritative and agent-ready, then verify approved artifact links, durable asset links, scope, constraints, and acceptance checks.
-2. Use `repo-asset-management` for backlog attachments first and repo-provider fallback when backlog attachments are unavailable or unsuitable.
-3. Require the exact existing Story and accepted Technical resolution. Activate
-   only `write-backlog`'s technical-projection branch to enrich that Story and
-   project its provider Tasks. Missing staged Finder authority returns the
-   explicit human Finder invocation needed; this phase never starts Finder.
-4. Include only accepted product and design constraints, acceptance context, and artifact links in backlog bodies.
-5. Record created or updated backlog ids and preserve the `spec -> backlog -> delivery` handoff.
+1. Verify the specification authority, approved artifact links, durable asset
+   links, accepted scope, constraints, and acceptance checks.
+2. Decide whether the approved evidence fits the retained specification and
+   its already accepted delivery items.
+3. When the evidence requires new Stories or Tasks, retain the accepted design
+   evidence and return it to Requirements Phase. Requirements Phase closes the
+   changed scope and alone authorizes a new delivery-depth projection.
+4. When the evidence fits the accepted scope, use `repo-asset-management` for
+   backlog attachments, with its repo-provider fallback when direct
+   attachments are unavailable or unsuitable. Preserve the existing backlog
+   identities.
+5. Record the linked backlog identities and preserve the
+   `spec -> backlog -> delivery` handoff.
 
 ## Rules
 
-- Do not copy provider upload commands here; `repo-asset-management` owns them.
-- Do not drop visual evidence when attachments fail. Record the fallback path or blocker.
-- Backlog conversion is blocked for unapproved scope units.
+- `repo-asset-management` owns provider upload commands and attachment
+  fallbacks.
+- Record a durable fallback path or blocker when visual evidence cannot be
+  attached.
+- Unapproved scope returns to Requirements Phase before backlog mutation.
 
 ## Output
 
-- Backlog ids and URLs.
-- Approved artifact links attached or linked.
-- Attachment fallback or blockers.
-- Phase handoff with next route: delivery-handoff.
+- Retained design evidence and approved artifact links.
+- Existing backlog identities and URLs when scope is unchanged.
+- Requirements Phase return when scope needs new Stories or Tasks.
+- Attachment fallback blockers.
+- Phase handoff next route: delivery-handoff.

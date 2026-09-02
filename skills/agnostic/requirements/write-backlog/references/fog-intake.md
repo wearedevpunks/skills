@@ -3,70 +3,67 @@
 Create or resume exactly one Fog. Allocate its durable wiki identity before a
 provider write; attach the stable provider identity after exact readback.
 
+At creation, record the Fog's immutable original intake lens as `Business` or
+`Functional`. The lens selects the interaction profile that captured the
+uncertainty; it is never a maturity state, Stage, or ordered prerequisite.
+Resume preserves the original lens even when later work adds another kind of
+evidence.
+
 Read the candidate Fog, direct children, relations, immutable evidence, and
 linked provider objects first. Ambiguous identity or conflicting accepted
 evidence produces zero writes.
 
-## Ensure Pre-Resolution Grilling Child
+## Ensure Grilling Child
 
-An exact Fog identity, exact Stage, durable child wiki identity, and stage
-cardinality key authorize ensuring one child shell before accepted evidence exists.
-Read all existing direct children before any create or update, then compare
-Stage, durable identity, and cardinality key together.
+An exact Fog identity, durable child wiki identity, and bounded unknown
+authorize ensuring a generic `grilling` child shell before accepted evidence
+exists. Read every direct child and relation before any create or update.
 
-Cardinality keys are:
+Reuse an obviously relevant child. Create another child only when the current
+evidence supports separate useful Grilling work and the complete read proves no
+match. Several generic Grilling children are valid; wrapper choice never limits
+their count or requires the same identity across wrappers. Genuine ambiguity
+returns human steering with zero writes.
 
-- **Business**: the Fog-scoped Business singleton key.
-- **Functional**: one durable Functional Story-intent key per intended Story.
-- **Technical**: one Technical Story key using the exact stable Story identity.
-
-Reuse the exact match and return its stable provider identity. When the complete
-child read proves zero matches, create one unresolved `grilling` child shell with
-its Fog relation, Stage, durable child wiki identity, and cardinality key, then
-read it back exactly. A duplicate, ambiguous identity, or conflict authorizes zero writes.
-
-The child shell carries no accepted decision or immutable resolution pointer. It
-can host the interview and support relations, but cannot authorize backlog
-projection. Business, Functional, and Technical projection still require the
-immutable accepted grilling resolution persisted on that exact child.
+After creation, read back the stable provider identity and exact Fog relation.
+The unresolved shell carries its bounded unknown but no accepted decision or
+immutable resolution pointer. It can host the interview and support relations;
+only an immutable accepted Grilling resolution can return accepted evidence to
+Finder reconciliation.
 
 ## Ensure Research or Prototype Support Child
 
-An exact Fog identity, exact unresolved grilling-child identity, support kind
-(`Research` or `Prototype`), durable support-child wiki identity, and one
-support identity key authorize ensuring the direct Fog support child before its
-answer or verdict exists. Read every direct Fog child and every relation first.
-Reuse one exact kind, identity-key, grilling-child relation match. Create one
-unresolved support child only when the complete read proves zero matches, then
-read back its stable provider identity and exact relation. A duplicate,
-ambiguous identity, wrong parent, or conflicting support relation authorizes
-zero writes.
+An exact Fog identity, support kind (`Research` or `Prototype`), durable child
+wiki identity, and the exact unknown or Grilling work supported authorize
+ensuring a direct Fog support child. Read every direct child and relation first.
+Reuse one exact kind, identity, and support-relation match. Create one unresolved
+support child only when the complete read proves zero matches, then read back
+its stable provider identity and exact relation. A duplicate, ambiguous
+identity, wrong parent, or conflicting support relation produces zero writes.
 
 The unresolved support child carries no accepted answer, verdict, or immutable
-resolution pointer. Research or Prototype owns producing that evidence; this
-intake operation only establishes the stable child and relation needed to host
-the support cycle.
+resolution pointer. Research and Prototype own producing durable evidence;
+intake establishes only the stable child and support relation. Closure records
+the answer or verdict, artifacts or evidence, observations, open decisions, and
+immutable resolution pointer. Research and Prototype cannot authorize backlog
+projection independently.
 
-Fog is lateral provenance. Preserve the user's uncertainty, accepted decisions,
-evidence links, and every Product Area, Initiative, Epic, Story, or Task the Fog
-enriched or produced. Fog never becomes a parent in the product hierarchy.
+## Provenance
+
+Fog is lateral provenance. Preserve the user's uncertainty, immutable original
+intake lens, accepted decisions, evidence links, and every Product Area,
+Initiative, Epic, Story, or Task the Fog enriched or produced. Fog never becomes
+a parent in the product hierarchy.
 
 Its direct children use these provider-neutral semantics:
 
-- kind: `grilling`; required Stage: Business, Functional, or Technical
-- kind: Research or Prototype; linked to the exact grilling child supported
+- kind: `grilling`; linked to the bounded unknown it closes
+- kind: `Research` or `Prototype`; linked to the exact unknown or Grilling work
+  it supports
 
-Research and Prototype closure records the answer or verdict, artifacts or
-evidence, observations, open decisions, and immutable resolution pointer. That
-evidence returns to Finder reconciliation. Support work cannot authorize backlog
-projection by itself.
-
-Create no duplicate Business child, no duplicate Functional child for one
-Story intent, and no duplicate Technical child for one Story.
-
-A Fog may target a fitting existing `V*` milestone iteration when Business
-intake selects it. Reuse that target downstream unless a later explicit decision
+A Fog may target a fitting existing `V*` milestone iteration when intake
+selects it. Reuse that target downstream unless a later explicit decision
 changes it. Moving the Fog requires a topology preview and approval.
 
-Returning from a Finder target depth leaves the Fog open. This branch records
-intake and provenance; it never infers production or completes the Fog.
+Returning from a Finder's bounded result leaves the Fog open. This branch
+records intake and provenance; it never infers production or completes the Fog.

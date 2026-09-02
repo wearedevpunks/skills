@@ -15,16 +15,16 @@ test("write-backlog owns one fail-closed mutation pipeline", () => {
   const envelope = read(`${writerRoot}/REFERENCE.md`);
 
   assert.match(skill, /sole physical provider mutation authority/iu);
-  assert.match(skill, /read project context, repository identity, and fresh provider state/iu);
+  assert.match(skill, /project context[\s\S]*repository[\s\S]*provider workspace[\s\S]*fresh provider state/iu);
   assert.match(skill, /complete provider search[\s\S]*zero stable matches[\s\S]*same durable wiki identity/iu);
-  assert.match(skill, /preview.*explicit approval/isu);
+  assert.match(skill, /preview[\s\S]*explicit\s+approval/iu);
   assert.match(skill, /write.*exact readback/isu);
   assert.match(skill, /zero provider mutations/iu);
   assert.match(
     envelope,
-    /operation:[\s\S]*initialize\/reconstruct[\s\S]*pre-resolution grilling-child[\s\S]*support-child[\s\S]*Business projection[\s\S]*Functional projection[\s\S]*Technical projection[\s\S]*Normalization[\s\S]*delivery status[\s\S]*issue reconciliation/iu,
+    /operation:[\s\S]*initialize\/reconstruct[\s\S]*Fog\/Grilling\/support intake[\s\S]*Business[\s\S]*Functional[\s\S]*delivery projection[\s\S]*Normalization[\s\S]*delivery status[\s\S]*issue reconciliation/iu,
   );
-  assert.match(envelope, /intake[\s\S]*no accepted evidence/iu);
+  assert.match(envelope, /intake[\s\S]*exact parent[\s\S]*bounded unknown/iu);
 });
 
 test("write-backlog discloses each semantic branch once", () => {
@@ -62,8 +62,8 @@ test("writer envelope preserves the complete hierarchy and lateral Fog provenanc
       /Product\/Backlog Root[\s\S]*Product Area[\s\S]*Initiative[\s\S]*Epic[\s\S]*Story[\s\S]*Task/u,
     );
     assert.match(document, /Fog[\s\S]*(?:lateral|provenance)/iu);
-    assert.match(document, /Business[\s\S]*Functional[\s\S]*Technical/u);
-    assert.match(document, /Story.*exactly one.*`V\*`[\s\S]*Task.*same/isu);
+    assert.match(document, /Business[\s\S]*Functional[\s\S]*(?:Delivery|Requirements Phase)/iu);
+    assert.match(document, /Story[\s\S]*exactly one[\s\S]*(?:`V\*`|contextual V\*)[\s\S]*Task[\s\S]*same/iu);
   }
   assert.doesNotMatch(`${reference}\n${model}`, /capability module|execution milestone|\bM\d+\b/iu);
 });
@@ -100,35 +100,37 @@ test("initialization reconciles complete product context, roadmap, and four view
   assert.doesNotMatch(all, /sprint|Cycle|M1|M2|M3/iu);
 });
 
-test("staged projections enrich exact structures and create only their authorized level", () => {
+test("Finder ceilings stop before delivery projection derives provider identities", () => {
   const fog = read(`${writerRoot}/references/fog-intake.md`);
   const business = read(`${writerRoot}/references/business-projection.md`);
   const functional = read(`${writerRoot}/references/functional-projection.md`);
   const technical = read(`${writerRoot}/references/technical-projection.md`);
 
   assert.match(fog, /create or resume exactly one Fog/iu);
-  assert.match(fog, /kind.*`grilling`[\s\S]*Stage.*Business.*Functional.*Technical/isu);
+  assert.match(fog, /kind: `grilling`[\s\S]*bounded unknown/iu);
+  assert.doesNotMatch(fog, /Grilling Stage|Technical/iu);
   assert.match(fog, /lateral provenance[\s\S]*enriched or produced/iu);
   assert.match(fog, /may target[\s\S]*fitting existing `V\*`/iu);
 
   assert.match(business, /immutable accepted Business/iu);
   assert.match(business, /reuse[\s\S]*enrich[\s\S]*create/iu);
-  assert.match(business, /Product Area[\s\S]*Initiative[\s\S]*Epic/u);
+  assert.match(business, /Product Area[\s\S]*Initiative ceiling/iu);
+  assert.match(business, /neither Epic, Story, nor Task/iu);
   assert.match(business, /scope expansion[\s\S]*explicit approval/iu);
 
   assert.match(functional, /immutable accepted Functional/iu);
-  assert.match(functional, /exactly one Story per Functional child/iu);
-  assert.match(functional, /exactly one contextual `V\*`/iu);
-  assert.doesNotMatch(functional, /Task|implementation architecture|API|data model/iu);
+  assert.match(functional, /Epic ceiling/iu);
+  assert.match(functional, /creates neither Story nor[\s\S]*Task/iu);
 
   assert.match(technical, /authoritative agent-ready `SPEC\.md`/iu);
-  assert.match(technical, /one or more mandatory[\s\S]*atomic[\s\S]*owner-ready Tasks/iu);
+  assert.match(technical, /`OUT-###` outcomes/iu);
+  assert.match(technical, /shippable Stories[\s\S]*atomic[\s\S]*Tasks/iu);
   assert.match(technical, /full reachable Task graph/iu);
   assert.match(technical, /missing targets[\s\S]*future-iteration[\s\S]*self-edges[\s\S]*cycles/iu);
   assert.match(technical, /same `V\*`/iu);
   assert.match(technical, /validate-task-blocker-graph\.mjs/iu);
   assert.match(technical, /Story's stable identity[\s\S]*parent Story identity/iu);
-  assert.match(technical, /failed result[\s\S]*zero provider mutations/iu);
+  assert.match(technical, /failed result[\s\S]*zero\s+provider mutations/iu);
 });
 
 test("issue reconciliation reads first and recovers partial writes", () => {
@@ -174,7 +176,7 @@ test("router selects one sharp provider branch", () => {
   assert.equal(skill.match(/references\/providers\/github\.md/gu)?.length, 1);
 });
 
-test("Fog intake ensures one unresolved grilling child by stage cardinality", () => {
+test("Fog intake ensures generic Grilling children by bounded unknown", () => {
   const skill = read(`${writerRoot}/SKILL.md`);
   const fog = read(`${writerRoot}/references/fog-intake.md`);
   const projections = [
@@ -183,20 +185,17 @@ test("Fog intake ensures one unresolved grilling child by stage cardinality", ()
     read(`${writerRoot}/references/technical-projection.md`),
   ];
 
-  assert.match(skill, /ensure Fog[\s\S]*pre-resolution grilling child shell[\s\S]*references\/fog-intake\.md/iu);
+  assert.match(skill, /ensure Fog, Grilling[\s\S]*references\/fog-intake\.md/iu);
   assert.match(
     fog,
-    /exact Fog identity[\s\S]*Stage[\s\S]*durable child wiki identity[\s\S]*cardinality key[\s\S]*before accepted evidence exists/iu,
+    /exact Fog identity[\s\S]*durable child wiki identity[\s\S]*bounded unknown[\s\S]*before[\s\S]*accepted evidence\s+exists/iu,
   );
-  assert.match(fog, /read all existing direct children before[\s\S]*(?:create|write)/iu);
-  assert.match(fog, /Business[\s\S]*singleton/iu);
-  assert.match(fog, /Functional[\s\S]*Story-intent key/iu);
-  assert.match(fog, /Technical[\s\S]*Story key/iu);
-  assert.match(fog, /reuse[\s\S]*exact match/iu);
-  assert.match(fog, /duplicate[\s\S]*ambiguous[\s\S]*conflict[\s\S]*zero writes/iu);
-  assert.match(fog, /child shell[\s\S]*cannot authorize[\s\S]*projection/iu);
+  assert.match(fog, /read every direct child[\s\S]*before[\s\S]*(?:create|update)/iu);
+  assert.match(fog, /Several generic Grilling children are valid/iu);
+  assert.match(fog, /ambiguity[\s\S]*zero writes/iu);
+  assert.match(fog, /unresolved shell[\s\S]*no accepted decision/iu);
   for (const projection of projections) {
-    assert.match(projection, /immutable accepted .*grilling/iu);
+    assert.match(projection, /immutable|authoritative/iu);
   }
 });
 
@@ -204,10 +203,10 @@ test("Fog intake owns unresolved Research and Prototype support-child creation",
   const skill = read(`${writerRoot}/SKILL.md`);
   const fog = read(`${writerRoot}/references/fog-intake.md`);
 
-  assert.match(skill, /Research\/Prototype support child[\s\S]*references\/fog-intake\.md/iu);
+  assert.match(skill, /Research\/Prototype intake[\s\S]*references\/fog-intake\.md/iu);
   assert.match(
     fog,
-    /exact unresolved grilling-child identity[\s\S]*Research[\s\S]*Prototype[\s\S]*durable support-child wiki identity/iu,
+    /exact Fog identity[\s\S]*Research[\s\S]*Prototype[\s\S]*durable child[\s\S]*exact unknown or Grilling work/iu,
   );
   assert.match(fog, /complete read[\s\S]*zero matches[\s\S]*unresolved support child/iu);
   assert.match(fog, /no accepted answer[\s\S]*verdict[\s\S]*resolution pointer/iu);
@@ -348,7 +347,7 @@ test("Task blocker graph validation requires an existing same-V* parent Story", 
   );
 });
 
-test("Task blocker graph validation requires at least one Task for every Story", () => {
+test("Task blocker graph validation preserves authority-derived Task cardinality", () => {
   assert.deepEqual(
     validateTaskBlockerGraph({
       milestoneOrder: ["v1"],
@@ -365,7 +364,7 @@ test("Task blocker graph validation requires at least one Task for every Story",
         },
       ],
     }),
-    { ok: false, code: "STORY_TASK_REQUIRED", storyId: "story-uncovered" },
+    { ok: true, taskIds: ["task-covered"], edges: [] },
   );
 });
 

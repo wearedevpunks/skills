@@ -2,37 +2,36 @@
 
 ## Inputs
 
-- target depth: exactly `Business`, `Functional`, or `Technical`
-- request and accepted audience-specific context
-- optional stable provider Fog identity or durable wiki Fog identity
-- wrapper presentation profile
+- intake lens: exactly `Business` or `Functional`
+- the invoking wrapper's audience and intake profile
+- projection ceiling: `Initiative` for Business or `Epic` for Functional
+- one product request
+- optional exact provider or durable wiki Fog identity
 - optional durable runtime-handoff locator
 
-The invoking wrapper stays in control while loading this engine. It supplies no
-route, lifecycle state, or provider mutation instructions.
+Invocation is explicit and human-selected. The wrapper stays in control while
+loading the engine and supplies no lifecycle state or provider mechanics.
 
-## Shared Invariants
+## Shared invariants
 
 - One invocation creates or resumes exactly one Fog.
-- Fog is lateral provenance, never a parent in the product hierarchy.
-- One Fog owns exactly one Business grilling child, one or more Functional
-  children, and one Technical child per Story.
-- Research and Prototype are direct Fog children that support named grilling
-  children. They cannot authorize backlog projection.
-- Current provider and immutable evidence defeat stale artifacts and route
-  suggestions.
-- Functional or Technical depth may adopt an exact existing Product Area ->
-  Initiative -> Epic path only after the human accepts `reuse-unchanged`; the
-  engine still persists one exact Business child and immutable resolution.
-- Ambiguous identity or conflicting accepted evidence produces zero writes and
-  routes to human steering.
-- Reaching target depth returns control without completing the Fog.
+- A new Fog records its immutable original intake lens. Either wrapper may
+  later resume that Fog while preserving the recorded lens unchanged; the lens
+  is provenance, not maturity or a route gate.
+- A Fog may own several generic `Kind/grilling` children plus direct Research
+  and Prototype children that support a named Grilling child.
+- Current evidence decides whether an obviously relevant support child is
+  reused or separate useful work is created. Genuine ambiguity requests human
+  steering with zero duplicate creation.
+- Research and Prototype return durable evidence or verdicts. They cannot
+  accept product direction or authorize provider projection independently.
+- Optional structure stays within the invoking wrapper's projection ceiling.
+- Historical staged records remain compatibility evidence, not a current gate.
+- A bounded return gives control back without asserting that the Fog is
+  resolved or complete.
 
 ## Return
 
-Return the stable Fog identities, target depth reached, accepted stage child
-identities and immutable resolution pointers, created-or-enriched provider
-object identities from exact readback, unresolved support evidence, and the
-durable handoff locator. Business returns exactly one Business child;
-Functional returns one or more Functional children selected for this
-invocation; Technical returns exactly one Technical child per selected Story.
+Return exact Fog identity, immutable intake lens, generic support-child
+identities and retained evidence, optional structure readback within the
+ceiling, unresolved decisions, and the durable handoff locator.

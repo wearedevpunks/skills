@@ -1,190 +1,120 @@
 # Linear Provider Adapter
 
-Read this reference only when the resolved provider is Linear. It translates the
-provider-neutral mutation envelope into native Linear objects; it does not
-change product terms or authorize a mutation.
+Read this reference only when the resolved provider is Linear. It translates
+the provider-neutral mutation envelope into native Linear objects; hierarchy
+policy and mutation authority remain in Write Backlog.
 
-## Native Representation
+## `linear-free-v1` Representation
+
+`linear-free-v1` is the sole default Linear Free representation.
 
 | Product meaning | Linear representation | Required ownership |
 | --- | --- | --- |
 | Product/Backlog Root | top-level Linear Initiative | no semantic parent |
-| Product Area | Linear Initiative | direct child of the Root |
-| Initiative | nested Linear Initiative | exactly one Product Area parent |
-| Epic | Linear Project | exactly one owning Initiative |
-| Story | Linear Issue | member of its Epic Project |
-| Task | Linear sub-issue | `parentId` is its Story; same Project and team |
-| Fog | lateral Linear Issue | provenance, never a hierarchy parent |
+| Product Area | Linear Project | member of the Root Initiative |
+| Initiative | Linear Issue labeled `Kind/initiative` | member of its Product Area Project |
+| Epic | child Issue labeled `Kind/epic` | `parentId` is its Initiative |
+| Story | child Issue labeled `Kind/story` | `parentId` is its Epic |
+| Task | child Issue labeled `Kind/task` | `parentId` is its Story |
+| Fog | lateral Issue labeled `Kind/fog` | provenance, never a hierarchy parent |
 
-Linear permits multiple initiative parents. The semantic contract is narrower:
-each Product Area has the resolved Root as its only product parent, and each
-nested Initiative has exactly one Product Area parent. An Epic has exactly one
-owning Initiative membership. Additional native parents or owning Initiative
-memberships are ambiguous hierarchy, not harmless metadata.
+The Root is the only native Initiative. Each Product Area has one Root
+Initiative membership. Initiative, Epic, Story, and Task Issues share the
+Product Area Project and team; required `Kind/*` labels and recursive
+`parentId` relations preserve semantic type and ownership. A nested native
+Initiative, a Project per semantic Initiative or Epic, an extra parent, or a
+mismatched Project is divergent topology. It remains unchanged until an
+explicitly approved Normalization operation targets it.
 
-Product Area and Initiative are native Initiative layers, not labels or
-milestones. Story has no parent Issue standing in for its Epic: Project
-membership represents the Epic. Task nesting uses `parentId` to reference the
-Story's stable provider ID.
+## Destination and Read-Before-Write
 
-## Read Before Write
+1. Read `.devpunks/settings.json`. Keep the current `backlogProjectUrl` key; it
+   identifies the Product/Backlog Root Initiative.
+2. Resolve that Root by stable provider ID. Read its workspace ID, workspace
+   name, workspace URL, and configured Root URL. A connector alias is only a
+   routing hint.
+3. Require the returned workspace ID and workspace URL to identify the same
+   workspace encoded by the configured Root URL. A wrong workspace returns its
+   observed identity, expected identity, and zero provider mutations.
+4. Treat a Linear Project URL, legacy project destination, or any non-Initiative
+   Root URL as invalid. Return exact `hi ensure` destination guidance and zero
+   writes rather than guessing or creating another Root.
+5. Read all candidate Projects, Issues, parents, labels, milestones, relations,
+   views, and durable identity links before choosing create, reuse, or enrich.
 
-Resolve and read the actual Linear workspace first:
+Stable provider identity plus durable wiki identity is the reuse key. A title
+match, incomplete search, ambiguous candidate, conflicting identity, unexpected
+parent, or unsupported representation returns exact steering and zero writes.
 
-1. Read `.devpunks/settings.json`. Resolve `backlogProjectUrl` as the top-level
-   Linear Initiative by stable provider ID; the URL is a locator, not proof.
-2. Read that Root Initiative, including its workspace ID and workspace URL, and
-   match both to the workspace encoded by the configured Root URL.
-3. Treat a Linear Project URL or any non-Initiative URL as a legacy or invalid
-   destination. Return exact `hi ensure` migration guidance and zero writes.
-4. Continue with the native object reads below only after Root and workspace
-   identity agree.
+## Initialization Metadata and Views
 
-- workspace ID, workspace name, and workspace URL
-- Product/Backlog Root Initiative ID and URL
-- expected parent and child Initiative IDs
-- Epic Project IDs, owning Initiative memberships, and team memberships
-- Story and Task Issue IDs, parents, Projects, teams, labels, and relations
-- every Project milestone and selected milestone membership
-- configured `Kind` and `Grilling Stage` label-group IDs and options
-- every saved view's stable ID, type, filters, grouping, ordering, and scope
+Project wiki content remains authoritative. Project the Root's Product brief,
+business objectives, target users, product boundaries, Product Map, constraints
+and non-goals, operating rules, owner, repository link, wiki link, and current
+and future `V*` context into supported Initiative fields and description.
 
-A connector alias is a routing hint, not identity evidence. Match the workspace
-returned by the connected authority to the workspace encoded by the configured
-Root URL. Resolve known objects by stable provider ID plus durable wiki identity.
-A title-only match, alias-only workspace match, ambiguous candidate, unexpected
-parent, or missing representation returns the evidence and zero writes.
+Use the configured issue label group for exact labels including
+`Kind/initiative`, `Kind/epic`, `Kind/story`, `Kind/task`, `Kind/fog`,
+`Kind/grilling`, `Kind/research`, and `Kind/prototype`. Entity type already
+distinguishes the Root and Product Area Project. Missing, overlapping, or
+non-exclusive Kind labels return setup guidance and zero writes. Ordinary
+projection reuses configured label IDs; initialization may provision labels
+only after a structural preview and explicit approval.
 
-Use provider search only to discover candidates. Before the first mutation,
-read every candidate by ID and prove the complete intended hierarchy,
-membership, milestone, field, view, provenance, and blocker delta in memory.
+Preserve semantically equivalent existing views before proposing another:
 
-## Backlog Initialization
-
-Use the Root Initiative as the compact Linear projection of the wiki-owned
-product context. Preserve the full values under stable headings in its
-description and use supported native fields where they add structure:
-
-- `summary` or the opening description: Product brief
-- description: business objectives
-- description: target users
-- description: product boundaries
-- description: existing Product Map
-- description: durable constraints and non-goals
-- description: operating rules
-- `owner`: owner
-- description: verified repository link
-- description: verified wiki link
-- description: current and future `V*` milestone context
-
-Keep repository link and wiki link as explicit Markdown links when the connected
-Initiative API exposes no native link collection. Read their exact URLs back
-from the Root description. Richer product meaning remains authoritative in the
-wiki; the Linear projection links to it rather than inventing a substitute.
-
-Reconcile existing Product Areas, nested Initiatives, and Epic Projects before
-proposing new objects. New Root, Area, Initiative, Project, semantic field, or
-view provisioning is structural: preview the current and intended topology and
-obtain explicit approval. Write only the approved stable-ID delta.
-
-### Semantic Fields
-
-Use configured Linear label groups as issue-level semantic fields:
-
-- `Kind`: the accepted Issue kind, including Fog, grilling, Story, and Task
-- `Grilling Stage`: exactly Business, Functional, or Technical for a grilling
-  Issue; absent from other kinds
-
-Native Initiative and Project entity types already distinguish Root, Product
-Area, Initiative, and Epic. Provisioning or changing a field, group, or option
-requires a field or view preview and explicit approval. Ordinary projection
-reuses exact configured IDs and never creates labels ad hoc. Overlapping,
-missing, or non-exclusive representations stop with zero writes and setup
-guidance.
-
-### Product-Owner Views
-
-Preserve an equivalent existing view before proposing a new one. The required
-semantic views are:
-
-- **Product Map**: Root -> Product Area -> Initiative -> Epic, without Story or
-  Task noise
-- **Roadmap**: `V*` iterations and their Story/Task progress rolled up through
+- **Product Map**: Product Area, Initiative, and Epic structure without Story
+  or Task noise
+- **Roadmap**: ordered `V*` milestones and Story/Task progress rolled up through
   Epic and Initiative outcomes
-- **Fogs**: Fog status, affected structures, target and completion iteration,
-  generated work, and production evidence
-- **Current Delivery**: active Stories and Tasks grouped by `V*`, status,
-  owner, and blocker readiness
+- **Fogs**: unresolved provenance, affected structures, and production evidence
+- **Current Delivery**: active Stories and Tasks with milestone, owner, status,
+  and native blocker readiness
 
-Compare semantics, not display title: view type, scope, filters, grouping,
-ordering, and visible fields must match. View creation or material change needs
-the structural preview and explicit approval. When the connected view API is
-unavailable or unsupported, return the missing capability and zero writes for
-initialization. A document, issue list, or guessed UI configuration is not an
-exact view readback.
+If the connected provider cannot create, update, or read back a required view,
+return exact manual setup guidance and zero initialization writes.
 
-## Contextual Version Milestones
+## Milestones and Blockers
 
 Reuse a fitting existing `V*` milestone before proposing one. Linear milestones
-are project-scoped, so each Story's milestone must belong to its Epic's Linear
-Project. When one product version crosses Epics, reconcile the same durable
-version identity in each affected Project; a shared title alone is not identity.
+are project-scoped, so every Story belongs to exactly one milestone in its
+Product Area Project. Every derived Task belongs to the same Project and
+milestone as its Story. Product Areas, Initiatives, and Epics may span
+iterations. A milestone record retains the Version name, one-sentence product
+goal, and included product outcomes or capability changes when supported; a
+name-only fallback keeps richer meaning in the linked wiki.
 
-Every Story has exactly one contextual `V*` milestone. Every Task has the same
-Project milestone as its Story. Reject zero or multiple memberships and reject
-a Task whose Project or milestone differs from its Story. Product Areas,
-Initiatives, and Epics span versions. A Fog may target a fitting version; use a
-native milestone only when its Issue belongs to the applicable Project,
-otherwise preserve the target as a stable milestone link in its body.
+Validate the complete reachable Task graph before mutation. Reject missing
+parents or blocker targets, Task/Story milestone mismatch, future-iteration
+dependencies, duplicate edges, self-edges, and cycles. Materialize only accepted
+edges as native `blockedBy` and reciprocal `blocks` relations.
 
-When supported, milestone metadata contains:
+## Provenance
 
-1. Version name
-2. One-sentence product goal
-3. Included product outcomes or capability changes
+Fog remains lateral. Use native `relatedTo` relations for Fog-to-Issue
+provenance and immutable source links in every enriched or produced Issue and
+Project description. Historical staged tickets are read-only compatibility
+evidence and are excluded from automatic Normalization.
 
-Store goal and outcomes in the milestone description when that field is
-supported. When milestone description metadata is unsupported by the connected
-authority, the name-only fallback is sufficient and the full meaning remains in
-the linked wiki. Moving an existing Story, Task, or Fog between milestones
-changes roadmap commitment and requires explicit approval.
+## Small Mutation and Exact Readback
 
-Blockers define delivery precedence. Before writing, traverse the complete
-reachable Task graph and reject missing targets, future-iteration dependencies,
-self-edges, and cycles. Materialize accepted edges with native `blockedBy` and
-`blocks` relations; milestone order never creates a blocker.
+Build the complete intended mutation envelope in memory: ordered operations,
+stable IDs, preconditions, immutable source identities, approval record, and
+expected readback. Preview every material structural change and obtain explicit
+approval before writing. Write only the validated delta, parent-first, using
+stable IDs; capture each returned ID before a dependent operation.
 
-## Lateral Fog Provenance
-
-Fog remains lateral. Use native `relatedTo` relations between the Fog and every
-resulting Story and Task Issue. Record stable Product Area, Initiative, and Epic
-URLs in the Fog body. Add the immutable Fog source link to each enriched
-Initiative or Project description so non-Issue objects preserve reciprocal
-provenance. Read back both the Issue relation and every body or description
-source link. A source link supplements native relations; it never becomes a
-parent edge.
-
-## Mutation And Exact Readback
-
-Apply the validated, approved delta parent-first and use stable IDs for every
-update or relationship. After each create, capture its returned ID before a
-dependent write. On a partial provider failure, stop, read the affected objects,
-and return the observed writes plus unresolved delta; resume from fresh reads
-instead of replaying the batch.
-
-RAC-2 is satisfied only after exact readback proves:
+Exact readback must prove:
 
 1. workspace and Root identity
-2. Root -> Product Area -> Initiative parent hierarchy
-3. Epic Project owning Initiative and team membership
-4. Story Project membership and Task parent, Project, and team membership
-5. exactly-one contextual milestone for every Story and the same milestone for
-   every Task
-6. semantic fields and all four views
-7. Fog provenance, immutable evidence, and source links
-8. every native `relatedTo`, `blockedBy`, and `blocks` relation
-9. created, enriched, repaired, or unchanged state for each stable object
+2. Root Initiative membership for every Product Area Project
+3. recursive Initiative → Epic → Story → Task parent chain
+4. Product Area Project, team, and `Kind/*` identity for every Issue
+5. exactly one contextual `V*` milestone per Story and the same one per Task
+6. semantic views, Fog provenance, immutable sources, and source links
+7. every native `relatedTo`, `blockedBy`, and `blocks` relation
+8. created, enriched, repaired, or unchanged classification for every object
 
-Any mismatch remains unresolved reconciliation. Report stable IDs, URLs,
-observed provider state, approval record, and the first missing representation;
-never claim success from mutation responses alone.
+A mismatch remains unresolved reconciliation. On partial provider failure,
+stop further writes, read back every affected object, and return observed writes,
+the recovery point, and exact residual delta. Resume only after fresh reads.

@@ -1,383 +1,67 @@
-const DEPTHS = ["Business", "Functional", "Technical"];
-const CONFLICT_IDENTITIES = ["ambiguous", "duplicate", "conflict"];
-const isStableIdentity = (value) => typeof value === "string" && value.trim().length > 0;
+const LENSES = ["Business", "Functional"];
+const CONFLICTS = ["ambiguous", "conflict", "duplicate"];
 
-const hasExactBusinessProjection = (child) =>
-  isStableIdentity(child?.projectedProductArea) &&
-  isStableIdentity(child.projectedInitiative) &&
-  isStableIdentity(child.projectedEpic) &&
-  child.hierarchyReadback === "exact";
+const conflicts = (value) => CONFLICTS.includes(value);
+const stable = (value) => typeof value === "string" && value.trim().length > 0;
 
-const businessChildCollectionConflicts = (children) => {
+const childConflict = (children) => {
   if (!Array.isArray(children)) return false;
-  return (
-    children.length > 1 ||
-    children.some(
-      (child) =>
-        !child ||
-        child.identity !== "exact" ||
-        (child.status === "accepted" &&
-          child.scope === "in-scope" &&
-          child.projection === "read-back" &&
-          !hasExactBusinessProjection(child)),
-    )
-  );
-};
-
-const deriveBusinessStageRoute = (state) => {
-  if (!Array.isArray(state.businessChildren)) {
-    return state.business === "accepted" ? "human-steering" : "business-grilling";
-  }
-  if (state.businessChildren.length === 0) {
-    return state.business === "accepted" ? "human-steering" : "business-grilling";
-  }
-
-  const [child] = state.businessChildren;
-  if (child.status !== "accepted" || child.scope !== "in-scope") {
-    return "business-grilling";
-  }
-  if (child.resolution !== "immutable") return "human-steering";
-  if (child.projection !== "read-back") return "reconcile";
-  if (!hasExactBusinessProjection(child)) return "human-steering";
-  return "ready";
-};
-
-const childCollectionConflicts = (children, foreignKey) => {
-  if (!Array.isArray(children)) return false;
-
-  const seen = new Set();
+  const ids = new Set();
   for (const child of children) {
-    if (!child || CONFLICT_IDENTITIES.includes(child.identity)) return true;
-    const key = child[foreignKey];
-    if (!isStableIdentity(key)) return true;
-    if (seen.has(key)) return true;
-    seen.add(key);
-  }
-
-  return false;
-};
-
-const functionalProjectionConflicts = (children, businessChildren) => {
-  if (!Array.isArray(children)) return false;
-
-  const projectedEpic = businessChildren?.[0]?.projectedEpic;
-  const stories = new Set();
-  for (const child of children) {
-    if (
-      child?.status !== "accepted" ||
-      child.scope !== "in-scope" ||
-      child.projection !== "read-back"
-    ) {
-      continue;
-    }
-    if (
-      !isStableIdentity(projectedEpic) ||
-      !isStableIdentity(child.projectedStory) ||
-      child.projectedStoryParentEpic !== projectedEpic ||
-      !isStableIdentity(child.projectedStoryMilestone) ||
-      child.projectedStoryMilestoneKind !== "V*" ||
-      child.projectedStoryFogLink !== "exact" ||
-      child.projectedStorySourceLink !== "exact" ||
-      child.projectedStoryMembershipReadback !== "exact"
-    ) {
+    if (!child || child.identity !== "exact" || !stable(child.id) || ids.has(child.id)) {
       return true;
     }
-    if (stories.has(child.projectedStory)) return true;
-    stories.add(child.projectedStory);
+    ids.add(child.id);
   }
   return false;
-};
-
-const hasExactWriterTaskGraphValidation = (state, projectedTasks) => {
-  const validation = state.taskGraphValidation;
-  const result = validation?.result;
-  if (
-    !isStableIdentity(state.providerSnapshotIdentity) ||
-    validation?.validator !== "write-backlog/validate-task-blocker-graph" ||
-    validation.scope !== "full-reachable" ||
-    validation.milestoneOrderReadback !== "exact" ||
-    validation.providerSnapshotIdentity !== state.providerSnapshotIdentity ||
-    result?.ok !== true ||
-    !Array.isArray(result.taskIds) ||
-    !Array.isArray(result.edges)
-  ) {
-    return false;
-  }
-
-  const validatedTaskIds = new Set();
-  for (const taskId of result.taskIds) {
-    if (!isStableIdentity(taskId) || validatedTaskIds.has(taskId)) return false;
-    validatedTaskIds.add(taskId);
-  }
-
-  const validatedEdges = new Set();
-  for (const edge of result.edges) {
-    if (
-      !isStableIdentity(edge?.blockedTaskId) ||
-      !isStableIdentity(edge.blockingTaskId) ||
-      !validatedTaskIds.has(edge.blockedTaskId) ||
-      !validatedTaskIds.has(edge.blockingTaskId)
-    ) {
-      return false;
-    }
-    const key = `${edge.blockedTaskId}\u0000${edge.blockingTaskId}`;
-    if (validatedEdges.has(key)) return false;
-    validatedEdges.add(key);
-  }
-
-  const projectedTaskIds = new Set(projectedTasks.map((task) => task.id));
-  const projectedEdges = new Set();
-  for (const task of projectedTasks) {
-    if (!validatedTaskIds.has(task.id)) return false;
-    for (const blockingTaskId of task.blockedBy) {
-      if (!validatedTaskIds.has(blockingTaskId)) return false;
-      projectedEdges.add(`${task.id}\u0000${blockingTaskId}`);
-    }
-  }
-  if ([...projectedEdges].some((edge) => !validatedEdges.has(edge))) {
-    return false;
-  }
-  if (
-    [...validatedEdges].some((edge) => {
-      const [blockedTaskId] = edge.split("\u0000");
-      return projectedTaskIds.has(blockedTaskId) && !projectedEdges.has(edge);
-    })
-  ) {
-    return false;
-  }
-
-  return true;
-};
-
-const technicalProjectionConflicts = (state) => {
-  const children = state.technicalChildren;
-  const functionalChildren = state.functionalChildren;
-  if (!Array.isArray(children)) return false;
-
-  const storyMilestones = new Map(
-    (Array.isArray(functionalChildren) ? functionalChildren : [])
-      .filter(
-        (child) =>
-          child?.status === "accepted" &&
-          child.scope === "in-scope" &&
-          child.projection === "read-back" &&
-          isStableIdentity(child.projectedStory) &&
-          isStableIdentity(child.projectedStoryMilestone),
-      )
-      .map((child) => [child.projectedStory, child.projectedStoryMilestone]),
-  );
-  const taskIds = new Set();
-  const tasks = [];
-  for (const child of children) {
-    if (
-      child?.status !== "accepted" ||
-      child.scope !== "in-scope" ||
-      child.projection !== "read-back"
-    ) {
-      continue;
-    }
-    const storyMilestone = storyMilestones.get(child.story);
-    if (
-      !isStableIdentity(storyMilestone) ||
-      child.taskGraphReadback !== "exact" ||
-      !Array.isArray(child.projectedTasks) ||
-      child.projectedTasks.length !== child.taskIntentCount
-    ) {
-      return true;
-    }
-    for (const task of child.projectedTasks) {
-      if (
-        !task ||
-        !isStableIdentity(task.id) ||
-        task.story !== child.story ||
-        task.milestone !== storyMilestone ||
-        task.readback !== "exact" ||
-        !Array.isArray(task.blockedBy) ||
-        task.blockedBy.some((identity) => !isStableIdentity(identity)) ||
-        taskIds.has(task.id)
-      ) {
-        return true;
-      }
-      taskIds.add(task.id);
-      tasks.push(task);
-    }
-  }
-  if (tasks.length === 0) return false;
-
-  for (const task of tasks) {
-    if (
-      new Set(task.blockedBy).size !== task.blockedBy.length ||
-      task.blockedBy.includes(task.id)
-    ) {
-      return true;
-    }
-  }
-  return !hasExactWriterTaskGraphValidation(state, tasks);
-};
-
-const technicalSelectionConflicts = ({
-  selectedStoryIntents,
-  selectedStories,
-  functionalChildren,
-}) => {
-  if (!Array.isArray(selectedStories) || selectedStories.length === 0) {
-    return false;
-  }
-
-  const selectedIntents = new Set(Array.isArray(selectedStoryIntents) ? selectedStoryIntents : []);
-  const selectedFunctionalChildren = (
-    Array.isArray(functionalChildren) ? functionalChildren : []
-  ).filter(
-    (child) =>
-      selectedIntents.has(child.storyIntent) &&
-      child.status === "accepted" &&
-      child.scope === "in-scope" &&
-      child.projection === "read-back",
-  );
-
-  return (
-    new Set(selectedStories).size !== selectedStories.length ||
-    selectedStories.some(
-      (story) =>
-        !isStableIdentity(story) ||
-        selectedFunctionalChildren.filter((child) => child.projectedStory === story).length !== 1,
-    )
-  );
-};
-
-const deriveChildStageRoute = ({
-  selected,
-  children,
-  foreignKey,
-  grillingRoute,
-  validateAcceptedChild = () => true,
-}) => {
-  if (!Array.isArray(selected)) return grillingRoute;
-  if (selected.length === 0) return grillingRoute;
-  if (new Set(selected).size !== selected.length) return "human-steering";
-
-  const matchesBySelected = selected.map((selectedIdentity) =>
-    (Array.isArray(children) ? children : []).filter(
-      (child) => child[foreignKey] === selectedIdentity,
-    ),
-  );
-
-  if (
-    matchesBySelected.some(
-      (matches) =>
-        matches.length > 1 || matches.some((child) => CONFLICT_IDENTITIES.includes(child.identity)),
-    )
-  ) {
-    return "human-steering";
-  }
-
-  if (
-    matchesBySelected
-      .filter(
-        (matches) =>
-          matches.length === 1 &&
-          matches[0].status === "accepted" &&
-          matches[0].scope === "in-scope",
-      )
-      .some(
-        ([child]) =>
-          child.identity !== "exact" ||
-          child.resolution !== "immutable" ||
-          !validateAcceptedChild(child),
-      )
-  ) {
-    return "human-steering";
-  }
-
-  if (
-    matchesBySelected
-      .filter(
-        (matches) =>
-          matches.length === 1 &&
-          matches[0].status === "accepted" &&
-          matches[0].scope === "in-scope",
-      )
-      .some(([child]) => child.projection !== "read-back")
-  ) {
-    return "reconcile";
-  }
-
-  if (
-    matchesBySelected.some(
-      (matches) =>
-        matches.length !== 1 || matches[0].status !== "accepted" || matches[0].scope !== "in-scope",
-    )
-  ) {
-    return grillingRoute;
-  }
-
-  return "ready";
 };
 
 export const deriveFinderRoute = (state) => {
-  if (!DEPTHS.includes(state.targetDepth)) return "human-steering";
+  if (!LENSES.includes(state.targetLens)) return "human-steering";
   if (state.humanSteering === "required") return "human-steering";
-  if (CONFLICT_IDENTITIES.includes(state.fogIdentity)) {
-    return "human-steering";
-  }
+  if (conflicts(state.fogIdentity)) return "human-steering";
+  if (state.fogIdentity !== "exact") return "ensure-fog";
+  if (!LENSES.includes(state.intakeLens)) return "human-steering";
+
+  if (childConflict(state.grillingChildren)) return "human-steering";
+  if (state.selection?.decision === "ambiguous") return "human-steering";
   if (
-    businessChildCollectionConflicts(state.businessChildren) ||
-    childCollectionConflicts(state.functionalChildren, "storyIntent") ||
-    childCollectionConflicts(state.technicalChildren, "story") ||
-    functionalProjectionConflicts(state.functionalChildren, state.businessChildren) ||
-    technicalProjectionConflicts(state)
+    state.selection?.decision === "reuse" &&
+    !state.grillingChildren?.some(
+      (child) => child.id === state.selection.childId,
+    )
   ) {
     return "human-steering";
   }
-  if (state.fogIdentity !== "exact") return "ensure-fog";
-  if (CONFLICT_IDENTITIES.includes(state.businessIdentity)) {
+
+  if (state.support?.decision === "ambiguous") return "human-steering";
+  if (state.support?.status === "unresolved") {
+    if (
+      !state.grillingChildren?.some(
+        (child) => child.id === state.support.supports,
+      )
+    ) {
+      return "human-steering";
+    }
+    if (state.support.kind === "Research") return "research";
+    if (state.support.kind === "Prototype") return "prototype";
     return "human-steering";
   }
-  if (state.acceptedEvidence === "conflict") return "human-steering";
-  if (state.scopeExpansion === "approval-required") {
-    return "scope-expansion-checkpoint";
-  }
-  if (state.support === "research") return "research";
-  if (state.support === "prototype") return "prototype";
-  if (state.businessEvidenceScope === "out-of-scope") {
-    return "business-grilling";
-  }
-  if (state.business !== "accepted") {
+
+  if (state.projection?.status === "ambiguous") return "human-steering";
+  if (["pending", "read-back"].includes(state.projection?.status)) {
+    const ceiling =
+      state.targetLens === "Business"
+        ? new Set(["ProductArea", "Initiative"])
+        : new Set(["ProductArea", "Initiative", "Epic"]);
     if (
-      state.targetDepth !== "Business" &&
-      state.business === "missing" &&
-      state.businessPathIdentity === "exact" &&
-      state.businessPathDecision === "reuse-unchanged"
+      !Array.isArray(state.projection.kinds) ||
+      state.projection.kinds.some((kind) => !ceiling.has(kind))
     ) {
-      return "adopt-business-path";
+      return "human-steering";
     }
-    return "business-grilling";
   }
-  const businessRoute = deriveBusinessStageRoute(state);
-  if (businessRoute !== "ready") return businessRoute;
-  if (state.targetDepth === "Business") return "return-target";
-
-  const functionalRoute = deriveChildStageRoute({
-    selected: state.selectedStoryIntents,
-    children: state.functionalChildren,
-    foreignKey: "storyIntent",
-    grillingRoute: "functional-grilling",
-  });
-  if (functionalRoute !== "ready") return functionalRoute;
-  if (state.targetDepth === "Functional") return "return-target";
-  if (technicalSelectionConflicts(state)) return "human-steering";
-
-  const technicalRoute = deriveChildStageRoute({
-    selected: state.selectedStories,
-    children: state.technicalChildren,
-    foreignKey: "story",
-    grillingRoute: "technical-grilling",
-    validateAcceptedChild: (child) =>
-      child.specReadiness === "agent-ready" &&
-      child.stableBlob === "verified" &&
-      Number.isInteger(child.taskIntentCount) &&
-      child.taskIntentCount > 0,
-  });
-  if (technicalRoute !== "ready") return technicalRoute;
-  return "return-target";
+  if (state.projection?.status === "pending") return "reconcile";
+  if (state.boundedResult === "ready") return "return-target";
+  return "grilling";
 };

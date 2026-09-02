@@ -189,7 +189,7 @@ test("create-spec no-interview compiler", () => {
   assert.doesNotMatch(skill, /ask(?:ing)? (?:the user|questions)|questioning\.md/i);
 });
 
-test("create-spec requires Story context only for Technical Finder", () => {
+test("create-spec requires no provider delivery-item precondition", () => {
   const skill = read("skills/agnostic/planning/create-spec/SKILL.md");
   const readiness = read(
     "skills/agnostic/planning/create-spec/references/readiness.md",
@@ -197,13 +197,10 @@ test("create-spec requires Story context only for Technical Finder", () => {
   const all = `${skill}\n${readiness}`;
   const normalized = all.replace(/\s+/gu, " ");
 
-  assert.match(
-    all,
-    /Technical Finder.{0,180}exact selected Story context/isu,
-  );
+  assert.doesNotMatch(all, /Technical Finder/iu);
   assert.match(
     normalized,
-    /Non-Finder compilation (?:requires|has) no provider Story precondition/iu,
+    /Compilation never requires a\s+preselected provider delivery item/iu,
   );
   assert.doesNotMatch(
     skill,
@@ -231,9 +228,9 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
   assert.match(readiness, /one `spec-not-ready` result/i);
   assert.match(readiness, /Write no partial spec/i);
   assert.match(template, /readiness: agent-ready/);
-  assert.match(template, /US-001/);
+  assert.match(template, /OUT-001/);
   assert.match(template, /AC-001/);
-  assert.match(template, /Covers: US-001/);
+  assert.match(template, /Covers: OUT-001/);
   assert.match(template, /Accepted Technical Decisions/);
   assert.match(template, /Accepted Testing Decisions/);
   assert.match(template, /Verification Seams/);
@@ -325,32 +322,25 @@ test("delivery implementation uses plan-derived worker waves", () => {
   assert.doesNotMatch(phase, /execution mode|sequential|explicitly selected `parallel`/i);
 });
 
-test("delivery gates backlog projection between spec and planning", () => {
+test("delivery routes retained specifications through Requirements Phase before planning", () => {
   const delivery = read("skills/phases/delivery-phase/SKILL.md");
   const router = read("skills/phases/delivery-phase/phases/router.md");
-  const backlog = read("skills/phases/delivery-phase/phases/backlog.md");
-  const artifactState = read(
-    "skills/phases/delivery-phase/references/artifact-state.md",
-  );
-  assert.match(router, /spec\.md[\s\S]*backlog\.md[\s\S]*plan\.md/u);
-  assert.match(router, /projection is missing or stale/i);
-  assert.match(backlog, /verified stable blob URL/u);
-  assert.match(backlog, /Activate `write-backlog`/u);
-  assert.match(backlog, /current for the same spec/i);
-  assert.match(backlog, /zero\s+provider mutations/i);
-  assert.match(backlog, /projection evidence/i);
-  assert.match(artifactState, /Backlog Projection Complete/u);
-  assert.match(delivery, /phases\/backlog\.md/u);
+  const requirements = read("skills/phases/requirements-phase/SKILL.md");
+  assert.match(router, /agent-ready `SPEC\.md`[\s\S]*Requirements Phase/iu);
+  assert.match(router, /verified specification lacks its current Write Backlog result/iu);
+  assert.match(requirements, /requirements-grill -> create-spec -> write-backlog/iu);
+  assert.match(requirements, /verified stable blob URL/iu);
+  assert.match(requirements, /Write Backlog result[\s\S]*residual delta/iu);
+  assert.doesNotMatch(router, /\[backlog\.md\]\(backlog\.md\)/u);
 });
 
-test("delivery repairs agent-ready specs lacking verified remote blob authority", () => {
+test("delivery routes specs lacking verified remote authority through Requirements Phase", () => {
   const router = read("skills/phases/delivery-phase/phases/router.md");
   const spec = read("skills/phases/delivery-phase/phases/spec.md");
 
-  assert.match(
-    router,
-    /agent-ready `SPEC\.md`[\s\S]*remote retention[\s\S]*stable blob URL[\s\S]*\[spec\.md\]/iu,
-  );
+  assert.match(router, /agent-ready `SPEC\.md`/iu);
+  assert.match(router, /lacks verified remote[\s\S]*retention/iu);
+  assert.match(router, /Requirements Phase/iu);
   assert.match(spec, /verify the retained ref contains the spec commit/iu);
   assert.match(spec, /construct and verify a stable blob URL before backlog/iu);
 });
@@ -429,8 +419,8 @@ test("spec compiler rejects incomplete dependency and story coverage", () => {
   );
   assert.equal(fixtures.invalid.length, 3);
   assert.match(readiness, /dependency readiness/i);
-  assert.match(readiness, /every `US-###` has at least one `AC-###`/i);
-  assert.match(readiness, /nonexistent `US-###`/i);
+  assert.match(readiness, /every unique `OUT-###` has at least one `AC-###`/i);
+  assert.match(readiness, /existing `OUT-###`/i);
 });
 
 test("spec compiler returns remotely verified blob authority before backlog projection", () => {
@@ -438,8 +428,9 @@ test("spec compiler returns remotely verified blob authority before backlog proj
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
   for (const document of [createSpec, requirements]) {
     assert.match(document, /push or explicitly retain the spec commit/iu);
-    assert.match(document, /verify the retained ref contains the spec commit/iu);
-    assert.match(document, /construct and verify a stable blob URL\s+before `write-backlog`/iu);
+    assert.match(document, /verify\s+(?:the\s+)?retained ref contains (?:the\s+)?spec commit/iu);
+    assert.match(document, /stable blob URL/iu);
+    assert.match(document, /before `write-backlog`/iu);
     assert.doesNotMatch(document, /commit SHA plus repository-relative path, or a stable blob URL/u);
   }
   const backlog = read("skills/agnostic/requirements/write-backlog/SKILL.md");

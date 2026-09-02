@@ -1,392 +1,165 @@
 [
   {
     "name": "baseline creates one Fog before any child",
-    "state": { "targetDepth": "Business", "fogIdentity": "missing" },
+    "state": { "targetLens": "Business", "fogIdentity": "missing" },
     "expectedRoute": "ensure-fog"
   },
   {
-    "name": "Business branch resumes the first missing child",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "missing" },
-    "expectedRoute": "business-grilling"
+    "name": "unsupported lens requires human steering",
+    "state": { "targetLens": "Technical", "fogIdentity": "missing" },
+    "expectedRoute": "human-steering"
   },
   {
-    "name": "support work cycles through research",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "active", "support": "research" },
+    "name": "Functional resumes a Business-origin Fog without changing its lens",
+    "state": {
+      "targetLens": "Functional",
+      "fogIdentity": "exact",
+      "intakeLens": "Business",
+      "grillingChildren": []
+    },
+    "expectedRoute": "grilling"
+  },
+  {
+    "name": "valid Fog without bounded evidence enters generic Grilling",
+    "state": {
+      "targetLens": "Functional",
+      "fogIdentity": "exact",
+      "intakeLens": "Functional",
+      "grillingChildren": []
+    },
+    "expectedRoute": "grilling"
+  },
+  {
+    "name": "several generic Grilling children are valid",
+    "state": {
+      "targetLens": "Business",
+      "fogIdentity": "exact",
+      "intakeLens": "Business",
+      "grillingChildren": [
+        { "id": "grill-a", "identity": "exact" },
+        { "id": "grill-b", "identity": "exact" }
+      ],
+      "selection": { "decision": "reuse", "childId": "grill-b" }
+    },
+    "expectedRoute": "grilling"
+  },
+  {
+    "name": "ambiguous child selection creates nothing",
+    "state": {
+      "targetLens": "Business",
+      "fogIdentity": "exact",
+      "intakeLens": "Business",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "selection": { "decision": "ambiguous" }
+    },
+    "expectedRoute": "human-steering"
+  },
+  {
+    "name": "Research supports one named Grilling child",
+    "state": {
+      "targetLens": "Business",
+      "fogIdentity": "exact",
+      "intakeLens": "Business",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "support": {
+        "kind": "Research",
+        "decision": "reuse",
+        "supports": "grill-a",
+        "status": "unresolved"
+      }
+    },
     "expectedRoute": "research"
   },
   {
-    "name": "accepted stage is reconciled before target return",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "pending" },
-    "expectedRoute": "reconcile"
-  },
-  {
-    "name": "scope expansion waits for a human decision",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "active", "scopeExpansion": "approval-required" },
-    "expectedRoute": "scope-expansion-checkpoint"
-  },
-  {
-    "name": "durable handback remains terminal",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "humanSteering": "required" },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "duplicate Fog identity emits zero writes",
-    "state": { "targetDepth": "Business", "fogIdentity": "duplicate" },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "ambiguous Business child emits zero writes",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "businessIdentity": "ambiguous" },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "duplicate Business children emit zero writes",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "businessIdentity": "duplicate" },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "conflicting accepted evidence emits zero writes",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "acceptedEvidence": "conflict" },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "cold resume returns at accepted Business depth",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "read-back" },
-    "expectedRoute": "return-target"
-  },
-  {
-    "name": "stale Business evidence reruns Business grilling",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "invalid" },
-    "expectedRoute": "business-grilling"
-  },
-  {
-    "name": "out-of-scope Business evidence is inadmissible",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessEvidenceScope": "out-of-scope", "businessProjection": "read-back" },
-    "expectedRoute": "business-grilling"
-  },
-  {
-    "name": "current evidence defeats a contradictory suggestion",
-    "state": { "targetDepth": "Business", "fogIdentity": "missing", "suggestedRoute": "return-target" },
-    "expectedRoute": "ensure-fog"
-  },
-  {
-    "name": "target return never completes the Fog prematurely",
-    "state": { "targetDepth": "Business", "fogIdentity": "exact", "business": "accepted", "businessIdentity": "exact", "businessResolution": "immutable", "businessProjection": "read-back", "fogCompletion": "requested" },
-    "expectedRoute": "return-target"
-  },
-  {
-    "name": "ambiguous Functional child for one Story intent emits zero writes",
+    "name": "Prototype supports one named Grilling child",
     "state": {
-      "targetDepth": "Functional",
+      "targetLens": "Functional",
       "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "ambiguous", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
-      ]
+      "intakeLens": "Functional",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "support": {
+        "kind": "Prototype",
+        "decision": "create",
+        "supports": "grill-a",
+        "status": "unresolved"
+      }
     },
-    "expectedRoute": "human-steering"
+    "expectedRoute": "prototype"
   },
   {
-    "name": "duplicate Functional children for one Story intent emit zero writes",
+    "name": "optional pending projection reconciles",
     "state": {
-      "targetDepth": "Functional",
+      "targetLens": "Functional",
       "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "multiple distinct selected Functional children are valid",
-    "state": {
-      "targetDepth": "Functional",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a", "intent-b"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "return-target"
-  },
-  {
-    "name": "missing selected Functional child resumes Functional grilling",
-    "state": {
-      "targetDepth": "Functional",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a", "intent-b"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "functional-grilling"
-  },
-  {
-    "name": "out-of-scope Functional child cannot satisfy target return",
-    "state": {
-      "targetDepth": "Functional",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "identity": "exact", "status": "accepted", "scope": "out-of-scope", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "functional-grilling"
-  },
-  {
-    "name": "ambiguous Technical child for one Story emits zero writes",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "ambiguous", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "duplicate Technical children for one Story emit zero writes",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" },
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "Technical requires one accepted child per selected Story",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a", "intent-b"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a", "story-b"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-a", "story": "story-a", "milestone": "v1", "blockedBy": [], "readback": "exact" }] }
-      ]
-    },
-    "expectedRoute": "technical-grilling"
-  },
-  {
-    "name": "one Technical child for every selected Story returns Technical depth",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a", "intent-b"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a", "story-b"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-a", "story": "story-a", "milestone": "v1", "blockedBy": [], "readback": "exact" }] },
-        { "story": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 2, "projection": "read-back", "taskGraphReadback": "exact", "projectedTasks": [{ "id": "task-b1", "story": "story-b", "milestone": "v1", "blockedBy": ["task-a"], "readback": "exact" }, { "id": "task-b2", "story": "story-b", "milestone": "v1", "blockedBy": ["task-b1"], "readback": "exact" }] }
-      ]
-    },
-    "expectedRoute": "return-target"
-  },
-  {
-    "name": "accepted Technical projection pending reconciles before another missing Story",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a", "intent-b"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" },
-        { "storyIntent": "intent-b", "projectedStory": "story-b", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a", "story-b"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 1, "projection": "pending" }
-      ]
+      "intakeLens": "Functional",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": { "status": "pending", "kinds": ["Epic"] }
     },
     "expectedRoute": "reconcile"
   },
   {
-    "name": "spec-not-ready Technical child cannot project or return",
+    "name": "skipped projection returns bounded result",
     "state": {
-      "targetDepth": "Technical",
+      "targetLens": "Business",
       "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "spec-not-ready", "stableBlob": "missing", "taskIntentCount": 0, "projection": "not-emitted" }
-      ]
+      "intakeLens": "Business",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": { "status": "skipped" }
+    },
+    "expectedRoute": "return-target"
+  },
+  {
+    "name": "Functional Epic readback returns bounded result",
+    "state": {
+      "targetLens": "Functional",
+      "fogIdentity": "exact",
+      "intakeLens": "Functional",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": {
+        "status": "read-back",
+        "kinds": ["ProductArea", "Initiative", "Epic"]
+      }
+    },
+    "expectedRoute": "return-target"
+  },
+  {
+    "name": "Business cannot exceed Initiative ceiling",
+    "state": {
+      "targetLens": "Business",
+      "fogIdentity": "exact",
+      "intakeLens": "Business",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": { "status": "read-back", "kinds": ["Epic"] }
     },
     "expectedRoute": "human-steering"
   },
   {
-    "name": "missing stable spec blob cannot project or return",
+    "name": "Functional cannot exceed Epic ceiling",
     "state": {
-      "targetDepth": "Technical",
+      "targetLens": "Functional",
       "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "missing", "taskIntentCount": 1, "projection": "not-emitted" }
-      ]
+      "intakeLens": "Functional",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": { "status": "read-back", "kinds": ["Story"] }
     },
     "expectedRoute": "human-steering"
   },
   {
-    "name": "empty Task intent cannot project or return",
+    "name": "historical Stage does not alter current route",
     "state": {
-      "targetDepth": "Technical",
+      "targetLens": "Business",
       "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "specReadiness": "agent-ready", "stableBlob": "verified", "taskIntentCount": 0, "projection": "not-emitted" }
-      ]
+      "intakeLens": "Business",
+      "grillingChildren": [{ "id": "grill-a", "identity": "exact" }],
+      "boundedResult": "ready",
+      "projection": { "status": "unresolved" },
+      "historicalStage": "Technical"
     },
-    "expectedRoute": "human-steering"
-  },
-  {
-    "name": "out-of-scope Technical child cannot satisfy target return",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "selectedStories": ["story-a"],
-      "technicalChildren": [
-        { "story": "story-a", "identity": "exact", "status": "accepted", "scope": "out-of-scope", "projection": "read-back" }
-      ]
-    },
-    "expectedRoute": "technical-grilling"
-  },
-  {
-    "name": "aggregate Functional evidence cannot replace per-intent children",
-    "state": {
-      "targetDepth": "Functional",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "functional": "accepted",
-      "functionalProjection": "read-back"
-    },
-    "expectedRoute": "functional-grilling"
-  },
-  {
-    "name": "aggregate Functional and Technical evidence cannot replace child collections",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "functional": "accepted",
-      "functionalProjection": "read-back",
-      "technical": "accepted",
-      "technicalProjection": "read-back"
-    },
-    "expectedRoute": "functional-grilling"
-  },
-  {
-    "name": "aggregate Technical evidence cannot replace per-Story children",
-    "state": {
-      "targetDepth": "Technical",
-      "fogIdentity": "exact",
-      "business": "accepted",
-      "businessIdentity": "exact",
-      "businessResolution": "immutable",
-      "businessProjection": "read-back",
-      "selectedStoryIntents": ["intent-a"],
-      "functionalChildren": [
-        { "storyIntent": "intent-a", "projectedStory": "story-a", "identity": "exact", "status": "accepted", "scope": "in-scope", "resolution": "immutable", "projection": "read-back" }
-      ],
-      "technical": "accepted",
-      "technicalProjection": "read-back"
-    },
-    "expectedRoute": "technical-grilling"
+    "expectedRoute": "return-target"
   }
 ]
