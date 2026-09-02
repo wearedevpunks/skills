@@ -8,7 +8,7 @@ Product/Backlog Root
     └── Initiative
         └── Epic
             └── Story [exactly one contextual V*]
-                └── Task 1..n [same V* + blocker relations]
+                └── Task [same V* + blocker relations when derived]
 
 Fog ──lateral provenance/enrichment──> Product Area | Initiative | Epic | Story | Task
 ```
@@ -16,45 +16,42 @@ Fog ──lateral provenance/enrichment──> Product Area | Initiative | Epic 
 - Product Area: stable product responsibility.
 - Initiative: business goal within one Product Area.
 - Epic: long-lived business slice within one Initiative.
-- Story: one shippable product outcome within one Epic.
-- Task: required atomic, owner-ready Story work.
-- Fog: external intake, evidence, decision history, and delivery provenance.
+- Story: shippable product outcome within one Epic.
+- Task: derived atomic, owner-ready Story work.
+- Fog: intake, evidence, decision history, and delivery provenance.
 
-## Staged Projection
+## Projection Boundaries
 
-- Business grilling may reuse, enrich, or create the resolved Product Area,
-  Initiative, and Epic path.
-- Functional grilling creates exactly one Story per accepted Functional child.
-- Technical grilling requires an authoritative agent-ready Story `SPEC.md`, then
-  creates one or more mandatory Tasks and native blocker relations.
+- Business Finder may reuse, enrich, or create Product Areas and Initiatives;
+  Initiative is its ceiling.
+- Functional Finder may project that Business structure plus Epics; Epic is its
+  ceiling. Neither Finder branch creates Stories or Tasks.
+- Requirements Phase supplies an immutable agent-ready `SPEC.md` with neutral
+  `OUT-###` outcomes. Write Backlog derives or reuses Product Area → Initiative
+  → Epic → Story → Task placement and native blocker relations. Outcome identity
+  remains traceability and imposes no Story or Task cardinality.
 
-Every stage preserves its immutable resolution pointer and the exact provider
-objects it enriched or produced. Fog is lateral provenance; it is not another
-ownership level and does not replace native parent relations.
+Every projection preserves immutable evidence and exact provider identities.
+Fog is lateral provenance and does not replace native parent relations.
 
-## Iterations And Blockers
+## Iterations and Blockers
 
-Every Story belongs to exactly one contextual `V*` milestone iteration. Every Task belongs to the same iteration as its Story. A Fog may target a fitting
-iteration. Product Areas, Initiatives, and Epics span iterations.
-
-Reuse a fitting existing milestone before proposing another. Moving work to a
-different iteration requires explicit approval. Milestones do not encode Task
-precedence.
+Every Story belongs to exactly one contextual `V*` milestone. Every derived
+Task belongs to its Story's milestone. Product Areas, Initiatives, and Epics may
+span iterations.
 
 Validate the complete reachable Task graph before mutation:
 
-1. Resolve every blocker target by stable identity.
-2. Reject missing targets and self-edges.
-3. Reject a dependency on a future `V*` milestone iteration.
+1. Resolve every parent Story and blocker target by stable identity.
+2. Reject missing identities, duplicate edges, and self-edges.
+3. Reject a dependency on a future `V*` milestone.
 4. Reject cycles across all reachable Tasks.
 5. Preserve real blockers across Stories and Epics.
 
 ## Mutation Boundary
 
 Construct and validate the full intended provider delta before the first write.
-An identity, hierarchy, milestone, relation, representation, or approval
-failure produces zero provider mutations. After writing, exact provider
-readback must prove every intended object and relation.
-
-Provider writes may fail between requests. Return all observed provider IDs and
-the unresolved delta; never claim transactional atomicity.
+An authority, identity, hierarchy, milestone, representation, or approval
+failure produces zero provider mutations. After writing, exact readback must
+prove every intended object and relation. A partial failure returns observed
+provider IDs and the residual delta without claiming atomic success.

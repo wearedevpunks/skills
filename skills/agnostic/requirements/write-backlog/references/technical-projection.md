@@ -1,35 +1,46 @@
-# Technical Projection
+# Delivery Projection
 
-Before any provider write, require one exact Story, one immutable accepted Technical grilling
-resolution on its exact child, and a verified stable blob URL to an authoritative agent-ready `SPEC.md`. The specification
-must preserve stable user stories, acceptance criteria, accepted technical and
-testing decisions, and verification seams. Name every readiness gap and write
-nothing when authority is incomplete.
+Before any provider write, require a verified stable blob URL for the
+authoritative agent-ready `SPEC.md`. The specification must preserve neutral
+`OUT-###` outcomes, acceptance criteria, accepted technical and testing
+decisions, and verification seams. Name every readiness gap and write nothing
+when authority is incomplete, mutable, or local-only.
+
+## Derive Delivery Structure
+
+Read current provider evidence and the immutable specification before mutation.
+Derive or reuse the accepted Epic, then derive the shippable Stories and atomic,
+independently owner-ready Tasks supported by the requirements. Missing or
+ambiguous placement identity, unsupported immutable authority representation,
+or mismatched readback authorizes zero provider writes.
+
+Retain each `OUT-###` only as traceability from derived delivery items back to
+the specification. It does not select a provider identity and never prescribes
+an Epic, Story, or Task count. Outcome and Story counts may differ.
 
 ## Authority Enrichment
 
-Read the exact existing Epic and Story before mutation. Enrich the existing Epic and Story with verified immutable spec authority: the stable blob URL, accepted
-technical and testing decisions, verification seams, and Fog/Technical-resolution
-provenance. Preserve their Business and Functional wording, non-goals,
-dependencies, and durable accepted-artifact links.
+Enrich every reused or derived Epic, Story, and Task with the verified stable
+specification authority: stable blob URL, applicable outcome links, acceptance
+criteria, accepted technical and testing decisions, verification seams, and
+durable provenance. Preserve accepted wording, non-goals, and dependencies.
 
-Include this enrichment in the validated mutation before Task creation. When the
-provider requires multiple requests, write and read back the authority enrichment
-before creating Tasks. Missing or ambiguous Epic/Story identity, unsupported
-immutable authority representation, or mismatched readback produces no Task write.
+Include authority enrichment in the validated mutation. When a provider
+requires multiple requests, write and read back the authority enrichment before
+creating dependent items. Any mismatched readback stops the remaining writes.
 
-## Task Split
+## Story and Task Split
 
-Create one or more mandatory, atomic, independently owner-ready Tasks for the
-Story. Each Task must define one bounded shippable responsibility, preserve its
-Story and specification authority, name its acceptance and verification
-evidence, and remain understandable without a private planning artifact.
+Each derived Story is one shippable product outcome. Create one or more
+mandatory Tasks only when required to deliver that Story. Every Task is atomic,
+independently ownable, understandable from its Story and stable specification
+authority, and names its acceptance and verification evidence.
 
-Tasks are the provider execution graph that downstream planning preserves. Do
+Provider Tasks form the execution graph that downstream planning preserves. Do
 not create a second private Task graph or split by technical layer when one
 owner-ready vertical unit can deliver the result.
 
-## Milestone And Blockers
+## Milestone and Blockers
 
 Every Task uses the same `V*` milestone iteration as its Story. Resolve every
 blocker by stable provider identity and validate the full reachable Task graph,
@@ -37,29 +48,22 @@ including existing connected Tasks.
 
 Run the [provider-neutral Task graph
 validator](../scripts/validate-task-blocker-graph.mjs) with every reachable
-Story's stable identity and exact milestone, every reachable Task's stable
-identity, parent Story identity, exact milestone, and blocker identities, plus
-the resolved earliest-to-latest milestone order. A failed result authorizes
-zero provider mutations. Provider adapters materialize only the validator's
-accepted edges.
+Story's stable identity and exact milestone; every reachable Task's stable
+identity, parent Story identity, exact milestone, and blocker identities; plus
+resolved earliest-to-latest milestone order. A failed result authorizes zero
+provider mutations. Provider adapters materialize only accepted edges.
 
-Reject:
+Reject missing targets, missing parent Stories, Task/Story milestone mismatch,
+future-iteration dependencies, self-edges, and cycles. Real blockers may cross
+Stories and Epics when their target is in the same or an earlier milestone.
+Native blocker relations, rather than list or milestone order, define delivery
+precedence.
 
-- missing targets
-- missing parent Stories
-- Task/Story milestone mismatches
-- future-iteration dependencies
-- self-edges
-- cycles
+## Write and Read Back
 
-Real blockers may cross Stories and Epics when the target is in the same or an
-earlier milestone iteration. Native blocker relations, not list order or
-milestone order, define precedence and parallel delivery waves.
-
-## Write And Read Back
-
-Preview the complete Task topology with `$show-me`; obtain approval for any
-structural movement. Write the validated Epic/Story authority enrichment, Tasks,
-parents, the same `V*` membership, blockers, source links, and Fog provenance.
-Read every enrichment and relation back exactly. Return stable Epic, Story, and
-Task identities plus blocker edges to Finder, planning, and delivery consumers.
+Preview the complete authority-derived topology with `$show-me`; obtain
+approval for material structural movement. Write only the validated Epic,
+Stories, Tasks, parents, `V*` membership, blockers, source links, and provenance.
+Read every identity, enrichment, and relation back exactly. Return the stable
+Epic, Story, and Task identities plus blocker edges to planning and delivery
+consumers.

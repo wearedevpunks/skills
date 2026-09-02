@@ -33,8 +33,8 @@ silently renaming them.
    the exact existing Epic/Story and accepted projection authority required by
    that branch. Otherwise record the missing authority and exact human Finder
    invocation; retain the compiled spec without provider mutation.
-8. Leave new feature work to explicit human invocation of Business,
-   Functional, or Technical Finder. Onboarding never invokes a Finder
+8. Leave new feature work to explicit human invocation of Business or
+   Functional Finder. Onboarding never invokes a Finder
    implicitly.
 
 For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).

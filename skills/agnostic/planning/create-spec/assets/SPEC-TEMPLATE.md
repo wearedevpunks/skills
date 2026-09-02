@@ -15,25 +15,25 @@ updated: YYYY-MM-DD
 
 ## Non-Goals
 
-## User Stories
+## Requirements and Outcomes
 
-### US-001: [Observable user outcome]
+### OUT-001: [Observable outcome]
 
 ## Acceptance Criteria
 
 - AC-001: [Binary observable criterion]
-  - Covers: US-001
+  - Covers: OUT-001
 
 ## Constraints
 
 ## Dependency Readiness
 
 _Write `No Stack Required` when no dependency exists. Otherwise write `Ready`
-and list each dependency with immutable landing or branch/base evidence._
+and list each dependency's immutable landing or branch/base evidence._
 
 ## Branch/Base Intent
 
-_When accepted intent exists, record the intended parent and base, child branch
+_When accepted intent exists, record the intended parent or base, child branch
 constraint, and supporting evidence. Otherwise write `Not applicable`._
 
 ## Accepted Technical Decisions
@@ -43,7 +43,7 @@ constraint, and supporting evidence. Otherwise write `Not applicable`._
 ## Verification Seams
 
 _Name the public interface, event, state transition, command, or observable
-boundary used to verify the behavior. If none applies, record the accepted
+boundary used to verify behavior. If none applies, record the accepted
 not-applicable rationale._
 
 ## Prototype Verdicts
@@ -53,7 +53,7 @@ accepted implications. Remove this section when no prototype exists._
 
 ## Parked Decisions
 
-_Each item needs an owner and resume trigger. Remove when empty._
+_Each item needs an owner and resume trigger. Remove this section when empty._
 
 ## Decision Log
 

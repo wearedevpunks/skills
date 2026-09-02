@@ -18,7 +18,7 @@ test("Normalization inventories every accepted drift class from durable and live
 
   assert.match(guidance, /read[\s\S]*wiki[\s\S]*provider[\s\S]*identit/iu);
   assert.match(guidance, /invalid Fog child placement/iu);
-  assert.match(guidance, /missing or invalid `?Grilling Stage`?/iu);
+  assert.match(guidance, /missing or conflicting Fog provenance or support relation/iu);
   assert.match(guidance, /duplicate or ambiguous structures/iu);
   assert.match(guidance, /stale links or status/iu);
   assert.match(guidance, /hierarchy drift/iu);
@@ -43,19 +43,17 @@ test("Normalization repairs only exact stale mappings and gates every structural
   assert.match(guidance, /ambiguous[\s\S]*conflicting[\s\S]*zero (?:writes|provider mutations)/iu);
 });
 
-test("Normalization migrates legacy shape by proposal without owning cadence or provider mechanics", () => {
+test("Normalization preserves historical staged shapes without making them current gates", () => {
   const guidance = normalization();
 
   assert.match(
     guidance,
-    /Fog[\s\S]*direct children[\s\S]*grilling[\s\S]*Business[\s\S]*Functional[\s\S]*Technical[\s\S]*Research[\s\S]*Prototype/iu,
+    /Fog[\s\S]*direct children[\s\S]*grilling[\s\S]*Research[\s\S]*Prototype/iu,
   );
-  assert.match(guidance, /exactly one[\s\S]*Grilling Stage[\s\S]*absent[\s\S]*other kind/iu);
-  assert.match(
-    guidance,
-    /new and resumed work[\s\S]*Fog-child lifecycle[\s\S]*no\s+compatibility/iu,
-  );
-  assert.match(guidance, /legacy[\s\S]*migration[\s\S]*structural[\s\S]*approval/iu);
+  assert.match(guidance, /Historical Business/iu);
+  assert.match(guidance, /Technical staged tickets/iu);
+  assert.match(guidance, /compatibility\s+evidence only/iu);
+  assert.doesNotMatch(guidance, /automatically migrate[\s\S]*historical/iu);
   assert.match(guidance, /provider-specific mechanics[\s\S]*adapter/iu);
   assert.match(guidance, /Invocation cadence[\s\S]*caller/iu);
   assert.doesNotMatch(guidance, /daily|weekly|cron|schedule Normalization|run every/iu);

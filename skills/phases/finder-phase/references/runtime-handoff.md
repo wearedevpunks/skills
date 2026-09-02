@@ -1,10 +1,8 @@
 # Runtime Handoff
 
 Store the current record at
-`.devpunks/finder-phase/handoffs/<durable-wiki-fog-id>.md`. Before provider
-creation, allocate that durable wiki identity once and use it for every retry.
-After exact provider readback, add the stable provider Fog identity without
-replacing the wiki identity.
+`.devpunks/finder-phase/handoffs/<durable-wiki-fog-id>.md`. Allocate the durable
+wiki identity once before provider creation and retain it across retries.
 
 ```text
 Phase:
@@ -17,46 +15,26 @@ UI Evidence:
 Next suggested route:
 Blockers:
 Resume identity:
-
-Finder target depth:
 Durable wiki Fog identity:
 Provider Fog identity:
 Provider snapshot identity:
+Immutable original intake lens:
 Selected gate or outcome:
-Stage child identities:
-Immutable resolution pointers:
-Business path identities:
-Business path decision:
-Intended projection:
-Exact readback identities:
-Business hierarchy readback:
-Functional Story placement readback:
-Technical Task graph readback:
-Technical Task graph validator result:
-Support evidence:
-Checkpoint or blocker:
+Generic Grilling child identities:
+Support child identities and supported-child relations:
+Immutable evidence or verdict pointers:
+Projection ceiling:
+Intended optional projection:
+Exact optional projection readback:
+Unresolved decisions:
 Last verified at:
 ```
 
-Discover by exact durable wiki or provider Fog identity. Conflicting valid
-records for one identity are `human_steering_required`. `Suggested route` is
-advisory; the router always recomputes from fresh evidence.
+Discover the handoff by exact durable wiki or provider Fog identity. Conflicting
+valid records for one identity route to `human_steering_required`. Current
+evidence may supersede `Next suggested route`.
 
-`Finder state` is the workflow-specific domain-state field. `UI Evidence` is
-optional and records any retained `$show-me` artifact. `Next suggested route`
-is advisory.
-
-Each gate updates only fields it proves. Preserve prior exact identities and
-immutable pointers. Record checkpoint, blocked, skip, target-return, and
-`human_steering_required` outcomes before stopping.
-
-Business hierarchy readback names the exact Product Area, Initiative, and Epic
-identities plus exact parent membership. Functional Story placement readback
-names the Story, parent Epic, contextual `V*` milestone, exact milestone
-membership, and exact Fog and source links. Technical Task graph readback names
-each Task, its parent Story, the same `V*` milestone as that Story, and the exact
-provider snapshot. Technical Task graph validator result preserves the
-successful `write-backlog/validate-task-blocker-graph` result over every
-reachable Story and Task, the resolved milestone-order readback, and its bound
-provider snapshot identity. It covers every returned Task and outgoing edge;
-connected blockers may live under other Stories or Epics.
+Each gate updates only the fields it proves. Preserve prior exact identities,
+the immutable original intake lens, and retained evidence pointers. Record every
+blocked, skipped, checkpoint, bounded-return, and human-steering outcome before
+stopping.

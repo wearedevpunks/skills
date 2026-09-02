@@ -15,7 +15,7 @@ drifted, ambiguous, or conflicting.
 Detect every accepted drift class:
 
 - invalid Fog child placement
-- missing or invalid `Grilling Stage`
+- missing or conflicting Fog provenance or support relation
 - duplicate or ambiguous structures
 - stale links or status
 - hierarchy drift
@@ -24,17 +24,17 @@ Detect every accepted drift class:
 
 Audit the Fog-child lifecycle against these exact semantics:
 
-- Fog direct children are `grilling`, Research, or Prototype items.
-- Every `grilling` child has exactly one `Grilling Stage`: Business,
-  Functional, or Technical. `Grilling Stage` is absent from every other kind.
-- One Fog has one Business child, one or more Functional children, and one
-  Technical child per Story.
-- Research and Prototype children link to the exact grilling child they support.
+- The Fog retains one immutable original `Business` or `Functional` intake lens.
+- Fog direct children are generic `grilling`, `Research`, or `Prototype` items.
+- Each `grilling` child links to the bounded unknown it closes; several are valid.
+- Research and Prototype children link to the exact unknown or Grilling work
+  they support.
 
-New and resumed work uses the Fog-child lifecycle immediately. There is no
-compatibility writer for the former Fog-graduation model. Normalization may
-describe a legacy-shape migration, but that migration is a structural proposal
-subject to preview and explicit approval.
+Historical Business, Functional, and Technical staged tickets are compatibility
+evidence only. Their stored content and provider state remain unchanged unless
+a separately authorized operation targets the exact ticket. Exclude them from
+automatic Normalization: never migrate, relabel, replace, reparent, or repair
+their historical metadata. The former Stage is not a current gate.
 
 Provider state proves operational facts. The wiki proves durable product
 meaning. Stable provider identity plus durable wiki identity proves an exact
@@ -67,9 +67,9 @@ relation. A similar title or inferred intent never qualifies.
 ## Structural Approval
 
 Treat duplicate closure, merge, split, boundary change, goal change,
-reparenting, milestone movement, reorganization, and migration from the former
-Fog-graduation shape as structural. Use `$show-me` to present the exact current
-and proposed topology before asking for explicit approval:
+reparenting, milestone movement, and reorganization as structural. Use
+`$show-me` to present the exact current and proposed topology before asking for
+explicit approval:
 
 ```text
 Current (fresh provider read + durable wiki identity)

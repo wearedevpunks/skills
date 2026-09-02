@@ -1,60 +1,38 @@
 # Finder State Graph
 
-## Evidence Authority
+## Evidence authority
 
-1. Current direct provider, repository, and wiki evidence.
-2. Fresh workflow-native artifacts and immutable resolution pointers.
-3. Valid committed runtime handoff.
-4. Suggested route.
+1. Current direct evidence: exact provider objects, relations, immutable
+   evidence, and the human's current decision.
+2. Fresh workflow-native artifacts within the current Fog scope.
+3. A committed runtime handoff consistent with current evidence.
+4. A suggested route, which is advisory only.
 
-The first admissible signal wins. Stale, invalid, ambiguous, or out-of-scope
-evidence cannot satisfy a gate.
+Stale, out-of-scope, ambiguous, or conflicting evidence satisfies no positive
+guard. Recompute from this order on every entry and cold resume.
 
 ## Topology
 
 ```text
 ensure-fog
-  -> (business-grilling <-> research | prototype) | adopt-business-path
-  -> reconcile
-  -> return-target [Business]
-  -> functional-grilling <-> research | prototype
-  -> reconcile
-  -> return-target [Functional]
-  -> technical-grilling per Story <-> research | prototype
-  -> reconcile
-  -> return-target [Technical]
+  -> grilling <-> research | prototype
+  -> optional reconcile
+  -> bounded return
 
-any identity or authority conflict -> handback -> human_steering_required
-scope boundary expansion -> scope-expansion-checkpoint -> router re-entry
+identity, lens, selection, or ceiling conflict
+  -> handback -> human_steering_required
 ```
 
-`adopt-business-path` is available only for Functional or Technical depth when
-the human supplies exact provider readback for one Product Area -> Initiative
--> Epic path and accepts `reuse-unchanged`. It creates the required Business
-child and immutable resolution without a Business grill, then rejoins normal
-reconciliation.
+One Fog retains its immutable original Business or Functional intake lens.
+Generic Grilling children have no fixed count and no staged ordering. Research
+and Prototype are direct Fog children linked to the Grilling child they support.
 
-`return-target` is successful return from this invocation, not Fog completion.
-The Fog remains open until separate production evidence covers all accepted
-resulting Stories and Tasks.
+The wrapper decides whether optional structure is useful and supplies the
+ceiling. Business permits Product Area and Initiative. Functional permits that
+Business structure plus Epic. Missing or unresolved optional projection never
+invalidates an otherwise valid Fog return.
 
-## State Evidence
-
-For each stage, record `missing`, `active`, `accepted`, or `invalid`; its exact
-child identity; immutable resolution pointer; supported-by relations; intended
-semantic projection; and exact provider readback. Accepted state without an
-exact child identity or immutable pointer is an authority conflict. Business
-completion requires exactly one valid Business child from the fresh complete
-direct-child collection and exact Product Area -> Initiative -> Epic identity
-and hierarchy readback. Functional completion requires each Story's exact
-parent Epic, contextual `V*` milestone membership, and Fog/source links. Every
-selected Technical Story must equal the distinct projected Story of one
-selected accepted Functional child. Technical completion also requires every
-Task to retain its Story milestone and the exact successful result of
-`write-backlog`'s provider-neutral validator over the full reachable Task
-graph, resolved milestone order, and current provider snapshot. The result must
-cover every projected Task and outgoing edge. It rejects future-iteration,
-self, missing-target, duplicate, and cyclic edges while preserving valid
-same-or-earlier-milestone blockers across Stories and Epics. Invalid stage
-evidence routes to that stage again. Accepted evidence without readback routes
-to reconciliation.
+Historical Business, Functional, or Technical Stage fields remain read-only
+compatibility evidence and are not a current gate, prerequisite, or migration
+trigger. On bounded return the Fog remains open; delivery evidence owns later
+completion truth.

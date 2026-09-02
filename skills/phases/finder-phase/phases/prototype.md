@@ -2,39 +2,31 @@
 
 ## Entry guard
 
-The active grilling child records one precise unknown requiring a human-evaluated
-artifact and no fresh verdict exists.
-
-## Inputs
-
-Exact Fog, supported grilling child identity, precise question, prior Prototype
-children, and retained verdict evidence.
+A named Grilling child records one precise unknown requiring a human-evaluated
+artifact and no fresh retained verdict exists.
 
 ## Bounded action
 
-Reuse or semantically request one direct Fog Prototype child through
-`$write-backlog`, linked to the grilling child it supports. Run
-`$prototype-phase`. Accept only its human verdict plus immutable artifact and
-verdict pointers, then route to reconciliation.
+Reuse an obviously relevant direct Fog Prototype child or create one when the
+evidence supports separate useful work. Link it to the named Grilling child,
+run `$prototype-phase`, and retain its human verdict and immutable artifact pointer.
+Ambiguity requests human steering before creation.
 
-## Invariants
-
-A Prototype verdict informs its named grilling child. It cannot independently
-authorize backlog projection.
+Prototype returns evidence to its supported Grilling child. It cannot accept product direction or authorize backlog
+projection independently.
 
 ## Completion evidence
 
-Stable Prototype child identity, supported-child relation, human verdict,
-immutable artifact/verdict pointers, and exact child/relation readback.
+Exact Prototype child identity, supported-child relation, immutable artifact
+and human-verdict pointers, and exact child/relation readback.
 
 ## Declared exits
 
-- `support_resolved` -> reconciliation then router re-entry.
-- `iterate` -> remain in this gate after durable handoff.
+- `support_resolved` -> router re-entry.
 - `human_steering_required` -> handback.
 - `blocked` -> stop with missing retained evidence.
 
 ## Durable handoff
 
-Persist Prototype identity, supported child, verdict pointers, readback, and
-exit.
+Persist Prototype identity, supported Grilling child, verdict pointers,
+readback, and exit.
