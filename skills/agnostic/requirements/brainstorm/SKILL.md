@@ -5,8 +5,14 @@ description: Brainstorm a bounded system from the operating agent’s perspectiv
 
 # Brainstorm
 
-Apply this to the active system boundary:
-
-think deeply about how to make this entire system as agent-intuitive, agent-ergonomic, and agent-accretive as you can possibly imagine. Put yourself in the driver's seat and imagine that YOU are the one using this system and driving it. What would most enable you to do an awesome job understanding the situation accurately and optimally controlling everything to drive the best and most accurate results possible, with the least expenditure of resources? Don't just think of the project as an assemblage of various parts or components: really try to profoundly and deeply conceptualize it as a synthetic SYSTEM that is maximally coherent, cohesive, modular, and interconnected, forming a tower of linked abstractions that are maximally legible to you as an agent. Really ruminate and meditate on all of this incredibly deeply before responding or taking any actions.
-
-Return evidence-grounded observations and unresolved decisions. They remain candidates until the caller accepts them.
+1. Bound the system, its operator, accepted constraints, and available
+   evidence. Mark every unsupported premise as unknown.
+2. Operate the system from the agent's seat. Trace intake, state, control,
+   feedback, recovery, and handoff. Account for each applicable surface or
+   record why it does not apply.
+3. Derive the smallest changes that make the system agent-intuitive,
+   agent-ergonomic, and agent-accretive. For each candidate, state its evidence,
+   consequence, and unresolved tradeoff.
+4. Return the evidence-grounded observations and unresolved decisions. Completion
+   requires every observation to trace to evidence or an explicit unknown. They
+   remain candidates until the caller accepts them.
