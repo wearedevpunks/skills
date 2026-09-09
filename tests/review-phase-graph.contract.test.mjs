@@ -184,8 +184,20 @@ const retainedPassFixture = (mode = "delivery") => {
       sourceEvidence,
       auxiliaryEnvelopePaths,
       approvedRetainedRefs: [retainedRef],
+      approvedLegacyReportCommitShas: [
+        (delivery ? "b" : "e").repeat(40),
+      ],
       wikiDomain: delivery ? "cli" : "project",
-      ...(delivery ? { deliveryGoalIdentity, reviewOrdinal: ordinal } : {}),
+      ...(delivery
+        ? {
+            deliveryGoalIdentity,
+            reviewOrdinal: ordinal,
+            precedingRepairEvidence: {
+              ordinal: ordinal - 1,
+              evidence: "focused-repair.log#repair-1",
+            },
+          }
+        : {}),
     },
     lineageId,
   };
@@ -976,7 +988,10 @@ test("same-run retention reuses identical authority and rejects conflicts", () =
   conflictingCandidate.reportCommitSha = "c".repeat(40);
   const conflict = {
     candidate: conflictingCandidate,
-    expected: fixture.expected,
+    expected: {
+      ...fixture.expected,
+      approvedLegacyReportCommitShas: ["c".repeat(40)],
+    },
   };
   assert.equal(resolveRetainedRun([entry, conflict]).status, "conflict");
   assert.deepEqual(

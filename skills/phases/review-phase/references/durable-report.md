@@ -174,16 +174,31 @@ transition.
 
 ## Current epoch and legacy readback
 
-New reports include `review_epoch` from [Review Packet](review-packet.md).
-Call `validateRetainedPass` with `reviewProtocol: "primary-challenger-v1"`
-for current run retention. Its completed primary outcomes and mandatory
-independent challenger results, candidate accounting and accepted provenance
-must validate before the pass can count. Helper checks are mechanical evidence;
-the parent still verifies each claim against the target.
+New reports include a `review_epoch` derived from the
+[Review Packet](review-packet.md). Call `validateRetainedPass` with
+`reviewProtocol: "primary-challenger-v1"` for current run retention. All
+completed primary outcomes, mandatory independent challenger results,
+candidate accounting, and accepted-finding provenance must validate before the
+pass can count. The helper checks the mechanical evidence; the parent still
+verifies each claim against the target.
 
 When recovering historical reports, omit the current-protocol expectation only
-for the valid legacy five-lens schema. Preserve its exact retained bytes, report
-identity, lineage and ordinals, including ordinal three. Legacy recovery supplies
-no permission for another default pass. New default epochs admit ordinals one and two. An additional human-directed
-pass retains `review_epoch.human_direction` and validates its exact instruction
-pointer and authorized ordinal against parent-verified `humanReviewDirection`.
+when the parent has verified that the retained report commit predates the
+primary/challenger protocol. Supply that exact commit SHA through
+`approvedLegacyReportCommitShas`. The validator rejects every epoch-less report
+whose `reportCommitSha` is absent from that immutable allowlist. All other
+reports require `reviewProtocol: "primary-challenger-v1"` and a complete
+`review_epoch`.
+
+Preserve a legacy report's exact retained bytes, report identity, lineage and
+ordinals, including ordinal three. Legacy recovery supplies no permission for
+another default pass. New default epochs admit ordinals one and two. For an
+additional human-directed pass, retain `review_epoch.human_direction` and
+validate the exact instruction pointer and authorized ordinal against
+parent-verified `humanReviewDirection`.
+
+Supply `precedingRepairEvidence: { ordinal, evidence }` only after the parent
+verifies the repair that opened the pass. Its ordinal must immediately precede
+the review ordinal. Supply `precedingRepairEvidence: null` and record
+`preceding_repair_ordinal: null` when human direction opens a pass without an
+intervening repair.

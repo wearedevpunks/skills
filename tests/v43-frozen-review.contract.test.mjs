@@ -15,6 +15,22 @@ test("current protocol cannot count a clean primary without complete challenger 
   assert.equal(validateRetainedPass(candidate, { ...expected, reviewProtocol: "primary-challenger-v1" }).valid, false);
 });
 
+test("epoch-less reports require a parent-verified immutable commit binding", () => {
+  const { candidate, expected } = retainedPassFixture();
+  const { approvedLegacyReportCommitShas: _approved, ...unbound } = expected;
+  assert.match(
+    validateRetainedPass(candidate, unbound).errors.join(","),
+    /missing:legacy_report_commit_binding/u,
+  );
+  assert.match(
+    validateRetainedPass(candidate, {
+      ...unbound,
+      approvedLegacyReportCommitShas: ["a".repeat(40)],
+    }).errors.join(","),
+    /missing:legacy_report_commit_binding/u,
+  );
+});
+
 test("complete current epoch retains provenance; incomplete challenger never counts", () => {
   const { candidate, expected } = retainedPassFixture();
   const packet = hashRecord("review-packet", [parseReviewReport(candidate.reportBytes).report.review_run_id, parseReviewReport(candidate.reportBytes).report.accepted_bounds_hash, parseReviewReport(candidate.reportBytes).report.snapshot_hash, parseReviewReport(candidate.reportBytes).report.source_set_hash]);
@@ -59,18 +75,37 @@ test("explicit human direction permits only its authorized additional ordinal", 
   assert.equal(planDeliveryReviewGate({ ...input, recoveredReviewCount: 3, humanReviewDirection: direction }).state, "review_budget_exhausted");
 });
 
+test("repair-triggered passes require parent-verified repair evidence", () => {
+  const { candidate, expected } = retainedPassFixture();
+  assert.equal(validateRetainedPass(candidate, expected).valid, true);
+  assert.match(
+    validateRetainedPass(candidate, {
+      ...expected,
+      precedingRepairEvidence: null,
+    }).errors.join(","),
+    /invalid:delivery_identity_or_ordinal/u,
+  );
+  assert.match(
+    validateRetainedPass(candidate, {
+      ...expected,
+      precedingRepairEvidence: { ordinal: 1, evidence: "" },
+    }).errors.join(","),
+    /invalid:delivery_identity_or_ordinal/u,
+  );
+});
+
 test("additional current report retains exact human direction without altering lineage", () => {
   const { candidate, expected, lineageId } = retainedPassFixture();
   const direction = { evidence: "human-direction.md#review-3", authorized_ordinal: 3 };
   rewriteReport(candidate, report => {
-    report.review_ordinal = 3; report.preceding_repair_ordinal = 2;
+    report.review_ordinal = 3; report.preceding_repair_ordinal = null;
     report.review_run_id = deliveryRunId(lineageId, 3);
     const identity = reviewPacketIdentity(report);
     const results = [...["standards", "skill_adherence", "architecture", "simplify", "spec"].map(coverage => ({role:"primary",coverage})), {role:"challenger",coverage:"security"}].map(({role,coverage}) => ({reviewer_identity:role+":native",role,coverage,packet_identity:identity,outcome:"clean",candidates:[],unavailable_coverage:[],cause:null,follow_up:null}));
     report.review_epoch = { protocol:"primary-challenger-v1",packet_identity:identity,results,adjudications:[],human_direction:direction };
   });
   const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({reviewer_identity,role,coverage}) => ({reviewer_identity,role,coverage}));
-  const current = {...expected, reviewOrdinal:3, reviewProtocol:"primary-challenger-v1",assignedCoverage};
+  const current = {...expected, reviewOrdinal:3, reviewProtocol:"primary-challenger-v1",assignedCoverage,precedingRepairEvidence:null};
   assert.equal(validateRetainedPass(candidate,current).valid,false);
   assert.equal(validateRetainedPass(candidate,{...current,humanReviewDirection:direction}).valid,true);
 });

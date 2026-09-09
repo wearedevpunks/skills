@@ -18,6 +18,9 @@ returns the zero-write `review_budget_exhausted` terminal.
 - expected report SHA-256 and allowed navigation/wiki-log envelope paths
 - current retained candidates for the same lineage and run
 - repository-approved retained refs, or the evidence needed for approval
+- parent-verified pre-protocol report commit SHAs for legacy readback
+- parent-verified preceding-repair ordinal and evidence, or `null` when no repair
+  opened the pass
 
 Load [the report evidence contract](../references/durable-report.md) for the
 schema, canonical validity predicates, and same-run identity rules. Use
@@ -36,7 +39,13 @@ accepting an exit.
 
 1. Parse the immutable local bytes. Recompute report path, report SHA-256,
    lineage, run ID, snapshot, source-set hash, and delivery ordinal relations
-   from primitive evidence. Reject a delivery ordinal above 2 for a current epoch without verified matching human direction before any write.
+   from primitive evidence. For an epoch-less report, require its exact
+   `reportCommitSha` in the parent-verified `approvedLegacyReportCommitShas`
+   allowlist. Otherwise require the primary/challenger protocol. Reject a
+   delivery ordinal above 2 in the current epoch without verified matching
+   human direction before any write. Bind `preceding_repair_ordinal` to
+   parent-verified `precedingRepairEvidence`; allow both values to be `null`
+   when human direction opens the pass without a repair.
 2. Recompute accepted-bounds, normalized-target, and governing-source hashes.
    When any value changed, mark the local report stale and route to
    `review_due` without committing it.

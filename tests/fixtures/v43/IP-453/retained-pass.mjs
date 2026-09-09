@@ -160,8 +160,20 @@ const retainedPassFixture = (mode = "delivery") => {
       sourceEvidence,
       auxiliaryEnvelopePaths,
       approvedRetainedRefs: [retainedRef],
+      approvedLegacyReportCommitShas: [
+        (delivery ? "b" : "e").repeat(40),
+      ],
       wikiDomain: delivery ? "cli" : "project",
-      ...(delivery ? { deliveryGoalIdentity, reviewOrdinal: ordinal } : {}),
+      ...(delivery
+        ? {
+            deliveryGoalIdentity,
+            reviewOrdinal: ordinal,
+            precedingRepairEvidence: {
+              ordinal: ordinal - 1,
+              evidence: "focused-repair.log#repair-1",
+            },
+          }
+        : {}),
     },
     lineageId,
   };
