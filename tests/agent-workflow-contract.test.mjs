@@ -33,7 +33,13 @@ test("full delivery continues through review with explicit-only HITL", () => {
   const review = read("skills/phases/delivery-phase/phases/review.md");
 
   assert.match(skill, /Full delivery re-enters routing immediately/u);
-  assert.match(router, /HITL checkpoint exists only when the user explicitly requests it/u);
-  assert.match(review, /Full delivery invokes `\$review-phase`/u);
-  assert.match(skill, /After the third repair, run focused validation/u);
+  const continuity = read("skills/phases/delivery-phase/references/context-continuity.md");
+  assert.match(router, /context-continuity\.md/u);
+  assert.match(continuity, /explicit\nHITL checkpoint[\s\S]*stop at the requested boundary/u);
+  assert.match(continuity, /Full Delivery updates its packet and re-enters the router/u);
+  assert.match(review, /`\$review-phase` invocation context[\s\S]*Full\n   delivery invokes it immediately/u);
+  assert.match(review, /Default to one Full Code Review Pass/u);
+  assert.match(review, /Passing focused checks resumes delivery\nrouting without automatically opening a second/u);
+  assert.match(review, /second completed pass is eligible only/u);
+  assert.match(review, /At two completed passes[\s\S]*explicit\n   human direction/u);
 });

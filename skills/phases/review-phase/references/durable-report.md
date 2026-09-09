@@ -52,7 +52,7 @@ governing-source normalization requires a non-empty source set.
 
 The parsed JSON object is report authority. Detached objects, sidecars, and
 caller-supplied derived identities are never trusted. It contains exactly these
-fields:
+fields, plus `review_epoch` for new primary/challenger runs:
 
 - `review_lineage_id`
 - `review_run_id`
@@ -76,7 +76,8 @@ as null or not applicable.
 `lens_outcomes` has exactly `standards`, `skill_adherence`, `architecture`,
 `simplify`, and `spec`; each value is `clean` or `findings`. Every finding has
 exactly the fields `id`, `lens`, `severity`, `location`, `impact`, `evidence`,
-`action`, and `return_route`. Finding IDs are unique, severity is `critical`,
+`action`, and `return_route`. Finding IDs are unique and match the lowercase ASCII
+pattern `^[a-z0-9][a-z0-9._-]*$` (for example, `f001`). Severity is `critical`,
 `high`, `medium`, or `low`, and each lens outcome agrees with whether that lens
 has a finding. Each finding's `return_route` is exactly
 `human_steering_required`, `debugging`, `implementation`, `debt_follow_up`, or
@@ -164,7 +165,25 @@ Recovery uses only unique or identical-reuse valid passes. Any same-run conflict
 blocks recovery from that run rather than choosing one candidate. Delivery
 projects the highest uniquely authoritative recovered ordinal.
 
-The review report is the frozen-snapshot handoff. After fix 3, the delivery
-handoff is final clean-state authority and links report 3, final changes,
-focused validation, and clean status. Report 3 remains immutable pre-fix
-evidence.
+The review report is immutable evidence for its frozen snapshot. After an
+accepted repair, the delivery handoff links the relevant retained report,
+final changes, focused validation, affected Verification and clean status.
+A legacy report with ordinal three remains unchanged historical evidence;
+its number does not prescribe a current third pass or a special final-authority
+transition.
+
+## Current epoch and legacy readback
+
+New reports include `review_epoch` from [Review Packet](review-packet.md).
+Call `validateRetainedPass` with `reviewProtocol: "primary-challenger-v1"`
+for current run retention. Its completed primary outcomes and mandatory
+independent challenger results, candidate accounting and accepted provenance
+must validate before the pass can count. Helper checks are mechanical evidence;
+the parent still verifies each claim against the target.
+
+When recovering historical reports, omit the current-protocol expectation only
+for the valid legacy five-lens schema. Preserve its exact retained bytes, report
+identity, lineage and ordinals, including ordinal three. Legacy recovery supplies
+no permission for another default pass. New default epochs admit ordinals one and two. An additional human-directed
+pass retains `review_epoch.human_direction` and validates its exact instruction
+pointer and authorized ordinal against parent-verified `humanReviewDirection`.

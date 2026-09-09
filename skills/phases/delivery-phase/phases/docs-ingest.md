@@ -25,3 +25,7 @@ Write or verify:
 - any follow-up docs debt
 
 Then stop or re-enter `delivery-phase` for routing.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

@@ -2,23 +2,33 @@
 
 Each phase leaves enough durable state for resume without guessing.
 
-## Base Shape
+## Phase exit and Delivery Handoff
+
+Every phase emits the [common Phase Result](context-continuity.md#common-phase-result).
+Keep its phase-specific evidence in the owning durable artifact. A cross-task
+Delivery Handoff contains only:
 
 ```text
-Phase:
-Status: complete | blocked | skipped | human_steering_required
-Scope:
-Artifacts:
-Validation:
-Review/debug/docs state:
-UI Evidence:
-Next suggested route:
-Blockers:
+delivery_goal_identity:
+accepted_bounds_identity:
+git_identity: branch, base, target
+phase:
+next_action:
+context_pointers: typed stable pointers with identity and freshness rule
+provider_identities: relevant identities or explicit none
+blocker: exact blocker or explicit none
+unknowns: explicit unknowns or none
+boundary_rationale: at most one sentence plus rationale pointer, when unusual
 ```
 
-State only what ran. Prefer durable artifact paths/links. Carry approved
-artifacts and UI evidence. Give every skip an exact no-op reason. Honor explicit
-HITL stops.
+Validate this envelope before handing off. Resolve fields from durable authority;
+missing required proof remains explicit and blocks the dependent action. Exclude
+full bodies, logs, unbounded narrative and the disposable Delivery Context Packet.
+The receiving task always cold-routes under
+[context continuity](context-continuity.md), checking current authority and prior
+mutation receipts. Detailed review/repair state below lives in a pointed durable
+state artifact, not embedded into the Delivery Handoff. This is distinct from a
+scaffold CLI Post-Command Handoff, whose owning CLI contract remains unchanged.
 
 ## Review And Repair Projection
 
@@ -83,17 +93,19 @@ normalized_target:
 
 The `review_due` handoff leaves `review_run_id` unset. Full delivery consumes the
 context immediately; other modes return it for explicit operator invocation.
-Consumption preallocates the next ordinal, fixes the run id, and enters
-`review_running`.
+Consumption fixes the attempt run id and proposed next completed ordinal and
+enters `review_running`; only valid completed retained coverage advances the count.
 
 For `report_retention_pending`, the explicit resume context additionally carries
 the existing `review_run_id`, ordinal, local report path and SHA-256, target hash,
 source hashes, and intended retained ref. Full delivery resumes `$review-phase`;
 other modes return the context for explicit retry without rerunning lenses.
 
-After fix 3, `clean_handoff` is final authority. Link immutable review 3, final
-changes, the same passing focused validation, and clean status.
+After accepted repair, retain Focused Repair Validation and affected Verification
+evidence under the transition rules in [review.md](../phases/review.md). A clean
+handoff links the retained review, final changes and passing required checks.
+Historical ordinals remain unchanged during legacy read-time normalization.
 
-For `human_steering_required`, store the complete `$handback` outcome under
-`Blockers`. Keep the state terminal until the `$handback` authority guard
-passes.
+For `human_steering_required`, store the complete `$handback` outcome in the
+pointed durable state artifact. Keep only its pointer and exact blocker in the
+Delivery Handoff. The state remains terminal until the authority guard passes.

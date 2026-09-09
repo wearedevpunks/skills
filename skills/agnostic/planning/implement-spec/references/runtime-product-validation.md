@@ -2,6 +2,33 @@
 
 Use this reference only for tasks with `runtime_validation: required`. The plan fields define what must be proved; this reference defines how to obtain and report the proof.
 
+## Recover Project Verifier coverage
+
+For visibly exercisable acceptance, retain the original scenario, affected criteria,
+selected apps and authority/code/runtime/scenario identities, then invoke the single
+`verify-behavior` entrypoint. It progressively selects project-owned references.
+
+- **Uncovered Surface**: invoke `create-verification-skill` for the selected missing
+  app. Wait for `ready` with complete Reference Smoke Proof before resuming.
+- **Uncovered Behavior**: invoke `update-verification-skill` for the selected missing
+  drive path. `unchanged` or `updated` resumes the original scenario with live proof;
+  `blocked` keeps every affected criterion blocked with its exact prerequisite;
+  `product-failure` routes the retained symptom to `debugging-phase` without changing
+  expected product semantics.
+
+Coverage recovery remains inside implementation and on the current branch/PR. Shared
+skills own the protocol; app mechanics remain project-owned below
+`.agents/skills/verify-behavior/references/`. Missing references or paths require these
+branches before acceptance classification; improvised automation cannot bypass them.
+
+Compare returned proof with the original scenario's authority, code, runtime and
+scenario identities and every required observation/side effect. Reuse only complete
+matching proof; otherwise invoke `verify-behavior` for the missing proof before
+classifying affected acceptance. A Reference Smoke Proof is readiness evidence, not
+a blanket acceptance pass. Recheck identities after execution; changed inputs invalidate
+only affected proof. `implement-spec` owns evidence freshness and affected reruns;
+Code Review consumes retained evidence without executing or maintaining the verifier.
+
 ## Discover and recover the supported runtime
 
 Read scoped repository guidance, runbooks, manifests, and scripts to identify:

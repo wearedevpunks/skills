@@ -122,6 +122,9 @@ The following already-authoritative outcomes write no new runtime record:
 
 - `review_budget_exhausted`, which preserves the caller's valid delivery
   handoff and retained-count authority unchanged;
+- pre-run `focused_validation` from the preparation helper, which returns an
+  ordinary accepted repair to its existing delivery handoff without opening a
+  review run or changing retained-count authority;
 - `review_not_due`, whose caller-provided delivery handoff already proves a
   delivery-owned state;
 - pre-run `review_failed` from an unsupported target, invalid bounds, or

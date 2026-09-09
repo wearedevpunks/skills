@@ -1,5 +1,19 @@
 # Implementation Notes
 
+Parent-owned canonical record. Workers return Task Results; the parent applies
+accepted results here. Follow [parent reconciliation](../references/parallel-worker-brief.md#parent-reconciliation)
+for freshness, asynchronous updates and cumulative barriers.
+
+## Execution and Reconciliation
+
+Keep gate acceptance separate from summary writes, final acceptance and Code
+Review. A pending summary can coexist with safe dependent dispatch; record the
+retained Task Result pointer and exact stale/blocked reason when applicable.
+
+| Task | Task Result and input identities | Parent Task Gate | Reconciliation | Summary blocker / next action | Architecture Checkpoint | Final acceptance | Code Review |
+|------|----------------------------------|------------------|----------------|-------------------------------|-------------------------|------------------|-------------|
+| | | | | | | | |
+
 ## Summary
 
 -

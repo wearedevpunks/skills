@@ -78,12 +78,14 @@ test("delivery and debugging route scope boundaries to handback", () => {
   const gate = read("skills/phases/delivery-phase/phases/handback.md");
   const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
   const debug = read("skills/phases/debugging-phase/SKILL.md");
-  assert.match(delivery, /Boundary evidence selects \[handback\.md\]/iu);
-  assert.match(router, /durable `human_steering_required`.*`\$handback` authority/isu);
+  assert.match(delivery, /references\/failure-continuity\.md/iu);
+  assert.match(router, /Preserve terminal `human_steering_required` until `\$handback`'s authority guard/iu);
   assert.match(delivery, /Within accepted bounds, full delivery grants/iu);
-  assert.match(router, /current evidence triggers `\$handback`.*\[handback\.md\]/isu);
+  assert.match(router, /New boundary evidence selects \[handback\.md\]/iu);
   assert.match(gate, /Invoke `\$handback`/iu);
-  assert.match(gate, /Persist its complete outcome as `human_steering_required`/iu);
+  assert.match(gate, /Retain its complete outcome in the durable state artifact/iu);
+  assert.match(gate, /Pointer and exact blocker in the compact Delivery Handoff/iu);
+  assert.match(gate, /Stop in every mode until the\n`\$handback` authority guard passes/iu);
   assert.match(handoff, /human_steering_required/iu);
   assert.match(debug, /next action triggers `\$handback`/iu);
   assert.match(debug, /invoke it and stop/iu);

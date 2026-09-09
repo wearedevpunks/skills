@@ -255,7 +255,10 @@ test("agent-ready compiler output is sufficient for downstream delivery", () => 
 
   assert.match(createSpec, /`readiness: agent-ready` is sufficient downstream/i);
   assert.match(router, /matching agent-ready `SPEC\.md`/i);
-  assert.match(router, /HITL checkpoint exists only when the user explicitly requests it/i);
+  const continuity = read("skills/phases/delivery-phase/references/context-continuity.md");
+  assert.match(router, /context-continuity\.md/);
+  assert.match(continuity, /Direct phase, explicit\s+HITL checkpoint[\s\S]*stop at the requested boundary/i);
+  assert.match(spec, /Do not add a spec\s+review or approval stop unless the user explicitly requested a HITL checkpoint/i);
   assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
   assert.doesNotMatch(all, /no reviewed matching spec/i);
 });
@@ -292,25 +295,20 @@ test("create-plan produces worker ownership and wave fields", () => {
   assert.match(reviewer, /missing\s+`wave_boundary`/u);
 });
 
-test("implement-spec executes plan-derived worker waves", () => {
+test("implement-spec releases the complete eligible frontier through parent Task Gates", () => {
   const skill = read("skills/agnostic/planning/implement-spec/SKILL.md");
-  const lifecycle = read(
-    "skills/agnostic/planning/implement-spec/references/lifecycle.md",
-  );
-  const parallel = read(
-    "skills/agnostic/planning/implement-spec/references/parallel.md",
-  );
-  const notes = read(
-    "skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md",
-  );
-  const all = `${skill}\n${lifecycle}`;
-
-  assert.match(parallel, /Every `implement-spec` run executes through plan-derived worker waves/u);
-  assert.match(all, /dependencies.{0,160}write scopes.{0,160}disjoint/is);
-  assert.match(all, /wave may contain one worker/i);
-  assert.match(all, /parent.{0,160}reviews.{0,160}validates/is);
-  assert.doesNotMatch(all, /default to `sequential`|explicitly authorized/i);
-  assert.doesNotMatch(notes, /## Execution Mode/u);
+  const parallel = read("skills/agnostic/planning/implement-spec/references/parallel.md");
+  const orchestration = read("skills/agnostic/planning/implement-spec/references/parallel-orchestration.md");
+  assert.match(skill, /references\/parallel\.md/);
+  assert.match(parallel, /\[parallel-orchestration\.md\]\(parallel-orchestration\.md\)/);
+  assert.match(parallel, /Every implementation edit belongs to a scoped worker on the recorded branch/);
+  assert.match(orchestration, /parent owns Task Gates and scope transfer/i);
+  assert.match(orchestration, /As each Task Result arrives,[\s\S]*without waiting for other\s+workers/i);
+  assert.match(orchestration, /Dispatch the complete eligible frontier within actual native capacity/);
+  assert.match(orchestration, /Exclude overlapping reserved writes[\s\S]*reads intersecting an active write/);
+  assert.match(orchestration, /Record capacity and queued reason[\s\S]*Capacity one delegates one worker; capacity\s+zero records a capacity blocker/);
+  assert.match(orchestration, /all accepted task checks[\s\S]*acceptance audit and architecture zero-drift closure\s+with an empty migration ledger/);
+  assert.doesNotMatch(orchestration, /Move to the next wave only after the current wave is validated/);
 });
 
 test("delivery implementation uses plan-derived worker waves", () => {
@@ -327,7 +325,11 @@ test("delivery routes retained specifications through Requirements Phase before 
   const router = read("skills/phases/delivery-phase/phases/router.md");
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
   assert.match(router, /agent-ready `SPEC\.md`[\s\S]*Requirements Phase/iu);
-  assert.match(router, /verified specification lacks its current Write Backlog result/iu);
+  const state = read("skills/phases/delivery-phase/references/artifact-state.md");
+  assert.match(router, /Spec Complete and Backlog Projection Complete gates\]\(\.\.\/references\/artifact-state\.md\)/u);
+  assert.match(router, /current Write Backlog result/iu);
+  assert.match(state, /current Write Backlog result[\s\S]*exact\s+Epic and Story identities[\s\S]*provider Task IDs and URLs/iu);
+  assert.match(state, /Exact provider readback[\s\S]*current retained\s+specification identity and provider state/iu);
   assert.match(requirements, /requirements-grill -> create-spec -> write-backlog/iu);
   assert.match(requirements, /verified stable blob URL/iu);
   assert.match(requirements, /Write Backlog result[\s\S]*residual delta/iu);
@@ -339,7 +341,11 @@ test("delivery routes specs lacking verified remote authority through Requiremen
   const spec = read("skills/phases/delivery-phase/phases/spec.md");
 
   assert.match(router, /agent-ready `SPEC\.md`/iu);
-  assert.match(router, /lacks verified remote[\s\S]*retention/iu);
+  const state = read("skills/phases/delivery-phase/references/artifact-state.md");
+  assert.match(router, /matching agent-ready `SPEC\.md` with verified remote\s+retention/iu);
+  assert.match(router, /Missing, stale or contradictory required proof routes the exact gap to\s+Requirements Phase before planning/iu);
+  assert.match(state, /retained ref contains the exact spec\s+commit[\s\S]*verified immutable blob URL[\s\S]*bytes matching\s+the current SPEC identity/iu);
+  assert.match(state, /stored URL or local file alone is insufficient/iu);
   assert.match(router, /Requirements Phase/iu);
   assert.match(spec, /verify the retained ref contains the spec commit/iu);
   assert.match(spec, /construct and verify a stable blob URL before backlog/iu);
@@ -354,12 +360,18 @@ test("planning persists plan-derived worker waves for resume", () => {
   const artifactState = read(
     "skills/phases/delivery-phase/references/artifact-state.md",
   );
-  for (const document of [createPlan, schema, phase, artifactState]) {
+  for (const document of [createPlan, phase, artifactState]) {
     assert.match(document, /currently unblocked task/iu);
     assert.match(document, /disjoint/iu);
     assert.doesNotMatch(document, /execution_mode|default to `sequential`/iu);
   }
-  assert.match(schema, /one task only when dependencies or ownership/iu);
+  assert.match(schema, /Each wave labels an earliest Execution Frontier, not a whole-wave release barrier/iu);
+  assert.match(schema, /Record every eligible task under dependency, write\/read, runtime and architecture\s+constraints/iu);
+  assert.match(schema, /Capacity one still delegates; zero blocks implementation with a truthful queue/iu);
+  for (const field of ["owned_paths", "read_dependencies", "shared_runtime_resources", "relevant_input_set", "wave_boundary"]) {
+    assert.match(schema, new RegExp(`\\b${field}\\b`));
+  }
+  assert.doesNotMatch(schema, /execution_mode|default to `sequential`/iu);
   assert.match(phase, /one-task wave only when dependencies or ownership/iu);
 });
 

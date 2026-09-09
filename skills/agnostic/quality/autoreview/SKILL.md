@@ -49,10 +49,23 @@ Use when:
 ## Bounded Review-Phase Call
 
 When `review-phase` supplies a frozen normalized target, run this helper exactly
-once as advisory candidate generation for that snapshot. Return its structured
-candidates to the parent for verification. ClawPatch, when present, stays inside
-this invocation. Do not repair findings or rerun the helper in this bounded
-call; delivery owns later repair epochs and review passes.
+once as the comprehensive primary reviewer through `--review-packet <path>`
+and `--reviewer-identity <identity>`. Load the supplied Review Packet contract
+and consume its frozen target, rules, evidence and dependency pointers directly.
+Return explicit Standards (including security), skill-adherence, architecture,
+simplify and Spec Lens Results. The parent separately assigns an independent
+risk challenger the same facts, withholding primary conclusions. The parent
+verifies candidates and owns final findings, routes and report retention.
+Incomplete coverage exits 2 with retained candidates and missing-coverage detail;
+completed findings exit 1; completed clean coverage exits 0. These exits are role
+results, never completed-pass authority. Delivery owns later repair epochs.
+
+The prepared invocation validates identity and facts digest before invoking the
+selected engine, bypasses Git target discovery, and retains the existing engine
+and model policy. It accepts `--review-role challenger --risk-area <assignment>`
+for a separately assigned independent challenge. Each call runs one reviewer;
+capacity-one sequencing belongs to the parent. Supply the same packet bytes to
+both roles. Direct autoreview calls below retain their existing behavior.
 
 ## Pick Target
 

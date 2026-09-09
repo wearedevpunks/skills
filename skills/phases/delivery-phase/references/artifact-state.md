@@ -4,10 +4,16 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 ## Spec Complete
 
-- `SPEC.md` exists and matches the requested goal.
+- A matching agent-ready `SPEC.md` has `readiness: agent-ready`; its scope is
+  current, complete and consistent with the requested goal.
+- Verified remote retention proves the retained ref contains the exact spec commit
+  and the verified immutable blob URL resolves that commit/path with bytes matching
+  the current SPEC identity. A stored URL or local file alone is insufficient.
 - Scope includes required tracker children, acceptance criteria, constraints,
   and non-goals.
-- Open questions are parked, resolved, or explicitly blocking.
+- Required unresolved questions or missing, stale or contradictory authority
+  prevent completion. Agent-ready compiler output needs no additional spec
+  approval or review gate.
 
 ## Plan Complete
 
@@ -18,16 +24,19 @@ Use this reference when deciding whether a phase is complete enough to skip.
   each `Tn` is the execution identity, provider identity slots are `not_applicable`,
   relation mode is `unprojected`, a nonempty sync-skip reason is present, and
   `depends_on` names plan `Tn` identities.
-- Tasks have owned paths, validation gates, and wave boundaries.
+- Tasks have Active Write Scopes, Read Dependencies, Shared Runtime Resources,
+  Relevant Input Set identities, validation gates and wave boundaries.
 - Each wave contains every currently unblocked task with a disjoint write scope;
   one-task waves are justified by dependencies or ownership.
 
 ## Backlog Projection Complete
 
-- Projection evidence names the immutable spec URL, provider destination, exact
+- The current Write Backlog result names the verified immutable spec URL and
+  identity, provider destination, exact
   Epic and Story identities, provider Task IDs and URLs, same `V*`, native
   blocker edges, and verified observed state.
-- Evidence matches the current spec; otherwise the projection is stale.
+- Exact provider readback and projection evidence match the current retained
+  specification identity and provider state; otherwise the projection is stale.
 
 ## Implementation Complete
 
@@ -42,14 +51,17 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 ## Review Complete
 
-- A fresh immutable report matches the delivery lineage, accepted bounds,
-  normalized target, governing source hashes, and latest implementation state.
+- An immutable report matches the delivery lineage, accepted bounds and frozen
+  reviewed target/source identities. Unchanged implementation retains fresh proof;
+  subsequent accepted repair requires the evidence specified by the review
+  transition below rather than an automatic replacement report.
 - Its commit exists on a verified retained ref; a local report alone is pending.
 - The highest valid retained ordinal is authoritative and the handoff
   `review_count` is its reconciled projection.
 - Findings are routed by stable ids. Review itself entered no repair state.
-- After fix 3, `clean_handoff` supersedes the normal fresh-review requirement
-  and links report 3, final changes, focused validation, and clean status.
+- Accepted repair follows [review transition](../phases/review.md): retain Focused
+  Repair Validation and affected Verification evidence; preserve historical report
+  identities and ordinals during read-time normalization.
 
 ## Debug Complete
 

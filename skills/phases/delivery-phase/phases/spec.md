@@ -30,3 +30,7 @@ Then stop or re-enter `delivery-phase` for routing.
 
 This completion state satisfies the downstream spec gate. Do not add a spec
 review or approval stop unless the user explicitly requested a HITL checkpoint.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

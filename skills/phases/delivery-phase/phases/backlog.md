@@ -36,3 +36,7 @@ Record backlog projection evidence:
 
 Then re-enter `delivery-phase`; planning is next when projection evidence is
 current.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

@@ -413,6 +413,8 @@ export const planDeliveryReviewGate = ({
   acceptedBoundsValid,
   targetSupported,
   recoveredReviewCount,
+  acceptedRiskTrigger,
+  humanReviewDirection,
 }) => {
   if (!acceptedBoundsValid || !targetSupported) {
     return { state: "review_failed", handoffWrites: [] };
@@ -420,12 +422,19 @@ export const planDeliveryReviewGate = ({
   if (!Number.isSafeInteger(recoveredReviewCount) || recoveredReviewCount < 0) {
     return { state: "review_failed", handoffWrites: [] };
   }
-  if (recoveredReviewCount >= 3) {
+  if (recoveredReviewCount >= 2 && !(exactKeys(humanReviewDirection, ["evidence", "authorized_ordinal"]) &&
+      nonemptyString(humanReviewDirection.evidence) && humanReviewDirection.authorized_ordinal === recoveredReviewCount + 1)) {
     return {
       state: "review_budget_exhausted",
       priorState: currentState,
       handoffWrites: [],
     };
+  }
+  if (recoveredReviewCount === 1 &&
+      !(exactKeys(acceptedRiskTrigger, ["kind", "evidence"]) &&
+        ["architecture", "security", "public_contract", "runtime_topology", "accepted_scope"].includes(acceptedRiskTrigger.kind) &&
+        nonemptyString(acceptedRiskTrigger.evidence))) {
+    return { state: "focused_validation", handoffWrites: [] };
   }
   return { state: "review_due", handoffWrites: ["review_due_context"] };
 };
@@ -512,11 +521,84 @@ const validateTargetSchema = (target, mode, errors) => {
   }
 };
 
+export const reviewPacketIdentity = (report) => hashRecord("review-packet", [
+  report.review_run_id, report.accepted_bounds_hash, report.snapshot_hash, report.source_set_hash,
+]);
+
+const validateReviewEpoch = (report, errors) => {
+  const epoch = report.review_epoch;
+  if (!exactKeys(epoch, epoch && Object.hasOwn(epoch, "human_direction")
+      ? ["protocol", "packet_identity", "results", "adjudications", "human_direction"]
+      : ["protocol", "packet_identity", "results", "adjudications"]) ||
+      epoch.protocol !== "primary-challenger-v1" || !Array.isArray(epoch.results) ||
+      !Array.isArray(epoch.adjudications)) {
+    errors.push("malformed:review_epoch");
+    return;
+  }
+  let packet;
+  try { packet = reviewPacketIdentity(report); } catch { errors.push("malformed:packet_identity"); }
+  if (epoch.packet_identity !== packet) errors.push("mismatch:packet_identity");
+  const primary = new Set();
+  const primaryReviewers = new Set();
+  const challengers = new Set();
+  const resultKeys = new Set();
+  const candidateRefs = new Set();
+  for (const result of epoch.results) {
+    if (!exactKeys(result, ["reviewer_identity", "role", "coverage", "packet_identity", "outcome", "candidates", "unavailable_coverage", "cause", "follow_up"]) ||
+        !nonemptyString(result.reviewer_identity) || !nonemptyString(result.coverage) ||
+        !["primary", "challenger"].includes(result.role) || result.packet_identity !== packet ||
+        !["clean", "findings", "incomplete"].includes(result.outcome) || !Array.isArray(result.candidates)) {
+      errors.push("malformed:lens_result");
+      continue;
+    }
+    const key = JSON.stringify([result.reviewer_identity, result.coverage]);
+    if (resultKeys.has(key)) errors.push("duplicate:lens_result");
+    resultKeys.add(key);
+    if (result.role === "primary") {
+      if (!LENS_KEYS.includes(result.coverage) || primary.has(result.coverage)) errors.push("malformed:primary_coverage");
+      primary.add(result.coverage);
+      primaryReviewers.add(result.reviewer_identity);
+    } else challengers.add(result.reviewer_identity);
+    if (result.outcome === "incomplete") errors.push("incomplete:review_epoch");
+    else if (!Array.isArray(result.unavailable_coverage) || result.unavailable_coverage.length !== 0 ||
+        result.cause !== null || result.follow_up !== null ||
+        (result.outcome === "findings") !== (result.candidates.length > 0)) errors.push("malformed:completed_coverage");
+    result.candidates.forEach((candidate, index) => {
+      candidateRefs.add(JSON.stringify([result.reviewer_identity, result.coverage, index]));
+      if (!exactKeys(candidate, ["location", "evidence_pointer", "impact", "proposed_severity", "proposed_return_route", "uncertainty"]) ||
+          ![candidate.location, candidate.evidence_pointer, candidate.impact, candidate.uncertainty].every(nonemptyString) ||
+          !["critical", "high", "medium", "low"].includes(candidate.proposed_severity) ||
+          !FINDING_ROUTES.includes(candidate.proposed_return_route)) errors.push("malformed:review_candidate");
+    });
+  }
+  if (primary.size !== LENS_KEYS.length || primaryReviewers.size !== 1 || challengers.size === 0 ||
+      [...challengers].some(id => primaryReviewers.has(id))) errors.push("incomplete:independent_coverage");
+  const accounted = new Set();
+  const accepted = new Set();
+  for (const item of epoch.adjudications) {
+    if (!exactKeys(item, ["candidate_refs", "finding_id", "evidence"]) || !Array.isArray(item.candidate_refs) ||
+        item.candidate_refs.length === 0 || !nonemptyString(item.evidence) ||
+        !(item.finding_id === null || nonemptyString(item.finding_id))) {
+      errors.push("malformed:adjudication");
+      continue;
+    }
+    for (const ref of item.candidate_refs) {
+      if (!candidateRefs.has(ref) || accounted.has(ref)) errors.push("mismatch:candidate_accounting");
+      accounted.add(ref);
+    }
+    if (item.finding_id !== null) accepted.add(item.finding_id);
+  }
+  if (accounted.size !== candidateRefs.size) errors.push("incomplete:candidate_accounting");
+  const findings = new Set(Array.isArray(report.findings) ? report.findings.map(finding => finding.id) : []);
+  if (!isDeepStrictEqual(accepted, findings)) errors.push("mismatch:accepted_provenance");
+};
+
 const validateReportSemantics = (report, errors) => {
-  if (!exactKeys(report, requiredReportFields)) {
+  if (!exactKeys(report, Object.hasOwn(report, "review_epoch") ? [...requiredReportFields, "review_epoch"] : requiredReportFields)) {
     errors.push("malformed:report_schema");
     return;
   }
+  if (Object.hasOwn(report, "review_epoch")) validateReviewEpoch(report, errors);
   if (!exactKeys(report.lens_outcomes, LENS_KEYS)) {
     errors.push("malformed:lens_keys");
   } else {
@@ -675,6 +757,22 @@ const inspectRetainedPass = (candidate, expected) => {
     return { valid: false, errors: [...errors, "malformed_report_blob"] };
   }
   validateReportSemantics(report, errors);
+  if (expected.reviewProtocol === "primary-challenger-v1") {
+    if (!Object.hasOwn(report, "review_epoch")) errors.push("missing:review_epoch");
+    const assignments = expected.assignedCoverage;
+    const results = report.review_epoch?.results;
+    if (!Array.isArray(assignments) || assignments.length === 0 ||
+        assignments.some(item => !exactKeys(item, ["reviewer_identity", "role", "coverage"]) ||
+          !nonemptyString(item.reviewer_identity) || !["primary", "challenger"].includes(item.role) || !nonemptyString(item.coverage)) ||
+        !Array.isArray(results) || results.some(item => item === null || typeof item !== "object")) {
+      errors.push("missing:assigned_coverage");
+    } else {
+      const assignmentKey = ({ reviewer_identity, role, coverage }) => JSON.stringify([reviewer_identity, role, coverage]);
+      if (!isDeepStrictEqual(sortUtf8(assignments.map(assignmentKey)), sortUtf8(results.map(assignmentKey)))) {
+        errors.push("mismatch:assigned_coverage");
+      }
+    }
+  }
   validateTargetSchema(report.normalized_target, expected.mode, errors);
 
   let currentTarget;
@@ -808,12 +906,17 @@ const inspectRetainedPass = (candidate, expected) => {
   }
 
   if (expected.mode === "delivery") {
+    const direction = report.review_epoch?.human_direction;
+    const directedOrdinal = exactKeys(direction, ["evidence", "authorized_ordinal"]) &&
+      nonemptyString(direction.evidence) && direction.authorized_ordinal === ordinal &&
+      isDeepStrictEqual(direction, expected.humanReviewDirection);
+    if (direction !== undefined && !directedOrdinal) errors.push("invalid:human_review_direction");
     if (
       report.delivery_goal_identity !== expected.deliveryGoalIdentity ||
       report.review_ordinal !== ordinal ||
       !Number.isSafeInteger(ordinal) ||
       ordinal < 1 ||
-      ordinal > 3 ||
+      (ordinal > (Object.hasOwn(report, "review_epoch") ? 2 : 3) && !directedOrdinal) ||
       report.preceding_repair_ordinal !== (ordinal === 1 ? null : ordinal - 1)
     ) {
       errors.push("invalid:delivery_identity_or_ordinal");

@@ -22,6 +22,10 @@ Resolve routed `content/docs/project/specs` folders first, then legacy root `spe
    - Use existing `<wiki-root>/content/docs/project/` sections for concise projections and links.
    - If no clear project route home exists, stop and report the missing route policy. Do not scaffold a second routed docs surface to satisfy this phase.
 
+## Feature Map navigation
+
+When a Feature Map links to applicable product or domain authority, follow only the needed links as read-only navigation. Apply the [Project Verifier boundary](../SKILL.md#project-verifier-boundary) even when the ingested source describes changed behavior. Write ordinary routed docs and record any observed coverage gap; preserve the verifier tree and its expected behavior.
+
 ## Source Read
 
 Read in order:

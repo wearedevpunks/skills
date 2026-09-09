@@ -97,8 +97,16 @@ silently renaming them.
    `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
     Architecture-bearing tasks also carry the convergence fields required by
     `references/architecture-convergence.md`.
-11. Keep `PLAN.md` self-contained: embed gathered context, relevant code paths, existing patterns, constraints, assumptions, design reasoning, tradeoffs, initial situation, issue, solution shape, findings, research, dependency graph, testing strategy, skill-routing notes, risks, validation gates, unresolved questions, and a resolved decision ledger.
-12. Write enough conceptual reasoning that an executor can implement from `PLAN.md` alone, using supplementary research only when they choose to refresh or deepen context.
+11. Keep the task execution kernel inline: identity, dependencies, owned paths,
+    intended outcome and acceptance references, validation/RED/GREEN commands,
+    applicable risk gates and Architecture Checkpoint identifiers, status and
+    provider identity. Use the task schema for exact fields.
+12. Supply detailed specification, code, architecture and skill context through
+    resolvable Context Pointers. For a bounded Derived Context Excerpt, retain
+    source identity, selector, freshness and subordinate status; source changes
+    require refresh. Use the [worker context contract](../implement-spec/references/parallel-worker-brief.md#compact-task-kernel)
+    for pointer selection and stale-context handling. Preserve authoritative
+    decisions in their source instead of copying whole documents into the plan.
 13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
 14. Stop after plan creation and either eligible in-scope backlog sync or its
     explicit skip record. Do not implement code or spawn implementation workers.

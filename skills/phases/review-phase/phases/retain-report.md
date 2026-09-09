@@ -5,7 +5,7 @@
 Enter only when the router selected this gate from a complete immutable local
 report in `report_retention_pending`. Parse the report and prove its exact schema
 before any repository write. Delivery reports must carry an ordinal from 1
-through 3. A malformed report routes to `review_failed`; an ordinal above 3
+through 2 for current epochs (legacy readback preserves 3). A malformed report routes to `review_failed`; an ordinal above 2 for a current epoch without verified matching human direction
 returns the zero-write `review_budget_exhausted` terminal.
 
 ## Inputs
@@ -36,7 +36,7 @@ accepting an exit.
 
 1. Parse the immutable local bytes. Recompute report path, report SHA-256,
    lineage, run ID, snapshot, source-set hash, and delivery ordinal relations
-   from primitive evidence. Reject a delivery ordinal above 3 before any write.
+   from primitive evidence. Reject a delivery ordinal above 2 for a current epoch without verified matching human direction before any write.
 2. Recompute accepted-bounds, normalized-target, and governing-source hashes.
    When any value changed, mark the local report stale and route to
    `review_due` without committing it.
@@ -75,7 +75,7 @@ accepting an exit.
   review lenses.
 - Stale, malformed, conflicting, or non-retained evidence changes no pass or
   counter.
-- Delivery ordinals stop at 3. Retention never creates review 4 or opens a
+- Default current epochs stop at 2. Legacy ordinals remain immutable. Retention never opens a
   repair.
 
 ## Completion Evidence
@@ -101,7 +101,7 @@ accepting an exit.
   the local report is stale.
 - `review_failed`: schema or identity validation failed, a malformed active
   candidate or `same_run_conflict` exists, or retention failed non-retryably.
-- `review_budget_exhausted`: a delivery ordinal above 3 was rejected before any
+- `review_budget_exhausted`: a delivery ordinal above 2 for a current epoch without verified matching human direction was rejected before any
   write, pass, counter, or status mutation.
 
 ## Durable Handoff

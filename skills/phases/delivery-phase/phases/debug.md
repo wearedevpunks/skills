@@ -18,11 +18,13 @@ Load `debugging-phase` only after this phase is selected.
   opening another goal.
 - Preserve review lineage, `review_count`, `repair_count`, and the opening
   `review_run_id` through the repair.
-- After an ordinary fix with `review_count < 3`, stale the preceding report and
-  enter `review_due`.
-- After debug fix 3 (`review_count = 3`, `repair_count = 3`), enter
-  `focused_validation`. Failure resumes `debug_active` in epoch 3 without a
-  counter change; passing records `clean_handoff`. Fix 3 never opens review 4.
+
+## Accepted Repair Continuity
+
+Follow [review.md](review.md) for Focused Repair Validation, affected Verification
+reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
+ordinals and consumed repair run IDs. On failure, use
+[bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Completion State
 
@@ -35,3 +37,7 @@ Write or verify:
 - resulting state and preserved counter evidence
 
 Then stop or re-enter `delivery-phase` for routing.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.
