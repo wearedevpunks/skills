@@ -757,8 +757,22 @@ const inspectRetainedPass = (candidate, expected) => {
     return { valid: false, errors: [...errors, "malformed_report_blob"] };
   }
   validateReportSemantics(report, errors);
+  const hasReviewEpoch = Object.hasOwn(report, "review_epoch");
+  if (!hasReviewEpoch) {
+    const approvedLegacyReportCommitShas =
+      expected.approvedLegacyReportCommitShas;
+    const hasLegacyCommitBinding =
+      Array.isArray(approvedLegacyReportCommitShas) &&
+      approvedLegacyReportCommitShas.length > 0 &&
+      sortedUniqueStrings(approvedLegacyReportCommitShas) &&
+      approvedLegacyReportCommitShas.every((sha) => COMMIT_SHA.test(sha)) &&
+      approvedLegacyReportCommitShas.includes(candidate.reportCommitSha);
+    if (!hasLegacyCommitBinding) {
+      errors.push("missing:legacy_report_commit_binding");
+    }
+  }
   if (expected.reviewProtocol === "primary-challenger-v1") {
-    if (!Object.hasOwn(report, "review_epoch")) errors.push("missing:review_epoch");
+    if (!hasReviewEpoch) errors.push("missing:review_epoch");
     const assignments = expected.assignedCoverage;
     const results = report.review_epoch?.results;
     if (!Array.isArray(assignments) || assignments.length === 0 ||
@@ -911,13 +925,29 @@ const inspectRetainedPass = (candidate, expected) => {
       nonemptyString(direction.evidence) && direction.authorized_ordinal === ordinal &&
       isDeepStrictEqual(direction, expected.humanReviewDirection);
     if (direction !== undefined && !directedOrdinal) errors.push("invalid:human_review_direction");
+    const precedingRepairEvidence = expected.precedingRepairEvidence;
+    const hasPrecedingRepairEvidence =
+      precedingRepairEvidence !== null &&
+      typeof precedingRepairEvidence === "object" &&
+      exactKeys(precedingRepairEvidence, ["ordinal", "evidence"]) &&
+      Number.isSafeInteger(precedingRepairEvidence.ordinal) &&
+      precedingRepairEvidence.ordinal > 0 &&
+      nonemptyString(precedingRepairEvidence.evidence);
+    const expectedPrecedingRepairOrdinal = hasPrecedingRepairEvidence
+      ? precedingRepairEvidence.ordinal
+      : null;
+    const validPrecedingRepair = ordinal === 1
+      ? expectedPrecedingRepairOrdinal === null
+      : expectedPrecedingRepairOrdinal === ordinal - 1 ||
+        (directedOrdinal && expectedPrecedingRepairOrdinal === null);
     if (
       report.delivery_goal_identity !== expected.deliveryGoalIdentity ||
       report.review_ordinal !== ordinal ||
       !Number.isSafeInteger(ordinal) ||
       ordinal < 1 ||
       (ordinal > (Object.hasOwn(report, "review_epoch") ? 2 : 3) && !directedOrdinal) ||
-      report.preceding_repair_ordinal !== (ordinal === 1 ? null : ordinal - 1)
+      !validPrecedingRepair ||
+      report.preceding_repair_ordinal !== expectedPrecedingRepairOrdinal
     ) {
       errors.push("invalid:delivery_identity_or_ordinal");
     }
