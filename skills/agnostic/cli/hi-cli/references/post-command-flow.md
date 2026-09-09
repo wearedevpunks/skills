@@ -19,6 +19,8 @@ Existing `.devpunks/` artifacts describe project state. Read an artifact only wh
 
 ### Scaffold
 
+Apply [Project Verifier preservation](#project-verifier-preservation) before reconciliation.
+
 Read available generated artifacts in this order:
 
 1. `.devpunks/AGENT-SYSTEM-PROMPT.md`
@@ -65,6 +67,8 @@ Verify only the repository manager, backlog provider, asset provider, backlog pr
 Do not inspect or mutate external tools. A settings failure is complete when its exact validation or write blocker is reported.
 
 ### Update
+
+Apply [Project Verifier preservation](#project-verifier-preservation) before reconciliation.
 
 Read the command summary before any generated artifact. If it reports no diff, report success and stop.
 
@@ -124,6 +128,14 @@ Report `hi-cli` and legacy `dp-cli` state for global and project scopes:
 - `migrate`: verify replacements before every detected legacy `dp-cli` copy is removed
 
 Operator writes require Skills CLI 1.5.20 or newer. If an action partially fails, return the exact failed Skills CLI command from the result. After successful install, update, or migrate, reload or reactivate `$hi-cli`.
+
+## Project Verifier preservation
+
+For scaffold, update, and their generated Post-Command Handoffs, preserve every existing file below `.agents/skills/verify-behavior/references/` byte-for-byte, including the index, Surface Verification References, Feature Maps, Cross-App Journeys, and helpers. Refreshing the managed `verify-behavior/SKILL.md` does not authorize changing that project-owned tree.
+
+Keep an absent Project Verifier absent. These command flows never invoke `create-verification-skill` or `update-verification-skill`; `implement-spec` owns those coverage-gap branches. Generated handoffs render the current-run preserve action with a pointer to this rule, rather than defining a second policy.
+
+Before completing reconciliation, compare existing project-owned paths and bytes with the pre-command inventory, report any unexpected change as a blocker, and retain the comparison outside command cleanup.
 
 ## 3. Complete the Branch
 

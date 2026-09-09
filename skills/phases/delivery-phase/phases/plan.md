@@ -11,7 +11,9 @@ Load `create-plan` only after this phase is selected.
 
 - Verify the spec still matches the requested goal.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
-- Require dependencies, owned paths, validation gates, review routing, and explicit wave boundaries.
+- Require dependencies, Active Write Scopes, Read Dependencies, Shared Runtime
+  Resources, Relevant Input Set identities, validation gates, review routing and
+  explicit wave boundaries through `create-plan` and its `swarm-planner` primitive.
 - Group independent tasks with disjoint write scopes into the same wave.
 - Put every currently unblocked task with a disjoint write scope in the same
   wave. Use a one-task wave only when dependencies or ownership leave one task
@@ -27,3 +29,7 @@ Write or verify:
 - planned review and docs-ingest expectations
 
 Then stop or re-enter `delivery-phase` for routing.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

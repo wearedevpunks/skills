@@ -31,9 +31,10 @@ ledger starts with every planned temporary seam and final closure requires it to
 
 `unresolved questions` is not a hiding place for skipped planning. Include only `$grilling`-deferred, externally blocked, or non-blocking questions, and state why each remains open.
 
-Each wave contains every currently unblocked task whose `owned_paths` are
-disjoint. A wave contains one task only when dependencies or ownership leave
-one task unblocked.
+Each wave labels an earliest Execution Frontier, not a whole-wave release barrier.
+Record every eligible task under dependency, write/read, runtime and architecture
+constraints; actual capacity determines dispatch. Planning must expose those
+constraints so independent work can proceed after its own parent Task Gates.
 
 ## Task contract
 
@@ -43,6 +44,9 @@ Every task must include:
 - `depends_on`
 - `location`
 - `owned_paths`
+- `read_dependencies`
+- `shared_runtime_resources`
+- `relevant_input_set`
 - `wave_boundary`
 - `description`
 - `validation`
@@ -108,11 +112,24 @@ blocker edges through the `Tn` alias map. In `planning-only` mode, it names
 other `Tn` identities in the same plan. Worker waves derive from the applicable
 graph and disjoint ownership.
 
-`owned_paths` lists the exact write scope assigned to the task. Tasks in the
-same wave must have disjoint `owned_paths`.
+`owned_paths` lists the exact Active Write Scope assigned to the task. Concurrent
+workers have disjoint reserved scopes. `read_dependencies` names paths, contracts
+and authority consumed by work or checks. `shared_runtime_resources` names shared
+processes, ports, fixtures, provider objects or databases and compatible access.
+`relevant_input_set` names the authoritative inputs and identity/readback method
+needed to detect changes before/after checks, release and finalization. Record
+explicit `none` with rationale where applicable; absence is unknown.
 
-`wave_boundary` names the explicit execution wave derived from completed
-dependencies and disjoint ownership, for example `W1`.
+A declared read/write or incompatible runtime conflict delays only affected work.
+Read/read overlap is safe. Changed relevant inputs invalidate affected gate proof
+and require affected checks again. Task-local gates include relevant RED/GREEN,
+typecheck, lint, parent acceptance and scope checks. Architecture Checkpoints
+remain cumulative, gating only consumers of unproved responsibilities.
+
+`wave_boundary` names the earliest planned frontier, for example `W1`. Actual
+release is recomputed after each Task Gate. Capacity priority is assumption-
+invalidating work, longest remaining chain, unlock count, then plan order.
+Capacity one still delegates; zero blocks implementation with a truthful queue.
 
 Multiple provider Tasks may share one parent Story. Planning preserves those
 separate provider identities and cannot create another Task identity for them.
@@ -156,6 +173,9 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **depends_on**: [T1, T2]
 - **location**: src/example.ts
 - **owned_paths**: [src/example.ts, tests/example.test.ts]
+- **read_dependencies**: [src/contracts.ts]
+- **shared_runtime_resources**: Isolated task fixture database; exclusive fixture writes.
+- **relevant_input_set**: Hash src/contracts.ts before/after checks; record fixture database identity.
 - **wave_boundary**: W2
 - **description**: Implement the task behavior.
 - **validation**: Public-interface behavior that proves completion.

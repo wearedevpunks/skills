@@ -42,19 +42,17 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 
 ## Router Rules
 
-- Do not read phase files other than `router.md` until the router selects them.
-- Do not activate child skills at delivery start.
-- Reuse fresh matching artifacts before loading creation skills.
-- A phase may delegate to `create-spec`, `write-backlog`, `create-plan`,
-  `implement-spec`, `debugging-phase`, or `docs-ingest-phase` only from
-  its own phase file.
-- In full delivery, activate `review-phase` as an authorized inner step below the three-pass budget. Outside full delivery, return its exact explicit invocation context and stop.
-- After the third repair, run focused validation. Passing resumes routing toward closeout; terminal failure is a blocker.
-- After a phase completes, write enough state for future resume. Review-triggered
-  repair uses the idempotent fields in
-  [references/phase-handoff.md](references/phase-handoff.md).
-- Boundary evidence selects [handback.md](phases/handback.md). Persistence
-  remains autonomous only inside accepted bounds.
+- Read `router.md` and its continuity contract before selecting exactly one phase.
+- Reuse fresh matching authority; activate child skills only from their selected phase.
+- Full Delivery continues within accepted bounds. Other modes emit one common
+  Phase Result and stop at their requested boundary.
+- [references/context-continuity.md](references/context-continuity.md) owns
+  Context Pointers, disposable packets, common Phase Results and legacy recovery.
+- [references/phase-handoff.md](references/phase-handoff.md) owns durable delivery
+  state and compact Delivery Handoff; [phases/review.md](phases/review.md) alone
+  owns delivery review transitions and the two-completed-pass policy.
+- Failed-task and repair evidence selects
+  [references/failure-continuity.md](references/failure-continuity.md).
 
 ## Stop Conditions
 

@@ -13,7 +13,7 @@ docs ingest or no-op, and validation are complete.
   the final commit. A failed or unavailable required proof blocks closeout.
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
-  [delivery-status branch](../../write-backlog/references/delivery-status.md).
+  [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md).
   Close provider work and the
   goal only when their acceptance conditions pass. Fog completion additionally
   requires production evidence for every accepted resulting Story and Task.
@@ -21,12 +21,16 @@ docs ingest or no-op, and validation are complete.
 - Report phase path actually taken; do not imply skipped phases ran.
 - Report validation commands, browser checks, smoke tests, or manual scenarios.
 - Report review result and whether findings remain.
-- When fix 3 occurred, require `clean_handoff` linking immutable review-3 report,
-  final changes, passing focused validation, and clean status. Do not require a
-  fourth review.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.
 - For UI changes, verify the PR body, PR comment, or PR-ready handoff includes durable before/after `UI Evidence` links.
+
+## Accepted Repair Continuity
+
+Follow [review.md](review.md) for Focused Repair Validation, affected Verification
+reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
+ordinals and consumed repair run IDs. On failure, use
+[bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Output
 
@@ -42,3 +46,7 @@ Return a concise delivery report with:
 - tracker or PR state
 - UI Evidence state when user-visible UI changed
 - exit: done, blocked, or split into follow-up
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

@@ -42,6 +42,10 @@ Completion of one path does not imply loading the other path.
 - Public docs work that runs the writer flow must include the fragment sufficiency checkpoint from [phases/public-docs.md](phases/public-docs.md).
 - After a path completes, report enough state for future resume: selected path, inputs processed, docs written or skipped, validation, blockers, and next path if any.
 
+## Project Verifier boundary
+
+Treat Feature Maps as read-only navigation inputs to ordinary product and domain documentation. Preserve all Project Verifier references; docs ingest never creates, edits, regenerates, or maintains Feature Maps, invokes either verification lifecycle skill, or performs a verifier audit. Record observed coverage gaps for `implement-spec` to handle in its selected scenario.
+
 ## Stop Conditions
 
 - Selected path completed and its resumable outcome was reported.

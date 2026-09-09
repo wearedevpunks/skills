@@ -23,7 +23,8 @@ test("implement-spec enforces cumulative architecture conformance", () => {
   assert.match(combined, /Responsibility Acceptance Criteria/);
   assert.match(combined, /Architecture Waves/);
   assert.match(combined, /cumulative conformance checkpoint/i);
-  assert.match(combined, /after every architecture wave/i);
+  assert.match(conformance, /at every due architecture boundary/i);
+  assert.match(conformance, /Reconcile parent-owned shared summaries before running it/i);
   assert.match(conformance, /invoke `?\$show-me`?.*persisted architecture evidence/is);
   assert.match(conformance, /backend-domain-structure/);
   assert.match(conformance, /frontend-domain-structure/);
@@ -38,13 +39,15 @@ test("implement-spec enforces cumulative architecture conformance", () => {
   assert.match(conformance, /rewrite[\s\S]*\$show-me[\s\S]*view/i);
   assert.match(conformance, /evidence-only clarification/i);
 
-  assert.match(skill, /failed checkpoint blocks dependent waves/i);
+  assert.match(skill, /Architecture Checkpoints gate only consumers of unproved responsibilities/i);
+  assert.match(conformance, /Block each task that consumes an unproved or failed checkpoint responsibility/i);
+  assert.match(conformance, /Independent safe\s+preparation remains eligible through its Task Gate/i);
   assert.match(lifecycle, /successful final\s+architecture\s+closure/i);
   assert.match(lifecycle, /preserve[\s\S]*blocked[\s\S]*incomplete/i);
-  assert.match(parallel, /architecture_wave/);
-  assert.match(parallel, /responsibility_acceptance_criteria/);
-  assert.match(parallel, /criterion_id/);
-  assert.match(parallel, /due_wave/);
+  assert.match(parallel, /\[architecture-conformance\.md\]\(architecture-conformance\.md\)/);
+  for (const field of ["architecture_wave", "responsibility_acceptance_criteria", "criterion_id", "due_wave"]) {
+    assert.match(conformance, new RegExp(`\\b${field}\\b`));
+  }
 });
 
 test("worker briefs and implementation notes carry architecture evidence", () => {
@@ -54,7 +57,12 @@ test("worker briefs and implementation notes carry architecture evidence", () =>
   const notes = read(
     "skills/agnostic/planning/implement-spec/assets/IMPLEMENTATION-NOTES-TEMPLATE.md",
   );
-  const combined = `${brief}\n${notes}`;
+  const conformance = read("skills/agnostic/planning/implement-spec/references/architecture-conformance.md");
+  const skill = read("skills/agnostic/planning/implement-spec/SKILL.md");
+  assert.match(brief, /Read the task's architecture contract when its\s+checkpoint or responsibility criteria apply/);
+  assert.match(skill, /read and enforce `references\/architecture-conformance\.md`/);
+  assert.match(conformance, /Map every task's[\s\S]*into its worker brief unchanged/);
+  const combined = `${brief}\n${notes}\n${conformance}`;
 
   for (const field of [
     "behavior_owner",
@@ -68,7 +76,7 @@ test("worker briefs and implementation notes carry architecture evidence", () =>
     "criterion_id",
     "due_wave",
   ]) {
-    assert.match(brief, new RegExp(`\\b${field}\\b`));
+    assert.match(conformance, new RegExp(`\\b${field}\\b`));
   }
 
   assert.match(combined, /Architecture Conformance Evidence/);

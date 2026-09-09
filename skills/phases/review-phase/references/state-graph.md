@@ -8,15 +8,15 @@ and clean handoff.
 | --- | --- | --- | --- | --- | --- | --- |
 | Current delivery state | Review considered | Unsupported target | Delivery caller | Return `review_failed` | None; zero handoff or status writes | Exact target failure; no report |
 | Current delivery state | Review considered | Invalid accepted bounds | Delivery caller | Return `review_failed` | None; zero handoff or status writes | Exact bounds failure; no report |
-| `review_due` | Authorized review invocation | Delivery; accepted bounds and target valid; recovered `review_count < 3` | Delivery caller | `review_running` | Preallocate ordinal `review_count + 1`; no completed-pass change | Lineage, run id, ordinal, bounds identity/hash, normalized target |
+| `review_due` | Authorized review invocation | Delivery; accepted bounds and target valid; preparation helper returns `review_due` for first pass, accepted-risk second pass, or exact human-authorized next ordinal | Delivery caller | `review_running` | Preallocate ordinal `review_count + 1`; no completed-pass change | Lineage, run id, ordinal, bounds identity/hash, normalized target |
 | `review_due` | Explicit review invocation | Standalone; accepted bounds and target valid | Standalone caller | `review_running` | None | Lineage, run id, bounds identity/hash, normalized target |
-| Current delivery state | Review considered | Delivery; in-memory accepted bounds and target valid; recovered `review_count >= 3` | Delivery caller | Return `review_budget_exhausted` | None; zero handoff or status writes | Exact current route, lineage, counters; no report or status mutation |
-| `review_running` | All lenses and parent verification complete | One frozen snapshot; complete local report exists | `review-phase` | `report_retention_pending` | None; no completed-pass change | Complete report and fresh target/source hashes |
+| Current delivery state | Review considered | Delivery; in-memory accepted bounds and target valid; recovered `review_count >= 2`; no verified human direction for the next ordinal | Delivery caller | Return `review_budget_exhausted` | None; zero handoff or status writes | Exact current route, lineage, counters; no report or status mutation |
+| `review_running` | Comprehensive primary, every assigned independent challenger and parent verification complete | One frozen snapshot; complete local report exists | `review-phase` | `report_retention_pending` | None; no completed-pass change | Complete report and fresh target/source hashes |
 | `review_running` | Validation mutation detected | Frozen-target hash differs after validation | `review-phase` | `review_due` | None | Before/after hashes, command, mutation evidence; no report or pass |
 | `review_running` | Retryable infrastructure failure or partial run | No immutable report | `review-phase` | `review_due` | None | Exact retryable evidence; unchanged counters |
 | `review_running` | Non-retryable contract or infrastructure failure | No immutable report | `review-phase` | `review_failed` | None | Exact terminal evidence; no report; unchanged counters |
-| `report_retention_pending` | Retention verified | Delivery; valid retained-pass predicate; ordinal at most 3; hashes fresh | Report writer | `review_routed` | Unique retained commit establishes authoritative ordinal; reconcile projection | Path, SHA-256, commit, retained ref, ordinal, run id |
-| `report_retention_pending` | Retention rejected | Delivery; ordinal is greater than 3 | Report writer | `review_budget_exhausted` | None | Exact ordinal rejection/current route; no authoritative pass |
+| `report_retention_pending` | Retention verified | Delivery; valid retained-pass predicate; current-protocol ordinal at most 2 or exact verified human direction; hashes fresh | Report writer | `review_routed` | Unique retained commit establishes authoritative ordinal; reconcile projection | Path, SHA-256, commit, retained ref, ordinal, run id |
+| `report_retention_pending` | Retention rejected | Delivery; current-protocol ordinal is greater than 2 without exact verified human direction | Report writer | `review_budget_exhausted` | None | Exact ordinal rejection/current route; no authoritative pass |
 | `report_retention_pending` | Retention verified | Standalone; valid retained-pass predicate; hashes fresh | Report writer | `review_routed` | None | Path, SHA-256, commit, retained ref |
 | `report_retention_pending` | Idempotent retention recovery | Same lineage/run has identical valid path, report blob SHA-256, and commit | Report writer | `review_routed` | Reuse existing pass; project its ordinal at most once | Existing unique authority and containment evidence |
 | `report_retention_pending` | Same-run conflict | Same lineage/run has two valid candidates with different path, blob, or commit | Report writer | `review_failed` | None | `same_run_conflict`, both authorities; no pass or counter change |
@@ -39,10 +39,10 @@ and clean handoff.
 | `debt_follow_up` | Debt captured | Every debt key is present; `post_debt_route` is `docs_ingest` or `closeout` | Delivery review handoff | `docs_ingest` or `closeout` | None | Retained report commit/path, stable finding IDs, artifact path, captured keys |
 | `review_routed` | Documentation-only findings | Derived primary route is `docs_ingest` | `delivery-phase` | `docs_ingest` | None | Explicit docs routes and stable findings |
 | `review_routed` | Finding-free route | Finding set is empty | `delivery-phase` | `closeout` | None | Report and derived closeout route |
-| `repair_active` or `debug_active` | Ordinary repair completes | `review_count < 3` | `delivery-phase` | `review_due` | None | Stale prior report, changed target identity, preserved counters |
-| `repair_active` or `debug_active` | Fix 3 completes | `review_count = 3` and `repair_count = 3` | `delivery-phase` | `focused_validation` | None | Fix-3 changes and required focused validation |
-| `focused_validation` | Focused validation fails | Repair epoch 3 remains open | `delivery-phase` | `repair_active` or `debug_active` | None; unchanged counters | Failed validation and recorded owning route |
-| `focused_validation` | Focused validation passes | Repair epoch 3 complete | `delivery-phase` | `clean_handoff` | None | Passing validation, final changes, report-3 link, clean status |
+| `repair_active` or `debug_active` | Ordinary accepted repair completes | Prior completed pass; no accepted high-risk trigger | `delivery-phase` | `focused_validation` | None | Focused checks and only invalidated Verification scenarios |
+| `repair_active` or `debug_active` | Accepted high-risk repair completes | `review_count = 1`; architecture, security/authorization, public contract, runtime/deployment topology, or accepted scope changed | `delivery-phase` | `review_due` | None | Accepted risk trigger and source evidence; second pass only |
+| `focused_validation` | Focused validation fails | Existing repair epoch remains open | `delivery-phase` | `repair_active` or `debug_active` | None; unchanged counters | Failed validation and recorded owning route |
+| `focused_validation` | Focused validation passes | Accepted findings resolved and affected Verification current | `delivery-phase` | `clean_handoff` | None | Passing validation, final changes, prior retained-report link |
 
 ## Durable Budget
 
@@ -66,9 +66,18 @@ reuses recorded keys, adds only missing keys, and follows durable
 `debugging` or `implementation`; primary debt records `docs_ingest` or
 `closeout`. Capture completes before the recorded route opens.
 
-Review 1 may open fix 1, review 2 fix 2, and review 3 fix 3. Fix 3 never opens
-review 4. A failed focused validation stays in repair epoch 3 until that same
-validation passes.
+Normal delivery runs one completed Full Code Review Pass after implementation,
+applicable Verification, reconciliation and final acceptance. Ordinary accepted
+repair gets Focused Repair Validation and only affected Verification reruns. A
+second completed pass requires the accepted risk trigger above. Two completed
+passes exhaust default allowance; further review requires explicit human
+direction. Incomplete, interrupted or semantically invalidated attempts consume
+no completed pass. Retention-only retry reuses the matching complete local report.
+
+Valid legacy five-lens reports retain original immutable bytes and ordinals,
+including three. Recovery preserves this authority without granting more default
+passes. Historical numbered repair states normalize to the existing repair and
+focused-validation route; their counters and report identities stay unchanged.
 
 `human_steering_required` opens no repair. It remains terminal until the
 `$handback` authority guard passes.

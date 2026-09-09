@@ -53,10 +53,13 @@ Produce exactly one named `PLAN.md` in the target spec folder.
 Preserve `$swarm-planner` behavior:
 
 - explicit task ids and `depends_on`
-- explicit `owned_paths` and `wave_boundary` per task
+- explicit `owned_paths`, `read_dependencies`, `shared_runtime_resources`,
+  `relevant_input_set` and earliest `wave_boundary` per task, as defined in
+  [plan-schema.md](plan-schema.md)
 - atomic tasks sized for one worker
 - validations per task
-- parallel execution waves
+- the complete eligible Execution Frontier, with task-local parent gates,
+  stable-input proof, exclusive scope custody and truthful capacity queues
 - risks and mitigations
 - explicit `assigned_skills` per task from exact scoped trigger
   matches, with task design shaped by those skills
@@ -66,7 +69,8 @@ Preserve `$swarm-planner` behavior:
   `topology_delta`, `forbidden_ownership`, `temporary_seams`, and `responsibility_acceptance_criteria`
 - stable criterion ids mapped to at least one task and exactly one due architecture wave
 - a continuous convergence checkpoint after every architecture wave that checks all criteria due through the
-  current wave and regression-checks previously met criteria
+  current wave and regression-checks previously met criteria; only work consuming
+  an unproved responsibility waits, while safe independent preparation continues
 - a final `plan-reviewer` subagent review for missing deps, missing
   `owned_paths`, missing `wave_boundary`, ordering issues, edge cases, invalid
   parallelism, unsafe write overlap, missing RED targets, missing validation,

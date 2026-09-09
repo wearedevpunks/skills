@@ -46,17 +46,20 @@ For each architecture wave:
    `due_wave` into its worker brief unchanged.
 3. Verify the tasks collectively advance the declared architecture wave and
    have responsibility acceptance criteria that can be evidenced.
-4. Block dispatch when a prerequisite checkpoint failed or the wave would
-   introduce an undeclared dependency, public seam change, or temporary seam.
+4. Block each task that consumes an unproved or failed checkpoint responsibility,
+   or would introduce an undeclared dependency, public seam change or temporary
+   seam. Record the consumed criterion/seam and missing proof. Independent safe
+   preparation remains eligible through its Task Gate.
 
 Dispatch is ready when every architecture-bearing task has an accountable
 owner, expected graph delta, seam contract, and checkable responsibility bound.
 
 ## Cumulative conformance checkpoint
 
-Run a cumulative conformance checkpoint after every architecture wave, before
-computing the next wave. Inspect the whole affected graph, not only the latest
-diff:
+Run a cumulative conformance checkpoint at every due architecture boundary.
+Reconcile parent-owned shared summaries before running it. Frontier computation
+continues while unrelated work runs; only consumption of an unproved cumulative
+responsibility waits. Inspect the whole affected graph, not only the latest diff:
 
 - compare actual responsibility placement with the Target Ownership Topology;
 - compare static imports and semantic calls with the Declared Dependency Graph;
@@ -78,7 +81,8 @@ diff:
 Record the checkpoint in `PLAN.md` and under `## Architecture Conformance
 Evidence` in `IMPLEMENTATION-NOTES.md`. Include expected state, observed state,
 evidence, violations, public seam delta, migration delta, and verdict. A failed
-checkpoint blocks dependent architecture waves. Repair the current wave or
+checkpoint blocks tasks consuming its unproved responsibilities. Record those
+consumers explicitly; independent eligible work continues. Repair the current wave or
 route a target-contract amendment through `$create-plan`; final closure is not
 the first cleanup pass.
 

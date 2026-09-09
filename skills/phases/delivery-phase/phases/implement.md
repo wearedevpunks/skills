@@ -22,7 +22,7 @@ silently renaming them.
 - For provider-task work, immediately route each directly observed work start,
   blocker, pull request, merge, staging deployment, or production deployment
   through `write-backlog`'s
-  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch.
+  [delivery-status.md](../../../agnostic/requirements/write-backlog/references/delivery-status.md) branch.
   Require exact readback before advancing the Task. Planning-only work emits no
   provider lifecycle mutation or readback claim.
 - Merge is never deployment evidence. Merge, staging, and production remain
@@ -41,12 +41,13 @@ silently renaming them.
 - If runtime evidence appears during validation, finish the phase handoff and route to debug.
 - Preserve review lineage, `review_count`, `repair_count`, and the opening
   `review_run_id` through the repair.
-- After an ordinary repair with `review_count < 3`, stale the preceding report
-  and enter `review_due` with the changed target identity.
-- After fix 3 (`review_count = 3`, `repair_count = 3`), enter
-  `focused_validation`. Run only the focused validation required by accepted
-  evidence. Failure remains `repair_active` in epoch 3; passing records
-  `clean_handoff`. Fix 3 never opens review 4.
+
+## Accepted Repair Continuity
+
+Follow [review.md](review.md) for Focused Repair Validation, affected Verification
+reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
+ordinals and consumed repair run IDs. On failure, use
+[bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Completion State
 
@@ -63,3 +64,7 @@ Write or verify:
   `clean_handoff`, or blocked
 
 Then stop or re-enter `delivery-phase` for routing.
+
+Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
+with pointers to this completion evidence. Continue only in Full Delivery;
+otherwise stop at the requested boundary.

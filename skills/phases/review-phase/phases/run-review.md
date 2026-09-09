@@ -29,27 +29,32 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 
 1. Recompute the frozen target and source hashes before dispatch. A mismatch
    makes the prepared evidence stale and returns to `review_due`.
-2. Invoke `autoreview` exactly once as advisory candidate generation for this
-   frozen snapshot. A ClawPatch helper, when present, remains internal to that
-   one advisory call and consumes no additional review pass.
-3. Run all five normative lenses against the same snapshot as independent
-   bounded work, in parallel when executors are available:
-   - Standards
-   - skill adherence and scoped skills
-   - architecture
-   - simplify
-   - Spec
-4. Keep Standards and Spec as distinct axes. Standards and skill adherence,
-   architecture, simplify, then Spec controls report and triage order only; it
-   does not serialize the lenses or change severity.
+2. Run `autoreview` once as the comprehensive primary reviewer using the
+   prepared-packet invocation in [Review Packet](../references/review-packet.md).
+   It consumes the frozen facts directly and emits one result for each of
+   Standards (including security), skill adherence, architecture, simplify,
+   and Spec. Keep Standards and Spec as distinct coverage obligations.
+3. Assign one independent risk-focused challenger the same prepared facts and
+   packet identity, without primary conclusions. Run both roles in parallel
+   when native capacity permits; capacity one runs them sequentially in fresh
+   independent contexts. Larger changes may split independent risk areas into
+   bounded challenger assignments. Every assigned challenger must finish.
+4. Validate each compact Lens Result using the packet contract. `clean` and
+   `findings` require completed assigned coverage; `incomplete` retains any
+   candidates and names unavailable coverage, cause, and follow-up. Account for
+   completed results on interruption; an incomplete role never completes a pass.
 5. For skill adherence, prove every implementation-applicable
    `assigned_skills` item maps to exactly one guidance entry and every guidance
    entry maps to exactly one implementation-note evidence record. Verify every
    `loaded`, `applied`, and `not_applicable` claim, including its how/where or
    why/where evidence, against frozen changed artifacts. Missing, extra, or
    contradicted evidence becomes a finding.
-6. Parent-verify every advisory and lens candidate against the frozen target and
-   adjacent evidence. Only verified candidates become findings. Give each
+6. Group duplicate primary/challenger candidates before investigation. Verify
+   every distinct underlying claim against the frozen target and adjacent
+   evidence, recording accepted or rejected disposition and all originating
+   candidate references. Parent owns final severity, route, stable IDs and report;
+   this adjudication does not open an automatic third discovery review.
+   Only verified candidates become findings. Give each
    accepted finding a stable identifier, lens, severity, location, impact,
    evidence, action, and one explicit `return_route`: `human_steering_required`,
    `debugging`, `implementation`, `debt_follow_up`, or `docs_ingest`. Use
@@ -76,9 +81,9 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 ## Invariants
 
 - One gate run inspects exactly one frozen bounded snapshot.
-- `autoreview` runs exactly once; the five normative lenses each run exactly
-  once against the same snapshot.
-- Advisory output never bypasses parent verification.
+- `autoreview` is the single comprehensive primary; the independent challenger
+  receives the same frozen facts. Five primary outcomes retain coverage authority.
+- Candidate output never bypasses parent verification.
 - Standards and Spec remain distinct report sections.
 - Validation is readonly relative to the frozen target and remains within
   accepted bounds.
@@ -97,6 +102,7 @@ The run is complete only when one local report contains:
 - the prepared lineage, run, bounds, normalized-target, snapshot, source-set,
   and mode-specific delivery identities
 - explicit Standards, skill-adherence, architecture, simplify, and Spec outcomes
+- complete primary/challenger Lens Results and parent adjudications in `review_epoch`
 - every verified stable finding and no unverified advisory candidate
 - one validated `return_route` on each accepted finding
 - evidence-cardinality results for all applicable skill guidance and notes

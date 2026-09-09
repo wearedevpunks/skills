@@ -61,6 +61,10 @@ Each task MUST include:
 - **depends_on**: Array of task IDs that must complete first (empty `[]` for root tasks)
 - **description**: What the task accomplishes
 - **location**: File paths involved
+- **owned_paths**: Exact Active Write Scope
+- **read_dependencies**, **shared_runtime_resources**, **relevant_input_set**:
+  consumed inputs, runtime access and evidence-stability identities
+- **wave_boundary**: Earliest frontier label; release follows individual Task Gates
 - **validation**: How to verify completion
 
 **Example:**
@@ -74,7 +78,13 @@ T6: [depends_on: [T2, T5]] Add API endpoints
 T7: [depends_on: [T6]] Write integration tests
 ```
 
-Tasks with empty/satisfied dependencies can run in parallel (T1, T2 above).
+Use [the canonical task schema](../create-plan/references/plan-schema.md) for
+scope, stability, capacity and architecture constraints. Plan the complete
+Execution Frontier; task-local parent gates release eligible dependents while
+unrelated work runs. Record actual read/write or runtime conflicts separately
+from prerequisite edges. Architecture Checkpoints preserve cumulative RAC proof,
+reconciliation, zero drift and migration closure while gating only affected
+consumption.
 
 ### 4. Save Plan
 
@@ -127,6 +137,11 @@ T2 ──┴── T4 ──┘
 ### T1: [Name]
 - **depends_on**: []
 - **location**: [file paths]
+- **owned_paths**: [exact reserved write paths]
+- **read_dependencies**: [consumed paths/contracts]
+- **shared_runtime_resources**: [resources and access compatibility, or explicit none]
+- **relevant_input_set**: [identity methods for consumed inputs/resources]
+- **wave_boundary**: [earliest frontier label]
 - **description**: [what to do]
 - **validation**: [how to verify]
 - **status**: Not Completed
@@ -136,6 +151,11 @@ T2 ──┴── T4 ──┘
 ### T2: [Name]
 - **depends_on**: []
 - **location**: [file paths]
+- **owned_paths**: [exact reserved write paths]
+- **read_dependencies**: [consumed paths/contracts]
+- **shared_runtime_resources**: [resources and access compatibility, or explicit none]
+- **relevant_input_set**: [identity methods for consumed inputs/resources]
+- **wave_boundary**: [earliest frontier label]
 - **description**: [what to do]
 - **validation**: [how to verify]
 - **status**: Not Completed
@@ -145,6 +165,11 @@ T2 ──┴── T4 ──┘
 ### T3: [Name]
 - **depends_on**: [T1]
 - **location**: [file paths]
+- **owned_paths**: [exact reserved write paths]
+- **read_dependencies**: [consumed paths/contracts]
+- **shared_runtime_resources**: [resources and access compatibility, or explicit none]
+- **relevant_input_set**: [identity methods for consumed inputs/resources]
+- **wave_boundary**: [earliest frontier label]
 - **description**: [what to do]
 - **validation**: [how to verify]
 - **status**: Not Completed
@@ -158,7 +183,7 @@ T2 ──┴── T4 ──┘
 | Wave | Tasks | Can Start When |
 |------|-------|----------------|
 | 1 | T1, T2 | Immediately |
-| 2 | T3, T4 | Wave 1 complete |
+| 2 | T3, T4 | T1 gate passed; scopes and inputs available |
 | 3 | T5 | T3, T4 complete |
 | ... | ... | ... |
 

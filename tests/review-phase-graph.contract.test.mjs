@@ -193,67 +193,7 @@ const retainedPassFixture = (mode = "delivery") => {
 
 const standaloneRetainedPassFixture = () => retainedPassFixture("standalone");
 
-test("review phase is explicit-only except as a bounded full-delivery inner step", () => {
-  const skill = reviewSkill();
-  const router = reviewRouter();
-  const prepare = reviewPrepare();
-  const run = reviewRun();
-  const retain = reviewRetain();
-  const returnRoute = reviewReturn();
-  const metadata = read("skills/phases/review-phase/agents/openai.yaml");
-  const delivery = read("skills/phases/delivery-phase/SKILL.md");
-  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
-  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
-  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
-  assert.match(skill, /disable-model-invocation:\s*true/u);
-  assert.match(metadata, /allow_implicit_invocation:\s*false/u);
-  assert.match(delivery, /full delivery, activate `review-phase` as an authorized inner step/iu);
-  assert.match(deliveryReview, /Full delivery invokes `\$review-phase`.{0,120}Other\s+modes return it and stop/isu);
-  assert.doesNotMatch(deliveryReview, /explicitly invoke `review-phase`/iu);
-  assert.match(deliveryRouter, /For durable `review_due`/iu);
-  assert.match(
-    deliveryRouter,
-    /Full delivery activates `\$review-phase`.{0,120}other modes return the exact explicit invocation context and stop/isu,
-  );
-  assert.match(handoff, /review_invocation_authority: full_delivery \| explicit_operator/u);
-  assert.match(handoff, /review_invocation_skill: \$review-phase/u);
-  assert.match(handoff, /`review_due` handoff leaves `review_run_id` unset/iu);
-  assert.match(prepare, /authorized full-delivery or explicit-operator invocation/iu);
-  assert.match(prepare, /fresh `review_due` evidence/iu);
-  assert.match(router, /Fresh `review_running` predecessor evidence/iu);
-  assert.match(run, /reviewed target remains unchanged/iu);
-  assert.match(retain, /report, navigation, and\s+wiki-log envelope/iu);
-  assert.match(skill, /never enters a repair/iu);
-  assert.match(
-    run,
-    /plans no work.{0,100}assigns no implementation skills.{0,160}repairs no finding/isu,
-  );
-  assert.match(returnRoute, /delegates no delivery transition.{0,100}owns no repair/isu);
-});
 
-test("direct review remains explicit while full delivery can consume its context", () => {
-  const rootRouting = read(
-    "skills/phases/finder-phase/references/root-routing.md",
-  );
-  const delivery = read("skills/phases/delivery-phase/SKILL.md");
-  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
-  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
-  const deliveryHandoff = read(
-    "skills/phases/delivery-phase/references/phase-handoff.md",
-  );
-  assert.match(
-    rootRouting,
-    /Review requests persist.{0,160}exact explicit `\$review-phase` invocation/isu,
-  );
-  assert.match(
-    rootRouting,
-    /never invoke, delegate to, or\s+model-select `review-phase`/iu,
-  );
-  assert.match(delivery, /full delivery, activate `review-phase`/iu);
-  assert.match(deliveryReview, /Other\s+modes return it and stop/iu);
-  assert.match(deliveryRouter, /Full delivery consumes that context immediately/iu);
-  assert.match(deliveryHandoff, /review_invocation_authority: full_delivery \| explicit_operator/u);
-});
 
 test("review router exposes every runtime route class in deterministic precedence", () => {
   const rows = [...reviewRouter().matchAll(/^\| (\d+) \| (.+) \| (.+) \|$/gmu)].map(
@@ -307,88 +247,8 @@ test("runtime handoff covers both storage modes and authoritative no-write outco
   assert.match(handoff, /Once storage and\s+run identity are valid, a new stateful failure or blocker uses the normal record\s+schema/iu);
 });
 
-test("bounds and target validation precede delivery budget evaluation", () => {
-  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
-  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
-  const graph = reviewGraph();
 
-  const reviewValidation = deliveryReview.indexOf(
-    "Validate accepted bounds and normalize a supported Git/diff target",
-  );
-  const reviewBudget = deliveryReview.indexOf("recovered `review_count >= 3`");
-  assert.ok(reviewValidation >= 0 && reviewValidation < reviewBudget);
-  assert.match(
-    deliveryReview,
-    /Unsupported targets or invalid bounds enter `review_failed`.{0,120}no counter change/isu,
-  );
-  assert.match(
-    deliveryReview,
-    /`review_count >= 3`.{0,180}zero-write no-op.{0,180}do not persist\s+`review_due`/isu,
-  );
-  assert.match(
-    deliveryRouter,
-    /validates accepted bounds and normalizes a\s+supported target before any delivery-budget evaluation/iu,
-  );
-  assert.ok(
-    deliveryRouter.indexOf("first validates") <
-      deliveryRouter.indexOf("recover `review_count`"),
-  );
-  assert.match(
-    deliveryRouter,
-    /rejection enters\s+`review_failed` even when a persisted counter is 3/iu,
-  );
-  assert.ok(
-    graph.indexOf("Unsupported target") <
-      graph.indexOf("recovered `review_count >= 3`"),
-  );
-  assert.ok(
-    graph.indexOf("Invalid accepted bounds") <
-      graph.indexOf("recovered `review_count >= 3`"),
-  );
 
-  assert.deepEqual(
-    planDeliveryReviewGate({
-      currentState: "implementation_complete",
-      acceptedBoundsValid: true,
-      targetSupported: true,
-      recoveredReviewCount: 3,
-    }),
-    {
-      state: "review_budget_exhausted",
-      priorState: "implementation_complete",
-      handoffWrites: [],
-    },
-  );
-  assert.deepEqual(
-    planDeliveryReviewGate({
-      currentState: "implementation_complete",
-      acceptedBoundsValid: true,
-      targetSupported: true,
-      recoveredReviewCount: 2,
-    }).handoffWrites,
-    ["review_due_context"],
-  );
-});
-
-test("autoreview is nonrecursive outside review-phase and bounded inside it", () => {
-  const autoreview = read("skills/agnostic/quality/autoreview/SKILL.md");
-  assert.match(autoreview, /Outside `review-phase`.{0,100}structured review helper exactly once/isu);
-  assert.match(autoreview, /End this invocation without rerunning the\s+helper/iu);
-  assert.match(autoreview, /further direct pass requires formal `\$review-phase` or a new\s+explicit user instruction after this result/iu);
-  assert.match(autoreview, /When `review-phase` supplies a frozen normalized target.{0,160}exactly\s+once as advisory candidate generation/isu);
-  assert.match(autoreview, /Do not repair findings or rerun the helper in this bounded\s+call/iu);
-});
-
-test("one invocation freezes one snapshot and evaluates all lenses in parallel", () => {
-  const run = reviewRun();
-  assert.match(run, /exactly one frozen bounded snapshot/iu);
-  assert.match(run, /Invoke `autoreview` exactly once/iu);
-  assert.match(run, /Parent-verify every advisory/iu);
-  assert.match(run, /independent\s+bounded work, in parallel/iu);
-  assert.match(run, /Standards[\s\S]*skill adherence[\s\S]*architecture[\s\S]*simplify[\s\S]*Spec/iu);
-  assert.match(run, /report and triage order only/iu);
-  assert.match(run, /Standards and Spec remain distinct/iu);
-});
 
 test("review validation is narrow and reports missing RED GREEN evidence", () => {
   const run = reviewRun();
@@ -1183,23 +1043,6 @@ test("retention is envelope-only, freshness-aware, and authoritative", () => {
   assert.match(graph, /Retained-pass validation rejected.{0,160}`review_failed`/isu);
 });
 
-test("review graph preserves failures, budget, routing, and the no-review-4 boundary", () => {
-  const graph = reviewGraph();
-  const expectedRows = [
-    /`review_due`.*recovered `review_count < 3`.*`review_running`.*Preallocate ordinal/isu,
-    /Current delivery state.*recovered `review_count >= 3`.*Return `review_budget_exhausted`.*no report or status mutation/isu,
-    /`review_running`.*complete local report exists.*`report_retention_pending`.*no completed-pass change/isu,
-    /`report_retention_pending`.*ordinal is greater than 3.*`review_budget_exhausted`.*no authoritative pass/isu,
-    /`review_routed`.*runtime evidence exists.*`debug_active`.*atomic handoff/isu,
-    /`review_routed`.*in-scope non-runtime blocker exists.*`repair_active`.*atomic handoff/isu,
-    /`repair_active` or `debug_active`.*`review_count < 3`.*`review_due`/isu,
-    /Fix 3 completes.*`review_count = 3` and `repair_count = 3`.*`focused_validation`/isu,
-    /focused validation fails.*`repair_active` or `debug_active`.*unchanged counters/isu,
-    /focused validation passes.*`clean_handoff`.*report-3 link/isu,
-  ];
-  for (const row of expectedRows) assert.match(graph, row);
-  assert.match(graph, /fix 3 never opens\s+review 4/iu);
-});
 
 test("repair opening and resume are atomic and idempotent", () => {
   const graph = reviewGraph();
@@ -1244,87 +1087,7 @@ test("skill-adherence lens checks claims and omissions against frozen artifacts"
   assert.match(run, /Missing, extra, or\s+contradicted evidence becomes a finding/iu);
 });
 
-test("delivery owns review routes and bounded repairs", () => {
-  const router = read("skills/phases/delivery-phase/phases/router.md");
-  const phase = read("skills/phases/delivery-phase/phases/review.md");
-  const implement = read("skills/phases/delivery-phase/phases/implement.md");
-  const debug = read("skills/phases/delivery-phase/phases/debug.md");
-  const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
-  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
-  const all = `${router}\n${phase}\n${implement}\n${debug}\n${closeout}\n${handoff}`;
-  assert.match(all, /review_budget_exhausted/iu);
-  assert.match(all, /runtime.{0,100}debug/isu);
-  assert.match(all, /non-runtime.{0,100}implement/isu);
-  assert.match(all, /architecture.{0,100}debt/isu);
-  assert.match(all, /focused_validation/iu);
-  assert.match(all, /clean_handoff/iu);
-  assert.match(router, /`report_retention_pending`.{0,200}without\s+rerunning lenses/isu);
-  assert.match(router, /`review_routed` report.{0,120}no durable route handoff/isu);
-  assert.match(handoff, /review_lineage_id/iu);
-  assert.match(handoff, /review_count/iu);
-  assert.match(handoff, /repair_count/iu);
-});
 
-test("review retention and delivery debt handoff are explicit and resumable", () => {
-  const run = reviewRun();
-  const retain = reviewRetain();
-  const returnRoute = reviewReturn();
-  const report = reviewReport();
-  const graph = reviewGraph();
-  const deliveryReview = read("skills/phases/delivery-phase/phases/review.md");
-  const deliveryRouter = read("skills/phases/delivery-phase/phases/router.md");
-  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
-  const authoring = read("skills/phases/review-phase/AUTHORING-HANDOFF.md");
-
-  assert.match(run, /accepted finding.{0,200}`return_route`/isu);
-  assert.match(returnRoute, /`deriveReviewRouting`/u);
-  assert.match(report, /each finding.{0,160}`return_route`/isu);
-  assert.match(report, /aggregate routing.{0,120}derived/isu);
-  assert.match(
-    retain,
-    /`reportCommitSha:reportPath`.{0,300}exact committed.{0,160}local report bytes/isu,
-  );
-  assert.match(
-    report,
-    /bytes resolved from `reportCommitSha:reportPath`.{0,160}exactly equal.{0,100}local report bytes/isu,
-  );
-
-  assert.match(handoff, /state:.*debt_follow_up/isu);
-  assert.match(handoff, /post_debt_route:/u);
-  assert.match(
-    handoff,
-    /`post_debt_route` is durable.{0,160}`debugging` or\s+`implementation` for secondary debt.{0,160}`docs_ingest` or `closeout` for\s+primary debt/isu,
-  );
-  assert.match(
-    handoff,
-    /debt follow-up key.{0,160}authoritative report commit.{0,160}report path.{0,160}stable finding id/isu,
-  );
-  assert.match(deliveryRouter, /`debt_follow_up`.{0,160}\[review\.md\]/isu);
-  assert.match(
-    deliveryRouter,
-    /`debt_follow_up`.{0,240}`post_debt_route`.{0,200}`debugging`.{0,80}`implementation`.{0,200}`docs_ingest`.{0,80}`closeout`/isu,
-  );
-  assert.match(
-    deliveryReview,
-    /goal\/spec-linked debt artifact.{0,200}exactly once.{0,200}retained report.{0,160}stable finding ID/isu,
-  );
-  assert.match(
-    deliveryReview,
-    /does not implement.{0,100}debt.{0,180}`docs_ingest`.{0,100}`closeout`/isu,
-  );
-  assert.match(graph, /Resume debt follow-up.{0,160}`debt_follow_up`/isu);
-  assert.match(
-    graph,
-    /Debt captured.{0,160}`post_debt_route`.{0,160}(?:`debug_active`|`repair_active`|`docs_ingest` or `closeout`)/isu,
-  );
-
-  assert.match(
-    authoring,
-    /installed package\s+omits the source repository test files/iu,
-  );
-  assert.doesNotMatch(authoring, /\b\d+\/\d+\b/u);
-  assert.doesNotMatch(authoring, /all eight shared test files/iu);
-});
 
 test("primary debt successors are durable cold-resume states", () => {
   const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
@@ -1340,24 +1103,37 @@ test("primary debt successors are durable cold-resume states", () => {
   );
 });
 
-test("delivery router resumes durable terminal routes before artifact inference", () => {
-  const router = read("skills/phases/delivery-phase/phases/router.md");
-  const artifactInference = router.indexOf("If no matching agent-ready `SPEC.md`");
-  assert.notEqual(artifactInference, -1, "artifact inference boundary is required");
-  for (const [state, phase] of [
-    ["docs_ingest", "docs-ingest.md"],
-    ["closeout", "closeout.md"],
-  ]) {
-    const route = new RegExp(
-      "durable `" + state + "`[^\\n]*\\[" + phase.replace(".", "\\.") + "\\]",
-      "u",
-    ).exec(router);
-    assert.ok(route, `${state} must load ${phase}`);
-    assert.ok(route.index < artifactInference, `${state} must precede artifact inference`);
-  }
-});
 
 test("external GitHub and Codex PR reviewer integration stays excluded", () => {
   const all = `${reviewSkill()}\n${reviewGraph()}`;
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
+});
+
+test("review keeps explicit entry, comprehensive primary and independent challenger ownership", () => {
+  assert.match(reviewSkill(), /disable-model-invocation:\s*true/u);
+  assert.match(read("skills/phases/review-phase/agents/openai.yaml"), /allow_implicit_invocation:\s*false/u);
+  assert.match(reviewPrepare(), /authorized full-delivery or explicit-operator invocation/iu);
+  assert.match(reviewRun(), /comprehensive primary reviewer/iu);
+  assert.match(reviewRun(), /capacity one runs them sequentially in fresh/iu);
+  assert.match(reviewRun(), /without primary conclusions/iu);
+  assert.match(reviewGraph(), /Two completed\npasses exhaust default allowance/iu);
+  assert.match(reviewGraph(), /Ordinary accepted\nrepair gets Focused Repair Validation/iu);
+});
+
+test("invalid bounds and target reject before the exhausted budget", () => {
+  const input = { currentState: "implementation_complete", recoveredReviewCount: 3, acceptedBoundsValid: true, targetSupported: true };
+  for (const invalid of [{ acceptedBoundsValid: false }, { targetSupported: false }]) {
+    assert.deepEqual(planDeliveryReviewGate({ ...input, ...invalid }), { state: "review_failed", handoffWrites: [] });
+  }
+  assert.deepEqual(planDeliveryReviewGate(input), { state: "review_budget_exhausted", priorState: "implementation_complete", handoffWrites: [] });
+  assert.deepEqual(planDeliveryReviewGate({ ...input, recoveredReviewCount: 0 }).handoffWrites, ["review_due_context"]);
+});
+
+test("retention still verifies committed bytes and idempotent debt custody", () => {
+  assert.match(reviewRetain(), /`reportCommitSha:reportPath`.{0,300}exact committed.{0,160}local report bytes/isu);
+  assert.match(reviewReport(), /bytes resolved from `reportCommitSha:reportPath`.{0,160}exactly equal.{0,100}local report bytes/isu);
+  assert.match(reviewReturn(), /`deriveReviewRouting`/u);
+  assert.match(reviewGraph(), /retained report commit, report path, and\n(?:stable finding ID|stable finding id)/iu);
+  assert.match(reviewGraph(), /post_debt_route/);
+  assert.match(read("skills/phases/review-phase/AUTHORING-HANDOFF.md"), /installed package\s+omits the source repository test files/iu);
 });

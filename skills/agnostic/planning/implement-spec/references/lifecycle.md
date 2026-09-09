@@ -4,8 +4,9 @@
 
 `implement-spec` is the only public execution entrypoint.
 
-Execution follows plan-derived worker waves. Read [parallel.md](parallel.md) for
-the wave loop and keep shared lifecycle rules here.
+Execution uses plan-derived tasks and parent-owned Task Gates. Read
+[parallel.md](parallel.md) for Execution Frontier and Active Write Scope rules;
+shared lifecycle rules remain here.
 
 ## 1. Require an existing agent-ready spec folder
 
@@ -110,7 +111,8 @@ Do not create the file when nothing durable must survive the run.
   identity, its same `V*`, and native blocker edges. In `planning-only` mode,
   keep `Tn` as the execution identity, provider fields `not_applicable`,
   `relation_mode: unprojected`, and the nonempty backlog-sync skip reason.
-- Build each wave from tasks whose dependencies are complete and whose write scopes are disjoint.
+- Recompute the Execution Frontier after each parent-owned Task Gate; release
+  eligible dependency-ready work with disjoint Active Write Scopes immediately.
 - Workers own implementation changes. The parent coordinates, reviews, validates, updates shared artifacts, and finalizes.
 - A wave may contain one worker when dependencies or owned paths leave one task unblocked.
 - Worker routing must be available before implementation begins; otherwise repair it or report the blocker.
@@ -132,7 +134,7 @@ Do not create the file when nothing durable must survive the run.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
 - When unclear debt affects the current implementation and the answer is not already in the spec/plan/backlog, pause for a tiny `$requirements-phase` clarification instead of guessing.
 - In `provider-task` mode, load `write-backlog`'s
-  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch
+  [delivery-status.md](../../../requirements/write-backlog/references/delivery-status.md) branch
   for lifecycle facts. When work starts, becomes blocked, gains a pull request,
   merges, or receives staging or production evidence, immediately call
   `write-backlog` with only the directly observed fact and require exact
@@ -145,9 +147,32 @@ Do not create the file when nothing durable must survive the run.
   validation commands, or file lists. Provider mapping and mutations remain in
   `write-backlog`.
 
-## 7. Shared upkeep after each completed wave
+### Draft pull request visibility
 
-After each completed wave:
+After the recorded branch/base gate passes, inspect the remote branch and its
+pull requests before dispatching further implementation. Preserve the recorded
+branch, base and stack intent. If an in-scope specification or implementation
+commit is already pushed, reuse its matching draft pull request or create one
+now. Otherwise continue implementation and perform this check immediately after
+the first meaningful in-scope commit is pushed. An empty visibility commit is
+never a qualifying change.
+
+The parent records the pushed commit, provider PR identity/URL, head and base,
+and exact provider readback in implementation notes. Search by recorded head
+and base before creation; on resume or an ambiguous creation response, read back
+that identity before retrying. A conflicting base, stack or existing non-draft
+PR requires reconciliation against accepted intent before mutation. Completion
+of this visibility step is one matching draft PR with observed provider state,
+not a locally prepared URL. Route observed lifecycle facts through the existing
+`write-backlog` contract. A provider failure records the exact visibility blocker;
+independent eligible work can continue within its accepted scope.
+
+## 7. Parent-owned shared upkeep
+
+The parent reconciles worker Task Results into shared summaries asynchronously
+after Task Gates, off the dependency-release critical path. Flush all pending
+results before cumulative Architecture Checkpoints, final acceptance, review
+handoff and finalization. Workers return evidence; the parent performs this upkeep:
 
 - update `PLAN.md` status
 - append a concise execution log in `PLAN.md`
@@ -283,3 +308,18 @@ Summarize:
 - manual review checklist
 - blocked tasks needing input
 - whether the spec-linked tech-debt file was created or updated
+
+## 14. Return implementation to delivery
+
+Before returning control to `delivery-phase` for Code Review, the parent verifies
+implementation completion, every applicable Task Gate and task check, current
+Verification evidence, shared-summary reconciliation, all due Architecture
+Checkpoints and final architecture closure, and final acceptance evidence.
+Record exact unmet gates and continue reachable implementation work when any
+proof is missing. A visible draft PR does not satisfy these gates.
+
+Once all proof matches the implemented snapshot, return the durable evidence
+pointers to delivery. Code Review is a subsequent gate; use
+[the delivery review transition](../../../../phases/delivery-phase/phases/review.md)
+for the completed-pass budget and repair routing. Reviewers consume Verification
+proof; `implement-spec` retains ownership of verifier execution and maintenance.

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "valid",
+    "path": "authority.md",
+    "selector": "Selected acceptance",
+    "sha256": "35b94d359c2efb31bcb9eb81a9d86378b7072740e8510b9b0032557de1912b9a",
+    "excerpt": "Return READY.",
+    "subordinate": true
+  },
+  {
+    "id": "stale-pointer",
+    "path": "missing.md",
+    "selector": "Selected acceptance",
+    "sha256": "35b94d359c2efb31bcb9eb81a9d86378b7072740e8510b9b0032557de1912b9a"
+  },
+  {
+    "id": "changed-input",
+    "path": "authority.md",
+    "selector": "Selected acceptance",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "excerpt": "Return READY.",
+    "subordinate": true
+  },
+  {
+    "id": "excerpt-mismatch",
+    "path": "authority.md",
+    "selector": "Selected acceptance",
+    "sha256": "35b94d359c2efb31bcb9eb81a9d86378b7072740e8510b9b0032557de1912b9a",
+    "excerpt": "Return SHIPPED.",
+    "subordinate": true
+  },
+  {
+    "id": "unsourced",
+    "excerpt": "Return READY."
+  },
+  {
+    "id": "full-copy",
+    "path": "authority.md",
+    "selector": "Selected acceptance",
+    "sha256": "35b94d359c2efb31bcb9eb81a9d86378b7072740e8510b9b0032557de1912b9a",
+    "excerpt": "# Selected acceptance\nWorker result must say READY.\n\n# Unrelated\nNo task needs this section.\n",
+    "subordinate": true
+  }
+]
