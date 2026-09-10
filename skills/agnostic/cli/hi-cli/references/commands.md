@@ -60,13 +60,15 @@ The command bypasses package-manager minimum-release-age gates for the selected 
 
 Report global and project `hi-cli` installations plus legacy `dp-cli` installations without changing them.
 
+With CLI 5.0.1 or newer, each install or update command resolves the newest canonical shared-skills `main` revision once and verifies installed files against that source content. Report and use the exact revision returned by the command. On CLI 5.0.0 or 4.x, run `hi upgrade` before requesting the newest operator skill.
+
 ## `hi operator install`
 
-Install the frozen `hi-cli` target when absent and verify the resulting global copy.
+Install the global copy when absent and verify its files against the revision resolved for this command.
 
 ## `hi operator update`
 
-Update and verify every detected global or project `hi-cli` copy.
+Update every detected global or project `hi-cli` copy and verify its files against the revision resolved for this command.
 
 ## `hi operator migrate`
 

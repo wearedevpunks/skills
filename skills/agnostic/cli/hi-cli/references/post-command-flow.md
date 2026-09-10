@@ -123,17 +123,23 @@ Never read `.devpunks/`, run scaffold follow-through, or scan unrelated skill ho
 Report `hi-cli` and legacy `dp-cli` state for global and project scopes:
 
 - `status`: report detected installations without changing them
-- `install`: verify the resulting global `hi-cli` copy
-- `update`: verify every detected `hi-cli` copy
+- `install`: verify the resulting global `hi-cli` copy against the resolved source content
+- `update`: verify every detected `hi-cli` copy against the resolved source content
 - `migrate`: verify replacements before every detected legacy `dp-cli` copy is removed
+
+With CLI 5.0.1 or newer, each install or update command resolves the newest canonical shared-skills `main` revision once and verifies installed files against that source content. Report and use the exact revision returned by the command. On CLI 5.0.0 or 4.x, run `hi upgrade` before requesting the newest operator skill.
 
 Operator writes require Skills CLI 1.5.20 or newer. If an action partially fails, return the exact failed Skills CLI command from the result. After successful install, update, or migrate, reload or reactivate `$hi-cli`.
 
 ## Project Verifier preservation
 
-For scaffold, update, and their generated Post-Command Handoffs, preserve every existing file below `.agents/skills/verify-behavior/references/` byte-for-byte, including the index, Surface Verification References, Feature Maps, Cross-App Journeys, and helpers. Refreshing the managed `verify-behavior/SKILL.md` does not authorize changing that project-owned tree.
+The shared `verify-behavior` skill is the single entrypoint. Its project-owned references describe how to verify this project's runnable apps and behaviors.
 
-Keep an absent Project Verifier absent. These command flows never invoke `create-verification-skill` or `update-verification-skill`; `implement-spec` owns those coverage-gap branches. Generated handoffs render the current-run preserve action with a pointer to this rule, rather than defining a second policy.
+For scaffold, update, and their generated Post-Command Handoffs, preserve every existing file below `.agents/skills/verify-behavior/references/` byte-for-byte. This includes the index, Surface Verification References, Feature Maps, Cross-App Journeys, and helpers. Scaffold or update can refresh the shared `verify-behavior/SKILL.md` entrypoint, while the project-owned references keep their exact bytes.
+
+Keep an absent Project Verifier absent. These command flows never invoke `create-verification-skill` or `update-verification-skill`. During delivery, `implement-spec` creates a Surface Verification Reference when its selected scenario has an Uncovered Surface. It updates the existing references and Feature Map when the scenario has Uncovered Behavior.
+
+Generated handoffs state the preserve action and residual scopes for the current run and point here. Structured scope and receipt evidence and generated prompt specs remain the authority for new scope structure.
 
 Before completing reconciliation, compare existing project-owned paths and bytes with the pre-command inventory, report any unexpected change as a blocker, and retain the comparison outside command cleanup.
 
