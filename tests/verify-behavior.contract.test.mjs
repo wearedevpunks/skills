@@ -7,13 +7,12 @@ const read = (path) =>
 
 const skillPath = "skills/agnostic/planning/verify-behavior";
 
-test("verify-behavior is a model-invoked planning skill with retained provenance", () => {
+test("verify-behavior is an explicit-only planning skill with retained provenance", () => {
   const skill = read(`${skillPath}/SKILL.md`);
   const license = read(`${skillPath}/LICENSE`);
   const upstream = read(`${skillPath}/UPSTREAM.md`);
 
-  assert.match(skill, /^---\nname: verify-behavior\ndescription:/);
-  assert.doesNotMatch(skill, /disable-model-invocation/);
+  assert.match(skill, /^---\nname: verify-behavior\ndisable-model-invocation: true\ndescription:/);
   assert.match(license, /Copyright \(c\) 2026 Warp/);
   assert.match(upstream, /ab21d0c5b70e38abe1a53ff6e2934d2637415c5b/);
   assert.match(upstream, /adjacent `LICENSE`/);
