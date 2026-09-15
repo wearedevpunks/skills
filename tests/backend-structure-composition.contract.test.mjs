@@ -78,7 +78,7 @@ test("Effect entrypoint delegates detailed ownership and operator rules", () => 
   assert.match(operators, /Preserve dependency-requiring Layers/i);
 
   assert.match(effectLayout, /private `Context\.Service` seams/i);
-  assert.match(effectLayout, /under `services\/` or in an owner-named module/i);
+assert.match(effectLayout, /services\/<capability>\/binding\.ts/i);
   assert.match(effectLayout, /platform\/effect\/app\.ts[^.]*production root/i);
 });
 
@@ -94,8 +94,11 @@ test("Effect skills keep internal-module topology distinct from service authorit
   );
   assert.match(
     effectLayout,
-    /composition\/<capability>\/service\.ts.*private binding seam/i,
+    /services\/<capability>\/binding\.ts.*private `Context\.Service`/i,
   );
+  assert.match(effectLayout, /replaces the base skill's `actions\/` directory convention/i);
+  assert.doesNotMatch(effectLayout, /composition\/<capability>\/service\.ts/i);
+  assert.match(effectLayout, /External provider clients and adapter mechanics remain under `integrations\/<provider>\/`/i);
   assert.match(effectLayout, /models\/<model>\.ts/i);
   assert.match(effectLayout, /repositories\/<entity>\.ts/i);
   assert.match(effectLayout, /mappers\/<model>\.ts/i);
