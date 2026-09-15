@@ -60,7 +60,7 @@ The command bypasses package-manager minimum-release-age gates for the selected 
 
 Report global and project `hi-cli` installations plus legacy `dp-cli` installations without changing them.
 
-Each CLI release installs and verifies the canonical shared-skills revision pinned by that release. Report and use the exact revision returned by the command. To receive a newer operator-skill target, first install a CLI release that pins it; CLI 5.0.0 and 4.x users should run `hi upgrade` before using these commands.
+With CLI 5.0.1 or newer, each install or update command resolves the newest canonical shared-skills `main` revision once and verifies installed files against that source content. Report and use the exact revision returned by the command. On CLI 5.0.0 or 4.x, run `hi upgrade` before requesting the newest operator skill.
 
 ## `hi operator install`
 
