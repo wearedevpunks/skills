@@ -127,7 +127,7 @@ Report `hi-cli` and legacy `dp-cli` state for global and project scopes:
 - `update`: verify every detected `hi-cli` copy against the resolved source content
 - `migrate`: verify replacements before every detected legacy `dp-cli` copy is removed
 
-With CLI 5.0.1 or newer, each install or update command resolves the newest canonical shared-skills `main` revision once and verifies installed files against that source content. Report and use the exact revision returned by the command. On CLI 5.0.0 or 4.x, run `hi upgrade` before requesting the newest operator skill.
+Each CLI release installs and verifies the canonical shared-skills revision pinned by that release. Report and use the exact revision returned by the command. To receive a newer operator-skill target, first install a CLI release that pins it; CLI 5.0.0 and 4.x users should run `hi upgrade` before using these commands.
 
 Operator writes require Skills CLI 1.5.20 or newer. If an action partially fails, return the exact failed Skills CLI command from the result. After successful install, update, or migrate, reload or reactivate `$hi-cli`.
 

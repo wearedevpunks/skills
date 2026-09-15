@@ -22,12 +22,10 @@ Inside the current Effect backend root, prefer:
       services/
         <capability>/
           service.ts
+          binding.ts
       operations/
         <use-case>/
           operation.ts
-      composition/
-        <capability>/
-          service.ts
       models/
         <model>.ts
       repositories/
@@ -42,10 +40,10 @@ Inside the current Effect backend root, prefer:
 ## Internal module topology
 
 - Public capabilities live in `services/<capability>/service.ts` as the public `Context.Service` capability.
-- Private use-case orchestration lives in `operations/<use-case>/operation.ts` as private `Effect.fn` orchestration.
-- Private composition-only adapters live in `composition/<capability>/service.ts` as the private binding seam for a public capability.
-- Domain models live in `models/<model>.ts`; persistence or external data access lives in `repositories/<entity>.ts`; boundary transforms live in `mappers/<model>.ts`.
-- Colocate an operation's tests under its module in `tests/unit/` or `tests/integration/`; keep reusable local support under `tests/support/`.
+- Effect backends use `operations/<use-case>/operation.ts` as private `Effect.fn` orchestration for a use case; this replaces the base skill's `actions/` directory convention. Call these units operations consistently inside the Effect feature.
+- `services/<capability>/binding.ts` contains the private `Context.Service` seams that bind the public capability beside it; do not create a separate `composition/` directory for them.
+- Domain models live in `models/<model>.ts`; persistence contracts and adapters live in `repositories/<entity>.ts`; boundary transforms live in `mappers/<model>.ts`. External provider clients and adapter mechanics remain under `integrations/<provider>/` and do not move into repositories.
+- Place an operation's tests in the feature-owned `tests/unit/<use-case>.test.ts` or `tests/integration/<use-case>.test.ts` path shown below; keep reusable local support under `tests/support/`.
 
 - Keep module internals private; callers use an explicit public capability surface.
 - Use relative imports within an internal module and source aliases across module boundaries.
@@ -80,7 +78,7 @@ A leaf or module Layer implements only its owned public capability. Keep depende
 
 ### Nearest common parent business Layer
 
-The nearest common parent business Layer composes its public child Layers. Those child features are siblings to one another. Actions or services owned by the parent hold ordering, authorization, state transitions, and other cross-child product policy. The parent imports public child surfaces and keeps child internals private.
+The nearest common parent business Layer composes its public child Layers. Those child features are siblings to one another. Operations or services owned by the parent hold ordering, authorization, state transitions, and other cross-child product policy. The parent imports public child surfaces and keeps child internals private.
 
 **Complete when:** every cross-child product decision has one parent owner and the parent Layer exposes the composed parent-domain capability.
 
@@ -103,9 +101,9 @@ Choose the operator from the intended public output. Side-by-side capabilities u
 
 ## Composition terminology
 
-Reserve composition terminology for Layers that assemble public capabilities. Name private `Context.Service` seams by capability under `services/` or in an owner-named module. Use `features/<domain>/layer.ts` for domain Layer ownership and `platform/effect/app.ts`, or the repository's equivalent, for the production root.
+Reserve composition terminology for Layers that assemble public capabilities. Put a private `Context.Service` binding seam at `services/<capability>/binding.ts` beside the public capability it supports. Use `features/<domain>/layer.ts` for domain Layer ownership and `platform/effect/app.ts`, or the repository's equivalent, for the production root.
 
-Do not import live implementations directly inside actions, services, repositories, or transport adapters.
+Do not import live implementations directly inside operations, services, repositories, or transport adapters.
 
 Test layout:
 
@@ -125,7 +123,7 @@ Testing split:
 - `tests/support`
   feature-local reusable test support
 - `tests/unit`
-  action and guard behavior
+  operation and guard behavior, named for the owning use case
 - `tests/integration`
   live router/app behavior
 
