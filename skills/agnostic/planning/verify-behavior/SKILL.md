@@ -1,7 +1,6 @@
 ---
 name: verify-behavior
-disable-model-invocation: true
-description: Verify observable product behavior or reproduce reported failures through selected project-owned app references and falsifiable end-to-end evidence.
+description: Verify observable product behavior through selected project-owned app references and falsifiable end-to-end evidence when Debugging Phase invokes reproduce or Implement Spec invokes verify.
 ---
 
 # Verify Behavior
