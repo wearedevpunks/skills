@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-drive behavior changes with a red-green-refactor loop through public interfaces. Use when the user wants TDD, test-first development, integration-style tests, RED/GREEN evidence, or a bugfix/feature built test-first.
+description: Test-drive behavior changes with a red-green-refactor loop through public interfaces. Use when the user explicitly requests TDD, test-first development, RED/GREEN evidence, or behavior design remains unresolved.
 ---
 
 # Test-Driven Development

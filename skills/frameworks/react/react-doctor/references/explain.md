@@ -18,7 +18,11 @@ npx react-doctor@latest rules explain react-doctor/no-array-index-as-key
 5. Validate the change did what the user wanted:
 
 ```bash
-npx react-doctor@latest --verbose --scope changed
+base="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')" || {
+  echo "React Doctor changed scan has no configured upstream." >&2
+  exit 1
+}
+npx react-doctor@latest --verbose --scope changed --base "$base"
 ```
 
 ## Commands

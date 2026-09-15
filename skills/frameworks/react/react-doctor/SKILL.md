@@ -1,6 +1,6 @@
 ---
 name: react-doctor
-description: Use when finishing a feature, fixing a bug, before committing React code, or when the user types `/doctor`, asks to scan, triage, or clean up React diagnostics. Covers lint, accessibility, bundle size, architecture. Includes a regression check and a full local-triage workflow that fetches the canonical playbook.
+description: Use when the user explicitly requests React Doctor or production changes overlap React runtime APIs.
 version: "1.2.0"
 ---
 
@@ -8,9 +8,20 @@ version: "1.2.0"
 
 Scans React codebases for security, performance, correctness, and architecture issues. Outputs a 0-100 health score.
 
-## After Making React Code Changes
+## Changed Scope Scan
 
-Run `npx react-doctor@latest --verbose --scope changed` and check the score did not regress.
+Resolve the checked-out branch's configured upstream. If there is no configured
+upstream, stop and ask the user to configure one or select a base explicitly.
+
+```bash
+base="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')" || {
+  echo "React Doctor changed scan has no configured upstream." >&2
+  exit 1
+}
+npx react-doctor@latest --verbose --scope changed --base "$base"
+```
+
+Check that the score did not regress.
 
 If the score dropped, fix the regressions before committing.
 
@@ -47,7 +58,7 @@ Then apply the narrowest control via `npx react-doctor@latest rules disable|set|
 ## Command
 
 ```bash
-npx react-doctor@latest --verbose --scope changed
+npx react-doctor@latest --verbose --scope changed --base "$base"
 ```
 
 | Flag | Purpose |
