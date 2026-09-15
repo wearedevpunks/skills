@@ -58,6 +58,10 @@ Then apply the narrowest control via `npx react-doctor@latest rules disable|set|
 ## Command
 
 ```bash
+base="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')" || {
+  echo "React Doctor changed scan has no configured upstream." >&2
+  exit 1
+}
 npx react-doctor@latest --verbose --scope changed --base "$base"
 ```
 
