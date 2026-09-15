@@ -17,6 +17,9 @@ const effectSkill = read(
 const effectLayout = read(
   "skills/frameworks/effect/effect-backend-structure/references/layout.md",
 );
+const effectServiceSkill = read(
+  "skills/frameworks/effect/effect-service-design/SKILL.md",
+);
 
 const effectMechanics =
   /Context\.Service|Layer\.(?:merge|mergeAll|provide|provideMerge)|platform\/effect\/app\.ts/;
@@ -77,4 +80,41 @@ test("Effect entrypoint delegates detailed ownership and operator rules", () => 
   assert.match(effectLayout, /private `Context\.Service` seams/i);
   assert.match(effectLayout, /under `services\/` or in an owner-named module/i);
   assert.match(effectLayout, /platform\/effect\/app\.ts[^.]*production root/i);
+});
+
+test("Effect skills keep internal-module topology distinct from service authority", () => {
+  assert.match(effectSkill, /references\/layout\.md/i);
+  assert.match(
+    effectLayout,
+    /services\/<capability>\/service\.ts.*public `Context\.Service` capability/i,
+  );
+  assert.match(
+    effectLayout,
+    /operations\/<use-case>\/operation\.ts.*private `Effect\.fn` orchestration/i,
+  );
+  assert.match(
+    effectLayout,
+    /composition\/<capability>\/service\.ts.*private binding seam/i,
+  );
+  assert.match(effectLayout, /models\/<model>\.ts/i);
+  assert.match(effectLayout, /repositories\/<entity>\.ts/i);
+  assert.match(effectLayout, /mappers\/<model>\.ts/i);
+  assert.match(effectLayout, /tests\/(?:unit|integration)\//i);
+  assert.match(effectLayout, /pass-through barrels/i);
+  assert.match(effectLayout, /relative imports within an internal module/i);
+  assert.match(effectLayout, /source aliases across module boundaries/i);
+  assert.match(effectLayout, /module internals private/i);
+  assert.match(effectLayout, /narrow capability/i);
+  assert.match(effectLayout, /spread-only mapper/i);
+  assert.match(effectLayout, /structurally identical duplicate `\*Data` types/i);
+
+  assert.match(
+    effectSkill,
+    /\$effect-service-design.*service qualification.*application policy/i,
+  );
+  assert.match(
+    effectServiceSkill,
+    /internal-module topology and repository boundaries, use `\$effect-backend-structure`/i,
+  );
+  assert.doesNotMatch(effectServiceSkill, /operations\/<use-case>\/operation\.ts/i);
 });

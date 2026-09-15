@@ -2,17 +2,18 @@
 name: effect-backend-structure
 description: |
   Apply Effect-specific backend structure on top of backend-domain-structure.
-  Use when creating or changing Effect actions, repositories, transport adapters,
-  DB integrations, test placement, backend boilerplate, or Layer composition
-  ownership in any Effect backend root. Enforces actions-own-orchestration,
-  integration dependency direction, three-level Layer composition operators,
-  effect-solutions plus opensrc source lookup, and @effect/vitest conventions.
+  Use when creating or changing Effect internal modules, actions, repositories,
+  transport adapters, DB integrations, test placement, backend boilerplate, or
+  Layer composition ownership in any Effect backend root. Enforces concrete
+  module boundaries, actions-own-orchestration, integration dependency direction,
+  three-level Layer composition operators, effect-solutions plus opensrc source
+  lookup, and @effect/vitest conventions.
 compatibility: Requires Effect v4. Examples are reviewed against the version documented in this repository.
 ---
 
 # Effect Backend Structure
 
-Use this skill with `$backend-domain-structure` and `$effect` for Effect backend code. `$effect` owns Effect v4 API guidance. Use `$effect-service-design` for service qualification, service modules, Layers, requirements, test substitutes, and service audits.
+Use this skill with `$backend-domain-structure` and `$effect` for Effect backend code. `$effect` owns Effect v4 API guidance. Use `$effect-service-design` for service qualification, application policy, service modules, Layers, requirements, test substitutes, and service audits.
 
 The agnostic skill owns the layer model:
 
@@ -21,7 +22,7 @@ The agnostic skill owns the layer model:
 - `features/*`
 - shared libraries and packages
 
-This skill adds Effect-specific backend topology, action ownership, source lookup, and test placement rules.
+This skill adds Effect-specific internal-module topology, repository boundaries, action ownership, source lookup, and test placement rules. Read the layout reference when placing code inside an Effect module; `$effect-service-design` remains the authority for deciding whether a seam is a service and for application policy.
 
 ## Workflow
 

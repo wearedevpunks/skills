@@ -7,6 +7,8 @@ description: Design Effect services. Use when designing a new Effect service mod
 
 Treat a service as an **authority seam**: a cohesive capability whose requirements should propagate through Effect context. An **Effect service module** owns the service contract, construction, production Layer, and any honest reusable test implementation that belong to the same capability.
 
+For concrete Effect internal-module topology and repository boundaries, use `$effect-backend-structure`. It owns placement and privacy inside an Effect module; this skill owns service qualification, authority seams, and application policy.
+
 ## 1. Establish the local rules
 
 Read the nearest `AGENTS.md`, architecture docs, coding standards, project Effect guidance, pinned Effect version/source, and relevant vendored examples. Prefer current project-compatible patterns over remembered APIs.

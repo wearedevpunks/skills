@@ -19,14 +19,42 @@ Inside the current Effect backend root, prefer:
       client.ts
   features/
     <domain>/
-      actions/
-      models/
-      repositories/
       services/
+        <capability>/
+          service.ts
+      operations/
+        <use-case>/
+          operation.ts
+      composition/
+        <capability>/
+          service.ts
+      models/
+        <model>.ts
+      repositories/
+        <entity>.ts
+      mappers/
+        <model>.ts
       errors.ts
       layer.ts
       router.ts
 ```
+
+## Internal module topology
+
+- Public capabilities live in `services/<capability>/service.ts` as the public `Context.Service` capability.
+- Private use-case orchestration lives in `operations/<use-case>/operation.ts` as private `Effect.fn` orchestration.
+- Private composition-only adapters live in `composition/<capability>/service.ts` as the private binding seam for a public capability.
+- Domain models live in `models/<model>.ts`; persistence or external data access lives in `repositories/<entity>.ts`; boundary transforms live in `mappers/<model>.ts`.
+- Colocate an operation's tests under its module in `tests/unit/` or `tests/integration/`; keep reusable local support under `tests/support/`.
+
+- Keep module internals private; callers use an explicit public capability surface.
+- Use relative imports within an internal module and source aliases across module boundaries.
+- Avoid pass-through barrels that only re-export private implementation.
+- Repositories expose a narrow capability rather than a table-shaped grab bag.
+- A mapper changes representation; delete a spread-only mapper.
+- Derive types from their owner instead of creating structurally identical duplicate `*Data` types.
+
+**Complete when:** every internal file has one role, callers reach only the public capability surface, and each import, repository, mapper, data type, and colocated test preserves that boundary.
 
 Dependency direction:
 
