@@ -32,6 +32,21 @@ const assertChangedScopeUsesConfiguredUpstream = (path) => {
   }
 };
 
+const assertCommandSectionBindsChangedScopeBase = (path) => {
+  const guidance = read(path);
+  const [, section] = guidance.match(/^## Command\s*$([\s\S]*?)^## /mu) ?? [];
+
+  assert.ok(section, `${path} has a Command section`);
+  assert.match(
+    section,
+    /base="\$\(git rev-parse --abbrev-ref --symbolic-full-name '@\{upstream\}'\)" \|\| \{[\s\S]*?no configured upstream[\s\S]*?exit 1[\s\S]*?\}/u,
+  );
+  assert.match(
+    section,
+    /npx react-doctor@latest --verbose --scope changed --base "\$base"/u,
+  );
+};
+
 test("React Doctor activates only for explicit requests or React runtime production overlap", () => {
   const skill = read("skills/frameworks/react/react-doctor/SKILL.md");
   const pointer = description(skill);
@@ -43,6 +58,9 @@ test("React Doctor activates only for explicit requests or React runtime product
 
 test("React Doctor changed scans use the checked-out branch upstream explicitly", () => {
   assertChangedScopeUsesConfiguredUpstream(
+    "skills/frameworks/react/react-doctor/SKILL.md",
+  );
+  assertCommandSectionBindsChangedScopeBase(
     "skills/frameworks/react/react-doctor/SKILL.md",
   );
   assertChangedScopeUsesConfiguredUpstream(
