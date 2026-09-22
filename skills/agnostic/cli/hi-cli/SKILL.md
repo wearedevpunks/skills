@@ -27,6 +27,8 @@ Read [references/commands.md](references/commands.md) when choosing or explainin
 
 ## Workflow
 
+For managed lint setup, scope changes, policy migration, conflicting commands, or stale-policy findings, read [references/managed-lint.md](references/managed-lint.md). Complete explicit scope selection before dependent lint adoption; `--yes` does not supply that decision.
+
 1. Run the bounded command requested by the user.
 2. Classify its result as init, scaffold, check, ensure, update, tools ensure, report, upgrade, or operator.
 3. Follow only that branch in [references/post-command-flow.md](references/post-command-flow.md).
