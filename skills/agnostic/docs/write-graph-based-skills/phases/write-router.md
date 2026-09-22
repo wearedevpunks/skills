@@ -12,7 +12,7 @@ Select when bounds, state, and authority are complete while the target root boot
 - Make cold resume independent of transcript continuity.
 - Return exactly one selected gate, terminal, checkpoint, or blocked outcome for every legal state.
 - Preserve the [human steering terminal](../references/authoring-contract.md#human-steering-terminal)
-  until the `$handback` authority guard passes.
+  with its defined resumption conditions.
 - Preserve the target's intentional invocation policy.
 
 ## Checkable Completion State

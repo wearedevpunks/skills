@@ -23,7 +23,7 @@ and human-verdict pointers, and exact child/relation readback.
 ## Declared exits
 
 - `support_resolved` -> router re-entry.
-- `human_steering_required` -> handback.
+- `human_steering_required` -> human-steering.
 - `blocked` -> stop with missing retained evidence.
 
 ## Durable handoff

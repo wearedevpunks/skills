@@ -24,7 +24,7 @@ and clean handoff.
 | `report_retention_pending` | Retryable retention failure | Hashes fresh | Report writer | `report_retention_pending` | None | Exact retryable evidence; no authoritative pass |
 | `report_retention_pending` | Non-retryable retention failure | Retry cannot succeed | Report writer | `review_failed` | None | Exact terminal evidence; no authoritative pass |
 | `report_retention_pending` | Freshness changed | Target or source hash changed | `review-phase` | `review_due` | None | Stale local report; unchanged counters |
-| `review_routed` | Human steering route | Derived primary route is `human_steering_required` | `review-phase` | `human_steering_required` | None | Retained report plus durable `$handback` outcome |
+| `review_routed` | Human steering route | Derived primary route is `human_steering_required` | `review-phase` | `human_steering_required` | None | Retained report plus durable decision record |
 | `review_routed` | Readonly return | Standalone; primary route is not `human_steering_required` | Standalone caller | `review_complete` | None | Retained report output and route |
 | `review_routed` | Resume debug route | Handoff already records run id, debug route, and `debug_active` | `delivery-phase` | `debug_active` | None | Existing atomic handoff; no guard fallthrough |
 | `review_routed` | Resume implementation route | Handoff already records run id, implementation route, and `repair_active` | `delivery-phase` | `repair_active` | None | Existing atomic handoff; no guard fallthrough |
@@ -79,8 +79,8 @@ including three. Recovery preserves this authority without granting more default
 passes. Historical numbered repair states normalize to the existing repair and
 focused-validation route; their counters and report identities stay unchanged.
 
-`human_steering_required` opens no repair. It remains terminal until the
-`$handback` authority guard passes.
+`human_steering_required` opens no repair. It remains terminal until current
+user direction resolves the required decision.
 
 Same-goal bounds revisions preserve delivery lineage and counters. Resume,
 rebase, new commit, process retry, and handoff preserve them. Only an explicitly

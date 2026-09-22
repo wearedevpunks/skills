@@ -15,12 +15,12 @@
 
 | State | Entry guard | Exit guard | Next states |
 | --- | --- | --- | --- |
-| Fog absent | supported wrapper lens, no exact Fog | exact Fog and immutable lens | grilling, handback |
-| Grilling active | exact Fog, bounded result missing | retained evidence or support request | research, prototype, reconcile, return, handback |
-| Support active | named child and precise unknown | immutable evidence or verdict | grilling, handback |
-| Projection pending | ceiling-safe optional intent | exact or unresolved result | return, handback |
+| Fog absent | supported wrapper lens, no exact Fog | exact Fog and immutable lens | grilling, human-steering |
+| Grilling active | exact Fog, bounded result missing | retained evidence or support request | research, prototype, reconcile, return, human-steering |
+| Support active | named child and precise unknown | immutable evidence or verdict | grilling, human-steering |
+| Projection pending | ceiling-safe optional intent | exact or unresolved result | return, human-steering |
 | Bounded result | required retained evidence exists | durable return written | terminal return |
-| Human steering | current authority cannot resolve conflict | `$handback` guard passes | terminal or router re-entry |
+| Human steering | current authority cannot resolve conflict | user direction resolves the conflict | terminal or router re-entry |
 
 Graph forms cover the baseline path, lens branch, support cycles, optional
 projection skip, blocked/checkpoint outcomes, cold resume, and terminal human
@@ -35,7 +35,7 @@ outrank a committed handoff and its advisory suggested route.
 | Branch path | grilling | grilling | yes | — |
 | Repair cycle | reconcile | reconcile | yes | — |
 | Human checkpoint | reconcile | reconcile | yes | — |
-| Failure handback terminal | human-steering | human-steering | yes | — |
+| Human steering terminal | human-steering | human-steering | yes | — |
 | Cold resume | return-target | return-target | yes | — |
 | Stale or invalid artifact | human-steering | human-steering | yes | — |
 | Contradictory suggestion loses | grilling | grilling | yes | — |

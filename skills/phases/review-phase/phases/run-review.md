@@ -58,7 +58,8 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
    accepted finding a stable identifier, lens, severity, location, impact,
    evidence, action, and one explicit `return_route`: `human_steering_required`,
    `debugging`, `implementation`, `debt_follow_up`, or `docs_ingest`. Use
-   `human_steering_required` when the repair triggers `$handback`.
+   `human_steering_required` when the repair exceeds accepted bounds, changes
+   requirements, weakens a gate, or substantially redesigns implementation.
 7. Run only the smallest safe readonly validation needed to verify candidates or
    governing acceptance evidence. Broader checks require explicit accepted spec
    or plan authority. Record missing required RED/GREEN evidence as a finding;

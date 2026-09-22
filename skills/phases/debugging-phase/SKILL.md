@@ -30,7 +30,6 @@ description: >-
 
 - The work is pure planning, requirements discovery, or design.
 - The failure is already proven and only needs implementation inside an active spec plan.
-- The next action triggers `$handback`; return human steering instead.
 - The request is only static code review with no runtime symptom.
 
 ## Workflow
@@ -42,7 +41,8 @@ description: >-
 2. **Set bounds.**
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.
-   - When the next action triggers `$handback`, invoke it and stop.
+   - If the next action exceeds these bounds, retain the evidence and required
+     decision; return `human_steering_required` and stop.
 3. **Reproduce visible behavior.**
    - Before forming hypotheses or starting fix work, run `$verify-behavior` in
      `reproduce` mode when the reported behavior is visibly exercisable.
@@ -71,7 +71,7 @@ description: >-
 8. **Exit.**
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
-   - Human steering: return the durable `$handback` outcome and stop.
+   - Human steering: return `human_steering_required` with the retained decision record.
 
 ## Parallel Rules
 
@@ -83,7 +83,6 @@ description: >-
 - Never let parallel workers make speculative fixes against unproven hypotheses.
 - Merge worker findings into one evidence matrix before deciding on a patch.
 - In delivery-internal mode, parallel workers must stay inside the delivery scope unless assigned readonly investigation.
-- A `$handback` trigger ends fix delegation.
 
 ## Output Contract
 

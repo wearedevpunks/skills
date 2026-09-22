@@ -111,9 +111,9 @@ Completion criterion:
 ## Human Steering Terminal
 
 Every graph includes `human_steering_required` as a terminal, non-success
-state. The gate that selects it invokes `$handback`, writes that skill's durable
-outcome, and stops. The router keeps returning the terminal until the
-`$handback` authority guard passes.
+state for actions beyond accepted scope or unresolved human decisions. The gate
+records the blocker, evidence, proposed action, and required decision, then stops.
+The router keeps returning the terminal until the user authorizes continuation.
 
 ## Gate Contract
 
@@ -181,7 +181,7 @@ Completion criterion:
 | Branch path |  |  |  |  |
 | Repair cycle |  |  |  |  |
 | Human checkpoint |  |  |  |  |
-| Failure handback terminal |  |  |  |  |
+| Human steering terminal |  |  |  |  |
 | Cold resume |  |  |  |  |
 | Stale, out-of-scope, or invalid artifact |  |  |  |  |
 | Contradictory suggested route loses to evidence |  |  |  |  |
@@ -190,8 +190,8 @@ Completion criterion:
 
 Completion criterion:
 - all ten rows are filled with stale, out-of-scope, and invalid as subcases.
-- the failure-handback row proves the `human_steering_required` terminal and
-  `$handback` authority guard; the planned human-checkpoint row remains distinct.
+- the human-steering row proves the terminal and resumption conditions defined
+  in [Human Steering Terminal](#human-steering-terminal); the planned human-checkpoint row remains distinct.
 - repairs are present only when match is No.
 
 ## Final Audit
@@ -200,8 +200,8 @@ Completion criterion:
 - Router and gates are deterministic under the authority table.
 - Cold resume derives from current evidence, workflow-native artifacts, and committed handoffs.
 - Every exit commits a durable handoff.
-- `human_steering_required` invokes `$handback`, commits its outcome, and keeps
-  the terminal until that skill's authority guard passes.
+- `human_steering_required` records the outcome and preserves the
+  [terminal and resumption conditions](#human-steering-terminal).
 - Terminal guard accounts for every mandatory obligation.
 - The skill-protocol boundary is the set of written contracts and durable evidence.
 - Markdown cannot enforce exclusive writers, execution ordering, or atomic persistence; require an external runtime only when one of those guarantees is a correctness requirement.

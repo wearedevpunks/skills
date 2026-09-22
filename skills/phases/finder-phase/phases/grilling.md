@@ -31,7 +31,7 @@ and relation, bounded-result state, and optional ceiling-safe projection intent.
 - `support_required` -> router re-entry.
 - `projection_requested` -> reconciliation through router re-entry.
 - `bounded_result_ready` -> bounded return through router re-entry.
-- `human_steering_required` -> handback.
+- `human_steering_required` -> human-steering.
 - `blocked` -> stop with missing evidence.
 
 ## Durable handoff

@@ -24,7 +24,7 @@ intake lens.
 ## Declared exits
 
 - `fog_ready` -> router re-entry.
-- `human_steering_required` -> handback.
+- `human_steering_required` -> human-steering.
 - `blocked` -> stop with missing evidence.
 
 ## Durable handoff

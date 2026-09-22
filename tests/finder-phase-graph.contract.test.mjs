@@ -33,7 +33,7 @@ test("Finder exposes one durable generic-child graph behind both wrappers", () =
     "prototype",
     "reconcile",
     "return-target",
-    "handback",
+    "human-steering",
   ];
 
   assert.match(skill, /disable-model-invocation:\s*true/u);

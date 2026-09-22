@@ -10,7 +10,7 @@ Select when disclosure passes and route predictions, derivations, or mismatch re
 - Record each predicted route before applying the target contracts.
 - Derive each route from current evidence, authority, guards, and precedence.
 - Cover all ten scenarios: baseline path, branch path, repair cycle, planned
-  human checkpoint, failure handback terminal, cold resume, stale or
+  human checkpoint, human steering terminal, cold resume, stale or
   out-of-scope or invalid artifact, contradictory suggested route losing to
   evidence, narrower executor substitution with a stable actor-like gate
   boundary, and premature completion rejected by the terminal guard.

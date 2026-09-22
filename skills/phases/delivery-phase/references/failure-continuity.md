@@ -17,7 +17,7 @@ contracts; these remain the sole owners of worker returns and gate outcomes.
    Diagnostic Evidence. Record the observation and discriminating result before
    retrying; repeating the same repair is not new evidence.
 3. Stagnant repair, required scope redesign, weaker gates, changed requirements,
-   missing access or a human decision routes to [handback](../phases/handback.md).
+   missing access or a human decision routes to [human steering](../phases/human-steering.md).
    Keep accepted bounds and scope custody intact while steering is required.
 4. Retain the resulting phase-specific state behind a pointer and emit the common
    [Phase Result](context-continuity.md#common-phase-result). Resume checks current

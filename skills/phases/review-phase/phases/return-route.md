@@ -41,8 +41,9 @@ debug, debt, documentation, or closeout work.
 4. Require the derived result to equal the retained report's `routing` object.
    A mismatch is invalid retained routing evidence and routes to
    `review_failed`.
-5. If the primary route is `human_steering_required`, invoke `$handback`, write
-   its durable outcome, and stop.
+5. If the primary route is `human_steering_required`, retain the blocking
+   finding, supporting evidence, and exact decision needed; return that outcome
+   and stop.
 6. Otherwise write returned routing evidence containing the immutable report
    identity, stable finding IDs, primary route, optional architecture follow-up,
    and validation summary. Delivery returns `review_routed`; standalone returns
@@ -55,7 +56,7 @@ debug, debt, documentation, or closeout work.
 - Human steering outranks runtime, implementation, debt, documentation, and
   closeout.
 - The retained report and reviewed target remain readonly.
-- This gate writes routing or `$handback` evidence only. Delivery owns any later
+- This gate writes routing or decision evidence only. Delivery owns any later
   route mutation and every repair counter or active repair state.
 - One return does not invoke review again, run validation again, create review
   4, or enter repair.
@@ -74,8 +75,8 @@ debug, debt, documentation, or closeout work.
   explicit delivery resume.
 - `review_complete`: standalone routing evidence is durable and review is
   complete.
-- `human_steering_required`: the `$handback` outcome is durable and expanded
-  repair awaits that skill's authority guard.
+- `human_steering_required`: the decision record is durable; expanded repair
+  awaits current user direction resolving the required decision.
 - `report_retention_pending`: retained containment or blob evidence became
   temporarily unverifiable; retry retention without rerunning lenses.
 - `review_due`: target, bounds, or governing sources are no longer fresh for
