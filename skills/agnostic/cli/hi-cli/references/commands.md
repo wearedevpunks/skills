@@ -12,17 +12,17 @@ Activate `$docs-onboarding` after the command. Reconcile a generated wiki root w
 
 Use for repo-aware AI setup. It detects the repository, resolves packs, and writes managed `.agents/`, `.devpunks/`, skill, prompt, lint, subagent, tool, and scaffold-manifest assets.
 
-The command does not finish repo-specific authoring. Reconcile its generated instructions with the real repository. Use `hi scaffold --yes` only when a non-interactive harness must accept the resolved default pack selection; it does not select optional packs or resolve policy choices.
+The command does not finish repo-specific authoring. Reconcile its generated instructions with the real repository. Use `hi scaffold --yes` only when a non-interactive harness must accept the resolved default pack selection; it does not select optional packs or resolve policy choices. Managed lint requires saved `lint.scopes`; missing selection is actionable work, while `[]` deliberately selects none. Follow [managed-lint.md](managed-lint.md) for candidate inventory, settings authoring, and policy reconciliation.
 
 ## `hi check`
 
-Use as the preferred read-only drift command. It checks managed scaffold, baseline, and CLI drift without writing files.
+Use as the preferred read-only drift command. It checks managed scaffold, baseline, CLI, and managed lint selection/route health without writing files. An installed baseline identity alone does not establish correct live lint policy.
 
-Report the current findings. A clean result needs no update follow-through.
+Report the current findings. For missing selection, stale policy, or command/config conflicts, use the matching next action in [managed-lint.md](managed-lint.md#interpret-the-result). A clean result needs no update follow-through; basic health inspection is not a whole-repository lint run.
 
 ## `hi ensure`
 
-Use to reconfigure repository manager, backlog provider, asset provider, and backlog project URL settings in an existing Harness setup.
+Use to reconfigure repository manager, backlog provider, asset provider, backlog project URL, and managed lint ownership in an existing Harness setup. The managed lint choice keeps saved selection or accepts JSON arrays of exact Software Scopes and Excluded Paths. Inventory candidates through [managed-lint.md](managed-lint.md#select-software-scopes) before entering those arrays; preserve unrelated settings.
 
 It does not install, repair, validate, or refresh external tools. Use `hi tools ensure` for tools.
 
@@ -30,11 +30,10 @@ It does not install, repair, validate, or refresh external tools. Use `hi tools 
 
 Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
 
-- `--write` applies accepted managed-file updates.
-- `--yes` applies them non-interactively.
+- Normal `hi update` applies updates; `--write` and `--yes` are compatibility apply aliases.
 - `--check` remains a supported compatibility preview, but prefer `hi check` for read-only drift inspection.
 
-After a write, follow only the changed categories in [post-command-flow.md](post-command-flow.md).
+For lint changes, follow [managed-lint.md](managed-lint.md#reconcile-lint-adoption): preview the complete dependent change, preserve project policy, and distinguish source findings from failures that block activation. After a write, follow only the changed categories in [post-command-flow.md](post-command-flow.md).
 
 ## `hi tools ensure`
 

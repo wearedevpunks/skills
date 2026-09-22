@@ -47,6 +47,7 @@ Then:
   entrypoints and are excluded from scoped tables
 - always link `opensrc/README.md` from scoped prompts and read it when work depends on third-party library behavior
 - reconcile only the generated skills, prompts, lint, hooks, scripts, subagents, tools, and wiki assets in scope
+- for lint output, complete [managed lint selection and adoption](managed-lint.md); saved owners and verified routes are the completion evidence
 - preserve repo-owned edits and ask before changing project policy
 - run targeted validation for the outputs reconciled
 
@@ -54,7 +55,7 @@ Do not stop merely because generated files exist.
 
 ### Check
 
-Read the current summary only. Report CLI, baseline, managed-file, settings, pack, or tool drift without writing.
+Read the current summary. Report CLI, baseline, managed-file, settings, pack, tool, or managed lint route drift without writing. For lint selection, policy, or command conflicts, follow [result interpretation](managed-lint.md#interpret-the-result) and retain the named owner, paths, and execution context.
 
 A clean result is complete. If drift exists, name the matching `hi update`, `hi ensure`, `hi tools ensure`, or `hi upgrade` action without running a mutation unless authorized.
 
@@ -62,7 +63,7 @@ A clean result is complete. If drift exists, name the matching `hi update`, `hi 
 
 ### Ensure
 
-Verify only the repository manager, backlog provider, asset provider, backlog project URL, and resulting settings summary.
+Verify the repository manager, backlog provider, asset provider, backlog project URL, and resulting settings summary. When managed lint ownership is in scope, confirm the exact `lint.scopes` and `lint.exclude` arrays using [scope selection](managed-lint.md#select-software-scopes). Saving settings is not evidence that dependent lint routes have been adopted.
 
 Do not inspect or mutate external tools. A settings failure is complete when its exact validation or write blocker is reported.
 
@@ -70,20 +71,20 @@ Do not inspect or mutate external tools. A settings failure is complete when its
 
 Apply [Project Verifier preservation](#project-verifier-preservation) before reconciliation.
 
-Read the command summary before any generated artifact. If it reports no diff, report success and stop.
+Read the command summary before any generated artifact. If it reports no diff and no unresolved health or adoption finding, report that result and stop. A matching baseline pin or empty changed-file list alone does not prove live route health.
 
 For a diff, inspect only paths changed or flagged by this run. Apply every matching row:
 
 | Changed category | Required follow-through |
 | --- | --- |
-| Settings or manifest pins only | Confirm accepted pins. |
+| Settings or manifest pins only | Confirm accepted pins; changed lint settings require scope/route reconciliation in [managed-lint.md](managed-lint.md). |
 | Skill content; IDs unchanged | Inspect affected skills and active mirrors only. |
 | Skill added, removed, or renamed | Reconcile affected IDs and their mirrors. |
 | `local-edited` conflict | Preserve local intent; ask when project and baseline intent conflict. |
 | Missing or stale path | Confirm the named recreation or deletion and direct references. |
 | Prompt or Rule Registry input | Activate `$writing-for-agents`, then `$rule-authoring`; reconcile only affected scopes and mirrors. |
 | Subagent input | Reconcile only generated and final subagent manifests. |
-| Lint, hook, or script input | Validate the affected config or command; ask before changing policy. |
+| Lint, hook, or script input | Follow [managed lint adoption](managed-lint.md#reconcile-lint-adoption); validate affected routes and preserve accepted project policy. |
 | Required tools | Check only added, changed, or failed tools. |
 | Source-guide content | Inspect only affected guide files. |
 | Wiki input | Reconcile affected routes or documents, then validate them. |
