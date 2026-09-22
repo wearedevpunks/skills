@@ -5,8 +5,9 @@ Choose one next phase from current durable authority.
 1. Apply [context continuity](../references/context-continuity.md): select
    trigger-specific instructions, validate required pointers and warm/cold mode.
    A failed resolution emits the common Phase Result and blocks its action.
-2. Preserve terminal `human_steering_required` until `$handback`'s authority guard
-   passes. New boundary evidence selects [handback.md](handback.md).
+2. Preserve terminal `human_steering_required` until current user direction
+   resolves the required decision. New boundary evidence selects
+   [human-steering.md](human-steering.md).
 3. For failed tasks or repair evidence, apply
    [failure continuity](../references/failure-continuity.md). Independent eligible
    work continues through the implementation owner's gates.

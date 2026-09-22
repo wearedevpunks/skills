@@ -20,7 +20,7 @@ ensure-fog
   -> bounded return
 
 identity, lens, selection, or ceiling conflict
-  -> handback -> human_steering_required
+  -> human-steering -> human_steering_required
 ```
 
 One Fog retains its immutable original Business or Functional intake lens.

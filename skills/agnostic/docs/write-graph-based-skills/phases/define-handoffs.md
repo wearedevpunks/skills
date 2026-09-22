@@ -16,7 +16,7 @@ Select when target gates exist and their workflow-owned handoff schema, durable 
 - Keep route suggestions optional, advisory, and lowest authority.
 - Require every declared completion, blocker, skip or no-op, and human-checkpoint exit to write a durable handoff when applicable.
 - Require the [human steering terminal](../references/authoring-contract.md#human-steering-terminal)
-  to preserve the `$handback` outcome and authority guard.
+  to preserve the required decision and evidence for resuming.
 
 ## Checkable Completion State
 

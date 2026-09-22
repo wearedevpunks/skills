@@ -72,8 +72,8 @@ After the retained report establishes the completed ordinal:
 1. Recompute aggregate routing from every finding's validated `return_route`
    with the review contract helper. Reject a mismatch with the retained routing
    object.
-2. For primary `human_steering_required`, preserve the returned `$handback`
-   outcome and stop. It never opens a repair state.
+2. For primary `human_steering_required`, preserve the returned decision record
+   and stop. It never opens a repair state.
 3. When `secondary_architecture_follow_up` is true, enter `debt_follow_up`
    first and persist the primary `debugging` or `implementation` route as
    `post_debt_route`.

@@ -34,8 +34,8 @@ silently renaming them.
 - Use a one-worker wave only when dependencies or ownership leave one task
   unblocked.
 - Keep changes inside the active delivery scope.
-- When current evidence triggers `$handback`, return it to the router without
-  expanding worker ownership.
+- When the next action exceeds accepted bounds, return the required decision
+  to the router before expanding worker ownership.
 - Parent orchestration owns shared notes and final validation evidence.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.
 - If runtime evidence appears during validation, finish the phase handoff and route to debug.

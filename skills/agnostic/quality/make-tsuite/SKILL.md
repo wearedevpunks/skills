@@ -9,11 +9,11 @@ Build a risk-driven automated software test portfolio. `TSuite` means test suite
 
 ## Boundary
 
-Production-reachable content is immutable. Writable scope is limited to automated tests and test-scoped fixtures, harnesses, seeds, artifacts, configuration, and dependencies. Inline tests or shared manifests are writable only where changed regions are mechanically isolated to test compilation or execution. Ambiguous isolation is a blocker requiring handback.
+Production-reachable content is immutable. Writable scope is limited to automated tests and test-scoped fixtures, harnesses, seeds, artifacts, configuration, and dependencies. Inline tests or shared manifests are writable only where changed regions are mechanically isolated to test compilation or execution. Ambiguous isolation is a blocker. Report the uncertainty and required scope decision before editing.
 
 Before editing, classify every allowed path or hunk as test-scoped. After editing, inspect the complete source-control diff; completion requires every changed region and dependency to remain unreachable from production behavior, artifacts, and deployable wiring.
 
-Keep a product defect visible as a failing test with observed failure evidence, then hand back a separate production requirement. A test-only task reaches GREEN only through test-scoped changes.
+Keep a product defect visible as a failing test with observed failure evidence, then report a separate production requirement. A test-only task reaches GREEN only through test-scoped changes.
 
 ## Modes
 

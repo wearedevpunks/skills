@@ -14,8 +14,8 @@ Load `debugging-phase` only after this phase is selected.
   trace, reproduction, or review finding.
 - Readonly parallel hypothesis research is allowed.
 - Speculative parallel fixes are not allowed.
-- When current evidence triggers `$handback`, return it to the router without
-  opening another goal.
+- When the next action exceeds accepted bounds, return the required decision
+  to the router before opening another goal.
 - Preserve review lineage, `review_count`, `repair_count`, and the opening
   `review_run_id` through the repair.
 

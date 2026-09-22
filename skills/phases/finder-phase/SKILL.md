@@ -35,7 +35,7 @@ The router owns transitions. Each gate owns only its bounded action.
 - [Prototype support](phases/prototype.md)
 - [Optional projection reconciliation](phases/reconcile.md)
 - [Bounded return](phases/return-target.md)
-- [Human steering](phases/handback.md)
+- [Human steering](phases/human-steering.md)
 
 ## Runtime references
 

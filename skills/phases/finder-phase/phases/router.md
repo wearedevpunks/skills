@@ -10,7 +10,7 @@ suggested route is advisory only.
 1. Unsupported intake lens, explicit steering state, ambiguous Fog identity,
    conflicting immutable-lens evidence, duplicate child identity, ambiguous child choice,
    unsupported support kind, or projection above the wrapper ceiling ->
-   [handback](handback.md).
+   [human-steering](human-steering.md).
 2. No exact Fog readback -> [ensure-fog](ensure-fog.md).
 3. One unresolved Research child -> [research](research.md).
 4. One unresolved Prototype child -> [prototype](prototype.md).

@@ -21,8 +21,8 @@ Select when the target router exists and one or more executable target gates are
 - Every executable gate has exactly one flat phase file.
 - Every gate defines the normalized contract and emits only declared exits.
 - Target root and references contain no executable gate body.
-- Every applicable gate invokes `$handback` and emits only the terminal's
-  durable outcome when its guard selects human steering.
+- Every applicable gate records the terminal outcome and stops when its guard
+  selects human steering.
 
 ## Durable Phase Outcome
 

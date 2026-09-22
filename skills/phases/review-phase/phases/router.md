@@ -43,7 +43,7 @@ output.
 
 | Priority | Current evidence | Output |
 | --- | --- | --- |
-| 1 | Durable `human_steering_required` while the `$handback` authority guard fails | terminal `human_steering_required` |
+| 1 | Durable `human_steering_required` with an unresolved required decision | terminal `human_steering_required` |
 | 2 | Unsupported target, invalid accepted bounds, non-retryable contract or infrastructure failure, malformed active retention candidate, or `same_run_conflict` | terminal `review_failed` |
 | 3 | Delivery entry is otherwise valid, recovered `review_count >= 2`, no verified human direction authorizes the next ordinal, and no already-started run has valid predecessor evidence | terminal `review_budget_exhausted` |
 | 4 | A repository-approved retained ref is required but cannot be derived and requires an operator decision | checkpoint `retained_ref_approval_required` |

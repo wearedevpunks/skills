@@ -106,6 +106,7 @@ evidence under the transition rules in [review.md](../phases/review.md). A clean
 handoff links the retained review, final changes and passing required checks.
 Historical ordinals remain unchanged during legacy read-time normalization.
 
-For `human_steering_required`, store the complete `$handback` outcome in the
-pointed durable state artifact. Keep only its pointer and exact blocker in the
-Delivery Handoff. The state remains terminal until the authority guard passes.
+For `human_steering_required`, store the blocked action, evidence, and required
+decision in the pointed durable state artifact. Keep only its pointer and exact
+blocker in the Delivery Handoff. The state remains terminal until current user
+direction resolves the required decision.

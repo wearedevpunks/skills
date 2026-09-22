@@ -19,7 +19,7 @@ Select when obligations are qualified and the evidence-defined state model, topo
 - Every state has scope, entry guard, exit guard, and reachable next states.
 - Every mandatory obligation is reachable and evidence-backed.
 - Each topology form is represented or marked N/A.
-- `human_steering_required` is terminal until the `$handback` authority guard passes.
+- `human_steering_required` preserves the defined terminal and resumption conditions.
 
 ## Durable Phase Outcome
 

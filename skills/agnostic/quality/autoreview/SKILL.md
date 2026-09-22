@@ -27,7 +27,7 @@ Use when:
   focused tests for changed code. End this invocation without rerunning the
   helper. A further direct pass requires formal `$review-phase` or a new
   explicit user instruction after this result.
-- When a finding triggers `$handback`, invoke it before any expanded repair.
+- Report repairs beyond accepted scope with the decision needed before proceeding.
 - For security-audit suppression changes, verify accepted findings remain auditable: suppressed findings stay in structured output, active output keeps an unsuppressible suppression notice, and aggregate findings cannot hide unrelated active risk.
 - Never switch or override the requested review engine/model. If the review hits model capacity, retry the same command a few times with the same engine/model.
 - Be patient with large bundles. Structured review can take up to 30 minutes while the model call is active, especially with Codex tools or web search.

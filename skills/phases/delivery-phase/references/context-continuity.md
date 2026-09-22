@@ -87,7 +87,7 @@ pointer contract above; required delta and stop fields cannot be omitted.
 Keep phase-specific state, logs and detailed rationale in pointed durable
 artifacts. `failed` records an attempted action's observed failure; `blocked`
 records unavailable required proof or prerequisite. `skipped` requires an exact
-no-op reason. `human_steering_required` points to the retained handback outcome.
+no-op reason. `human_steering_required` points to the retained decision record.
 A Phase Result neither accepts a Task nor replaces its Task Gate.
 
 Full Delivery updates its packet and re-enters the router. Direct phase, explicit

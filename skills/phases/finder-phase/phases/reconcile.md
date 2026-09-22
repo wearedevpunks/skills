@@ -29,7 +29,7 @@ unresolved projection result, or a zero-write conflict result.
 - `projection_reconciled` -> router re-entry.
 - `projection_unresolved` -> bounded return through router re-entry.
 - `approval_required` -> persist checkpoint and stop.
-- `human_steering_required` -> handback.
+- `human_steering_required` -> human-steering.
 - `blocked` -> stop with missing required readback.
 
 ## Durable handoff
