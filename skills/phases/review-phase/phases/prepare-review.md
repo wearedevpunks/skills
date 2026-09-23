@@ -12,7 +12,7 @@ and no valid later-state evidence already owns the run.
 - accepted-bounds identity, scope, and primitive evidence
 - delivery Git/diff or standalone artifact target primitives
 - governing Spec, Standards, scoped guidance, named-skill, plan, and
-  implementation-note sources
+  implementation-note sources; retained Architecture for delivery mode
 - delivery-goal identity and retained-report candidates for delivery mode
 - caller evidence needed to explain a retry, failure, or current route
 
@@ -29,7 +29,14 @@ reconciles retained-pass recovery, and owns the exit evidence.
 1. Validate accepted bounds and normalize the smallest-certain supported target
    before reading or evaluating any delivery review counter. Unsupported target
    or invalid bounds evidence is terminal even when a delivery counter is 2 or a preserved legacy 3.
-2. Recompute the accepted-bounds hash, normalized target, inclusive scope,
+2. For delivery mode, verify the
+   [Architecture/SPEC pair](../../delivery-phase/references/artifact-state.md#architecturespec-pair-complete)
+   before review preparation continues. Missing, stale or conflicting proof returns
+   `review_context_blocked` with the exact gap for Requirements Phase /
+   `requirements-grill`, preserving lineage and completed ordinals. Include the
+   architecture's exact retained identity and required decision selectors in
+   governing sources and Review Packet facts; use existing source-set hashing.
+   Recompute the accepted-bounds hash, normalized target, inclusive scope,
    snapshot hash, governing source paths and blob hashes, and source-set hash
    from primitive current evidence.
 3. Derive delivery lineage only from stable delivery-goal identity. Derive
@@ -67,8 +74,9 @@ reconciles retained-pass recovery, and owns the exit evidence.
    `recovered review_count + 1` and derive `review_run_id` from lineage and that
    ordinal. In standalone mode derive `review_run_id` from lineage and
    `snapshot12`.
-6. Freeze the [Review Packet](../references/review-packet.md), including Spec,
-   plan, skill guidance, Verification evidence and relevant dependency pointers.
+6. Freeze the [Review Packet](../references/review-packet.md), including
+   Architecture for delivery mode, Spec, plan, skill guidance, Verification
+   evidence and relevant dependency pointers.
    Assemble complete `review_running` predecessor evidence. Preparation ends
    before any review lens, validation command, report write, retention action,
    counter projection, or repair routing.

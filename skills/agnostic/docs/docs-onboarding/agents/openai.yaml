@@ -1,4 +1,4 @@
 interface:
   display_name: "Docs Onboarding"
   short_description: "Reconstruct project wiki/spec context"
-  default_prompt: "Use $docs-onboarding to inspect code, docs, and backlog context, build the Project Map, close the targeted requirements grill, compile agent-ready specs with create-spec, then project written specs with write-backlog."
+  default_prompt: "Use $docs-onboarding to inspect code, docs, and backlog context, build the Project Map, close the targeted requirements grill, pass confirmed sources through requirements-phase for create-architecture then create-spec, then project written specs with write-backlog within accepted onboarding placement authority."

@@ -11,7 +11,7 @@ disable-model-invocation: true
 `delivery-phase` is a reusable phase router.
 
 1. Read [phases/router.md](phases/router.md).
-2. Inspect only enough issue, spec, plan, notes, diff, retained review, durable
+2. Inspect only enough issue, architecture, spec, plan, notes, diff, retained review, durable
    handoff, validation, and docs state to choose the current gate.
 3. If approved artifact links or UI Evidence links are present, carry them as routing evidence.
 4. Load exactly one phase file from `phases/`.
@@ -29,7 +29,7 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 ## Phase Files
 
 - [phases/router.md](phases/router.md): choose the next phase from artifacts and evidence.
-- [phases/spec.md](phases/spec.md): create or repair the agent-ready spec.
+- [phases/spec.md](phases/spec.md): route missing or stale Architecture/SPEC proof to Requirements Phase.
 - [phases/backlog.md](phases/backlog.md): verify or project the agent-ready spec into delivery backlog items.
 - [phases/plan.md](phases/plan.md): create or repair the execution-ready plan.
 - [phases/implement.md](phases/implement.md): execute the accepted plan.
@@ -43,7 +43,10 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 ## Router Rules
 
 - Read `router.md` and its continuity contract before selecting exactly one phase.
-- Reuse fresh matching authority; activate child skills only from their selected phase.
+- Require the [Architecture/SPEC pair](references/artifact-state.md#architecturespec-pair-complete)
+  before dependent dispatch in every entry mode, including local and resumed
+  delivery. Reuse fresh matching authority; activate child skills only from
+  their selected phase.
 - Full Delivery continues within accepted bounds. Other modes emit one common
   Phase Result and stop at their requested boundary.
 - [references/context-continuity.md](references/context-continuity.md) owns

@@ -1,36 +1,23 @@
 # Spec Phase
 
-Use this phase when no matching agent-ready `SPEC.md` exists, or the current
-spec is stale, contradictory, or missing required scope.
+Use this phase when the required Architecture/SPEC pair is missing, stale or
+conflicting. Apply the
+[Architecture/SPEC Pair Complete gate](../references/artifact-state.md#architecturespec-pair-complete).
 
 ## Delegate
 
-Load `create-spec` only after this phase is selected.
-
-## Checks Before Delegating
-
-- Confirm the bounded goal, issue, tracker item, or requested capability.
-- Reuse existing spec artifacts when they match the requested scope.
-- Treat child stories, sub-issues, acceptance criteria, constraints, and non-goals as required input, not loose references.
-- If requirements are unsettled, return the compiler's `spec-not-ready` result
-  and route each named gap upstream instead of interviewing here.
+Return the bounded goal, exact artifact/decision gap and current source pointers
+to Requirements Phase. It owns `requirements-grill -> create-architecture ->
+create-spec -> write-backlog`. Pass optional Finder context only when supplied.
+Reuse matching current retained artifacts; unsettled decisions return to
+`requirements-grill` before either compiler runs.
 
 ## Completion State
 
-Write or verify:
-
-- matching `SPEC.md`
-- `readiness: agent-ready`
-- `spec-written`
-- verify the retained ref contains the spec commit
-- construct and verify a stable blob URL before backlog
-- source issue/tracker/spec folder
-
-Then stop or re-enter `delivery-phase` for routing.
-
-This completion state satisfies the downstream spec gate. Do not add a spec
-review or approval stop unless the user explicitly requested a HITL checkpoint.
+Verify the retained Architecture/SPEC pair and its exact identities, verified
+immutable blob URLs and source selectors. Backlog projection must name that
+spec identity. Compiler readiness needs no additional approval gate.
 
 Emit the [common Phase Result](../references/context-continuity.md#common-phase-result)
-with pointers to this completion evidence. Continue only in Full Delivery;
-otherwise stop at the requested boundary.
+with pointers to the resulting proof or exact gap. Continue only in Full
+Delivery; otherwise stop at the requested boundary.

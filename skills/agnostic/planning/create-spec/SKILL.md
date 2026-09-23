@@ -1,6 +1,6 @@
 ---
 name: create-spec
-description: Compile confirmed product decisions into SPEC.md. Use when requirements are closed or explicitly parked and an agent-ready provider-neutral specification is needed before backlog or planning.
+description: Compile confirmed product decisions and retained ARCHITECTURE.md into SPEC.md. Use when requirements are closed or explicitly parked and a provider-neutral specification is needed before backlog or planning.
 ---
 
 # Create Spec
@@ -11,7 +11,9 @@ no questions, runs no local grill, and performs no backlog mutation.
 
 ## Inputs
 
-Accept confirmed decision evidence: grill status and logs, research reports,
+Require the current retained sibling `ARCHITECTURE.md` from `create-architecture`
+with its verified immutable blob URL and exact source identities. Accept
+confirmed decision evidence: grill status and logs, research reports,
 prototype verdicts, ADRs, glossary, axioms, constraints, system facts, accepted
 implementation and testing decisions, dependency evidence, and accepted
 parent/base constraints. Provider backlog items may be source evidence, but
@@ -29,24 +31,35 @@ silently renaming them.
 2. Validate readiness using [readiness.md](references/readiness.md). If required
    evidence is missing, return one atomic `spec-not-ready` result and write no
    partial `SPEC.md`.
-3. Compile [SPEC-TEMPLATE.md](assets/SPEC-TEMPLATE.md). Preserve only confirmed
-   decisions; never invent closure. Serialize `Dependency Readiness` and
-   `Branch/Base Intent` using the readiness contract.
-4. Apply [spec-quality-bar.md](references/spec-quality-bar.md).
-5. Update existing planning-surface indexes through
+3. Draft [SPEC-TEMPLATE.md](assets/SPEC-TEMPLATE.md). Preserve confirmed decisions
+   and existing `OUT-###` / `AC-###` identities. Incorporate accepted architecture
+   constraints and exact technical details without copying the narrative.
+   Serialize `Dependency Readiness` and `Branch/Base Intent` using the readiness
+   contract.
+4. Invoke `$show-me` to place the completed spec's useful explanatory views in
+   `SPEC.md`. Derive them only from confirmed decisions; add no approval gate or
+   new closure. Finalize all spec content before mapping or retention.
+5. Complete the [Spec traceability contract](../create-architecture/references/artifact-contract.md#spec-traceability)
+   in `ARCHITECTURE.md` using the draft's real spec codes, stable architecture
+   selectors and exact grill question/log-entry evidence anchors. This is a
+   metadata-only amendment; new design decisions return to Requirements Grill.
+   Validate complete mapping and both drafts before replacing either artifact.
+6. Retain the enriched architecture first, using `create-architecture`'s retention
+   contract. Verify its immutable blob URL and bytes, then record that final
+   identity as the spec's `Architecture Source` and frontmatter link. Link each
+   outcome and criterion back to its canonical architecture mapping and sections.
+7. Apply [spec-quality-bar.md](references/spec-quality-bar.md).
+8. Update existing planning-surface indexes through
    [wiki-bookkeeping.md](references/wiki-bookkeeping.md).
-6. Persist the completed spec and bookkeeping in a dedicated git commit. Never
+9. Persist the completed spec and bookkeeping in a dedicated git commit. Never
    stage unrelated changes.
-7. Push or explicitly retain the spec commit through the repository-approved remote
-   mechanism. Verify the retained ref contains the spec commit, then construct and
-   verify a stable blob URL before `write-backlog` may consume it. A local
-   commit SHA plus path is insufficient.
-8. Invoke `$show-me` to present the completed spec in `SPEC.md`. Derive the presentation
-   only from the compiled spec and continue without adding an approval gate or
-   inferring new closure.
-9. Return `spec-written`, `readiness: agent-ready`, and the verified stable blob
-   URL. If retention or URL verification fails, return one atomic
-   `spec-not-ready` result and do not invoke backlog projection.
+10. Push or explicitly retain the spec commit through the repository-approved
+    remote mechanism. Verify the retained ref contains the spec commit, and
+    construct and verify its stable blob URL before `write-backlog` may consume it.
+    A local commit SHA plus path is insufficient.
+11. Return `spec-written`, `readiness: agent-ready`, and both verified immutable
+    artifact URLs. If retention or URL verification fails, return one atomic
+    `spec-not-ready` result and do not invoke backlog projection.
 
 ## Boundaries
 
@@ -57,8 +70,13 @@ silently renaming them.
   reuses the provider Epic, Stories, Tasks, and blocker graph supported by the
   compiled requirements and current provider evidence.
 - A mutable path or local-only commit is not a backlog handoff.
-- Accepted technical and testing decisions belong in the spec. Detailed task
-  choreography does not.
+- `ARCHITECTURE.md` is the source-attributed design companion; the spec owns
+  resolved requirements, outcomes and acceptance criteria. Both must agree with
+  current grill decisions. A conflict returns to Requirements Phase and
+  `requirements-grill`; neither artifact silently overrides the other.
+- Accepted architecture constraints and technical and testing decisions belong
+  in the spec. Detailed task choreography does not. Architecture diagrams
+  explain accepted decisions; they cannot accept new ones.
 - `create-plan` preserves provider Task identities and owns files, commands,
   workers, and validation detail.
 - `Dependency Readiness` and `Branch/Base Intent` preserve accepted dependency

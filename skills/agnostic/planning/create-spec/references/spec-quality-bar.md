@@ -53,11 +53,19 @@ Avoid:
 - ensure frontmatter has a non-empty string `title`, especially for specs saved
   directly in routed Fumadocs trees
 - ensure frontmatter contains `readiness: agent-ready`
+- verify `Architecture Source` and frontmatter `links` name the exact retained
+  sibling architecture; its current source identities agree with the spec
+- verify accepted architecture constraints and concrete technical details are
+  incorporated with decision selectors; links alone do not preserve decisions
 - ensure `Dependency Readiness` records `No Stack Required` or `Ready` with
   evidence
 - ensure `Branch/Base Intent` records accepted parent/base constraints or
   `Not applicable`
 - ensure every outcome passes the one-way coverage contract
+- validate the [Spec traceability contract](../../create-architecture/references/artifact-contract.md#spec-traceability):
+  every real outcome and criterion has a complete source-grounded architecture
+  mapping; its spec backlinks resolve to the final retained architecture
+- preserve unchanged spec codes; explicitly retire superseded codes
 - remove all template scaffolding and empty irrelevant sections
 - ensure the document reads cleanly without ghost instructions
 - check that terminology matches repository domain language

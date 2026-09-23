@@ -46,7 +46,7 @@ The targeted grill can close when every blocking contradiction, missing backlog 
 
 Do not grill every low-risk current-state fact. Carry those into the reconstruction record as `Inferred`, but do not claim agent readiness while a required product decision remains inferred.
 
-## Reconstructed Specs
+## Reconstructed Architecture/SPEC Pairs
 
 Group reconstructed specs:
 
@@ -64,6 +64,18 @@ Evidence levels:
 - `Contradicted`: source evidence conflicts and needs resolution before the spec can be trusted.
 - `Missing`: expected context was not found, and the spec must ask a follow-up.
 
-Reconstructed specs must link back to relevant Project Map sections and onboarding grill decisions.
+Reconstructed architecture/spec pairs must link back to relevant Project Map sections and onboarding grill decisions.
 
-Only specs that pass `create-spec` readiness and return a verified stable blob URL may be projected by `write-backlog`. A `spec-not-ready` result returns its named gaps to onboarding; it produces neither a partial spec nor backlog mutations.
+Pass confirmed candidates to `requirements-phase`, which compiles architecture
+before spec and completes the canonical spec-to-architecture-to-question mapping.
+Retain both immutable artifact URLs, the final architecture identity in the spec,
+and links to the relevant Project Map evidence and exact grill question entries.
+`Inferred` facts remain attributed evidence, not accepted design or requirements.
+`Contradicted` or `Missing` material inputs block compilation until resolved.
+
+Only specs that pass `create-spec` readiness, resolve their complete architecture
+mapping and return a verified stable blob URL may be projected by `write-backlog`,
+within onboarding's existing placement authority. Missing authority blocks only
+projection; retain the compiled pair and name the exact human Finder invocation.
+An `architecture-not-ready` or `spec-not-ready` result returns its named gaps to
+onboarding; it produces neither partial canonical artifacts nor backlog mutations.

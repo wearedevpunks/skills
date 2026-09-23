@@ -1,6 +1,6 @@
 # Plan Phase
 
-Use this phase when a matching spec exists but no execution-ready `PLAN.md`
+Use this phase when a matching Architecture/SPEC pair exists but no execution-ready `PLAN.md`
 exists, or the plan is stale, vague, or missing validation gates.
 
 ## Delegate
@@ -9,7 +9,9 @@ Load `create-plan` only after this phase is selected.
 
 ## Checks Before Delegating
 
-- Verify the spec still matches the requested goal.
+- Verify the [Architecture/SPEC pair](../references/artifact-state.md#architecturespec-pair-complete)
+  still matches the requested goal. Carry both retained source identities and
+  decision selectors into plan Context Pointers and task Read Dependencies.
 - Preserve tracker hierarchy and every child-story or sub-issue requirement.
 - Require dependencies, Active Write Scopes, Read Dependencies, Shared Runtime
   Resources, Relevant Input Set identities, validation gates, review routing and

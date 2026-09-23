@@ -8,6 +8,13 @@ The generated `PLAN.md` is the execution handoff. It must stand alone without hi
 
 Include:
 
+- Context Pointers to the current retained `ARCHITECTURE.md` and `SPEC.md`, with
+  immutable blob URLs, exact source identities, required decision selectors and
+  freshness rules. Each task carries its relevant spec codes, architecture block/flow
+  selectors and source Q evidence through the canonical architecture traceability
+  mapping, so workers can reconstruct accepted decisions. Use the existing
+  Context Pointer contract in the installed `delivery-phase` skill's
+  `references/context-continuity.md`
 - `architecture_applicability: local | architecture-bearing` with evidence
 - initial situation
 - issue or problem statement
@@ -87,7 +94,7 @@ Every architecture-bearing task must also include:
 - `responsibility_acceptance_criteria`
 
 These fields bind the task to cumulative ownership rather than file placement. Local-plan tasks omit them;
-their plan-level applicability evidence and ordinary `codebase_design_notes` are the explicit escape hatch.
+their applicability evidence and ordinary `codebase_design_notes` replace only convergence fields. The retained architecture and pair checks still apply.
 
 `architecture_wave` is a stable architecture sequence id, for example `A2`; `wave_boundary` remains the worker
 parallelism id. `responsibility_acceptance_criteria` lists the stable criterion ids this task advances or proves.
@@ -119,6 +126,13 @@ processes, ports, fixtures, provider objects or databases and compatible access.
 `relevant_input_set` names the authoritative inputs and identity/readback method
 needed to detect changes before/after checks, release and finalization. Record
 explicit `none` with rationale where applicable; absence is unknown.
+
+Every task carries the pair's exact source identities and its applicable
+architecture decision selectors through Context Pointers, `read_dependencies`
+and `relevant_input_set`. Add concrete code/contract reads as needed. Preserve
+accepted detail at its source; a bounded excerpt must retain identity, selector
+and freshness. Changes invalidate affected task proof before dependent dispatch.
+Neither `local` applicability nor `planning-only` task identity waives the pair.
 
 A declared read/write or incompatible runtime conflict delays only affected work.
 Read/read overlap is safe. Changed relevant inputs invalidate affected gate proof
@@ -173,9 +187,9 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **depends_on**: [T1, T2]
 - **location**: src/example.ts
 - **owned_paths**: [src/example.ts, tests/example.test.ts]
-- **read_dependencies**: [src/contracts.ts]
+- **read_dependencies**: [ARCHITECTURE.md, SPEC.md, src/contracts.ts]
 - **shared_runtime_resources**: Isolated task fixture database; exclusive fixture writes.
-- **relevant_input_set**: Hash src/contracts.ts before/after checks; record fixture database identity.
+- **relevant_input_set**: Resolve retained Architecture/SPEC Context Pointers and applicable decision selectors; hash src/contracts.ts before/after checks; record fixture database identity.
 - **wave_boundary**: W2
 - **description**: Implement the task behavior.
 - **validation**: Public-interface behavior that proves completion.
