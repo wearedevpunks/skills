@@ -9,7 +9,7 @@ description: Implement an agent-ready spec folder through a plan-derived Executi
 
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** agent-ready spec folder with `SPEC.md` and `PLAN.md`
+- **Upstream:** current retained agent-ready `ARCHITECTURE.md` / `SPEC.md` pair and execution-ready `PLAN.md`
 - **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal scoped-worker orchestration
 - **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing agent-ready spec folder; stop and use `create-plan` if `PLAN.md` is missing
@@ -57,7 +57,9 @@ Provider mechanics remain inside `write-backlog`.
 ## Quick start
 
 1. Resolve the target spec folder by checking, in order: `apps/wiki/content/docs/project/specs/<domain>/<spec>/`, legacy `apps/wiki/specs/<domain>/<spec>/`, then `docs/specs/<domain>/<spec>/`.
-2. Read `references/lifecycle.md` and follow the shared execution contract exactly.
+2. Read `references/lifecycle.md` and verify its required Architecture/SPEC pair
+   before any direct or resumed execution, including local plans and repair.
+   Follow the shared execution contract exactly.
 3. Read `references/parallel.md`, parse the plan graph, and compute the complete eligible Execution Frontier. When the plan is architecture-bearing, also read and enforce `references/architecture-conformance.md`.
 4. Launch scoped workers for the eligible tasks using
    `references/parallel-worker-brief.md`. Forward every guidance item unchanged,

@@ -9,7 +9,7 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** agent-ready `SPEC.md` or explicit planning request
+- **Upstream:** current retained agent-ready `ARCHITECTURE.md` and `SPEC.md`, including for an explicit planning request
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
 - **Downstream:** execution-ready `PLAN.md` for `implement-spec`
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing
@@ -35,6 +35,12 @@ silently renaming them.
 ## Quick start
 
 1. Read repo, git, existing plan, and backlog context before asking questions.
+   Before planning on any entry or resume, verify the
+   **Architecture/SPEC Pair Complete** gate in the installed `delivery-phase`
+   skill's `references/artifact-state.md`.
+   This includes direct requests and `local` plans. Return missing, stale or
+   conflicting proof to Requirements Phase / `requirements-grill`; planning
+   cannot choose replacement architecture decisions.
 2. Keep a visible planning control panel in the conversation: locked decisions, open decisions, current graph step, and next step.
 3. Read `references/grill-ambiguity.md` and run `$grilling` as explicit ambiguity reduction.
 4. Update a running decision ledger after every response set, processing each answer individually so the user never has to reconstruct state from memory.
@@ -52,8 +58,10 @@ silently renaming them.
 10. For every implementation task, convert applicable scoped or named skill
     obligations into `implementation_skill_guidance`; preserve `assigned_skills`
     as planning provenance.
-11. Read `references/architecture-convergence.md`. Persist architecture applicability. For architecture-bearing
-   work, derive and validate the architecture contract accepted in `SPEC.md`; route missing or contradictory target design back to `requirements-grill`.
+11. Read `references/architecture-convergence.md`. Persist architecture applicability.
+    Derive applicable convergence detail from the current Architecture/SPEC pair;
+    route missing or contradictory target design to Requirements Phase /
+    `requirements-grill`. Applicability never waives the architecture artifact.
 12. Read `references/planner-task-graph.md` and run `$swarm-planner` to produce the swarm graph and `Tn` task contract.
 13. Read `references/tdd-shaping.md` and run `$tdd` to attach RED/GREEN targets to each `Tn` task.
 14. Read `references/backlog-sync.md`. For eligible projected work, preserve the

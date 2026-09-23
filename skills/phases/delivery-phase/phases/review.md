@@ -6,7 +6,11 @@ current snapshot.
 
 ## Prepare Review
 
-1. Require implementation, applicable task checks and Task Gates, Verification,
+1. Recheck the [Architecture/SPEC pair](../references/artifact-state.md#architecturespec-pair-complete)
+   before review or retained-state resume. Carry the exact architecture identity
+   and required decision selectors as governing review sources alongside Spec
+   and plan, including in the frozen Review Packet.
+   Require implementation, applicable task checks and Task Gates, Verification,
    parent shared-summary reconciliation, Architecture Checkpoints and final
    acceptance evidence. Missing or stale proof returns the exact owning gate;
    it cannot enter Code Review. Review consumes Verification evidence while

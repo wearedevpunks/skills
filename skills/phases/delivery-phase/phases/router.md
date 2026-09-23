@@ -8,10 +8,16 @@ Choose one next phase from current durable authority.
 2. Preserve terminal `human_steering_required` until current user direction
    resolves the required decision. New boundary evidence selects
    [human-steering.md](human-steering.md).
-3. For failed tasks or repair evidence, apply
+3. Before any dependent dispatch, require the
+   [Architecture/SPEC Pair Complete gate](../references/artifact-state.md#architecturespec-pair-complete)
+   for every delivery, including existing, resumed and local work. Missing,
+   stale or conflicting architecture/spec proof routes the exact gap to
+   Requirements Phase / `requirements-grill` before review, repair, debug,
+   implementation or closeout can resume. Preserve review lineage and counts.
+4. For failed tasks or repair evidence, apply
    [failure continuity](../references/failure-continuity.md). Independent eligible
    work continues through the implementation owner's gates.
-4. Recover review lineage, valid completed ordinals and durable active repair
+5. Recover review lineage, valid completed ordinals and durable active repair
    state separately from current evidence freshness. Review due, retention pending,
    unrouted findings, or budget decisions select [review.md](review.md), the sole
    delivery review-transition authority. It validates bounds and target before
@@ -21,21 +27,21 @@ Choose one next phase from current durable authority.
    Route legacy `focused_validation` to its recorded implementation/debugging
    owner and `clean_handoff` to remaining docs or closeout after checking proof.
    Reuse recorded run IDs and debt keys; a resume cannot consume them twice.
-5. Before planning, require a matching agent-ready `SPEC.md` with verified remote
+6. Before planning, require the pair's agent-ready `SPEC.md` with verified remote
    retention and its current Write Backlog result through the
-   [Spec Complete and Backlog Projection Complete gates](../references/artifact-state.md).
+   [Backlog Projection Complete gate](../references/artifact-state.md#backlog-projection-complete).
    Missing, stale or contradictory required proof routes the exact gap to
-   Requirements Phase before planning. It owns Requirements Grill, Create Spec
-   and Write Backlog. Valid current proof proceeds without a new approval gate;
+   Requirements Phase before planning. It owns Requirements Grill, Create Architecture,
+   Create Spec and Write Backlog. Valid current proof proceeds without a new approval gate;
    optional Finder context is passed only when supplied, never manufactured.
-6. A missing or stale execution plan selects [plan.md](plan.md). Incomplete plan
+7. A missing or stale execution plan selects [plan.md](plan.md). Incomplete plan
    work, invalidated implementation evidence or an observed provider lifecycle
    fact lacking exact readback selects [implement.md](implement.md).
-7. Completed implementation needing Code Review selects [review.md](review.md).
+8. Completed implementation needing Code Review selects [review.md](review.md).
    Accepted repair follows that same transition authority's Focused Repair
    Validation and risk-triggered second-pass rules. Passing ordinary focused
    checks proceed without automatically reopening Code Review.
-8. Remaining docs-affecting work selects [docs-ingest.md](docs-ingest.md), otherwise
+9. Remaining docs-affecting work selects [docs-ingest.md](docs-ingest.md), otherwise
    [closeout.md](closeout.md). A fresh completed closeout needs no repeated mutation.
 
 Read only the selected phase. Each exit emits the common Phase Result. Full

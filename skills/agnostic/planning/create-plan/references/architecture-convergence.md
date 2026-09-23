@@ -1,10 +1,16 @@
 # Architecture Convergence
 
-Use this branch when a plan can change cumulative code ownership. `SPEC.md` owns the accepted target architecture; the saved plan derives its execution contract and later execution checks conformance against it.
+Every plan consumes the retained Architecture/SPEC pair. `ARCHITECTURE.md` is
+its source-attributed design companion; `SPEC.md` owns resolved requirements,
+outcomes and acceptance criteria, including accepted architecture constraints.
+The plan derives execution detail from both. Use this branch's convergence views
+when work can change cumulative code ownership.
 
 ## Classify Applicability
 
 Persist `architecture_applicability: local | architecture-bearing` with evidence.
+This classification controls convergence detail, not the required architecture
+artifact or pair freshness check.
 
 - `local`: one bounded responsibility, with no domain-owner, public-seam, composition, or cross-domain
   dependency change. Keep the ordinary task graph and `codebase_design_notes`; record why this branch does
@@ -18,7 +24,12 @@ cannot use `local` merely because each task looks small in isolation.
 
 ## Derive the Contract
 
-Read the accepted technical decisions and verification seams in `SPEC.md`. If the target topology, dependency direction, boundaries, or public seams are absent or contradictory, return to `requirements-grill`; do not invent a competing target.
+Read `ARCHITECTURE.md` and the accepted constraints, technical decisions and
+verification seams in `SPEC.md`. Preserve their exact retained identities and
+source-question IDs or decision selectors. Missing or contradictory required
+topology, dependency direction, boundaries or public seams returns the exact gap
+to Requirements Phase / `requirements-grill`; planning cannot accept a competing
+target.
 
 For backend scope, invoke `$backend-domain-structure` and read its layout reference. Derive honest feature,
 platform/composition, integration, persistence, model, and public-boundary ownership from the repository.
@@ -35,7 +46,9 @@ in the applicable theory and current code evidence.
 
 For an architecture-bearing plan, invoke `$show-me` while authoring **each persisted view** below. Save the
 smallest visual that preserves exact owners, edges, order, labels, and uncertainty next to a terse textual
-conclusion. These views are normative `PLAN.md` content, not a conversational summary.
+conclusion. These views are normative `PLAN.md` execution content derived from
+the pair, with source selectors beside the relevant view. Diagrams explain
+accepted decisions; they never accept new ones or override the companion.
 
 ### Target Ownership Topology
 
@@ -77,7 +90,9 @@ remains behavior-complete; architecture work is not deferred wholesale to final 
 ### Public Seam Contract
 
 Name each consumer-facing command, result, port, event, component, hook, or entrypoint affected by the plan;
-list its owner and allowed consumers. A task that changes the declared public seam must amend the plan contract
+list its owner and allowed consumers. A change to accepted seam design returns
+to Requirements Phase / `requirements-grill` and updates the pair before plan
+amendment. Execution-only detail may amend the plan within those accepted bounds
 before dependent work continues.
 
 ### Migration Ledger

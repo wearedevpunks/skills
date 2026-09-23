@@ -2,6 +2,43 @@
 
 Use this reference when deciding whether a phase is complete enough to skip.
 
+## Architecture/SPEC Pair Complete
+
+Require this pair for every delivery, including fresh, existing, resumed and
+local work, before planning, implementation, review, repair, debugging, docs or
+closeout dispatch. `architecture_applicability` controls plan convergence detail,
+never whether `ARCHITECTURE.md` is required.
+
+- The sibling `ARCHITECTURE.md` satisfies the
+  artifact contract in the installed `create-architecture` skill's
+  `references/artifact-contract.md`
+  with `status: compiled` and `readiness: agent-ready`; `SPEC.md` satisfies
+  **Spec Complete** below. Both name the same capability and current accepted
+  grill decisions.
+- Verify retained commit/ref, immutable blob URL and matching bytes for each
+  artifact. The spec's `Architecture Source` and `links` identify that exact
+  retained architecture, not a mutable path or a different revision.
+- Resolve architecture source identities and decision selectors against current
+  grill status/log, glossary and required evidence. Use existing
+  [Context Pointers and freshness rules](context-continuity.md), not timestamps.
+  Spec requirements, outcomes and acceptance criteria remain authoritative;
+  accepted design constraints come from the architecture companion and are
+  incorporated in the spec. Neither silently overrides the other.
+- Verify complete **Spec traceability** under that architecture contract: every
+  current `OUT-###` / `AC-###` resolves to stable architecture selectors (or its
+  justified no-structural-counterpart entry) and exact source Q/log-entry evidence
+  anchors. Check the real codes, selectors, anchors and spec backlinks against
+  the retained pair and current decisions. Pending, dangling, stale, unsupported
+  or incomplete mapping blocks dispatch; route the exact gap to Requirements.
+- Carry both source identities and required decision selectors in the action's
+  Context Pointers. Changed inputs invalidate affected dependent proof; keep
+  historical review lineage, report identities and completed ordinals intact.
+- A missing, stale, conflicting or unreconstructable pair blocks its dependent
+  action and routes the exact artifact, selector and missing proof to
+  Requirements Phase / `requirements-grill`. Recompile architecture before spec
+  when accepted decisions change. Legacy/local artifacts have no exemption;
+  matching current proof adds no human approval gate.
+
 ## Spec Complete
 
 - A matching agent-ready `SPEC.md` has `readiness: agent-ready`; its scope is
@@ -17,7 +54,8 @@ Use this reference when deciding whether a phase is complete enough to skip.
 
 ## Plan Complete
 
-- `PLAN.md` exists and matches the spec.
+- `PLAN.md` exists and matches the current Architecture/SPEC pair, carrying
+  both source identities and required decision selectors through Context Pointers.
 - One uniform `task_identity_mode` applies. In `provider-task` mode every `Tn`
   resolves one stable provider Task ID and URL, preserves the same `V*`, and
   mirrors native blocker edges through `depends_on`. In `planning-only` mode

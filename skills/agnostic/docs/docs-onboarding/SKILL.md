@@ -1,6 +1,6 @@
 ---
 name: docs-onboarding
-description: Onboard an existing project into a scaffolded Harness wiki by inspecting code, docs, and backlog context, building a Project Map, closing a targeted requirements grill, compiling specs, then projecting them to the backlog. Use immediately after hi init or when an existing repository needs initial wiki/spec context reconstructed.
+description: Onboard an existing project into the scaffolded Harness wiki by inspecting code, docs and backlog, closing reconstruction decisions, then compiling architecture/spec pairs through requirements-phase. Use after hi init or when initial wiki/spec context must be reconstructed.
 ---
 
 # Docs Onboarding
@@ -28,16 +28,17 @@ silently renaming them.
    Product/Backlog Root, Product Areas, Initiatives, `V*` context, and saved
    views from accepted wiki and provider evidence.
 7. For every candidate existing flow accepted by the onboarding grill, invoke
-   `create-spec` and record its readiness result. Project an agent-ready spec
-   with `write-backlog` only when the reconstructed evidence already supplies
-   the exact existing Epic/Story and accepted projection authority required by
-   that branch. Otherwise record the missing authority and exact human Finder
-   invocation; retain the compiled spec without provider mutation.
-8. Leave new feature work to explicit human invocation of Business or
-   Functional Finder. Onboarding never invokes a Finder
-   implicitly.
-
-For the required Project Map sections, onboarding artifacts, evidence labels, and spec reconstruction rules, read [references/artifact-contract.md](references/artifact-contract.md).
+   `requirements-phase` with its confirmed status/log and Project Map evidence.
+   Require `create-architecture` before `create-spec`, then record the retained
+   pair and its readiness result. Pass the onboarding projection boundary:
+   an agent-ready spec and its mapped architecture may reach `write-backlog`
+   only when reconstructed evidence already supplies the exact existing Epic/Story
+   and accepted projection authority required by that branch. Otherwise record
+   the missing authority and exact human Finder invocation; retain the compiled
+   pair and return a blocked backlog delta without provider mutation. Onboarding
+   never invokes a Finder implicitly and does not create higher-level placement.
+8. Update onboarding navigation and indexes using
+   [references/artifact-contract.md](references/artifact-contract.md).
 
 ## Discovery Depth
 
@@ -47,9 +48,12 @@ Do not deep-read every implementation file by default. Deep-read implementation 
 
 ## Targeted Grill
 
-Grill contradictions, missing backlog location, unclear feature ownership, and high-impact inferred requirements before `create-spec` runs.
-
-Low-risk current-state facts can proceed into `create-spec` as `Inferred`. Keep code-only low-risk facts `Inferred` unless the developer confirms them or unambiguous docs/backlog intent backs them.
+Grill contradictions, missing backlog location, unclear feature ownership and
+inferred requirements before either compiler runs. Observed code-only facts may
+remain `Inferred` in the Project Map as evidence; they become accepted requirements
+or design choices only through confirmed intent and the recorded grill decisions.
+Pass unresolved material decisions back to `requirements-phase`; an inferred
+current implementation is not permission to choose architecture or requirements.
 
 ## Resumability
 

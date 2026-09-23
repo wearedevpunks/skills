@@ -4,14 +4,18 @@ Use this contract when `PLAN.md` declares architecture applicability as
 `architecture-bearing`. A `local` plan keeps the normal task design checks and
 does not invent an architecture contract during execution.
 
-The plan is authoritative. Execute its **Target Ownership Topology**, **Declared
-Dependency Graph**, **Responsibility Acceptance Criteria**, **Architecture Waves**,
+The plan owns execution detail derived from the retained Architecture/SPEC pair.
+Execute its **Target Ownership Topology**, **Declared Dependency Graph**,
+**Responsibility Acceptance Criteria**, **Architecture Waves**,
 public seam contract, and migration ledger. Execution may clarify
 evidence. An evidence-only clarification may be recorded locally when it changes
-no owner, edge, criterion, wave, seam, migration, or task contract. Any target
-contract change pauses execution and routes back through `$create-plan` on the
-same spec folder for architecture convergence authoring and plan review. Reload
-the amended plan before dispatching more architecture-bearing work.
+no owner, edge, criterion, wave, seam, migration, or task contract.
+
+A change to accepted architecture decisions pauses dependent execution and
+returns the exact gap to Requirements Phase / `requirements-grill`; refresh the
+pair before `$create-plan`. Execution-only contract changes within accepted bounds
+route through `$create-plan` on the same spec folder for architecture convergence
+and plan review. Reload the amended plan before dispatching more architecture-bearing work.
 
 ## Load the theory
 

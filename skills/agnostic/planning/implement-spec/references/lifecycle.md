@@ -8,7 +8,7 @@ Execution uses plan-derived tasks and parent-owned Task Gates. Read
 [parallel.md](parallel.md) for Execution Frontier and Active Write Scope rules;
 shared lifecycle rules remain here.
 
-## 1. Require an existing agent-ready spec folder
+## 1. Require the current agent-ready Architecture/SPEC pair
 
 Execution must stay grounded in the first matching spec folder:
 
@@ -18,13 +18,17 @@ Execution must stay grounded in the first matching spec folder:
 
 Required files:
 
+- `ARCHITECTURE.md`
 - `SPEC.md`
 - `PLAN.md`
 
-If `SPEC.md` is missing, stop and report the resolved path error.
-
-Require `readiness: agent-ready`; no separate spec review or approval state is
-needed.
+Before any execution or resumed repair, apply the
+**Architecture/SPEC Pair Complete** gate in the installed `delivery-phase`
+skill's `references/artifact-state.md`,
+including direct invocation, existing work and `local` plans. Missing, stale or
+conflicting proof routes the exact gap to Requirements Phase /
+`requirements-grill`. Require the plan to reference that same retained pair.
+Compiler readiness needs no separate spec review or approval state.
 
 If `PLAN.md` is missing, stop and use `create-plan`. Do not auto-generate plans from this skill.
 
@@ -34,7 +38,7 @@ Accept either:
 
 - a domain plus spec folder name
 - a full spec folder path
-- a direct `SPEC.md` or `PLAN.md` path
+- a direct `ARCHITECTURE.md`, `SPEC.md` or `PLAN.md` path
 
 Normalize to the containing spec folder before doing any work.
 
@@ -43,10 +47,19 @@ Normalize to the containing spec folder before doing any work.
 Read, in this order:
 
 1. `apps/wiki/AGENTS.md`
-2. `<resolved-spec-folder>/SPEC.md`
-3. `<resolved-spec-folder>/PLAN.md`
-4. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
-5. `docs/reference/tech-debt/<domain>/<spec>.md` if present
+2. `<resolved-spec-folder>/ARCHITECTURE.md`
+3. `<resolved-spec-folder>/SPEC.md`
+4. `<resolved-spec-folder>/PLAN.md`
+5. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
+6. `docs/reference/tech-debt/<domain>/<spec>.md` if present
+
+Carry the pair's exact retained source identities and required architecture
+decision selectors, mapped spec codes and source Q evidence in worker Context Pointers, Read Dependencies and Relevant
+Input Sets. Recheck them before dependent dispatch, Task Gates and finalization.
+Refresh changed sources through existing freshness gates; preserve unaffected
+proof and historical review lineage. Missing plan pointers return to
+`create-plan`; missing or conflicting accepted design returns to Requirements
+Phase / `requirements-grill`.
 
 When `PLAN.md` declares architecture applicability as `architecture-bearing`,
 also read [architecture-conformance.md](architecture-conformance.md) before

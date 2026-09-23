@@ -19,10 +19,13 @@ updated: YYYY-MM-DD
 
 ### OUT-001: [Observable outcome]
 
+_Architecture: immutable `#spec-traceability` link labeled OUT-001, plus relevant selectors._
+
 ## Acceptance Criteria
 
 - AC-001: [Binary observable criterion]
   - Covers: OUT-001
+  - Architecture: [Immutable #spec-traceability link labeled AC-001, plus relevant selectors]
 
 ## Constraints
 
@@ -36,7 +39,15 @@ and list each dependency's immutable landing or branch/base evidence._
 _When accepted intent exists, record the intended parent or base, child branch
 constraint, and supporting evidence. Otherwise write `Not applicable`._
 
+## Architecture Source
+
+_Verified immutable blob URL (also in `links`), commit, path, and content identity
+of the current retained sibling `ARCHITECTURE.md`._
+
 ## Accepted Technical Decisions
+
+_Preserve accepted architecture constraints and exact technical details with
+source-question IDs or decision selectors. Link the companion for explanation._
 
 ## Accepted Testing Decisions
 
