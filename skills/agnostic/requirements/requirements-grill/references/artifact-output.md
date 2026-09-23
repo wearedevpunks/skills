@@ -128,8 +128,9 @@ After each response set:
 1. Process every supplied answer separately against its stable question id.
 2. Add answered decisions to the log and mark those ids `answered` in status.
 3. Leave omitted questions `unanswered`; do not infer an answer or drop them from status.
-4. Persist the updated status, including the frontier and branch dashboard, before continuing.
-5. When the frontier is empty, set confirmation to `pending`; set it to `confirmed` only after the user explicitly confirms shared understanding.
+4. Complete the [response-set checkpoint](../SKILL.md#core-behavior).
+5. Compute the next frontier and persist the updated status, including the frontier and branch dashboard, before continuing.
+6. When the frontier is empty, set confirmation to `pending`; set it to `confirmed` only after the user explicitly confirms shared understanding.
 
 ## Status File Contract
 
