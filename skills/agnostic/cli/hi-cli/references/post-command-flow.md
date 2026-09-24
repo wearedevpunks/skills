@@ -11,8 +11,10 @@ Existing `.devpunks/` artifacts describe project state. Read an artifact only wh
 ### Init
 
 - inspect the generated docs-onboarding and requirements/backlog/spec skills
-- activate `$docs-onboarding`
-- complete the [existing wiki structure check](wiki-structure.md) before durable docs are written
+- complete the [existing wiki structure check](wiki-structure.md)
+- when the check reports `pass` for an existing wiki root, activate `$docs-onboarding` against that root
+- when the check reports `not-applicable`, defer onboarding and hand off project-owned wiki creation or selection; resume onboarding after an authorized setup produces an existing wiki that passes the check
+- when the check reports `fail` or a blocker, report the required correction before onboarding can proceed
 - reconcile pre-existing skills only when the command reports relevant evidence
 - do not start requirements discovery unless the user asks for it
 - run `hi scaffold` only when the repository is ready for repo-aware setup
@@ -147,7 +149,7 @@ Before completing reconciliation, compare existing project-owned paths and bytes
 
 ## 3. Complete the Branch
 
-- init: generated onboarding/skills state and existing wiki check are reported; the next bounded action is clear
+- init: generated skills and existing wiki check are reported; onboarding runs only after a passing check, otherwise the wiki setup or correction handoff is clear
 - scaffold: applicable generated instructions are reconciled, targeted validation ran, and unresolved policy choices are named
 - check: current drift is reported without writes
 - ensure: settings were reconfigured or the exact blocker is reported
