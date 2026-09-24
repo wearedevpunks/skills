@@ -4,9 +4,9 @@ The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
 
 ## `hi init`
 
-Use before repo-aware setup. It seeds docs onboarding, requirements/backlog/spec skills, and the initial wiki structure.
+Use before repo-aware setup. It seeds docs onboarding and requirements/backlog/spec skills.
 
-Activate `$docs-onboarding` after the command. Reconcile a generated wiki root with the real repository layout before writing durable specs or routed docs.
+Activate `$docs-onboarding` after the command. Follow the [existing wiki structure check](wiki-structure.md) before writing durable specs or routed docs. Wiki structure is project-owned; CLI commands do not create or update it.
 
 ## `hi scaffold`
 

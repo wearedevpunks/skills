@@ -10,9 +10,9 @@ Existing `.devpunks/` artifacts describe project state. Read an artifact only wh
 
 ### Init
 
-- inspect the generated docs-onboarding, requirements/backlog/spec skills, and wiki root
+- inspect the generated docs-onboarding and requirements/backlog/spec skills
 - activate `$docs-onboarding`
-- reconcile the wiki root with the real repository before durable docs are written
+- complete the [existing wiki structure check](wiki-structure.md) before durable docs are written
 - reconcile pre-existing skills only when the command reports relevant evidence
 - do not start requirements discovery unless the user asks for it
 - run `hi scaffold` only when the repository is ready for repo-aware setup
@@ -46,7 +46,8 @@ Then:
 - keep root `AGENTS.md` table-free; phase wrappers remain global orchestration
   entrypoints and are excluded from scoped tables
 - always link `opensrc/README.md` from scoped prompts and read it when work depends on third-party library behavior
-- reconcile only the generated skills, prompts, lint, hooks, scripts, subagents, tools, and wiki assets in scope
+- reconcile only the generated skills, prompts, lint, hooks, scripts, subagents, and tools in scope
+- complete the [existing wiki structure check](wiki-structure.md)
 - for lint output, complete [managed lint selection and adoption](managed-lint.md); saved owners and verified routes are the completion evidence
 - preserve repo-owned edits and ask before changing project policy
 - run targeted validation for the outputs reconciled
@@ -87,7 +88,7 @@ For a diff, inspect only paths changed or flagged by this run. Apply every match
 | Lint, hook, or script input | Follow [managed lint adoption](managed-lint.md#reconcile-lint-adoption); validate affected routes and preserve accepted project policy. |
 | Required tools | Check only added, changed, or failed tools. |
 | Source-guide content | Inspect only affected guide files. |
-| Wiki input | Reconcile affected routes or documents, then validate them. |
+| Wiki guidance, routes, content schema, source documents, or sync inputs | Complete the [existing wiki structure check](wiki-structure.md) for the affected paths and their routed copies. |
 | Default or detected pack addition | Follow only categories changed by that addition. |
 | Optional/removal/policy/surface decision | Ask for the unresolved decision. |
 | First adoption or missing final output | Run applicable scaffold follow-through. |
@@ -146,7 +147,7 @@ Before completing reconciliation, compare existing project-owned paths and bytes
 
 ## 3. Complete the Branch
 
-- init: generated onboarding/skills/wiki state is reported and the next bounded action is clear
+- init: generated onboarding/skills state and existing wiki check are reported; the next bounded action is clear
 - scaffold: applicable generated instructions are reconciled, targeted validation ran, and unresolved policy choices are named
 - check: current drift is reported without writes
 - ensure: settings were reconfigured or the exact blocker is reported
