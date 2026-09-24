@@ -14,8 +14,9 @@ routed `requirements-grill` status artifact. Preserve its canonical terms;
 route proposed terminology changes through `requirements-grill` instead of
 silently renaming them.
 
-1. Read repo guidance and the scaffolded wiki guidance.
-2. Read `<wiki-root>/backlog-provider.md` and `<wiki-root>/wiki-framework.md`.
+1. Read repo guidance and the existing project-owned wiki guidance.
+2. Read any existing backlog provider and wiki framework decisions. Resolve
+   their locations from project guidance; `hi init` does not generate those files.
 3. Discover backlog context:
    - Probe the pinned remote backlog provider first when connector/tool/auth access exists.
    - Inspect local backlog clues after that: existing specs, issue matrices, backlog markdown, project docs, and `.devpunks` metadata.
