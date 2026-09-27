@@ -29,7 +29,7 @@ Use to install or refresh the latest Baseline. Flags: `--yes`, `--json`.
 The pipeline runs in this order:
 
 1. Fetch the catalog. If the running CLI is outside the Baseline's CLI range, write nothing and report the required range; run `hi upgrade`.
-2. Migrate an old repository when `.devpunks/scaffold-manifest.json` exists and `installed.json` does not (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
+2. Migrate an older manifest-based repository that has no `installed.json` (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
 3. Resolve the Packs in settings to Registry Items.
 4. Plan every path. Validate that every JSON or YAML merge target parses. One invalid target stops the run before any write.
 5. Write Copied Artifacts (identical content is `skipped`), render Built Artifacts, write absent Authored Artifacts, apply merges, create symlinks, add required workspace devDependencies and remove stale ones, remove stale Copied Artifacts and report stale Authored Artifacts.
