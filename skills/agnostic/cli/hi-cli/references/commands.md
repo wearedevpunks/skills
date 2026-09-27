@@ -44,7 +44,7 @@ Rules to know:
 - A Project Skill whose id a Registry Item now provides is renamed to `.agents/skills/[DEPRECATED] <id>`, the Registry skill installs under the original id, and the rename is reported.
 - A stale devDependency is removed only when no first-party source in that workspace imports it; otherwise it is kept and reported.
 - A symlink that cannot be created is reported with its path and target. No copy is made. The next update retries.
-- The harness agent files under `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents` are Built from `.agents/subagents/manifest.mjs` by the Harness Adapters. Edit the manifest, then run `hi update`.
+- The harness agent files under `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents` are Built from `.agents/subagents/manifest.mjs` by the Harness Adapters. Edit the manifest (self-contained, no relative imports), then run `hi update`.
 - A failed or interrupted run converges when you run it again.
 
 Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `renamed-project-skill`, `migrated-deleted`. The report also has `status`, previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), and the migration summary.
