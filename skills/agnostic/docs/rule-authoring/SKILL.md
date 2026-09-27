@@ -1,6 +1,6 @@
 ---
 name: rule-authoring
-description: Maintain project-owned Codebase Rules after `hi scaffold` or `hi update`. Use only from those post-command handoffs.
+description: Maintain project-owned Codebase Rules after `hi init` or `hi update`. Use only from those post-command handoffs.
 ---
 
 # Rule Authoring

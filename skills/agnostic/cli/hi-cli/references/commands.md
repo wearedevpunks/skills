@@ -1,47 +1,101 @@
 # hi-cli Commands
 
-The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`.
+The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`. This reference describes CLI 6.0.0 and newer.
+
+## Terms
+
+- **Registry:** the public, versioned source of every Baseline. Default URL `https://api.harness-intelligence.devpunks.com/r`; override with `HI_REGISTRY_URL` or the `registry` field in `.devpunks/settings.json`. The CLI sends no credential.
+- **Baseline:** one immutable Registry version, named `YYYY.MM.DD-<short sha>`. The catalog `latest` pointer names the newest one. Each Baseline declares a compatible CLI range.
+- **Registry Item:** one named bundle of files in the Registry. A Pack selects Registry Items.
+- **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` does not.
+- **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces, Pack ids, detected technologies, wiki root), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
+- **Managed Artifact kinds:** a **Copied Artifact** is written verbatim and overwritten on update. A **Built Artifact** is rendered from a template, Project settings, and the Recorded Shape, and re-rendered on update. An **Authored Artifact** is written once when absent and never compared or overwritten. `AGENTS.md` files, `.agents/subagents/manifest.mjs`, the wiki starter, `.codex/config.toml`, and Project Skills are Authored.
+- **Project Skill:** a skill under `.agents/skills/<id>` that no Registry Item provides. The installer never removes, compares, or overwrites it.
 
 ## `hi init`
 
-Use before repo-aware setup. It seeds docs onboarding and requirements/backlog/spec skills.
+Use once per repository, or again to reconfigure settings. It needs network access.
 
-Activate `$docs-onboarding` after the command. Follow the [existing wiki structure check](wiki-structure.md) before writing durable specs or routed docs. Wiki structure is project-owned; CLI commands do not create or update it.
+It detects the repository once, proposes Packs and Software Scopes, asks for providers, writes `.devpunks/settings.json` from the confirmed selection, then runs the `hi update` pipeline. `--yes` accepts the proposed selection; it does not choose Software Scopes for managed lint. Detection only proposes: a detected Pack that is not in settings `packs` is information, not drift.
 
-## `hi scaffold`
+Skills that exist before Harness under `.claude/skills`, `.codex/skills`, `.cursor/skills`, or `.opencode/skills` move to `.agents/skills/<id>` as Project Skills and stay reachable through the harness links.
 
-Use for repo-aware AI setup. It detects the repository, resolves packs, and writes managed `.agents/`, `.devpunks/`, skill, prompt, lint, subagent, tool, and scaffold-manifest assets.
-
-The command does not finish repo-specific authoring. Reconcile its generated instructions with the real repository. Use `hi scaffold --yes` only when a non-interactive harness must accept the resolved default pack selection; it does not select optional packs or resolve policy choices. Managed lint requires saved `lint.scopes`; missing selection is actionable work, while `[]` deliberately selects none. Follow [managed-lint.md](managed-lint.md) for candidate inventory, settings authoring, and policy reconciliation.
-
-## `hi check`
-
-Use as the preferred read-only drift command. It checks managed scaffold, baseline, CLI, and managed lint selection/route health without writing files. An installed baseline identity alone does not establish correct live lint policy.
-
-Report the current findings. For missing selection, stale policy, or command/config conflicts, use the matching next action in [managed-lint.md](managed-lint.md#interpret-the-result). A clean result needs no update follow-through; basic health inspection is not a whole-repository lint run.
-
-## `hi ensure`
-
-Use to reconfigure repository manager, backlog provider, asset provider, backlog project URL, and managed lint ownership in an existing Harness setup. The managed lint choice keeps saved selection or accepts JSON arrays of exact Software Scopes and Excluded Paths. Inventory candidates through [managed-lint.md](managed-lint.md#select-software-scopes) before entering those arrays; preserve unrelated settings.
-
-It does not install, repair, validate, or refresh external tools. Use `hi tools ensure` for tools.
+After `init`, follow the Init branch in [post-command-flow.md](post-command-flow.md).
 
 ## `hi update`
 
-Use to refresh scaffold-managed files recorded in `.devpunks/scaffold-manifest.json`.
+Use to install or refresh the latest Baseline. Flags: `--yes`, `--json`.
 
-- Normal `hi update` applies updates; `--write` and `--yes` are compatibility apply aliases.
-- `--check` remains a supported compatibility preview, but prefer `hi check` for read-only drift inspection.
+The pipeline runs in this order:
 
-For lint changes, follow [managed-lint.md](managed-lint.md#reconcile-lint-adoption): preview the complete dependent change, preserve project policy, and distinguish source findings from failures that block activation. After a write, follow only the changed categories in [post-command-flow.md](post-command-flow.md).
+1. Fetch the catalog. If the running CLI is outside the Baseline's CLI range, write nothing and report the required range; run `hi upgrade`.
+2. Migrate an old repository when `.devpunks/scaffold-manifest.json` exists and `installed.json` does not (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
+3. Resolve the Packs in settings to Registry Items.
+4. Plan every path. Validate that every JSON or YAML merge target parses. One invalid target stops the run before any write.
+5. Write Copied Artifacts (identical content is `skipped`), render Built Artifacts, write absent Authored Artifacts, apply merges, create symlinks, add required workspace devDependencies and remove stale ones, remove stale Copied Artifacts and report stale Authored Artifacts.
+6. Write the Installed Record last.
+7. Run managed lint on the real repository when Software Scopes exist. Lint findings do not change the update exit code.
+8. Report one row per path.
+
+Rules to know:
+
+- With `--yes`, a Copied Artifact that has a local edit and an upstream change is overwritten and reported. Git keeps the local version.
+- Authored Artifacts are never overwritten, with or without `--yes`.
+- A Project Skill whose id a Registry Item now provides is renamed to `.agents/skills/[DEPRECATED] <id>`, the Registry skill installs under the original id, and the rename is reported.
+- A stale devDependency is removed only when no first-party source in that workspace imports it; otherwise it is kept and reported.
+- A symlink that cannot be created is reported with its path and target. No copy is made. The next update retries.
+- The harness agent files under `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents` are Built from `.agents/subagents/manifest.mjs` by the Harness Adapters. Edit the manifest, then run `hi update`.
+- A failed or interrupted run converges when you run it again.
+
+Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `renamed-project-skill`, `migrated-deleted`. The report also has `status`, previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), and the migration summary.
+
+
+## Migration of older repositories (historical files)
+
+The first `hi update` in a repository that has `.devpunks/scaffold-manifest.json` and no Installed Record migrates in the same run. It copies the old selected Packs into settings `packs` once, builds the Recorded Shape, moves `.devpunks/pre-existing-skills` into `.agents/skills` as Project Skills, keeps every Authored Artifact, and deletes the old files: `scaffold-manifest.json`, `harness-projection-receipt.json`, `context-plan.json`, `specs/lint/assets.json`, `commit-gate-lifecycle-receipt.json`, `required-tools.json`, `specs/subagents/manifest-spec.json`, the `replaced-scaffold` and `replaced-skills` archives, `.devpunks-cache/`, `.agents/scripts/sync-subagents.mjs`, and `.agents/scripts/harness-projection/`. Each deletion is a report row. There is no separate migrate command.
+
+## `hi diff`
+
+Use to see drift without writing. Flag: `--json`.
+
+It compares each managed path three ways: local bytes, the Registry Item at the installed Baseline, and the Registry Item at the latest Baseline. It writes nothing. Offline, it works from the download cache at the installed Baseline.
+
+| Class | Meaning | Usual action |
+| --- | --- | --- |
+| `update-available` | Local matches the installed Baseline; the latest Baseline differs. | `hi update`. |
+| `local-edit` | Local differs from the installed Baseline; upstream is unchanged. | Keep the edit, or restore it with `hi update --yes`. |
+| `conflict` | Local edit and an upstream change on the same Copied Artifact. | Decide; `hi update --yes` overwrites and git keeps the local version. |
+| `shape-drift` | A Built Artifact renders differently with the current repository shape (for example, a new workspace). | `hi update`. |
+| `missing` | A recorded path is absent. | `hi update` recreates it. |
+| `stale` | Output no longer matches its input, for example harness agent files after a `manifest.mjs` edit. | `hi update`. |
+| `link-failed` | A recorded symlink is missing or could not be created. | Fix the filesystem cause, then `hi update`. |
+
+Copied Artifacts compare after normalizing line endings and trailing whitespace only. Authored Artifacts are never byte-compared.
+
+## `hi check`
+
+Use as the cheap read-only status. Flag: `--json`.
+
+It fetches only the root catalog, compares the installed Baseline with `latest`, checks the CLI range, and checks required tools. It reads only `installed.json` and settings. It returns `status`:
+
+| `status` | Meaning |
+| --- | --- |
+| `current` | The installed Baseline is `latest`. |
+| `update-available` | A newer Baseline exists. |
+| `unavailable` | The Registry could not be reached. The output names the installed Baseline. Drift is unknown, not absent. |
+| `not-installed` | No `.devpunks/installed.json`. |
+
+`hi check` does not run the Drift Check. Use `hi diff` for per-path drift.
 
 ## `hi tools ensure`
 
-Use to refresh external Harness tool requirements.
+Use to install or refresh external Harness tools from the installed Baseline's tool list. This command may mutate global or external tool installations. Manual platform CLIs such as `gh`, `az`, and `glab` are validation-only; the command does not upgrade them.
 
-This command may mutate global or external tool installations. It refreshes every auto-managed required tool through the verified baseline's trusted latest target, even when the installed version already satisfies setup minimums. Manual platform CLIs such as `gh`, `az`, and `glab` are validation-only; the command does not upgrade them.
+Report each failed tool with the exact failed command or recovery guidance from the result. Do not convert a tool failure into settings or update work.
 
-Report each failed tool with the exact failed command or recovery guidance from the result. Do not convert a tool failure into scaffold or settings work.
+## `hi commit-gate verify`
+
+Use after the Commit Gate is installed to verify the live Lefthook hook, dependency, lockfile, and configuration. It writes no file.
 
 ## `hi report`
 
@@ -76,3 +130,7 @@ Verify replacement `hi-cli` copies before removing detected legacy `dp-cli` copi
 Operator writes require Skills CLI 1.5.20 or newer. After successful install, update, or migration, reload or reactivate `$hi-cli` before relying on its instructions.
 
 `hi skills rename` is a deprecated compatibility alias for `hi operator migrate`.
+
+## Retired commands
+
+`hi scaffold` is retired into `hi init`. `hi ensure` is retired; run `hi init` again to reconfigure settings. `hi update --check` and `--write` are retired; use `hi check` or `hi diff` to inspect and `hi update` to apply.
