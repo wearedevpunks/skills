@@ -1,7 +1,7 @@
 # Managed lint
 
 Use this flow for lint setup, changed software ownership, policy migration, or a
-lint selection/route finding from scaffold, update, or check. Keep the work within
+lint selection/route finding from init, update, diff, or check. Keep the work within
 the current command's scope. Existing accepted decisions remain authoritative.
 
 ## Select Software Scopes
@@ -14,13 +14,12 @@ the current command's scope. Existing accepted decisions remain authoritative.
    which are documentation or embedded example/fixture projects.
 2. Save exact repository-relative package roots in `.devpunks/settings.json`
    under `lint.scopes`, with repository-relative file/directory glob exclusions
-   under `lint.exclude`. Use the existing init/ensure settings flow or authorized
-   settings authoring, preserving unrelated fields. `hi ensure` accepts JSON
-   arrays for both. Complete this step when every selected owner has a contained
+   under `lint.exclude`. Use `hi init` (run again to reconfigure) or authorized
+   settings authoring, preserving unrelated fields. `hi update` never writes
+   settings. Complete this step when every selected owner has a contained
    `package.json` and a supported JavaScript/TypeScript command/install context.
-3. Validate the selection through the normal scaffold/update/check flow. Resolve
-   invalid, missing, moved, escaping, or aliased owners before dependent lint
-   activation. `--yes` supplies neither a missing selection nor permission to
+3. Run `hi update` to apply the selection. Resolve invalid, missing, moved,
+   escaping, or aliased owners before dependent lint activation. `--yes` supplies neither a missing selection nor permission to
    select all candidates. Keep derived framework and route data out of settings.
 
 Merge the `lint` object into existing settings; this is an example, not a default
@@ -89,10 +88,21 @@ evidence, not a second settings registry.
 
 ## Verify Lint Routes
 
-Read the affected derived routes in `.devpunks/specs/lint/selection.json` alongside the
+Read the affected routes in `.devpunks/specs/lint/selection.json` alongside the
 command's evidence. Each Lint Route binds owner, cwd, explicit effective config,
 project-local supported tool/version, exclusions, and failure threshold.
-Regenerate through normal reconciliation; do not hand-author these routes.
+`selection.json`, `.devpunks/specs/lint/README.md`, and each
+`<scope>/oxlint.config.ts` are Built Artifacts: `hi update` re-renders them from
+settings and the Recorded Shape. Do not hand-author them; change settings or
+project policy inputs, then run `hi update`.
+
+The runner is `node .agents/scripts/managed-lint-runner.mjs`. Pass large file
+sets with `--files-from <path>` (one repository-relative path per line) instead
+of argv. The runner streams Oxlint output through a temporary file and batches
+file arguments below the operating-system limit, so a very large report is still
+classified as findings. The Commit Gate passes its staged file list to the
+runner through the file named by `HI_STAGED_FILES_PATH`; a lint configuration
+change still lints the full owner file set.
 
 Package scripts, root dispatch, CI invoking those scripts, Lefthook, edited-file
 verification, and update validation must consume the same route. Managed Oxlint
@@ -121,26 +131,19 @@ Existing Python tooling keeps its own routing while honoring shared exclusions.
    known lint/check aliases, repository checks, and CI commands. Keep compatible
    custom commands only when their canonical route and threshold are verified;
    preserve incompatible or opaque commands and report the exact conflict.
-2. Validate the complete isolated candidate through the route intended for live
-   use. Configuration, local-tool, process, authority, containment, or incomplete
-   candidate failures block dependent activation. Source lint findings remain
-   preview findings; they neither prove broken configuration nor authorize bulk
-   autofixes. Independent completed work retains its own truthful receipt.
-3. Apply through normal scaffold/update reconciliation and recovery. Retire only
-   receipt-owned, unmodified obsolete assets or owned script fragments after
-   verifying preserved project policy. Exclusion alone never authorizes deletion.
-   Keep modified and unowned policy intact. Preserve `commitGate: "disabled"`,
+2. Apply with `hi update`. It writes the lint Registry Items, then runs managed
+   lint on the real repository and reports `lint: passed`, `findings`, `failed`,
+   or `skipped`. Configuration, local-tool, or process failures (`failed`) block
+   dependent activation. Source findings neither prove broken configuration nor
+   authorize bulk autofixes, and they do not change the update exit code.
+3. `hi update` removes stale Copied lint files it recorded; git keeps their
+   previous bytes. It never removes project policy files it did not record.
+   Exclusion alone never authorizes deletion. Preserve `commitGate: "disabled"`,
    consumer hooks, and other hook-manager coexistence decisions.
-4. Run affected validation and a fresh read-only `hi check --json`. Record actual
-   adoption and remaining conflicts; candidate success or planned writes alone
-   are insufficient. Check repeat reconciliation for recreated wiki/fixture lint
-   output. Follow the bounded update retry rule in
+4. Run affected validation and one `hi check --json`. Record actual adoption and
+   remaining conflicts; planned writes alone are insufficient. Follow the
+   bounded update retry rule in
    [post-command-flow.md](post-command-flow.md#update).
-
-Proof depends on scopes/exclusions, routes, transitive policy, generated configs,
-presets/plugins, lockfile/toolchain, and relevant source/typed/runtime inputs.
-Changed inputs invalidate affected proof. Installation reuse does not establish
-validation reuse; incomplete reuse identity requires fresh validation.
 
 ## Interpret the result
 
@@ -150,16 +153,16 @@ validation reuse; incomplete reuse identity requires fresh validation.
 | Invalid/moved owner or stale route | Correct the named settings/path issue and reconcile derived output; preserve unsupported content. |
 | Intentional exclusion or no eligible work | Report the excluded path or empty work; this is not proof of repository-wide cleanliness. |
 | Explicit `lint.scopes: []` | Report disabled JavaScript/TypeScript ownership; preserve independent Python/Ruff routing. |
-| Stale Project Lint Policy | Retain the changed input paths; use normal reconciliation to recompile before route execution. Do not edit derived hashes or revert policy merely to pass. |
-| Lint findings | Retain file/rule/severity/location and threshold; repair only authorized source targets. Preview findings do not mean adoption failed operationally. |
+| Stale Built lint output (`hi diff` `stale` or `shape-drift`) | Retain the changed input paths; run `hi update` to re-render before route execution. Do not hand-edit Built files or revert policy merely to pass. |
+| Lint findings | Retain file/rule/severity/location and threshold; repair only authorized source targets. Findings do not mean adoption failed operationally. |
 | Config/tool/process failure | Report exact owner, cwd, config, tool/version, command, and diagnostics; repair that boundary before dependent adoption. |
 | Command/policy/ownership conflict | Preserve the named command or file, explain competing authority, and resolve only the outstanding decision within existing authorization. |
-| Healthy routes | Report the observed health scope. Matching installed baseline identity alone is insufficient, and lightweight health is not full lint proof. |
+| Healthy routes | Report the observed health scope. A `current` `hi check` status alone does not prove lint health. |
 
-`hi check` stays read-only: report the smallest next action and affected paths.
+`hi check` and `hi diff` stay read-only: report the smallest next action and affected paths.
 Run mutations only within the user's authorization. Keep actual diagnostics and
 execution context so the next agent can continue without guessing configs.
 
-For a process failure, retain the original exit status, signal, and bounded stdout/stderr alongside the route context. A recognized empty-source JSON report is empty work; malformed output, output overflow, and config/tool failures require repair before dependent adoption.
+For a process failure, retain the original exit status, signal, and bounded stdout/stderr alongside the route context. A recognized empty-source JSON report is empty work; malformed output and config/tool failures require repair before dependent adoption.
 
-In rootless repositories, assess lint-route health separately from outstanding prompt-authoring findings. A valid selected nested owner does not erase another incomplete scaffold obligation.
+In rootless repositories, assess lint-route health separately from outstanding prompt-authoring findings. A valid selected nested owner does not erase another incomplete adoption step.

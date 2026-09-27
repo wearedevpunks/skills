@@ -7,4 +7,4 @@ Classify each scoped `AGENTS.md` line:
 - remove duplicated rule bodies after indexing them
 - keep workflow routing at its owning prompt or skill
 
-Start with the narrowest scopes. Use current executable code or a durable accepted architecture decision as authority. Preserve project-owned rule files during scaffold and update. Finish when every scoped prompt has one exhaustive `.agents/rules/index.md` pointer and every migrated invariant has one authoritative body.
+Start with the narrowest scopes. Use current executable code or a durable accepted architecture decision as authority. Preserve project-owned rule files during `hi init` and `hi update`. Finish when every scoped prompt has one exhaustive `.agents/rules/index.md` pointer and every migrated invariant has one authoritative body.
