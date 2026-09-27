@@ -19,8 +19,8 @@ the current command's scope. Existing accepted decisions remain authoritative.
    settings. Complete this step when every selected owner has a contained
    `package.json` and a supported JavaScript/TypeScript command/install context.
 3. Run `hi update` to apply the selection. Resolve invalid, missing, moved,
-   escaping, or aliased owners before dependent lint activation. `--yes` supplies neither a missing selection nor permission to
-   select all candidates. Keep derived framework and route data out of settings.
+   escaping, or aliased owners before dependent lint activation. `hi init --yes` saves detection's proposed TypeScript workspaces; review
+   them as candidates, not as a deliberate owner decision. Keep derived framework and route data out of settings.
 
 Merge the `lint` object into existing settings; this is an example, not a default
 selection:

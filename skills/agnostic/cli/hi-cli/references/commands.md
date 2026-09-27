@@ -8,15 +8,21 @@ The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`. T
 - **Baseline:** one immutable Registry version, named `YYYY.MM.DD-<short sha>`. The catalog `latest` pointer names the newest one. Each Baseline declares a compatible CLI range.
 - **Registry Item:** one named bundle of files in the Registry. A Pack selects Registry Items.
 - **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` does not.
-- **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces, Pack ids, detected technologies, wiki root), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
-- **Managed Artifact kinds:** a **Copied Artifact** is written verbatim and overwritten on update. A **Built Artifact** is rendered from a template, Project settings, and the Recorded Shape, and re-rendered on update. An **Authored Artifact** is written once when absent and never compared or overwritten. `AGENTS.md` files, `.agents/subagents/manifest.mjs`, the wiki starter, `.codex/config.toml`, and Project Skills are Authored.
+- **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces excluding the wiki root, Pack ids, detected technologies, wiki root), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
+- **Managed Artifact kinds:** a **Copied Artifact** is written verbatim and overwritten on update. A **Built Artifact** is rendered from a template, Project settings, and the Recorded Shape, and re-rendered on update. An **Authored Artifact** is written once when absent and never compared or overwritten. `AGENTS.md` starters, `.agents/subagents/manifest.mjs`, `.codex/config.toml`, and Project Skills are Authored. The Registry installs no wiki; wiki setup belongs to the project.
 - **Project Skill:** a skill under `.agents/skills/<id>` that no Registry Item provides. The installer never removes, compares, or overwrites it.
 
 ## `hi init`
 
-Use once per repository, or again to reconfigure settings. It needs network access.
+Use once per repository, or again to reconfigure settings. Flags: `--yes`, `--json`. It needs network access.
 
-It detects the repository once, proposes Packs and Software Scopes, asks for providers, writes `.devpunks/settings.json` from the confirmed selection, then runs the `hi update` pipeline. `--yes` accepts the proposed selection; it does not choose Software Scopes for managed lint. Detection only proposes: a detected Pack that is not in settings `packs` is information, not drift.
+1. Fetch the catalog and check the CLI range. When the Registry is unreachable or the range refuses the CLI, it writes nothing.
+2. Detect the repository once and propose Packs and Software Scopes (TypeScript workspaces, excluding the wiki root and a monorepo root).
+3. Propose providers from the git remote; the backlog provider defaults to the repository manager when valid. A re-run pre-fills from existing settings.
+4. Confirm interactively only on a TTY without `--yes`; otherwise accept the proposal, including the proposed Software Scopes.
+5. Write `.devpunks/settings.json`, then run the update pipeline in init mode.
+
+Detection only proposes: a detected Pack that is not in settings `packs` is information, not drift. Exit code: 0 only when the Baseline is applied; 1 for `partial`, `refused`, or `unavailable`.
 
 Skills that exist before Harness under `.claude/skills`, `.codex/skills`, `.cursor/skills`, or `.opencode/skills` move to `.agents/skills/<id>` as Project Skills and stay reachable through the harness links.
 
@@ -24,7 +30,7 @@ After `init`, follow the Init branch in [post-command-flow.md](post-command-flow
 
 ## `hi update`
 
-Use to install or refresh the latest Baseline. Flags: `--yes`, `--json`.
+Use to install or refresh the latest Baseline. Flags: `--yes`, `--json`. It never prompts.
 
 The pipeline runs in this order:
 
@@ -39,15 +45,17 @@ The pipeline runs in this order:
 
 Rules to know:
 
-- With `--yes`, a Copied Artifact that has a local edit and an upstream change is overwritten and reported. Git keeps the local version.
+- Without `--yes`, a locally edited Copied Artifact is kept (`kept`). If the Baseline also changed it, the run is `partial` (exit 1) and says to run `hi update --yes`. With `--yes`, the edit is overwritten and reported (`overwritten-local-edit`); git keeps the local version.
+- When devDependencies change, the package-manager install runs once with `--ignore-scripts` (`dependencyInstall`). When the Commit Gate adds `lefthook`, the report prints a `lefthook install` hint.
 - Authored Artifacts are never overwritten, with or without `--yes`.
 - A Project Skill whose id a Registry Item now provides is renamed to `.agents/skills/[DEPRECATED] <id>`, the Registry skill installs under the original id, and the rename is reported.
 - A stale devDependency is removed only when no first-party source in that workspace imports it; otherwise it is kept and reported.
 - A symlink that cannot be created is reported with its path and target. No copy is made. The next update retries.
 - The harness agent files under `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents` are Built from `.agents/subagents/manifest.mjs` by the Harness Adapters. Edit the manifest (self-contained, no relative imports), then run `hi update`.
 - A failed or interrupted run converges when you run it again.
+- Exit code: 0 only when `status` is `applied`; 1 for `partial`, `refused`, or an unavailable Registry. Lint findings never change it.
 
-Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `renamed-project-skill`, `migrated-deleted`. The report also has `status`, previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), and the migration summary.
+Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `renamed-project-skill`, `migrated-deleted`. The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `refusal`, and the migration summary.
 
 
 ## Migration of older repositories (historical files)
@@ -70,13 +78,13 @@ It compares each managed path three ways: local bytes, the Registry Item at the 
 | `stale` | Output no longer matches its input, for example harness agent files after a `manifest.mjs` edit. | `hi update`. |
 | `link-failed` | A recorded symlink is missing or could not be created. | Fix the filesystem cause, then `hi update`. |
 
-Copied Artifacts compare after normalizing line endings and trailing whitespace only. Authored Artifacts are never byte-compared.
+Copied Artifacts compare after normalizing line endings and trailing whitespace only. Authored Artifacts are never byte-compared. Exit code: 1 when any row is not current; information rows never change it.
 
 ## `hi check`
 
 Use as the cheap read-only status. Flag: `--json`.
 
-It fetches only the root catalog, compares the installed Baseline with `latest`, checks the CLI range, and checks required tools. It reads only `installed.json` and settings. It returns `status`:
+It fetches only the root catalog, compares the installed Baseline with `latest`, checks the CLI range, and checks the tools in settings `requiredTools`. It reads only `installed.json` and settings. It returns `status`:
 
 | `status` | Meaning |
 | --- | --- |
@@ -85,17 +93,17 @@ It fetches only the root catalog, compares the installed Baseline with `latest`,
 | `unavailable` | The Registry could not be reached. The output names the installed Baseline. Drift is unknown, not absent. |
 | `not-installed` | No `.devpunks/installed.json`. |
 
-`hi check` does not run the Drift Check. Use `hi diff` for per-path drift.
+`hi check` does not run the Drift Check. Use `hi diff` for per-path drift. Exit code: 0 for all four statuses; 1 only when a local state file cannot be read.
 
 ## `hi tools ensure`
 
-Use to install or refresh external Harness tools from the installed Baseline's tool list. This command may mutate global or external tool installations. Manual platform CLIs such as `gh`, `az`, and `glab` are validation-only; the command does not upgrade them.
+Use to install or refresh the external tools named in settings `requiredTools` and in the installed Registry Items. This command may mutate global or external tool installations. Manual platform CLIs such as `gh`, `az`, and `glab` are validation-only; the command does not upgrade them.
 
 Report each failed tool with the exact failed command or recovery guidance from the result. Do not convert a tool failure into settings or update work.
 
 ## `hi commit-gate verify`
 
-Use after the Commit Gate is installed to verify the live Lefthook hook, dependency, lockfile, and configuration. It writes no file.
+Use after `lefthook install` to verify the live Lefthook hook, dependency, lockfile, and configuration. It only observes and writes no file.
 
 ## `hi report`
 
