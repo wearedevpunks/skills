@@ -24,7 +24,7 @@ Existing `.devpunks/` files describe project state. Read a file only when the ac
    - keep each sibling `CLAUDE.md` as a symlink to its `AGENTS.md`
 4. Tailor `.agents/subagents/manifest.mjs` (Authored) to the real owned paths, guidance files, and skills, following the Built guide `.agents/subagents/manifest.prompt.md`. Keep the manifest self-contained with no relative imports; the CLI loads it from a `data:` URL. Then run `hi update` once so the Harness Adapters rebuild the agent files in `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents`. Never hand-edit those agent files.
 5. Report each Project Skill the run moved into `.agents/skills`, and each `renamed-project-skill` row (`.agents/skills/[DEPRECATED] <id>`). A deprecated copy is project knowledge: compare it with the Registry skill, keep what the project still needs in project guidance, and suggest `hi report` when the knowledge belongs in the shared skill.
-6. Complete [managed lint selection and adoption](managed-lint.md) when settings have no `lint.scopes`.
+6. Review the `lint.scopes` and `lint.exclude` that `hi init` saved against the real software owners, using [managed lint selection and adoption](managed-lint.md).
 7. Complete the [existing wiki structure check](wiki-structure.md). When it reports `pass` for an existing wiki root, activate `$docs-onboarding` against that root. When it reports `not-applicable`, defer onboarding and hand off project-owned wiki creation or selection. When it reports `fail` or a blocker, report the required correction before onboarding.
 8. Run targeted validation for the files authored, then one `hi check --json`.
 
@@ -34,7 +34,9 @@ Do not start requirements discovery unless the user asks for it. Do not stop mer
 
 Read the report before any file. If `refusal` is present, report it and stop: a CLI range refusal needs `hi upgrade`; an invalid merge target needs that file repaired; nothing was written.
 
-If every row is `skipped` or `kept`, lint is `passed` or `skipped`, and there are no failed links, report that result and stop.
+If `status` is `partial` because a locally edited Copied Artifact also changed upstream, report those paths and ask whether to run `hi update --yes`; git keeps the local version.
+
+If `status` is `applied`, every row is `skipped` or `kept`, lint is `passed` or `skipped`, and there are no failed links, report that result and stop.
 
 Otherwise apply [Project Verifier preservation](#project-verifier-preservation), inspect only the reported paths, and apply every matching row:
 
@@ -47,12 +49,12 @@ Otherwise apply [Project Verifier preservation](#project-verifier-preservation),
 | `renamed-project-skill` | Handle as in [Init](#init) step 5. |
 | `stale-reported` | An Authored Artifact is no longer in the Baseline. Ask before deleting it; it is project-owned. |
 | `link-failed` | Report path and target. Fix the filesystem cause (permissions, Windows Developer Mode) and run `hi update` again. There is no copy fallback. |
-| `dependency-added`, `dependency-removed`, `dependency-kept` | Refresh the lockfile with the project's package manager if the report says it is out of date. For `dependency-kept`, report the importing file. |
+| `dependency-added`, `dependency-removed`, `dependency-kept` | The update already ran the package-manager install once (`dependencyInstall`); on `failed`, report the detail and rerun the install. For `dependency-kept`, report the importing file. |
+| `lefthook install` hint | Run `lefthook install`, then `hi commit-gate verify`. |
 | Lint, hook, script, or Commit Gate path | Follow [managed lint adoption](managed-lint.md#reconcile-lint-adoption); validate the affected routes. |
 | `lint: findings` | Report file, rule, and location. Repair only authorized source targets. Findings do not mean the update failed. |
 | `lint: failed` | Report owner, command, and diagnostics; repair that boundary. |
 | Source guide (`opensrc/*.md`) | Inspect only the affected cards. |
-| Wiki starter path | Complete the [existing wiki structure check](wiki-structure.md) for the affected paths. |
 
 After write follow-through, run targeted validation and one `hi check --json`. Rerun `hi update` once only when that check reports `update-available`, then finish with one final `hi check --json`.
 
