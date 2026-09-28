@@ -96,6 +96,13 @@ project-local supported tool/version, exclusions, and failure threshold.
 settings and the Recorded Shape. Do not hand-author them; change settings or
 project policy inputs, then run `hi update`.
 
+Project lint rules live in each scope's Authored `oxlint.local.ts`. The Built
+`oxlint.config.ts` imports it and applies it last, so its rules win. `hi update`
+writes it once (on migration, seeded from the previous `oxlint.config.ts`) and
+never changes it. Put project rules, categories, `env`, `overrides`, and
+`ignorePatterns` there; a JS-plugin rule must name a built-in Oxlint plugin or a
+`jsPlugins` alias that file declares.
+
 The runner is `node .agents/scripts/managed-lint-runner.mjs`. Pass large file
 sets with `--files-from <path>` (one repository-relative path per line) instead
 of argv. The runner streams Oxlint output through a temporary file and batches
