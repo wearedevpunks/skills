@@ -9,7 +9,7 @@ Fresh backlog ids plus approved artifact set links.
 ## Steps
 
 1. Build the delivery brief: backlog ids, approved artifact links, target surfaces, scope units, constraints, and acceptance checks.
-2. Include frontend taste skills expected during implementation: `design-taste-frontend`, `gpt-taste`, and relevant web/mobile image or prototype context.
+2. Include frontend taste skills expected during implementation: `design-taste-frontend` and relevant web/mobile image or prototype context.
 3. Include browser or screenshot validation expectations.
 4. Include before/after PR evidence guidance and require durable links through `repo-asset-management`.
 5. Present the delivery brief, tell the user to invoke `$delivery-phase` explicitly with it, and stop.

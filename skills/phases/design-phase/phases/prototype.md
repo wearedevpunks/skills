@@ -18,7 +18,7 @@ For prototype artifacts inside an active design workflow, activate the lean `pro
 
 ## Rules
 
-- Child-skill delegation is phase-local: `$prototype`, `design-taste-frontend`, `gpt-taste`, `image-to-code`, `imagegen-frontend-web`, and `imagegen-frontend-mobile` belong here only when needed.
+- Child-skill delegation is phase-local: `$prototype`, `design-taste-frontend`, `image-to-code`, `imagegen-frontend-web`, and `imagegen-frontend-mobile` belong here only when needed.
 - Generated directions are artifact input, not a separate phase.
 - Preserve source evidence and constraints with every artifact.
 
