@@ -98,8 +98,10 @@ project policy inputs, then run `hi update`.
 
 Project lint rules live in each scope's Authored `oxlint.local.ts`. The Built
 `oxlint.config.ts` imports it and applies it last, so its rules win. `hi update`
-writes it once (on migration, seeded from the previous `oxlint.config.ts`) and
-never changes it. Put project rules, categories, `env`, `overrides`, and
+writes it once and never changes it. On adoption or migration it is seeded from
+the previous `oxlint.config.ts` (the last committed one when an interrupted
+adoption already replaced it), keeping the project's `extends`; a config hi
+cannot evaluate is preserved verbatim under a comment. Put project rules, categories, `env`, `overrides`, and
 `ignorePatterns` there; a JS-plugin rule must name a built-in Oxlint plugin or a
 `jsPlugins` alias that file declares.
 
@@ -126,8 +128,9 @@ Keep precommit format checks read-only and edited-file safety/retry limits intac
 
 Apply exclusions before coverage or empty-work detection. Excluded-only changes
 run no managed lint or formatter; mixed changes check eligible work once per
-owner and check kind. Renames affect both endpoints; deletion checks use the
-owner without passing nonexistent files. Shared settings, policy, routing, and
+owner and check kind. Renames affect both endpoints; deleted paths are never passed as files. In the
+Commit Gate a deletion-only owner is covered without a check, while a rename out
+of a scope still needs coverage. Shared settings, policy, routing, and
 toolchain inputs trigger their dependent owners even outside owned source.
 Existing Python tooling keeps its own routing while honoring shared exclusions.
 

@@ -47,9 +47,9 @@ Otherwise apply [Project Verifier preservation](#project-verifier-preservation),
 | Prompt spec (`.devpunks/specs/prompts/**`) written | Activate `$writing-for-agents`, then `$rule-authoring`; reconcile only the affected `AGENTS.md` scopes. |
 | `.devpunks/AGENT-HANDOFF.md` written | Read it and follow only its new items. |
 | `renamed-project-skill` | Handle as in [Init](#init) step 5. |
-| `stale-reported` | An Authored Artifact is no longer in the Baseline. Ask before deleting it; it is project-owned. |
+| `stale-reported` | A file is no longer in the Baseline. An Authored Artifact is project-owned; a locally edited Copied file was kept without `--yes`. Ask before deleting either, or before `hi update --yes` removes the Copied file. |
 | `link-failed` | Report path and target. Fix the filesystem cause (permissions, Windows Developer Mode) and run `hi update` again. There is no copy fallback. |
-| `dependency-added`, `dependency-removed`, `dependency-kept` | The update already ran the package-manager install once (`dependencyInstall`); on `failed`, report the detail and rerun the install. For `dependency-kept`, report the importing file. |
+| `dependency-added`, `dependency-removed`, `dependency-kept` | The update already ran the package-manager install once (`dependencyInstall`); on `failed`, report the detail and rerun the install. Report any post-install command the detail names as skipped outside the CLI allowlist. For `dependency-kept`, report the importing file. |
 | `lefthook install` hint | Run `lefthook install`, then `hi commit-gate verify`. |
 | Lint, hook, script, or Commit Gate path | Follow [managed lint adoption](managed-lint.md#reconcile-lint-adoption); validate the affected routes. |
 | `lint: findings` | Report file, rule, and location. Repair only authorized source targets. Findings do not mean the update failed. |

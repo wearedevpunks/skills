@@ -7,7 +7,7 @@ The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`. T
 - **Registry:** the public, versioned source of every Baseline. Default URL `https://api.harness-intelligence.devpunks.com/r`; override with `HI_REGISTRY_URL` or the `registry` field in `.devpunks/settings.json`. The CLI sends no credential.
 - **Baseline:** one immutable Registry version, named `YYYY.MM.DD-<short sha>`. The catalog `latest` pointer names the newest one. Each Baseline declares a compatible CLI range.
 - **Registry Item:** one named bundle of files in the Registry. A Pack selects Registry Items.
-- **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` does not.
+- **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` does not, except the one-time migration rewrite.
 - **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces excluding the wiki root, Pack ids, detected technologies, wiki root), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
 - **Managed Artifact kinds:** a **Copied Artifact** is written verbatim and overwritten on update. A **Built Artifact** is rendered from a template, Project settings, and the Recorded Shape, and re-rendered on update. An **Authored Artifact** is written once when absent and never compared or overwritten. `AGENTS.md` starters, `.agents/subagents/manifest.mjs`, `.codex/config.toml`, and Project Skills are Authored. The Registry installs no wiki; wiki setup belongs to the project.
 - **Project Skill:** a skill under `.agents/skills/<id>` that no Registry Item provides. The installer never removes, compares, or overwrites it.
@@ -20,7 +20,7 @@ Use once per repository, or again to reconfigure settings. Flags: `--yes`, `--js
 2. Detect the repository once and propose Packs and Software Scopes (TypeScript workspaces, excluding the wiki root and a monorepo root).
 3. Propose providers from the git remote; the backlog provider defaults to the repository manager when valid. A re-run pre-fills from existing settings.
 4. Confirm interactively only on a TTY without `--yes`; otherwise accept the proposal, including the proposed Software Scopes.
-5. Write `.devpunks/settings.json`, then run the update pipeline in init mode.
+5. Run the update pipeline in init mode. It writes `.devpunks/settings.json` only after merge-target validation, so a refused, unavailable, or invalid-target run writes nothing.
 
 Detection only proposes: a detected Pack that is not in settings `packs` is information, not drift. Exit code: 0 only when the Baseline is applied; 1 for `partial`, `refused`, or `unavailable`.
 
@@ -35,10 +35,10 @@ Use to install or refresh the latest Baseline. Flags: `--yes`, `--json`. It neve
 The pipeline runs in this order:
 
 1. Fetch the catalog. If the running CLI is outside the Baseline's CLI range, write nothing and report the required range; run `hi upgrade`.
-2. Migrate an older manifest-based repository that has no `installed.json` (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
+2. Plan, in memory, the migration of an older manifest-based repository that has no `installed.json` (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
 3. Resolve the Packs in settings to Registry Items.
-4. Plan every path. Validate that every JSON or YAML merge target parses. One invalid target stops the run before any write.
-5. Write Copied Artifacts (identical content is `skipped`), render Built Artifacts, write absent Authored Artifacts, apply merges, create symlinks, add required workspace devDependencies and remove stale ones, remove stale Copied Artifacts and report stale Authored Artifacts.
+4. Plan every path. Validate that every JSON or YAML merge target parses and is not a symlink. One invalid target stops the run before any write. Only then write settings (`hi init`'s selection or the migration rewrite) and the migration's skill moves and deletions.
+5. Write Copied Artifacts (identical content is `skipped`), render Built Artifacts, write absent Authored Artifacts, apply merges (a rewritten file keeps its mode), create symlinks, add required workspace devDependencies and remove stale ones, remove stale Copied Artifacts and report stale Authored Artifacts.
 6. Write the Installed Record last.
 7. Run managed lint on the real repository when Software Scopes exist. Lint findings do not change the update exit code.
 8. Report one row per path.
@@ -48,6 +48,8 @@ Rules to know:
 - Without `--yes`, a locally edited Copied Artifact is kept (`kept`). If the Baseline also changed it, the run is `partial` (exit 1) and says to run `hi update --yes`. With `--yes`, the edit is overwritten and reported (`overwritten-local-edit`); git keeps the local version.
 - When devDependencies change, the package-manager install runs once with `--ignore-scripts` (`dependencyInstall`). When the Commit Gate adds `lefthook`, the report prints a `lefthook install` hint.
 - Authored Artifacts are never overwritten, with or without `--yes`.
+- Without `--yes`, a stale Copied file with a local edit is kept, reported `stale-reported`, and stays in the Installed Record.
+- A Registry Item's `postInstall` command runs only when the CLI allowlist names it (today only `effect-tsgo patch --no-typescript --oxlint`), with a minimal environment (`PATH` with `node_modules/.bin` first, `HOME`, `TMPDIR`, `SystemRoot`). Other commands are skipped and named in the `dependencyInstall` detail.
 - A Project Skill whose id a Registry Item now provides is renamed to `.agents/skills/[DEPRECATED] <id>`, the Registry skill installs under the original id, and the rename is reported.
 - A stale devDependency is removed only when no first-party source in that workspace imports it; otherwise it is kept and reported.
 - A symlink that cannot be created is reported with its path and target. No copy is made. The next update retries.
@@ -60,7 +62,7 @@ Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, 
 
 ## Migration of older repositories (historical files)
 
-The first `hi update` in a repository that has `.devpunks/scaffold-manifest.json` and no Installed Record migrates in the same run. It copies the old selected Packs into settings `packs` once, builds the Recorded Shape, moves `.devpunks/pre-existing-skills` into `.agents/skills` as Project Skills, keeps every Authored Artifact, and deletes the old files: `scaffold-manifest.json`, `harness-projection-receipt.json`, `context-plan.json`, `specs/lint/assets.json`, `commit-gate-lifecycle-receipt.json`, `required-tools.json`, `specs/subagents/manifest-spec.json`, the `replaced-scaffold` and `replaced-skills` archives, `.devpunks-cache/`, `.agents/scripts/sync-subagents.mjs`, and `.agents/scripts/harness-projection/`. Each deletion is a report row. There is no separate migrate command.
+The first `hi update` in a repository that has `.devpunks/scaffold-manifest.json` and no Installed Record migrates in the same run. The migration is planned in memory and applied after merge-target validation. A Copied file whose raw bytes differ from the sha256 the old manifest recorded is a local edit and is kept unless `--yes`. The migration copies the old selected Packs into settings `packs` once, builds the Recorded Shape, moves `.devpunks/pre-existing-skills` into `.agents/skills` as Project Skills, keeps every Authored Artifact, and deletes the old files: `scaffold-manifest.json`, `harness-projection-receipt.json`, `context-plan.json`, `specs/lint/assets.json`, `commit-gate-lifecycle-receipt.json`, `required-tools.json`, `specs/subagents/manifest-spec.json`, the `replaced-scaffold` and `replaced-skills` archives, `.devpunks-cache/`, `.agents/scripts/sync-subagents.mjs`, and `.agents/scripts/harness-projection/`. Each deletion is a report row. There is no separate migrate command.
 
 ## `hi diff`
 
