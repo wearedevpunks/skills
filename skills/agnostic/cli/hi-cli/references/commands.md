@@ -18,7 +18,7 @@ Use once per repository, or again to reconfigure settings. Flags: `--yes`, `--js
 
 1. Fetch the catalog and check the CLI range. When the Registry is unreachable or the range refuses the CLI, it writes nothing.
 2. Detect the repository once and propose Packs and Software Scopes (TypeScript workspaces, excluding the wiki root and a monorepo root).
-3. Propose providers from the git remote; the backlog provider defaults to the repository manager when valid. A re-run pre-fills from existing settings.
+3. Propose providers from the git remote; the backlog provider defaults to the repository manager when valid. A re-run pre-fills from existing settings; an empty backlog project URL answer clears a stored URL.
 4. Confirm interactively only on a TTY without `--yes`; otherwise accept the proposal, including the proposed Software Scopes.
 5. Run the update pipeline in init mode. It writes `.devpunks/settings.json` only after merge-target validation, so a refused, unavailable, or invalid-target run writes nothing.
 
@@ -57,7 +57,7 @@ Rules to know:
 - A failed or interrupted run converges when you run it again.
 - Exit code: 0 only when `status` is `applied`; 1 for `partial`, `refused`, or an unavailable Registry. Lint findings never change it.
 
-Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `renamed-project-skill`, `migrated-deleted`. The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `refusal`, and the migration summary.
+Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `moved-project-skill`, `renamed-project-skill`, `migrated-deleted`, `migrated-skipped` (a migration path whose parent resolves outside the repository is skipped, never followed). The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `refusal`, and the migration summary.
 
 
 ## Migration of older repositories (historical files)
