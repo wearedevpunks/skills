@@ -1,15 +1,20 @@
 ---
 name: review-phase
 description: >-
-  Explicit readonly review of one frozen delivery diff or standalone artifact
-  bundle, ending with one retained all-lens report and routing output.
+  Readonly Code Review of one frozen delivery diff or standalone artifact
+  bundle: `review` Standards and Spec axes plus one autoreview challenger,
+  ending in one retained report and routing output. Delivery starts it itself;
+  the operator invokes it for standalone review.
 disable-model-invocation: true
 ---
 
 # Review Phase
 
-Review is explicit-only and readonly relative to its frozen target. It retains
-one all-lens report and returns routing evidence; it never enters a repair.
+The one place Code Review runs. Full delivery starts it without stopping for
+the operator; a standalone plan, spec, documentation, or diff review is invoked
+by the operator, and every other delivery mode stops at `review_due`. Readonly
+relative to its frozen target: it retains one report and returns routing
+evidence, and never enters a repair.
 
 ## Bootstrap
 
@@ -23,3 +28,5 @@ one all-lens report and returns routing evidence; it never enters a repair.
 5. After a gate writes its durable outcome, stop or re-enter this bootstrap.
 
 The router is the sole runtime route authority. Gate files own executable work.
+Delivery reaches this skill by its path; `disable-model-invocation` limits only
+the agent's own discovery.

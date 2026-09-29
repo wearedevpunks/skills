@@ -1,19 +1,20 @@
 ---
 name: autoreview
-description: "Auto Review closeout. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
+description: "Independent challenger engine of review-phase; runs only from its Run Review gate. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
+disable-model-invocation: true
 ---
 
 # Auto Review
 
-Run the bundled structured review helper as a closeout check. This is code review, not Guardian `auto_review` approval routing.
+Run the bundled structured review helper as the independent challenger of `review-phase`. This is code review, not Guardian `auto_review` approval routing.
 
-Codex review is the default when no engine is set, using gpt-5.6-terra with high reasoning unless explicitly overridden. It usually delivers the best review results and should remain the normal final closeout engine.
+Codex review is the default when no engine is set, using gpt-5.6-terra with high reasoning unless explicitly overridden. It usually delivers the best review results and should remain the normal review engine.
 
-Use when:
-
-- user asks for Codex review / Claude review / autoreview / second-model review
-- after non-trivial code edits, before final/commit/ship
-- reviewing a local branch or PR branch after fixes
+Use only when `review-phase`'s Run Review gate supplies a prepared Review Packet.
+Every other review need, including a request for Codex review, Claude review,
+autoreview, a second-model review, or a check after code edits, routes to an
+explicit `$review-phase` invocation. Workers and delivery phases never run the
+helper themselves.
 
 ## Contract
 
@@ -22,11 +23,9 @@ Use when:
 - Read dependency docs/source/types when the finding depends on external behavior.
 - Reject unrealistic edge cases, speculative risks, broad rewrites, and fixes that over-complicate the codebase.
 - Prefer small fixes at the right ownership boundary; no refactor unless it clearly improves the bug class.
-- Outside `review-phase`, run the structured review helper exactly once. Verify
-  candidates, fix only accepted findings inside the accepted goal, and run
-  focused tests for changed code. End this invocation without rerunning the
-  helper. A further direct pass requires formal `$review-phase` or a new
-  explicit user instruction after this result.
+- Outside `review-phase`, never run the structured review helper. Return the
+  exact `$review-phase` invocation the operator needs and stop. The helper
+  refuses a run without a prepared Review Packet.
 - Report repairs beyond accepted scope with the decision needed before proceeding.
 - For security-audit suppression changes, verify accepted findings remain auditable: suppressed findings stay in structured output, active output keeps an unsuppressible suppression notice, and aggregate findings cannot hide unrelated active risk.
 - Never switch or override the requested review engine/model. If the review hits model capacity, retry the same command a few times with the same engine/model.
@@ -48,24 +47,32 @@ Use when:
 
 ## Bounded Review-Phase Call
 
-When `review-phase` supplies a frozen normalized target, run this helper exactly
-once as the comprehensive primary reviewer through `--review-packet <path>`
-and `--reviewer-identity <identity>`. Load the supplied Review Packet contract
-and consume its frozen target, rules, evidence and dependency pointers directly.
-Return explicit Standards (including security), skill-adherence, architecture,
-simplify and Spec Lens Results. The parent separately assigns an independent
-risk challenger the same facts, withholding primary conclusions. The parent
-verifies candidates and owns final findings, routes and report retention.
-Incomplete coverage exits 2 with retained candidates and missing-coverage detail;
-completed findings exit 1; completed clean coverage exits 0. These exits are role
-results, never completed-pass authority. Delivery owns later repair epochs.
+`review-phase` runs this helper exactly once per completed pass, as the
+independent challenger over its frozen Review Packet:
+
+```bash
+<autoreview-helper> --review-packet <path> --reviewer-identity <identity> \
+  --review-role challenger --risk-area <assignment>
+```
+
+Consume the packet's frozen target, rules, evidence and dependency pointers
+directly; the primary axes' conclusions are withheld from you. Return one Lens
+Result for the assigned risk area. The parent verifies candidates and owns
+final findings, routes and report retention. Incomplete coverage exits 2 with
+retained candidates and missing-coverage detail; completed findings exit 1;
+completed clean coverage exits 0. These exits are role results, never
+completed-pass authority. Delivery owns later repair epochs.
 
 The prepared invocation validates identity and facts digest before invoking the
 selected engine, bypasses Git target discovery, and retains the existing engine
-and model policy. It accepts `--review-role challenger --risk-area <assignment>`
-for a separately assigned independent challenge. Each call runs one reviewer;
-capacity-one sequencing belongs to the parent. Supply the same packet bytes to
-both roles. Direct autoreview calls below retain their existing behavior.
+and model policy. `--review-role primary` remains available to the helper's
+packet contract; `review-phase` assigns the primary role to its `review` axes.
+
+## Helper Maintenance Modes
+
+These direct modes serve helper maintenance and its acceptance harness. They
+require `AUTOREVIEW_ALLOW_DIRECT=1` and never stand in for a review of delivered
+work.
 
 ## Pick Target
 

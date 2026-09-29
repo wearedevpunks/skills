@@ -86,11 +86,22 @@ test("review routes scope decisions before repair", async () => {
   assert.match(delivery, /primary `human_steering_required`.*never opens a repair state/isu);
 });
 
-test("direct autoreview cannot recurse", () => {
+test("autoreview runs only inside review-phase", () => {
   const skill = read("skills/agnostic/quality/autoreview/SKILL.md");
-  assert.match(skill, /Outside `review-phase`.*helper exactly once/isu);
-  assert.match(skill, /End this invocation without rerunning the\s+helper/iu);
-  assert.match(skill, /formal `\$review-phase` or a new\s+explicit user instruction after this result/iu);
-  assert.doesNotMatch(skill, /Outside `review-phase`.{0,160}keep going until/isu);
+  assert.match(skill, /^disable-model-invocation: true$/mu);
+  assert.match(skill, /Outside `review-phase`, never run the structured review helper/iu);
+  assert.match(skill, /routes to an\s+explicit `\$review-phase` invocation/iu);
+  assert.doesNotMatch(skill, /after non-trivial code edits/iu);
+  assert.doesNotMatch(skill, /Outside `review-phase`.{0,160}helper exactly once/isu);
   assert.doesNotMatch(skill, /rerun review until/iu);
+});
+
+test("delivery always passes through review-phase before closeout", () => {
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
+  const implement = read("skills/phases/delivery-phase/phases/implement.md");
+  assert.match(router, /Every completed implementation selects \[review\.md\]\(review\.md\)/u);
+  assert.match(router, /No delivery\s+reaches docs ingest or closeout without one/u);
+  assert.match(closeout, /Require a valid retained completed review pass/u);
+  assert.match(implement, /never run `autoreview` here/u);
 });

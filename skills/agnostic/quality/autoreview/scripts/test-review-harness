@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Helper maintenance harness: the only caller allowed to run direct modes.
+export AUTOREVIEW_ALLOW_DIRECT=1
+
 usage() {
   cat <<'EOF'
 Usage: test-review-harness [--fixture malicious|benign] [--engine codex|claude|droid|copilot]...

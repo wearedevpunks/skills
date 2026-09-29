@@ -37,6 +37,8 @@ silently renaming them.
 - When the next action exceeds accepted bounds, return the required decision
   to the router before expanding worker ownership.
 - Parent orchestration owns shared notes and final validation evidence.
+- Workers and the parent never run `autoreview` here; Code Review happens once
+  in `review-phase` over the frozen combined change.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.
 - If runtime evidence appears during validation, finish the phase handoff and route to debug.
 - Preserve review lineage, `review_count`, `repair_count`, and the opening

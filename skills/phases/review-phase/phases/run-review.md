@@ -29,16 +29,27 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 
 1. Recompute the frozen target and source hashes before dispatch. A mismatch
    makes the prepared evidence stale and returns to `review_due`.
-2. Run `autoreview` once as the comprehensive primary reviewer using the
-   prepared-packet invocation in [Review Packet](../references/review-packet.md).
-   It consumes the frozen facts directly and emits one result for each of
-   Standards (including security), skill adherence, architecture, simplify,
-   and Spec. Keep Standards and Spec as distinct coverage obligations.
-3. Assign one independent risk-focused challenger the same prepared facts and
-   packet identity, without primary conclusions. Run both roles in parallel
-   when native capacity permits; capacity one runs them sequentially in fresh
-   independent contexts. Larger changes may split independent risk areas into
-   bounded challenger assignments. Every assigned challenger must finish.
+2. Load `$review` by its skill path (it is phase-invoked) and run its two axes as
+   parallel readonly subagents over the frozen Review Packet, following that
+   skill's process with this gate's sources in place of its own target and spec
+   discovery. Each returns compact Lens Results per
+   [Review Packet](../references/review-packet.md), one per assigned coverage:
+
+   | Reviewer identity | Role | Coverage |
+   | --- | --- | --- |
+   | `review-standards` | `primary` | `standards` (including security), `skill_adherence`, `architecture`, `simplify` |
+   | `review-spec` | `primary` | `spec` |
+
+   Send the Standards axis the repository standards, the smell baseline, the
+   named skills, and the plan and implementation-note skill evidence. Send the
+   Spec axis the governing spec and accepted acceptance evidence.
+3. Run `autoreview` exactly once per pass as the independent challenger on the
+   same packet bytes, through its prepared-packet challenger invocation, with one
+   risk-focused assignment over the whole change and without the axes'
+   conclusions. Run all three roles in parallel when native capacity permits;
+   capacity one runs them sequentially in fresh independent contexts. Every
+   assigned role must finish; retry only a failed call, inspecting the live
+   process before retrying, and never open a second challenger.
 4. Validate each compact Lens Result using the packet contract. `clean` and
    `findings` require completed assigned coverage; `incomplete` retains any
    candidates and names unavailable coverage, cause, and follow-up. Account for
@@ -82,8 +93,9 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 ## Invariants
 
 - One gate run inspects exactly one frozen bounded snapshot.
-- `autoreview` is the single comprehensive primary; the independent challenger
-  receives the same frozen facts. Five primary outcomes retain coverage authority.
+- The `review` Standards and Spec axes are the primary reviewers; the single
+  `autoreview` challenger receives the same frozen facts. Five primary outcomes
+  retain coverage authority.
 - Candidate output never bypasses parent verification.
 - Standards and Spec remain distinct report sections.
 - Validation is readonly relative to the frozen target and remains within

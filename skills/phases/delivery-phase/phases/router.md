@@ -37,7 +37,10 @@ Choose one next phase from current durable authority.
 7. A missing or stale execution plan selects [plan.md](plan.md). Incomplete plan
    work, invalidated implementation evidence or an observed provider lifecycle
    fact lacking exact readback selects [implement.md](implement.md).
-8. Completed implementation needing Code Review selects [review.md](review.md).
+8. Every completed implementation selects [review.md](review.md) until a valid
+   retained completed review pass covers this delivery lineage. No delivery
+   reaches docs ingest or closeout without one. `review-phase` is the only
+   place `autoreview` runs; phases and workers never run it directly.
    Accepted repair follows that same transition authority's Focused Repair
    Validation and risk-triggered second-pass rules. Passing ordinary focused
    checks proceed without automatically reopening Code Review.

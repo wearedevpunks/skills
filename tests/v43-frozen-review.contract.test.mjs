@@ -46,6 +46,26 @@ test("complete current epoch retains provenance; incomplete challenger never cou
   assert.equal(validateRetainedPass(candidate, current).valid, false, "malformed external result is rejected without throwing");
 });
 
+test("two review axes are the primary reviewers; the autoreview challenger stays independent of both", () => {
+  const { candidate, expected } = retainedPassFixture();
+  const parsed = parseReviewReport(candidate.reportBytes).report;
+  const packet = hashRecord("review-packet", [parsed.review_run_id, parsed.accepted_bounds_hash, parsed.snapshot_hash, parsed.source_set_hash]);
+  const result = (reviewer_identity, role, coverage) => ({ reviewer_identity, role, coverage, packet_identity: packet, outcome: "clean", candidates: [], unavailable_coverage: [], cause: null, follow_up: null });
+  const axes = (challenger) => [
+    ...["standards", "skill_adherence", "architecture", "simplify"].map(lens => result("review-standards", "primary", lens)),
+    result("review-spec", "primary", "spec"),
+    result(challenger, "challenger", "cross-file authorization"),
+  ];
+  const withResults = (results) => {
+    rewriteReport(candidate, report => { report.review_epoch = { protocol: "primary-challenger-v1", packet_identity: packet, results, adjudications: [] }; });
+    const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({ reviewer_identity, role, coverage }) => ({ reviewer_identity, role, coverage }));
+    return { ...expected, reviewProtocol: "primary-challenger-v1", assignedCoverage };
+  };
+  assert.equal(validateRetainedPass(candidate, withResults(axes("autoreview:challenger"))).valid, true);
+  assert.equal(validateRetainedPass(candidate, withResults(axes("review-spec"))).valid, false, "challenger sharing a primary identity is not independent");
+  assert.equal(validateRetainedPass(candidate, withResults(axes("autoreview:challenger").slice(0, 4).concat(result("autoreview:challenger", "challenger", "cross-file authorization")))).valid, false, "missing primary coverage never completes a pass");
+});
+
 test("delivery permits a second completed pass only for accepted risk and stops at two", () => {
   const input = { currentState: "review_due", acceptedBoundsValid: true, targetSupported: true, recoveredReviewCount: 1 };
   assert.equal(planDeliveryReviewGate(input).state, "focused_validation");
@@ -65,6 +85,16 @@ test("autoreview consumes prepared facts without Git target discovery", () => {
     const child = spawnSync(helper, ["--review-packet", path, "--reviewer-identity", "primary:native", "--dry-run"], { cwd: scratch, encoding: "utf8" });
     assert.equal(child.status, 0, child.stderr);
     assert.match(child.stdout, /prepared review packet/);
+  } finally { rmSync(scratch, { recursive: true, force: true }); }
+});
+
+test("autoreview refuses a direct run without a prepared packet", () => {
+  const scratch = mkdtempSync(join(tmpdir(), "v43-direct-"));
+  try {
+    const { AUTOREVIEW_ALLOW_DIRECT: _allowed, ...env } = process.env;
+    const child = spawnSync(helper, ["--mode", "local", "--dry-run"], { cwd: scratch, encoding: "utf8", env });
+    assert.equal(child.status, 64, child.stderr);
+    assert.match(child.stderr, /forbidden outside review-phase/u);
   } finally { rmSync(scratch, { recursive: true, force: true }); }
 });
 

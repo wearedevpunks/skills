@@ -1,6 +1,6 @@
 # Review Router
 
-Load this file on every explicit invocation and re-entry. Recompute one route
+Load this file on every invocation and re-entry. Recompute one route
 from current evidence; transcript continuity and a recorded route suggestion
 are never required.
 
