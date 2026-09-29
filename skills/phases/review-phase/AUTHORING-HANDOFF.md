@@ -641,13 +641,17 @@ Artifacts:
   entry; `disable-model-invocation` unchanged.
 - `phases/run-review.md`: steps 2 to 4 run `review-standards` (standards,
   including security, skill adherence, architecture, simplify) and `review-spec`
-  (spec) as parallel readonly subagents; `autoreview` no longer runs here.
+  (spec) as parallel readonly subagents; each runs `autoreview` exactly once as
+  its engine (`--axis standards|spec`), so a pass makes two helper runs in total.
 - `references/review-packet.md`, `references/durable-report.md`,
   `phases/retain-report.md`, `references/state-graph.md`: two-axis epoch
   (`two-axis-v1`), no roles, no legacy readback.
 - `scripts/review-contract.mjs`: `lens_outcomes` has `standards` and `spec`;
   `review_epoch` is required; epoch-less reports and
   `approvedLegacyReportCommitShas` are gone.
+
+`autoreview` stays mandatory in this one scope: its helper takes `--axis`, has
+no roles, and refuses runs without a review packet.
 
 Domain state: routing, retention, and budget gates are unchanged. Earlier
 retained reports no longer validate.

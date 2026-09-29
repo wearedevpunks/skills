@@ -118,9 +118,12 @@ test("autoreview consumes prepared facts without Git target discovery", () => {
     const packet = { packet_identity: hashRecord("review-packet", [report.review_run_id, report.accepted_bounds_hash, report.snapshot_hash, report.source_set_hash]), review_run_id: report.review_run_id, accepted_bounds_hash: report.accepted_bounds_hash, snapshot_hash: report.snapshot_hash, source_set_hash: report.source_set_hash, facts, facts_sha256: sha256Hex(Buffer.from(facts)) };
     const path = join(scratch, "packet.json");
     writeFileSync(path, JSON.stringify(packet));
-    const child = spawnSync(helper, ["--review-packet", path, "--reviewer-identity", "primary:native", "--dry-run"], { cwd: scratch, encoding: "utf8" });
+    const child = spawnSync(helper, ["--review-packet", path, "--reviewer-identity", "review-standards", "--axis", "standards", "--dry-run"], { cwd: scratch, encoding: "utf8" });
     assert.equal(child.status, 0, child.stderr);
-    assert.match(child.stdout, /prepared review packet/);
+    assert.match(child.stdout, /prepared review packet.*axis=standards/);
+    const noAxis = spawnSync(helper, ["--review-packet", path, "--reviewer-identity", "review-standards", "--dry-run"], { cwd: scratch, encoding: "utf8" });
+    assert.notEqual(noAxis.status, 0);
+    assert.match(noAxis.stderr, /requires --axis/);
   } finally { rmSync(scratch, { recursive: true, force: true }); }
 });
 

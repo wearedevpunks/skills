@@ -19,7 +19,15 @@ it does not establish authority for unsourced prose.
 
 The `review` Standards and Spec axes each receive the frozen packet bytes and
 their own obligations (see the coverage table in
-[Run Review](../phases/run-review.md)). Capacity one uses sequential calls with
+[Run Review](../phases/run-review.md)). Each axis invokes the `autoreview`
+helper once:
+
+```bash
+<autoreview-helper> --review-packet <path> --reviewer-identity review-standards --axis standards
+<autoreview-helper> --review-packet <path> --reviewer-identity review-spec --axis spec
+```
+
+Capacity one uses sequential calls with
 independent fresh contexts. Calls retain native handles and evidence through
 observation timeout; inspect the same live process before retrying an actual
 failed call.
