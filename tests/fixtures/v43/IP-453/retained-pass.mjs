@@ -15,6 +15,7 @@ import {
   recoverDeliveryCount,
   resolveRetainedRun,
   reviewReportPath,
+  reviewPacketIdentity,
   reviewScopeSlug,
   sha256Hex,
   snapshot12,
@@ -24,6 +25,22 @@ import {
   standaloneSnapshotHash,
   validateRetainedPass,
 } from "../../../../skills/phases/review-phase/scripts/review-contract.mjs";
+
+const TWO_AXES = [
+  ["review-standards", "standards"],
+  ["review-spec", "spec"],
+];
+
+const cleanAxisResult = ({ reviewer_identity, coverage }, packet_identity) => ({
+  reviewer_identity,
+  coverage,
+  packet_identity,
+  outcome: "clean",
+  candidates: [],
+  unavailable_coverage: [],
+  cause: null,
+  follow_up: null,
+});
 
 const cloneCandidate = (candidate) => ({
   ...candidate,
@@ -123,17 +140,24 @@ const retainedPassFixture = (mode = "delivery") => {
     excluded_envelope: envelopePaths,
     source_paths_and_hashes: sources,
     source_set_hash: sourceSetHash(sources),
-    lens_outcomes: Object.fromEntries(
-      ["standards", "skill_adherence", "architecture", "simplify", "spec"].map(
-        (lens) => [lens, "clean"],
-      ),
-    ),
+    lens_outcomes: { standards: "clean", spec: "clean" },
     findings: [],
     routing: { primary: "closeout", secondary_architecture_follow_up: false },
     validation: [],
     delivery_goal_identity: deliveryGoalIdentity,
     review_ordinal: ordinal,
     preceding_repair_ordinal: delivery ? 1 : null,
+  };
+  const packetIdentity = reviewPacketIdentity(report);
+  const assignedCoverage = TWO_AXES.map(([reviewer_identity, coverage]) => ({
+    reviewer_identity,
+    coverage,
+  }));
+  report.review_epoch = {
+    protocol: "two-axis-v1",
+    packet_identity: packetIdentity,
+    results: assignedCoverage.map((assignment) => cleanAxisResult(assignment, packetIdentity)),
+    adjudications: [],
   };
   const reportBytes = encodeReviewReport(
     report,
@@ -160,9 +184,7 @@ const retainedPassFixture = (mode = "delivery") => {
       sourceEvidence,
       auxiliaryEnvelopePaths,
       approvedRetainedRefs: [retainedRef],
-      approvedLegacyReportCommitShas: [
-        (delivery ? "b" : "e").repeat(40),
-      ],
+      assignedCoverage,
       wikiDomain: delivery ? "cli" : "project",
       ...(delivery
         ? {
@@ -180,4 +202,10 @@ const retainedPassFixture = (mode = "delivery") => {
 };
 
 
-export { retainedPassFixture, cloneCandidate, rewriteReport };
+export {
+  retainedPassFixture,
+  cloneCandidate,
+  rewriteReport,
+  cleanAxisResult,
+  TWO_AXES,
+};

@@ -5,7 +5,7 @@
 Enter only when the router selected this gate from a complete immutable local
 report in `report_retention_pending`. Parse the report and prove its exact schema
 before any repository write. Delivery reports must carry an ordinal from 1
-through 2 for current epochs (legacy readback preserves 3). A malformed report routes to `review_failed`; an ordinal above 2 for a current epoch without verified matching human direction
+through 2. A malformed report routes to `review_failed`; an ordinal above 2 without verified matching human direction
 returns the zero-write `review_budget_exhausted` terminal.
 
 ## Inputs
@@ -18,7 +18,7 @@ returns the zero-write `review_budget_exhausted` terminal.
 - expected report SHA-256 and allowed navigation/wiki-log envelope paths
 - current retained candidates for the same lineage and run
 - repository-approved retained refs, or the evidence needed for approval
-- parent-verified pre-protocol report commit SHAs for legacy readback
+- parent-frozen assigned coverage: one entry per review axis
 - parent-verified preceding-repair ordinal and evidence, or `null` when no repair
   opened the pass
 
@@ -39,11 +39,9 @@ accepting an exit.
 
 1. Parse the immutable local bytes. Recompute report path, report SHA-256,
    lineage, run ID, snapshot, source-set hash, and delivery ordinal relations
-   from primitive evidence. For an epoch-less report, require its exact
-   `reportCommitSha` in the parent-verified `approvedLegacyReportCommitShas`
-   allowlist. Otherwise require the primary/challenger protocol. Reject a
-   delivery ordinal above 2 in the current epoch without verified matching
-   human direction before any write. Bind `preceding_repair_ordinal` to
+   from primitive evidence. Require the two-axis `review_epoch`; a report
+   without one is malformed. Reject a delivery ordinal above 2 without verified
+   matching human direction before any write. Bind `preceding_repair_ordinal` to
    parent-verified `precedingRepairEvidence`; allow both values to be `null`
    when human direction opens the pass without a repair.
 2. Recompute accepted-bounds, normalized-target, and governing-source hashes.
@@ -84,7 +82,7 @@ accepting an exit.
   review lenses.
 - Stale, malformed, conflicting, or non-retained evidence changes no pass or
   counter.
-- Default current epochs stop at 2. Legacy ordinals remain immutable. Retention never opens a
+- Default review passes stop at 2. Retention never opens a
   repair.
 
 ## Completion Evidence
@@ -110,7 +108,7 @@ accepting an exit.
   the local report is stale.
 - `review_failed`: schema or identity validation failed, a malformed active
   candidate or `same_run_conflict` exists, or retention failed non-retryably.
-- `review_budget_exhausted`: a delivery ordinal above 2 for a current epoch without verified matching human direction was rejected before any
+- `review_budget_exhausted`: a delivery ordinal above 2 without verified matching human direction was rejected before any
   write, pass, counter, or status mutation.
 
 ## Durable Handoff
