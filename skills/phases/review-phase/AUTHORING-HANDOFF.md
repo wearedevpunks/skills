@@ -624,32 +624,33 @@ Blockers: none
 Resume identity: none; the graph, tests, handoff history, validator
 classification, and packaging evidence reconstruct terminal completion.
 
-## Two-Axis Primary Repair
+## Two-Axis Migration
 
 Phase: repair (post-audit change request)
 
 Status: complete
 
-Scope: Make the `review` skill's Standards and Spec axes the primary reviewers
-of `run-review.md`, demote `autoreview` to one independent challenger per pass,
-and let full delivery start this skill without an operator stop.
+Scope: Replace the five-lens, primary/challenger retained-report model with the
+`review` skill's two axes, Standards and Spec, and drop legacy report readback.
+Operator decision: drop the old mechanism in favour of only the two axes; no
+legacy, migrate.
 
 Artifacts:
 
 - `SKILL.md`: description and lead name delivery-started and operator-started
   entry; `disable-model-invocation` unchanged.
-- `phases/run-review.md`: steps 2 and 3 assign `review-standards` (standards,
-  skill_adherence, architecture, simplify) and `review-spec` (spec) as primary,
-  and one `autoreview` challenger; a second challenger never opens.
-- `references/review-packet.md`: role wording; a report may carry one or more
-  primary identities.
-- `scripts/review-contract.mjs`: `primaryReviewers.size === 0` replaces the
-  exactly-one rule; historical single-primary reports stay valid.
-- Tests: `v43-frozen-review` (two-axis primary, challenger independence),
-  `review-phase-graph` (ownership wording), `workflow-boundaries`.
+- `phases/run-review.md`: steps 2 to 4 run `review-standards` (standards,
+  including security, skill adherence, architecture, simplify) and `review-spec`
+  (spec) as parallel readonly subagents; `autoreview` no longer runs here.
+- `references/review-packet.md`, `references/durable-report.md`,
+  `phases/retain-report.md`, `references/state-graph.md`: two-axis epoch
+  (`two-axis-v1`), no roles, no legacy readback.
+- `scripts/review-contract.mjs`: `lens_outcomes` has `standards` and `spec`;
+  `review_epoch` is required; epoch-less reports and
+  `approvedLegacyReportCommitShas` are gone.
 
-Domain state: report protocol name `primary-challenger-v1`, five lens keys,
-routing, retention, and budget gates are unchanged.
+Domain state: routing, retention, and budget gates are unchanged. Earlier
+retained reports no longer validate.
 
 Next suggested route: terminal `audit-complete`
 

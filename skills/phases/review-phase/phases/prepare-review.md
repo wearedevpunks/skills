@@ -28,7 +28,7 @@ reconciles retained-pass recovery, and owns the exit evidence.
 
 1. Validate accepted bounds and normalize the smallest-certain supported target
    before reading or evaluating any delivery review counter. Unsupported target
-   or invalid bounds evidence is terminal even when a delivery counter is 2 or a preserved legacy 3.
+   or invalid bounds evidence is terminal even when a delivery counter is 2.
 2. For delivery mode, verify the
    [Architecture/SPEC pair](../../delivery-phase/references/artifact-state.md#architecturespec-pair-complete)
    before review preparation continues. Missing, stale or conflicting proof returns

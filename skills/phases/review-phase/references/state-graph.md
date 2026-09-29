@@ -11,7 +11,7 @@ and clean handoff.
 | `review_due` | Authorized review invocation | Delivery; accepted bounds and target valid; preparation helper returns `review_due` for first pass, accepted-risk second pass, or exact human-authorized next ordinal | Delivery caller | `review_running` | Preallocate ordinal `review_count + 1`; no completed-pass change | Lineage, run id, ordinal, bounds identity/hash, normalized target |
 | `review_due` | Explicit review invocation | Standalone; accepted bounds and target valid | Standalone caller | `review_running` | None | Lineage, run id, bounds identity/hash, normalized target |
 | Current delivery state | Review considered | Delivery; in-memory accepted bounds and target valid; recovered `review_count >= 2`; no verified human direction for the next ordinal | Delivery caller | Return `review_budget_exhausted` | None; zero handoff or status writes | Exact current route, lineage, counters; no report or status mutation |
-| `review_running` | Both `review` axes, the assigned challenger and parent verification complete | One frozen snapshot; complete local report exists | `review-phase` | `report_retention_pending` | None; no completed-pass change | Complete report and fresh target/source hashes |
+| `review_running` | Both `review` axes and parent verification complete | One frozen snapshot; complete local report exists | `review-phase` | `report_retention_pending` | None; no completed-pass change | Complete report and fresh target/source hashes |
 | `review_running` | Validation mutation detected | Frozen-target hash differs after validation | `review-phase` | `review_due` | None | Before/after hashes, command, mutation evidence; no report or pass |
 | `review_running` | Retryable infrastructure failure or partial run | No immutable report | `review-phase` | `review_due` | None | Exact retryable evidence; unchanged counters |
 | `review_running` | Non-retryable contract or infrastructure failure | No immutable report | `review-phase` | `review_failed` | None | Exact terminal evidence; no report; unchanged counters |
@@ -74,9 +74,7 @@ passes exhaust default allowance; further review requires explicit human
 direction. Incomplete, interrupted or semantically invalidated attempts consume
 no completed pass. Retention-only retry reuses the matching complete local report.
 
-Valid legacy five-lens reports retain original immutable bytes and ordinals,
-including three. Recovery preserves this authority without granting more default
-passes. Historical numbered repair states normalize to the existing repair and
+Historical numbered repair states normalize to the existing repair and
 focused-validation route; their counters and report identities stay unchanged.
 
 `human_steering_required` opens no repair. It remains terminal until current

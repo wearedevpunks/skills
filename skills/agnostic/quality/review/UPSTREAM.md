@@ -8,4 +8,4 @@ Adapted from [`mattpocock/skills`](https://github.com/mattpocock/skills/tree/801
 
 The adjacent `LICENSE` is the upstream MIT license retained with this skill.
 
-Devpunks keeps the upstream two-axis Standards-versus-Spec review frame and adapts its execution to the shared review-phase and autoreview contracts. It is phase-invoked only (`disable-model-invocation: true`): `review-phase` is its sole caller and the core of its Run Review gate.
+Devpunks keeps the upstream two-axis Standards-versus-Spec review frame and adapts its execution to the shared review-phase and autoreview contracts. It is phase-invoked only (`disable-model-invocation: true`): `review-phase` is its sole caller and its Run Review gate runs the two axes.

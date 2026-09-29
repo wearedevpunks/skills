@@ -52,7 +52,7 @@ governing-source normalization requires a non-empty source set.
 
 The parsed JSON object is report authority. Detached objects, sidecars, and
 caller-supplied derived identities are never trusted. It contains exactly these
-fields, plus `review_epoch` for new primary/challenger runs:
+fields, plus `review_epoch`:
 
 - `review_lineage_id`
 - `review_run_id`
@@ -63,8 +63,7 @@ fields, plus `review_epoch` for new primary/challenger runs:
 - source paths and hashes for Spec, Standards, scoped guidance, and every named
   skill
 - canonical `source_set_hash`
-- an explicit outcome for Standards, skill adherence and scoped skills,
-  architecture, simplify, and Spec
+- an explicit outcome for the Standards and Spec axes
 - stable finding identifiers with severity, location, impact, evidence,
   action, and one `return_route`
 - routing and validation
@@ -73,8 +72,9 @@ Delivery mode also records delivery-goal identity, review ordinal, and preceding
 repair ordinal when present. Standalone mode records those delivery-only fields
 as null or not applicable.
 
-`lens_outcomes` has exactly `standards`, `skill_adherence`, `architecture`,
-`simplify`, and `spec`; each value is `clean` or `findings`. Every finding has
+`lens_outcomes` has exactly `standards` and `spec`; each value is `clean` or
+`findings`. Skill adherence, architecture, simplify and security findings carry
+lens `standards`. Every finding has
 exactly the fields `id`, `lens`, `severity`, `location`, `impact`, `evidence`,
 `action`, and `return_route`. Finding IDs are unique and match the lowercase ASCII
 pattern `^[a-z0-9][a-z0-9._-]*$` (for example, `f001`). Severity is `critical`,
@@ -168,34 +168,21 @@ projects the highest uniquely authoritative recovered ordinal.
 The review report is immutable evidence for its frozen snapshot. After an
 accepted repair, the delivery handoff links the relevant retained report,
 final changes, focused validation, affected Verification and clean status.
-A legacy report with ordinal three remains unchanged historical evidence;
-its number does not prescribe a current third pass or a special final-authority
-transition.
 
-## Current epoch and legacy readback
+## Review epoch
 
-New reports include a `review_epoch` derived from the
-[Review Packet](review-packet.md). Call `validateRetainedPass` with
-`reviewProtocol: "primary-challenger-v1"` for current run retention. All
-completed primary outcomes, mandatory independent challenger results,
-candidate accounting, and accepted-finding provenance must validate before the
-pass can count. The helper checks the mechanical evidence; the parent still
-verifies each claim against the target.
+Every report carries a `review_epoch` derived from the
+[Review Packet](review-packet.md). Call `validateRetainedPass` with the
+parent-frozen `assignedCoverage` (one `{reviewer_identity, coverage}` entry per
+axis). Both axis results, candidate accounting, and accepted-finding provenance
+must validate before the pass can count. The helper checks the mechanical
+evidence; the parent still verifies each claim against the target. A report
+without a complete two-axis `review_epoch` is malformed, and earlier report
+shapes are not readable.
 
-When recovering historical reports, omit the current-protocol expectation only
-when the parent has verified that the retained report commit predates the
-primary/challenger protocol. Supply that exact commit SHA through
-`approvedLegacyReportCommitShas`. The validator rejects every epoch-less report
-whose `reportCommitSha` is absent from that immutable allowlist. All other
-reports require `reviewProtocol: "primary-challenger-v1"` and a complete
-`review_epoch`.
-
-Preserve a legacy report's exact retained bytes, report identity, lineage and
-ordinals, including ordinal three. Legacy recovery supplies no permission for
-another default pass. New default epochs admit ordinals one and two. For an
-additional human-directed pass, retain `review_epoch.human_direction` and
-validate the exact instruction pointer and authorized ordinal against
-parent-verified `humanReviewDirection`.
+Default passes admit ordinals one and two. For an additional human-directed
+pass, retain `review_epoch.human_direction` and validate the exact instruction
+pointer and authorized ordinal against parent-verified `humanReviewDirection`.
 
 Supply `precedingRepairEvidence: { ordinal, evidence }` only after the parent
 verifies the repair that opened the pass. Its ordinal must immediately precede

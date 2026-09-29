@@ -9,7 +9,7 @@ test('draft visibility and implementation proof stay at their public seams', () 
   for (const phrase of ['first meaningful in-scope commit', 'Search by recorded head', 'exact provider readback', 'final acceptance evidence']) assert.ok(lifecycle.includes(phrase), phrase);
 });
 test('review completion, repair and risk policy remain explicit', () => {
-  for (const phrase of ['two completed passes', 'Focused Repair Validation', 'mandatory independent risk-focused challenger', 'Standards, skill adherence, architecture, simplify', 'incomplete', 'semantic input change', 'stagnant loop']) assert.ok(review.toLowerCase().includes(phrase.toLowerCase()), phrase);
+  for (const phrase of ['two completed passes', 'Focused Repair Validation', 'Standards and Spec axes', 'skill adherence,\narchitecture, simplify and security', 'incomplete', 'semantic input change', 'stagnant loop']) assert.ok(review.toLowerCase().includes(phrase.toLowerCase()), phrase);
   assert.doesNotMatch(review, /review_count\s*[<>]=?\s*3/);
 });
 test('cross-skill protocol links resolve', () => {

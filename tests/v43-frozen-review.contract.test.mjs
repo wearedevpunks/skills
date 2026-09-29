@@ -6,64 +6,100 @@ import { spawnSync } from "node:child_process";
 const helper = fileURLToPath(new URL("../skills/agnostic/quality/autoreview/scripts/autoreview", import.meta.url));
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { retainedPassFixture, rewriteReport } from "./fixtures/v43/IP-453/retained-pass.mjs";
+import { TWO_AXES, cleanAxisResult, retainedPassFixture, rewriteReport } from "./fixtures/v43/IP-453/retained-pass.mjs";
 import { deliveryRunId, reviewPacketIdentity, planDeliveryReviewGate, validateRetainedPass, hashRecord, parseReviewReport, sha256Hex } from "../skills/phases/review-phase/scripts/review-contract.mjs";
 
-test("current protocol cannot count a clean primary without complete challenger evidence", () => {
-  const { candidate, expected } = retainedPassFixture();
-  assert.equal(validateRetainedPass(candidate, expected).valid, true, "historical five-lens report stays valid");
-  assert.equal(validateRetainedPass(candidate, { ...expected, reviewProtocol: "primary-challenger-v1" }).valid, false);
+const errorsOf = (candidate, expected) => validateRetainedPass(candidate, expected).errors.join(",");
+
+const axisExpected = (candidate, expected) => ({
+  ...expected,
+  assignedCoverage: parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({ reviewer_identity, coverage }) => ({ reviewer_identity, coverage })),
 });
 
-test("epoch-less reports require a parent-verified immutable commit binding", () => {
+test("a clean two-axis report is the only valid retained shape", () => {
   const { candidate, expected } = retainedPassFixture();
-  const { approvedLegacyReportCommitShas: _approved, ...unbound } = expected;
-  assert.match(
-    validateRetainedPass(candidate, unbound).errors.join(","),
-    /missing:legacy_report_commit_binding/u,
-  );
-  assert.match(
-    validateRetainedPass(candidate, {
-      ...unbound,
-      approvedLegacyReportCommitShas: ["a".repeat(40)],
-    }).errors.join(","),
-    /missing:legacy_report_commit_binding/u,
-  );
+  assert.deepEqual(validateRetainedPass(candidate, expected), { valid: true, errors: [] });
+  const report = parseReviewReport(candidate.reportBytes).report;
+  assert.deepEqual(Object.keys(report.lens_outcomes).sort(), ["spec", "standards"]);
+  assert.equal(report.review_epoch.protocol, "two-axis-v1");
+  assert.deepEqual(report.review_epoch.results.map(({ coverage }) => coverage), ["standards", "spec"]);
 });
 
-test("complete current epoch retains provenance; incomplete challenger never counts", () => {
+test("epoch-less reports are invalid; no legacy binding can revive them", () => {
   const { candidate, expected } = retainedPassFixture();
-  const packet = hashRecord("review-packet", [parseReviewReport(candidate.reportBytes).report.review_run_id, parseReviewReport(candidate.reportBytes).report.accepted_bounds_hash, parseReviewReport(candidate.reportBytes).report.snapshot_hash, parseReviewReport(candidate.reportBytes).report.source_set_hash]);
-  const result = (role, coverage, outcome = "clean") => ({ reviewer_identity: role + ":native", role, coverage, packet_identity: packet, outcome, candidates: [], unavailable_coverage: outcome === "incomplete" ? [coverage] : [], cause: outcome === "incomplete" ? "capacity interrupted" : null, follow_up: outcome === "incomplete" ? "resume assigned coverage" : null });
-  rewriteReport(candidate, report => { report.review_epoch = { protocol: "primary-challenger-v1", packet_identity: packet, results: [...["standards", "skill_adherence", "architecture", "simplify", "spec"].map(lens => result("primary", lens)), result("challenger", "cross-file authorization")], adjudications: [] }; });
-  const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({ reviewer_identity, role, coverage }) => ({ reviewer_identity, role, coverage }));
-  const current = { ...expected, reviewProtocol: "primary-challenger-v1", assignedCoverage };
-  assert.equal(validateRetainedPass(candidate, current).valid, true);
-  assert.equal(validateRetainedPass(candidate, { ...current, assignedCoverage: [...assignedCoverage, { reviewer_identity: "other:challenger", role: "challenger", coverage: "extra assigned security area" }] }).valid, false, "every assigned challenger must finish");
-  rewriteReport(candidate, report => { report.review_epoch.results[5] = result("challenger", "cross-file authorization", "incomplete"); });
-  assert.equal(validateRetainedPass(candidate, current).valid, false);
-  rewriteReport(candidate, report => { report.review_epoch.results[5] = null; });
-  assert.equal(validateRetainedPass(candidate, current).valid, false, "malformed external result is rejected without throwing");
+  rewriteReport(candidate, report => { delete report.review_epoch; });
+  assert.match(errorsOf(candidate, expected), /malformed:report_schema/u);
+  assert.equal(validateRetainedPass(candidate, { ...expected, approvedLegacyReportCommitShas: [candidate.reportCommitSha] }).valid, false);
 });
 
-test("two review axes are the primary reviewers; the autoreview challenger stays independent of both", () => {
+test("five-lens lens_outcomes and legacy protocol names are invalid", () => {
   const { candidate, expected } = retainedPassFixture();
-  const parsed = parseReviewReport(candidate.reportBytes).report;
-  const packet = hashRecord("review-packet", [parsed.review_run_id, parsed.accepted_bounds_hash, parsed.snapshot_hash, parsed.source_set_hash]);
-  const result = (reviewer_identity, role, coverage) => ({ reviewer_identity, role, coverage, packet_identity: packet, outcome: "clean", candidates: [], unavailable_coverage: [], cause: null, follow_up: null });
-  const axes = (challenger) => [
-    ...["standards", "skill_adherence", "architecture", "simplify"].map(lens => result("review-standards", "primary", lens)),
-    result("review-spec", "primary", "spec"),
-    result(challenger, "challenger", "cross-file authorization"),
-  ];
-  const withResults = (results) => {
-    rewriteReport(candidate, report => { report.review_epoch = { protocol: "primary-challenger-v1", packet_identity: packet, results, adjudications: [] }; });
-    const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({ reviewer_identity, role, coverage }) => ({ reviewer_identity, role, coverage }));
-    return { ...expected, reviewProtocol: "primary-challenger-v1", assignedCoverage };
-  };
-  assert.equal(validateRetainedPass(candidate, withResults(axes("autoreview:challenger"))).valid, true);
-  assert.equal(validateRetainedPass(candidate, withResults(axes("review-spec"))).valid, false, "challenger sharing a primary identity is not independent");
-  assert.equal(validateRetainedPass(candidate, withResults(axes("autoreview:challenger").slice(0, 4).concat(result("autoreview:challenger", "challenger", "cross-file authorization")))).valid, false, "missing primary coverage never completes a pass");
+  rewriteReport(candidate, report => {
+    report.lens_outcomes = Object.fromEntries(["standards", "skill_adherence", "architecture", "simplify", "spec"].map(lens => [lens, "clean"]));
+  });
+  assert.match(errorsOf(candidate, expected), /malformed:lens_keys/u);
+  const old = retainedPassFixture();
+  rewriteReport(old.candidate, report => { report.review_epoch.protocol = "primary-challenger-v1"; });
+  assert.match(errorsOf(old.candidate, old.expected), /malformed:review_epoch/u);
+});
+
+test("a Lens Result carrying role is invalid", () => {
+  const { candidate, expected } = retainedPassFixture();
+  rewriteReport(candidate, report => { report.review_epoch.results[0].role = "primary"; });
+  assert.match(errorsOf(candidate, expected), /malformed:lens_result/u);
+  assert.equal(validateRetainedPass(candidate, { ...expected, assignedCoverage: expected.assignedCoverage.map(item => ({ ...item, role: "primary" })) }).valid, false);
+});
+
+test("two axes sharing one reviewer identity are invalid", () => {
+  const { candidate, expected } = retainedPassFixture();
+  rewriteReport(candidate, report => { report.review_epoch.results[1].reviewer_identity = report.review_epoch.results[0].reviewer_identity; });
+  assert.match(errorsOf(candidate, axisExpected(candidate, expected)), /incomplete:axis_coverage/u);
+});
+
+test("a missing, repeated, or unknown axis is invalid", () => {
+  const { candidate, expected } = retainedPassFixture();
+  rewriteReport(candidate, report => { report.review_epoch.results.pop(); });
+  assert.match(errorsOf(candidate, axisExpected(candidate, expected)), /incomplete:axis_coverage/u);
+  const repeated = retainedPassFixture();
+  rewriteReport(repeated.candidate, report => { report.review_epoch.results[1].coverage = "standards"; });
+  assert.match(errorsOf(repeated.candidate, axisExpected(repeated.candidate, repeated.expected)), /malformed:axis_coverage/u);
+  const unknown = retainedPassFixture();
+  rewriteReport(unknown.candidate, report => { report.review_epoch.results[1].coverage = "cross-file authorization"; });
+  assert.match(errorsOf(unknown.candidate, axisExpected(unknown.candidate, unknown.expected)), /malformed:axis_coverage/u);
+});
+
+test("an incomplete axis never counts", () => {
+  const { candidate, expected } = retainedPassFixture();
+  const incomplete = { outcome: "incomplete", unavailable_coverage: ["spec"], cause: "capacity interrupted", follow_up: "resume assigned coverage" };
+  rewriteReport(candidate, report => { Object.assign(report.review_epoch.results[1], incomplete); });
+  assert.equal(validateRetainedPass(candidate, expected).valid, false);
+  assert.match(errorsOf(candidate, expected), /incomplete:review_epoch/u);
+  rewriteReport(candidate, report => { report.review_epoch.results[1] = null; });
+  assert.equal(validateRetainedPass(candidate, expected).valid, false, "malformed external result is rejected without throwing");
+});
+
+test("assigned coverage is mandatory and must equal the two axis results exactly", () => {
+  const { candidate, expected } = retainedPassFixture();
+  const { assignedCoverage, ...unassigned } = expected;
+  assert.match(errorsOf(candidate, unassigned), /missing:assigned_coverage/u);
+  assert.match(errorsOf(candidate, { ...expected, assignedCoverage: [] }), /missing:assigned_coverage/u);
+  assert.match(errorsOf(candidate, { ...expected, assignedCoverage: [assignedCoverage[0]] }), /mismatch:assigned_coverage/u);
+  assert.match(errorsOf(candidate, { ...expected, assignedCoverage: [...assignedCoverage, { reviewer_identity: "other:reviewer", coverage: "extra assigned area" }] }), /mismatch:assigned_coverage/u);
+  assert.match(errorsOf(candidate, { ...expected, assignedCoverage: assignedCoverage.map(item => ({ ...item, role: "primary" })) }), /missing:assigned_coverage/u);
+});
+
+test("axis findings keep candidate provenance through adjudication", () => {
+  const { candidate, expected } = retainedPassFixture();
+  rewriteReport(candidate, report => {
+    report.lens_outcomes.standards = "findings";
+    report.findings = [{ id: "standards.owner", lens: "standards", severity: "high", location: "a.ts:1", impact: "Cross-owner read.", evidence: "Actual call returned foreign data.", action: "Reject unmatched owner.", return_route: "implementation" }];
+    report.routing.primary = "implementation";
+    Object.assign(report.review_epoch.results[0], { outcome: "findings", candidates: [{ location: "a.ts:1", evidence_pointer: "run:1", impact: "Cross-owner read.", proposed_severity: "high", proposed_return_route: "implementation", uncertainty: "none" }] });
+    report.review_epoch.adjudications = [{ candidate_refs: [JSON.stringify(["review-standards", "standards", 0])], finding_id: "standards.owner", evidence: "Reproduced." }];
+  });
+  assert.deepEqual(validateRetainedPass(candidate, expected), { valid: true, errors: [] });
+  rewriteReport(candidate, report => { report.review_epoch.adjudications = []; });
+  assert.match(errorsOf(candidate, expected), /incomplete:candidate_accounting/u);
 });
 
 test("delivery permits a second completed pass only for accepted risk and stops at two", () => {
@@ -131,11 +167,11 @@ test("additional current report retains exact human direction without altering l
     report.review_ordinal = 3; report.preceding_repair_ordinal = null;
     report.review_run_id = deliveryRunId(lineageId, 3);
     const identity = reviewPacketIdentity(report);
-    const results = [...["standards", "skill_adherence", "architecture", "simplify", "spec"].map(coverage => ({role:"primary",coverage})), {role:"challenger",coverage:"security"}].map(({role,coverage}) => ({reviewer_identity:role+":native",role,coverage,packet_identity:identity,outcome:"clean",candidates:[],unavailable_coverage:[],cause:null,follow_up:null}));
-    report.review_epoch = { protocol:"primary-challenger-v1",packet_identity:identity,results,adjudications:[],human_direction:direction };
+    const results = TWO_AXES.map(([reviewer_identity, coverage]) => cleanAxisResult({ reviewer_identity, coverage }, identity));
+    report.review_epoch = { protocol:"two-axis-v1",packet_identity:identity,results,adjudications:[],human_direction:direction };
   });
-  const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({reviewer_identity,role,coverage}) => ({reviewer_identity,role,coverage}));
-  const current = {...expected, reviewOrdinal:3, reviewProtocol:"primary-challenger-v1",assignedCoverage,precedingRepairEvidence:null};
+  const assignedCoverage = parseReviewReport(candidate.reportBytes).report.review_epoch.results.map(({reviewer_identity,coverage}) => ({reviewer_identity,coverage}));
+  const current = {...expected, reviewOrdinal:3,assignedCoverage,precedingRepairEvidence:null};
   assert.equal(validateRetainedPass(candidate,current).valid,false);
   assert.equal(validateRetainedPass(candidate,{...current,humanReviewDirection:direction}).valid,true);
 });

@@ -178,13 +178,7 @@ const FRONTMATTER_KEYS = [
 ];
 const HEX_64 = /^[0-9a-f]{64}$/u;
 const COMMIT_SHA = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u;
-const LENS_KEYS = [
-  "standards",
-  "skill_adherence",
-  "architecture",
-  "simplify",
-  "spec",
-];
+const LENS_KEYS = ["standards", "spec"];
 const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 const FINDING_ROUTES = [
   "human_steering_required",
@@ -468,6 +462,7 @@ export const requiredReportFields = [
   "delivery_goal_identity",
   "review_ordinal",
   "preceding_repair_ordinal",
+  "review_epoch",
 ];
 
 const validateTargetSchema = (target, mode, errors) => {
@@ -530,7 +525,7 @@ const validateReviewEpoch = (report, errors) => {
   if (!exactKeys(epoch, epoch && Object.hasOwn(epoch, "human_direction")
       ? ["protocol", "packet_identity", "results", "adjudications", "human_direction"]
       : ["protocol", "packet_identity", "results", "adjudications"]) ||
-      epoch.protocol !== "primary-challenger-v1" || !Array.isArray(epoch.results) ||
+      epoch.protocol !== "two-axis-v1" || !Array.isArray(epoch.results) ||
       !Array.isArray(epoch.adjudications)) {
     errors.push("malformed:review_epoch");
     return;
@@ -538,15 +533,14 @@ const validateReviewEpoch = (report, errors) => {
   let packet;
   try { packet = reviewPacketIdentity(report); } catch { errors.push("malformed:packet_identity"); }
   if (epoch.packet_identity !== packet) errors.push("mismatch:packet_identity");
-  const primary = new Set();
-  const primaryReviewers = new Set();
-  const challengers = new Set();
+  const axes = new Set();
+  const reviewers = new Set();
   const resultKeys = new Set();
   const candidateRefs = new Set();
   for (const result of epoch.results) {
-    if (!exactKeys(result, ["reviewer_identity", "role", "coverage", "packet_identity", "outcome", "candidates", "unavailable_coverage", "cause", "follow_up"]) ||
+    if (!exactKeys(result, ["reviewer_identity", "coverage", "packet_identity", "outcome", "candidates", "unavailable_coverage", "cause", "follow_up"]) ||
         !nonemptyString(result.reviewer_identity) || !nonemptyString(result.coverage) ||
-        !["primary", "challenger"].includes(result.role) || result.packet_identity !== packet ||
+        result.packet_identity !== packet ||
         !["clean", "findings", "incomplete"].includes(result.outcome) || !Array.isArray(result.candidates)) {
       errors.push("malformed:lens_result");
       continue;
@@ -554,11 +548,9 @@ const validateReviewEpoch = (report, errors) => {
     const key = JSON.stringify([result.reviewer_identity, result.coverage]);
     if (resultKeys.has(key)) errors.push("duplicate:lens_result");
     resultKeys.add(key);
-    if (result.role === "primary") {
-      if (!LENS_KEYS.includes(result.coverage) || primary.has(result.coverage)) errors.push("malformed:primary_coverage");
-      primary.add(result.coverage);
-      primaryReviewers.add(result.reviewer_identity);
-    } else challengers.add(result.reviewer_identity);
+    if (!LENS_KEYS.includes(result.coverage) || axes.has(result.coverage)) errors.push("malformed:axis_coverage");
+    axes.add(result.coverage);
+    reviewers.add(result.reviewer_identity);
     if (result.outcome === "incomplete") errors.push("incomplete:review_epoch");
     else if (!Array.isArray(result.unavailable_coverage) || result.unavailable_coverage.length !== 0 ||
         result.cause !== null || result.follow_up !== null ||
@@ -571,8 +563,7 @@ const validateReviewEpoch = (report, errors) => {
           !FINDING_ROUTES.includes(candidate.proposed_return_route)) errors.push("malformed:review_candidate");
     });
   }
-  if (primary.size !== LENS_KEYS.length || primaryReviewers.size === 0 || challengers.size === 0 ||
-      [...challengers].some(id => primaryReviewers.has(id))) errors.push("incomplete:independent_coverage");
+  if (axes.size !== LENS_KEYS.length || reviewers.size !== LENS_KEYS.length) errors.push("incomplete:axis_coverage");
   const accounted = new Set();
   const accepted = new Set();
   for (const item of epoch.adjudications) {
@@ -594,11 +585,11 @@ const validateReviewEpoch = (report, errors) => {
 };
 
 const validateReportSemantics = (report, errors) => {
-  if (!exactKeys(report, Object.hasOwn(report, "review_epoch") ? [...requiredReportFields, "review_epoch"] : requiredReportFields)) {
+  if (!exactKeys(report, requiredReportFields)) {
     errors.push("malformed:report_schema");
     return;
   }
-  if (Object.hasOwn(report, "review_epoch")) validateReviewEpoch(report, errors);
+  validateReviewEpoch(report, errors);
   if (!exactKeys(report.lens_outcomes, LENS_KEYS)) {
     errors.push("malformed:lens_keys");
   } else {
@@ -757,34 +748,17 @@ const inspectRetainedPass = (candidate, expected) => {
     return { valid: false, errors: [...errors, "malformed_report_blob"] };
   }
   validateReportSemantics(report, errors);
-  const hasReviewEpoch = Object.hasOwn(report, "review_epoch");
-  if (!hasReviewEpoch) {
-    const approvedLegacyReportCommitShas =
-      expected.approvedLegacyReportCommitShas;
-    const hasLegacyCommitBinding =
-      Array.isArray(approvedLegacyReportCommitShas) &&
-      approvedLegacyReportCommitShas.length > 0 &&
-      sortedUniqueStrings(approvedLegacyReportCommitShas) &&
-      approvedLegacyReportCommitShas.every((sha) => COMMIT_SHA.test(sha)) &&
-      approvedLegacyReportCommitShas.includes(candidate.reportCommitSha);
-    if (!hasLegacyCommitBinding) {
-      errors.push("missing:legacy_report_commit_binding");
-    }
-  }
-  if (expected.reviewProtocol === "primary-challenger-v1") {
-    if (!hasReviewEpoch) errors.push("missing:review_epoch");
-    const assignments = expected.assignedCoverage;
-    const results = report.review_epoch?.results;
-    if (!Array.isArray(assignments) || assignments.length === 0 ||
-        assignments.some(item => !exactKeys(item, ["reviewer_identity", "role", "coverage"]) ||
-          !nonemptyString(item.reviewer_identity) || !["primary", "challenger"].includes(item.role) || !nonemptyString(item.coverage)) ||
-        !Array.isArray(results) || results.some(item => item === null || typeof item !== "object")) {
-      errors.push("missing:assigned_coverage");
-    } else {
-      const assignmentKey = ({ reviewer_identity, role, coverage }) => JSON.stringify([reviewer_identity, role, coverage]);
-      if (!isDeepStrictEqual(sortUtf8(assignments.map(assignmentKey)), sortUtf8(results.map(assignmentKey)))) {
-        errors.push("mismatch:assigned_coverage");
-      }
+  const assignments = expected.assignedCoverage;
+  const results = report.review_epoch?.results;
+  if (!Array.isArray(assignments) || assignments.length === 0 ||
+      assignments.some(item => !exactKeys(item, ["reviewer_identity", "coverage"]) ||
+        !nonemptyString(item.reviewer_identity) || !nonemptyString(item.coverage)) ||
+      !Array.isArray(results) || results.some(item => item === null || typeof item !== "object")) {
+    errors.push("missing:assigned_coverage");
+  } else {
+    const assignmentKey = ({ reviewer_identity, coverage }) => JSON.stringify([reviewer_identity, coverage]);
+    if (!isDeepStrictEqual(sortUtf8(assignments.map(assignmentKey)), sortUtf8(results.map(assignmentKey)))) {
+      errors.push("mismatch:assigned_coverage");
     }
   }
   validateTargetSchema(report.normalized_target, expected.mode, errors);
@@ -945,7 +919,7 @@ const inspectRetainedPass = (candidate, expected) => {
       report.review_ordinal !== ordinal ||
       !Number.isSafeInteger(ordinal) ||
       ordinal < 1 ||
-      (ordinal > (Object.hasOwn(report, "review_epoch") ? 2 : 3) && !directedOrdinal) ||
+      (ordinal > 2 && !directedOrdinal) ||
       !validPrecedingRepair ||
       report.preceding_repair_ordinal !== expectedPrecedingRepairOrdinal
     ) {
