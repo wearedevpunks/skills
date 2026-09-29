@@ -2,8 +2,8 @@
 name: review-phase
 description: >-
   Readonly Code Review of one frozen delivery diff or standalone artifact
-  bundle through the `review` skill's Standards and Spec axes, ending in one
-  retained report and routing output. Delivery starts it itself; the operator
+  bundle through the `review` skill's Standards and Spec axes, each run by the
+  `autoreview` helper, ending in one retained report and routing output. Delivery starts it itself; the operator
   invokes it for standalone review.
 disable-model-invocation: true
 ---

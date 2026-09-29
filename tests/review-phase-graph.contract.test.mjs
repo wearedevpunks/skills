@@ -999,13 +999,14 @@ test("external GitHub and Codex PR reviewer integration stays excluded", () => {
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
 });
 
-test("review keeps explicit entry and parallel two-axis ownership without a challenger", () => {
+test("review keeps explicit entry and two parallel axes that each run autoreview once", () => {
   assert.match(reviewSkill(), /disable-model-invocation:\s*true/u);
   assert.match(read("skills/phases/review-phase/agents/openai.yaml"), /allow_implicit_invocation:\s*false/u);
   assert.match(reviewRun(), /`\$review`/u);
   assert.match(reviewRun(), /parallel readonly subagents/iu);
   assert.doesNotMatch(reviewRun(), /challenger/iu);
-  assert.doesNotMatch(reviewRun(), /autoreview/iu);
+  assert.match(reviewRun(), /each axis subagent runs `autoreview` exactly once/iu);
+  assert.match(reviewRun(), /no axis opens a second helper run/iu);
 });
 
 test("invalid bounds and target reject before the exhausted budget", () => {

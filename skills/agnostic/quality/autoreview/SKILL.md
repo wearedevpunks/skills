@@ -1,17 +1,17 @@
 ---
 name: autoreview
-description: "Structured second-model review helper; not called by review-phase. Refuses runs without a review packet. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
+description: "Structured review engine of the review-phase Standards and Spec axes; runs only from its Run Review gate and refuses runs without a review packet. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
 disable-model-invocation: true
 ---
 
 # Auto Review
 
-Run the bundled structured review helper. This is code review, not Guardian `auto_review` approval routing.
+Run the bundled structured review helper as the engine of one `review-phase` axis. This is code review, not Guardian `auto_review` approval routing.
 
 Codex review is the default when no engine is set, using gpt-5.6-terra with high reasoning unless explicitly overridden. It usually delivers the best review results and should remain the normal review engine.
 
-`review-phase` reviews through the `review` skill's Standards and Spec axes and
-does not call this helper. Every review need, including a request for Codex
+Only `review-phase`'s Run Review gate runs this helper: each of its two `review`
+axes runs it once per pass. Every other review need, including a request for Codex
 review, Claude review, autoreview, a second-model review, or a check after code
 edits, routes to an
 explicit `$review-phase` invocation. Workers and delivery phases never run the
@@ -46,15 +46,24 @@ helper themselves.
 - If Gitcrawl reports a portable manifest mismatch, source/runtime DB health error, or stale portable-store checkout, run `gitcrawl doctor --json` and inspect `source_db_health`, `runtime_db_health`, and `portable_store_status` before falling back to live GitHub.
 - Do not push just to review. Push only when the user requested push/ship/PR update.
 
-## Prepared Review Packet
+## Bounded Review-Phase Call
 
-The helper accepts a frozen Review Packet through `--review-packet <path>` and
-`--reviewer-identity <identity>`. It validates identity and facts digest before
-invoking the selected engine, bypasses Git target discovery, and retains the
-existing engine and model policy. Incomplete coverage exits 2 with retained
+Each `review-phase` axis subagent runs this helper exactly once per completed
+pass over the frozen Review Packet:
+
+```bash
+<autoreview-helper> --review-packet <path> --reviewer-identity <identity> --axis standards|spec
+```
+
+Consume the packet's frozen target, rules, evidence and dependency pointers
+directly and return one Lens Result for the assigned axis; the other axis is
+reviewed separately. The parent verifies candidates and owns final findings,
+routes and report retention. The call validates identity and facts digest
+before invoking the selected engine, bypasses Git target discovery, and retains
+the existing engine and model policy. Incomplete coverage exits 2 with retained
 candidates and missing-coverage detail; completed findings exit 1; completed
-clean coverage exits 0. These exits are role results, never completed-pass
-authority.
+clean coverage exits 0. These exits are axis results, never completed-pass
+authority. Delivery owns later repair epochs.
 
 ## Helper Maintenance Modes
 

@@ -105,3 +105,9 @@ test("delivery always passes through review-phase before closeout", () => {
   assert.match(closeout, /Require a valid retained completed review pass/u);
   assert.match(implement, /never run `autoreview` here/u);
 });
+
+test("autoreview is the per-axis engine of review-phase and nothing else", () => {
+  const skill = read("skills/agnostic/quality/autoreview/SKILL.md");
+  assert.match(skill, /each of its two `review`\s+axes runs it once per pass/u);
+  assert.match(skill, /--review-packet <path> --reviewer-identity <identity> --axis standards\|spec/u);
+});

@@ -40,11 +40,15 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
    | `review-standards` | `standards` | repository standards, security, skill adherence, architecture, simplify |
    | `review-spec` | `spec` | governing spec, plan and acceptance evidence |
 
-   Send the Standards axis the repository standards, the smell baseline, the
-   named skills, and the plan and implementation-note skill evidence. Send the
-   Spec axis the governing spec and accepted acceptance evidence. Run both in
-   parallel when native capacity permits; capacity one runs them sequentially.
-   Retry only a failed call, inspecting the live process before retrying.
+   Each axis subagent runs `autoreview` exactly once as its reviewer engine,
+   through the prepared-packet invocation in
+   [Review Packet](../references/review-packet.md), and returns the helper's Lens
+   Result unchanged. Put the repository standards, the smell baseline, the named
+   skills, and the plan and implementation-note skill evidence in the packet
+   facts for Standards, and the governing spec and accepted acceptance evidence
+   for Spec. Run both axes in parallel when native capacity permits; capacity one
+   runs them sequentially. Retry only a failed helper call, inspecting the live
+   process before retrying; no axis opens a second helper run.
 3. Validate each compact Lens Result using the packet contract. `clean` and
    `findings` require completed axis coverage; `incomplete` retains any
    candidates and names unavailable coverage, cause, and follow-up. Account for
@@ -92,7 +96,8 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 
 - One gate run inspects exactly one frozen bounded snapshot.
 - The `review` Standards and Spec axes review the same frozen facts in separate
-  contexts; their two outcomes hold coverage authority.
+  contexts, each through one `autoreview` run; their two outcomes hold coverage
+  authority.
 - Candidate output never bypasses parent verification.
 - Standards and Spec remain distinct report sections.
 - Validation is readonly relative to the frozen target and remains within
