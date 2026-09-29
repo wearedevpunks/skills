@@ -1,6 +1,7 @@
 ---
 name: review
-description: Review a frozen Git change or standalone plan, spec, or documentation bundle along separate Standards and Spec axes. Runs both checks in parallel and reports them side by side. Use for branch, PR, work-in-progress, or artifact review.
+description: Two-axis Standards and Spec review core of review-phase; runs only from its Run Review gate.
+disable-model-invocation: true
 ---
 
 Two-axis review of either a frozen Git/diff target or a deterministic standalone
@@ -11,6 +12,9 @@ plan, spec, or documentation bundle:
 
 Both axes run as **parallel sub-agents** so they do not pollute each other's
 context. Keep their outcomes separate.
+
+`review-phase` owns the target, sources, coverage mapping, and result format
+when it calls this skill; the steps below define the axes.
 
 ## Process
 

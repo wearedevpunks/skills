@@ -33,12 +33,15 @@ current snapshot.
    Invocation fixes the attempt identity and proposed next completed ordinal;
    only complete coverage plus valid retained evidence establishes completion.
 
-The review owner prepares one frozen Review Packet for the comprehensive primary
-reviewer and mandatory independent risk-focused challenger. Completion requires
-explicit primary outcomes for Standards, skill adherence, architecture, simplify
-and Spec, plus complete challenger coverage for its bounded independent risk
-area. The parent adjudicates findings and owns the report. Reach
-[review-phase](../../review-phase/SKILL.md) for that protocol.
+The review owner prepares one frozen Review Packet for the `review` Standards
+and Spec axes, the primary reviewers, and the
+mandatory independent risk-focused challenger (`autoreview`, run once per
+pass). Completion requires explicit primary outcomes for
+Standards, skill adherence, architecture, simplify and Spec, plus complete
+challenger coverage for its bounded independent risk area. The parent
+adjudicates findings and owns the report. Every delivery takes this full pass,
+whatever its size. Reach [review-phase](../../review-phase/SKILL.md) for that
+protocol; no worker or delivery phase runs `autoreview` or `review` itself.
 
 A semantic input change during an active attempt invalidates it. Record the
 changed input, preserve the incomplete attempt evidence and start a fresh attempt

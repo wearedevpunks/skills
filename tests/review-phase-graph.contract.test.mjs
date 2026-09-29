@@ -1124,13 +1124,15 @@ test("external GitHub and Codex PR reviewer integration stays excluded", () => {
   assert.match(all, /external GitHub and Codex PR reviewer integration.{0,80}(excluded|outside)/isu);
 });
 
-test("review keeps explicit entry, comprehensive primary and independent challenger ownership", () => {
+test("review keeps explicit entry, two-axis primary and single autoreview challenger ownership", () => {
   assert.match(reviewSkill(), /disable-model-invocation:\s*true/u);
   assert.match(read("skills/phases/review-phase/agents/openai.yaml"), /allow_implicit_invocation:\s*false/u);
   assert.match(reviewPrepare(), /authorized full-delivery or explicit-operator invocation/iu);
-  assert.match(reviewRun(), /comprehensive primary reviewer/iu);
+  assert.match(reviewRun(), /`\$review`.{0,200}two axes as\s+parallel readonly subagents/isu);
+  assert.match(reviewRun(), /`autoreview` exactly once per pass as the independent challenger/iu);
+  assert.match(reviewRun(), /never open a second challenger/iu);
   assert.match(reviewRun(), /capacity one runs them sequentially in fresh/iu);
-  assert.match(reviewRun(), /without primary conclusions/iu);
+  assert.match(reviewRun(), /without the axes'\s+conclusions/iu);
   assert.match(reviewGraph(), /Two completed\npasses exhaust default allowance/iu);
   assert.match(reviewGraph(), /Ordinary accepted\nrepair gets Focused Repair Validation/iu);
 });

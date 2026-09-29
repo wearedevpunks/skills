@@ -17,13 +17,15 @@ and pointers correspond to the normalized target and governing sources before
 both roles receive those same bytes. The digest checks transport consistency;
 it does not establish authority for unsourced prose.
 
-Invoke the existing autoreview helper with `--review-packet <path>` and a unique
-`--reviewer-identity`. The default prepared role is primary. A separate invocation
-uses `--review-role challenger --risk-area <bounded assignment>`. The primary
-receives all five obligations; challengers receive only their assignments and the
-same facts. Capacity one uses sequential calls with independent fresh contexts.
-Calls retain native handles and evidence through observation timeout; inspect the
-same live process before retrying an actual failed call.
+The primary roles are the `review` Standards and Spec axes (see the coverage
+table in [Run Review](../phases/run-review.md)); each receives the frozen packet
+bytes and its own obligations. The one challenger is the autoreview helper,
+invoked with `--review-packet <path>`, a unique `--reviewer-identity`,
+`--review-role challenger` and `--risk-area <assignment>`; it receives only
+that assignment and the same facts. Capacity one uses sequential calls with
+independent fresh contexts. Calls retain native handles and evidence through
+observation timeout; inspect the same live process before retrying an actual
+failed call.
 
 Each Lens Result has exactly:
 
@@ -43,8 +45,9 @@ turning partial coverage into a clean result.
 
 The report's `review_epoch` has exactly `protocol: "primary-challenger-v1"`,
 `packet_identity`, `results` and `adjudications`. Results include each of the five
-primary obligations once, from one primary identity, plus every assigned
-independent challenger. A candidate reference is the JSON-serialized triple
+primary obligations once, from one or more primary identities, plus every
+assigned independent challenger. Reports from a single comprehensive primary
+stay valid. A candidate reference is the JSON-serialized triple
 `[reviewer_identity, coverage, candidate_index]` (zero-based). Parent groups
 duplicates and investigates every distinct claim. Each adjudication contains
 `candidate_refs`, `finding_id` (accepted stable ID or null for rejection), and

@@ -1194,6 +1194,13 @@ def main() -> int:
     reviewers = reviewer_args(args)
     if args.review_packet:
         return prepared_review(args, reviewers)
+    if os.environ.get("AUTOREVIEW_ALLOW_DIRECT") != "1":
+        print(
+            "autoreview refused: direct runs are forbidden outside review-phase. "
+            "Invoke $review-phase, which supplies --review-packet and --reviewer-identity.",
+            file=sys.stderr,
+        )
+        return 64
     repo = repo_root()
     target, target_ref = choose_target(repo, args.mode, args.base)
     print(f"autoreview target: {target}")

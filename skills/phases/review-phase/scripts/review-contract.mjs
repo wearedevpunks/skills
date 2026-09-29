@@ -571,7 +571,7 @@ const validateReviewEpoch = (report, errors) => {
           !FINDING_ROUTES.includes(candidate.proposed_return_route)) errors.push("malformed:review_candidate");
     });
   }
-  if (primary.size !== LENS_KEYS.length || primaryReviewers.size !== 1 || challengers.size === 0 ||
+  if (primary.size !== LENS_KEYS.length || primaryReviewers.size === 0 || challengers.size === 0 ||
       [...challengers].some(id => primaryReviewers.has(id))) errors.push("incomplete:independent_coverage");
   const accounted = new Set();
   const accepted = new Set();

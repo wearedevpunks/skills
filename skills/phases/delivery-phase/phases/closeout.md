@@ -5,6 +5,9 @@ docs ingest or no-op, and validation are complete.
 
 ## Checks
 
+- Require a valid retained completed review pass for this delivery lineage
+  before any other check. A missing one returns to [review.md](review.md);
+  a direct `autoreview` run or a worker's own review never substitutes for it.
 - After review and docs ingest or its verified no-op, create the final path-limited commit
   from delivery-owned paths. Preserve unrelated dirty user
   files and exclude them from staging.
