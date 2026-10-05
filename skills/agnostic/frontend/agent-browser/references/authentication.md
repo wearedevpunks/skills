@@ -185,20 +185,20 @@ fi
 
 2. **Use environment variables for credentials**
    ```bash
-   agent-browser fill @e1 "$APP_USERNAME"
-   agent-browser fill @e2 "$APP_PASSWORD"
+   agent-browser --engine lightpanda --session task-lp-123 fill @e1 "$APP_USERNAME"
+   agent-browser --engine lightpanda --session task-lp-123 fill @e2 "$APP_PASSWORD"
    ```
 
 3. **Clean up after automation**
    ```bash
-   agent-browser cookies clear
+   agent-browser --engine lightpanda --session task-lp-123 cookies clear
    rm -f ./auth-state.json
    ```
 
 4. **Use short-lived sessions for CI/CD**
    ```bash
    # Don't persist state in CI
-   agent-browser open https://app.example.com/login
+   agent-browser --engine lightpanda --session task-lp-123 open https://app.example.com/login
    # ... login and perform actions ...
-   agent-browser close  # Session ends, nothing persisted
+   agent-browser --engine lightpanda --session task-lp-123 close  # Session ends, nothing persisted
    ```
