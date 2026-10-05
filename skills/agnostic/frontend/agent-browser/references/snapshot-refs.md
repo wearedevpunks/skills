@@ -30,10 +30,10 @@ Compact snapshot → @refs assigned → Direct interaction (~200-400 tokens)
 
 ```bash
 # Basic snapshot (shows page structure)
-agent-browser snapshot
+agent-browser --engine lightpanda --session task-lp-123 snapshot
 
 # Interactive snapshot (-i flag) - RECOMMENDED
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 ```
 
 ### Snapshot Output Format
@@ -66,16 +66,16 @@ Once you have refs, interact directly:
 
 ```bash
 # Click the "Sign In" button
-agent-browser click @e6
+agent-browser --engine lightpanda --session task-lp-123 click @e6
 
 # Fill email input
-agent-browser fill @e10 "user@example.com"
+agent-browser --engine lightpanda --session task-lp-123 fill @e10 "user@example.com"
 
 # Fill password
-agent-browser fill @e11 "password123"
+agent-browser --engine lightpanda --session task-lp-123 fill @e11 "password123"
 
 # Submit the form
-agent-browser click @e12
+agent-browser --engine lightpanda --session task-lp-123 click @e12
 ```
 
 ## Ref Lifecycle
@@ -84,14 +84,14 @@ agent-browser click @e12
 
 ```bash
 # Get initial snapshot
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 # @e1 [button] "Next"
 
 # Click triggers page change
-agent-browser click @e1
+agent-browser --engine lightpanda --session task-lp-123 click @e1
 
 # MUST re-snapshot to get new refs!
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 # @e1 [h1] "Page 2"  ← Different element now!
 ```
 
@@ -101,29 +101,29 @@ agent-browser snapshot -i
 
 ```bash
 # CORRECT
-agent-browser open https://example.com
-agent-browser snapshot -i          # Get refs first
-agent-browser click @e1            # Use ref
+agent-browser --engine lightpanda --session task-lp-123 open https://example.com
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i          # Get refs first
+agent-browser --engine lightpanda --session task-lp-123 click @e1            # Use ref
 
 # WRONG
-agent-browser open https://example.com
-agent-browser click @e1            # Ref doesn't exist yet!
+agent-browser --engine lightpanda --session task-lp-123 open https://example.com
+agent-browser --engine lightpanda --session task-lp-123 click @e1            # Ref doesn't exist yet!
 ```
 
 ### 2. Re-Snapshot After Navigation
 
 ```bash
-agent-browser click @e5            # Navigates to new page
-agent-browser snapshot -i          # Get new refs
-agent-browser click @e1            # Use new refs
+agent-browser --engine lightpanda --session task-lp-123 click @e5            # Navigates to new page
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i          # Get new refs
+agent-browser --engine lightpanda --session task-lp-123 click @e1            # Use new refs
 ```
 
 ### 3. Re-Snapshot After Dynamic Changes
 
 ```bash
-agent-browser click @e1            # Opens dropdown
-agent-browser snapshot -i          # See dropdown items
-agent-browser click @e7            # Select item
+agent-browser --engine lightpanda --session task-lp-123 click @e1            # Opens dropdown
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i          # See dropdown items
+agent-browser --engine lightpanda --session task-lp-123 click @e7            # Select item
 ```
 
 ### 4. Snapshot Specific Regions
@@ -132,7 +132,7 @@ For complex pages, snapshot specific areas:
 
 ```bash
 # Snapshot just the form
-agent-browser snapshot @e9
+agent-browser --engine lightpanda --session task-lp-123 snapshot -s "form"
 ```
 
 ## Ref Notation Details
@@ -168,27 +168,27 @@ agent-browser snapshot @e9
 
 ```bash
 # Ref may have changed - re-snapshot
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 ```
 
 ### Element Not Visible in Snapshot
 
 ```bash
 # Scroll to reveal element
-agent-browser scroll --bottom
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 eval "window.scrollTo(0, document.body.scrollHeight)"
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 
 # Or wait for dynamic content
-agent-browser wait 1000
-agent-browser snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 wait 1000
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
 ```
 
 ### Too Many Elements
 
 ```bash
 # Snapshot specific container
-agent-browser snapshot @e5
+agent-browser --engine lightpanda --session task-lp-123 snapshot -s "main"
 
 # Or use get text for content-only extraction
-agent-browser get text @e5
+agent-browser --engine lightpanda --session task-lp-123 get text @e5
 ```
