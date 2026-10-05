@@ -19,6 +19,13 @@
 
 set -euo pipefail
 
+# Chrome is required for saved-state replay.
+BROWSER_SESSION="authenticated-session-chrome-$$"
+browser() {
+    command agent-browser --engine chrome --session "$BROWSER_SESSION" "$@"
+}
+trap 'browser close >/dev/null 2>&1 || true' EXIT
+
 LOGIN_URL="${1:?Usage: $0 <login-url> [state-file]}"
 STATE_FILE="${2:-./auth-state.json}"
 
@@ -29,14 +36,14 @@ echo "Authentication workflow: $LOGIN_URL"
 # ================================================================
 if [[ -f "$STATE_FILE" ]]; then
     echo "Loading saved state from $STATE_FILE..."
-    agent-browser state load "$STATE_FILE"
-    agent-browser open "$LOGIN_URL"
-    agent-browser wait --load networkidle
+    browser state load "$STATE_FILE"
+    browser open "$LOGIN_URL"
+    browser wait --load networkidle
 
-    CURRENT_URL=$(agent-browser get url)
+    CURRENT_URL=$(browser get url)
     if [[ "$CURRENT_URL" != *"login"* ]] && [[ "$CURRENT_URL" != *"signin"* ]]; then
         echo "Session restored successfully"
-        agent-browser snapshot -i
+        browser snapshot -i
         exit 0
     fi
     echo "Session expired, performing fresh login..."
@@ -47,13 +54,13 @@ fi
 # DISCOVERY MODE: Shows form structure (delete after setup)
 # ================================================================
 echo "Opening login page..."
-agent-browser open "$LOGIN_URL"
-agent-browser wait --load networkidle
+browser open "$LOGIN_URL"
+browser wait --load networkidle
 
 echo ""
 echo "Login form structure:"
 echo "---"
-agent-browser snapshot -i
+browser snapshot -i
 echo "---"
 echo ""
 echo "Next steps:"
@@ -62,7 +69,6 @@ echo "  2. Update the LOGIN FLOW section below with your refs"
 echo "  3. Set: export APP_USERNAME='...' APP_PASSWORD='...'"
 echo "  4. Delete this DISCOVERY MODE section"
 echo ""
-agent-browser close
 exit 0
 
 # ================================================================
@@ -71,27 +77,27 @@ exit 0
 # : "${APP_USERNAME:?Set APP_USERNAME environment variable}"
 # : "${APP_PASSWORD:?Set APP_PASSWORD environment variable}"
 #
-# agent-browser open "$LOGIN_URL"
-# agent-browser wait --load networkidle
-# agent-browser snapshot -i
+# browser open "$LOGIN_URL"
+# browser wait --load networkidle
+# browser snapshot -i
 #
 # # Fill credentials (update refs to match your form)
-# agent-browser fill @e1 "$APP_USERNAME"
-# agent-browser fill @e2 "$APP_PASSWORD"
-# agent-browser click @e3
-# agent-browser wait --load networkidle
+# browser fill @e1 "$APP_USERNAME"
+# browser fill @e2 "$APP_PASSWORD"
+# browser click @e3
+# browser wait --load networkidle
 #
 # # Verify login succeeded
-# FINAL_URL=$(agent-browser get url)
+# FINAL_URL=$(browser get url)
 # if [[ "$FINAL_URL" == *"login"* ]] || [[ "$FINAL_URL" == *"signin"* ]]; then
 #     echo "Login failed - still on login page"
-#     agent-browser screenshot /tmp/login-failed.png
-#     agent-browser close
+#     browser screenshot /tmp/login-failed.png
+#     browser close
 #     exit 1
 # fi
 #
 # # Save state for future runs
 # echo "Saving state to $STATE_FILE"
-# agent-browser state save "$STATE_FILE"
+# browser state save "$STATE_FILE"
 # echo "Login successful"
-# agent-browser snapshot -i
+# browser snapshot -i

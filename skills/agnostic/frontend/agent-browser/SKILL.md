@@ -1,229 +1,69 @@
 ---
 name: agent-browser
-description: A fast Rust-based headless browser automation CLI with Node.js fallback that enables AI agents to navigate, click, type, and snapshot pages via structured commands. Use when automating web interactions, extracting structured data from pages, filling forms programmatically, or testing web UIs.
-metadata: {"clawdbot":{"emoji":"🌐","requires":{"bins":["node","npm"]}}}
+description: Automate web interactions with agent-browser using Lightpanda by default. Use for navigation, data extraction, form filling, and browser behavior checks; use an explicit Chrome session when rendering or Chrome-only capabilities are required.
+metadata: {"clawdbot":{"emoji":"🌐","requires":{"bins":["agent-browser","lightpanda"]}}}
 ---
 
 # Agent Browser
 
-A fast Rust-based headless browser automation CLI with Node.js fallback that enables AI agents to navigate, click, type, and snapshot pages via structured commands.
+## Activate Lightpanda
 
-## Installation
+On every skill activation, select `--engine lightpanda` and a fresh task-specific `--session` before the first browser command. Repeat the engine and session on **every invocation**, including `snapshot`, actions, `batch`, and `close`. Keep custom `--executable-path` and other launch options consistent across calls. CLI flags override environment and config defaults; a previous session can already own a different engine.
 
-### npm recommended
-
-```bash
-npm install -g agent-browser
-agent-browser install
-agent-browser install --with-deps
-```
-
-### From Source
+1. Check `agent-browser --version`, `agent-browser --help`, and `lightpanda version`. The CLI must expose `--engine`. For missing binaries or startup failures, read [installation and diagnostics](references/lightpanda.md).
+2. Start a fresh Lightpanda session. Replace `task-lp-123` below with a unique name for this task. Inspect `session info --json` and confirm `data.runtime.engine` is `lightpanda` before relying on results. If the installed CLI lacks this diagnostic, inspect its version-matched help and process launch evidence.
+3. Navigate, snapshot, act using current refs, and verify the resulting page state. Refresh refs after navigation or DOM changes. Close every session you started on success or failure.
 
 ```bash
-git clone https://github.com/vercel-labs/agent-browser
-cd agent-browser
-pnpm install
-pnpm build
-agent-browser install
+agent-browser --engine lightpanda --session task-lp-123 open https://example.com
+agent-browser --engine lightpanda --session task-lp-123 session info --json
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
+# Choose an actual ref from that snapshot before acting:
+agent-browser --engine lightpanda --session task-lp-123 click @e1
+agent-browser --engine lightpanda --session task-lp-123 snapshot -i
+agent-browser --engine lightpanda --session task-lp-123 get text body
+agent-browser --engine lightpanda --session task-lp-123 close
 ```
 
-## Quick Start
+Treat a missing binary, launch failure, or unsupported operation as a diagnostic branch. Report the failed command and resolve the Lightpanda prerequisite; **never silently retry in Chrome**.
+
+## Choose Chrome for rendering
+
+Lightpanda executes JavaScript and exposes the DOM without graphical rendering. Use a **separate, explicitly selected Chrome session** for screenshots of page appearance, PDF layout, video, visual/layout assertions, coordinate interactions, headed/manual login, Chrome CDP attachment, extensions, persistent profiles, or startup state replay (`--state`). A Lightpanda text/semantic snapshot does not prove appearance. Its markdown-to-image/PDF output is not a rendered webpage.
+
+State the capability requiring Chrome, open the target again, and take new refs in that session. Keep `--engine chrome` on each command in the Chrome workflow. Return to a fresh Lightpanda session for the next activation.
 
 ```bash
-agent-browser open example.com
-agent-browser snapshot
-agent-browser click @e2
-agent-browser fill @e3 "test@example.com"
-agent-browser get text @e1
-agent-browser screenshot page.png
-agent-browser close
+# Chrome is required here to capture the rendered page.
+agent-browser --engine chrome --session task-visual-123 open https://example.com
+agent-browser --engine chrome --session task-visual-123 snapshot -i
+agent-browser --engine chrome --session task-visual-123 screenshot --full page.png
+agent-browser --engine chrome --session task-visual-123 close
 ```
 
-## Using Real Chrome Profile (for OAuth/Logged-in Sessions)
+For an already authenticated Chrome browser, read [authentication](references/authentication.md). Session names isolate running browsers; use explicit state persistence for reuse across restarts.
 
-For sites requiring Google/Discord/etc login (like star-swap.com):
+## Batch independent reads
 
-**Method 1: Launch Chrome with custom profile, connect via CDP**
+Batch commands that do not depend on unseen output. Keep snapshot-driven decisions between batches. Use one session per independent site, bounded by available machine capacity.
 
 ```bash
-# Terminal 1: Launch Chrome with your real profile and remote debugging
-google-chrome --remote-debugging-port=9222 --user-data-dir=/home/willr/.config/google-chrome/Default &
-
-# Terminal 2: Connect agent-browser to that Chrome instance
-agent-browser --cdp 9222 open "https://star-swap.com"
-agent-browser --cdp 9222 snapshot -i
-agent-browser --cdp 9222 click e2
-
-# This reuses your existing Google session - no re-login needed!
-# Works for: Google OAuth, Discord OAuth, any site you're logged into in Chrome
+agent-browser --engine lightpanda --session task-docs-123 batch --bail "open https://example.com" "get title" "get text body"
+agent-browser --engine lightpanda --session task-docs-123 close
 ```
 
-**Method 2: Session persistence (first-time manual login)**
+## References and templates
 
-```bash
-# First time: headed mode, login manually
-agent-browser --headed --session starswap open "https://star-swap.com"
-# Complete Google OAuth manually in the browser window
-# Close when done
+Load the relevant branch; retain the selected engine and task session throughout:
 
-# Future runs: cookies persist!
-agent-browser --session starswap open "https://star-swap.com"
-# Already logged in automatically
-```
+- [Commands](references/commands.md): command lookup, extraction, and engine-specific capabilities.
+- [Snapshots and refs](references/snapshot-refs.md): compact snapshots and ref lifecycle.
+- [Sessions](references/session-management.md): isolation, concurrency, persistence, and cleanup.
+- [Authentication](references/authentication.md): login, saved state, and manual authentication.
+- [Proxy support](references/proxy-support.md): proxy configuration and diagnosis.
+- [Video recording](references/video-recording.md): explicit Chrome recording workflow.
+- [Form automation](templates/form-automation.sh): Lightpanda snapshot–act–verify template.
+- [Authenticated session](templates/authenticated-session.sh): Chrome saved-state replay template.
+- [Content capture](templates/capture-workflow.sh): Chrome screenshot/PDF template.
 
-**am.will.ryan Chrome profile:** `/home/willr/.config/google-chrome/Default`
-
-## Core Commands
-
-### Navigation
-
-```bash
-agent-browser open <url>
-agent-browser back
-agent-browser forward
-agent-browser reload
-```
-
-### Interaction
-
-```bash
-agent-browser click <sel>
-agent-browser dblclick <sel>
-agent-browser focus <sel>
-agent-browser type <sel> <text>
-agent-browser fill <sel> <text>
-agent-browser clear <sel>
-agent-browser press <key>
-agent-browser keydown <key>
-agent-browser keyup <key>
-agent-browser hover <sel>
-agent-browser select <sel> <val>
-agent-browser check <sel>
-agent-browser uncheck <sel>
-agent-browser drag <src> <tgt>
-agent-browser upload <sel> <files>
-```
-
-### Extraction and Info
-
-```bash
-agent-browser snapshot
-agent-browser get text <sel>
-agent-browser get html <sel>
-agent-browser get value <sel>
-agent-browser get attr <sel> <attr>
-agent-browser get title
-agent-browser get url
-agent-browser get count <sel>
-agent-browser get box <sel>
-agent-browser screenshot [path]
-agent-browser pdf <path>
-```
-
-### Check State
-
-```bash
-agent-browser is visible <sel>
-agent-browser is enabled <sel>
-agent-browser is checked <sel>
-```
-
-### Find Elements
-
-- agent-browser find role <role> <action> [value]
-- agent-browser find text <text> <action>
-- agent-browser find label <label> <action> [value]
-- agent-browser find placeholder <ph> <action> [value]
-- agent-browser find alt <text> <action>
-- agent-browser find title <text> <action>
-- agent-browser find testid <id> <action> [value]
-
-Actions include click, fill, check, hover, and text.
-
-### Wait and Timing
-
-```bash
-agent-browser wait <selector>
-agent-browser wait <ms>
-agent-browser wait --text "Welcome"
-agent-browser wait --url "**/dash"
-agent-browser wait --load networkidle
-```
-
-### Advanced Control
-
-```bash
-agent-browser scroll <dir> [px]
-agent-browser scrollintoview <sel>
-agent-browser eval <js>
-agent-browser mouse move <x> <y>
-agent-browser cookies
-agent-browser storage local
-agent-browser tab new [url]
-agent-browser frame <sel>
-agent-browser dialog accept [text]
-```
-
-## Sessions
-
-Run multiple isolated browser instances.
-
-```bash
-agent-browser --session agent1 open site-a.com
-agent-browser --session agent2 open site-b.com
-```
-
-## Snapshot Options
-
-The snapshot command supports filtering to reduce output size.
-
-- agent-browser snapshot -i
-- agent-browser snapshot -c
-- agent-browser snapshot -d 3
-- agent-browser snapshot -s "#main"
-
-## Selectors and Refs
-
-Refs provide deterministic element selection from snapshots. Use the @ref syntax.
-
-```bash
-agent-browser snapshot
-agent-browser click @e2
-```
-
-## Agent Mode
-
-Use --json for machine readable output.
-
-```bash
-agent-browser snapshot --json
-```
-
-### Optimal AI Workflow
-
-- Navigate with agent-browser open <url>
-- Observe with agent-browser snapshot -i --json
-- Act with @ref from the snapshot
-- Verify with agent-browser snapshot
-
-## Troubleshooting
-
-- If the command is not found on Linux ARM64, use the full path in the bin folder.
-- If an element is not found, use snapshot to find the correct ref.
-- If the page is not loaded, add a wait command after navigation.
-- Use --headed to see the browser window for debugging.
-
-## Options
-
-- --session <name> uses an isolated session.
-- --json provides JSON output.
-- --full takes a full page screenshot.
-- --headed shows the browser window.
-- --timeout sets the command timeout in milliseconds.
-
-## Notes
-
-- Refs are stable per page load but change on navigation.
-- Always snapshot after navigation to get new refs.
-- Use fill instead of type for input fields to ensure existing text is cleared.
+Use `agent-browser skills get core --full` when the installed version provides it, or `<command> --help`, for version-matched syntax. Adapt upstream examples to this skill's engine/session contract before running them.
