@@ -56,7 +56,7 @@ Record accepted decisions as:
 ### Q<N>
 
 Prerequisites:
-- <Q ids or `none`>
+- <Q ids and exact fact/source prerequisites, or `none`>
 
 Question:
 <question asked>
@@ -65,23 +65,28 @@ Accepted answer:
 - <locked answer>
 ```
 
-For a technical question, add the grounding beside the decision:
+For a technical question, preserve the grounding and accepted scope beside the decision:
 
 ```md
 Evidence anchor:
-- `<path>:<symbol>`
+- <caller and existing/proposed paths; exact primitive module/symbol and source version/identity>
 
 Observed constraint:
-- <what the current code requires or leaves unresolved>
+- <library/runtime guarantee and limitation; application-owned remainder>
 
 Question:
-<requirements decision>
+<requirements contract or tradeoff>
 
 Code consequence:
-- <what contract, ownership, invariant, lifecycle, or boundary the answer determines>
+- <owner and module/capability/adapter/helper/value choice; dependency direction, composition, resource owner>
+- <small sketch or durable reference; material ordering, lifetime, transaction and failure result>
+
+Accepted scope:
+- <accepted boundary, contract or invariant; explicitly selected primitive, protocol and ordering guarantee>
+- Illustrative: <filenames, signatures or other details left open>
 ```
 
-Use the same question id and accepted-answer fields. Keep the question at requirements level; implementation sequence and task breakdown belong to planning.
+Use the same question id, exact prerequisite dependencies, and accepted-answer fields. Omit inapplicable detail. Label current facts, proposals, accepted target design, and unproved runtime behavior separately. Acceptance of a boundary leaves illustrative names and signatures open unless explicitly selected; preserve selected primitives, protocols, and ordering guarantees. Keep implementation sequence and task breakdown in planning.
 
 Group related decisions under branch headings.
 
@@ -155,13 +160,13 @@ For active code- or architecture-bearing branches, also maintain:
 | <branch> | `<path>:<symbol>` | <topology, persistence, ...> | <Q ids or `none`> | <unknown or grounded> |
 ```
 
-`unknown` means current code evidence has not grounded the branch. `grounded` means evidence anchors exist and every applicable technical dimension is answered, parked, deferred, or marked not applicable with supporting evidence. Record those dispositions in `Applicable dimensions`. Parked or deferred branches stay visible but are outside the active closure calculation.
+`unknown` means required evidence is missing or invalid for an applicable technical dimension. `grounded` means current evidence anchors support every applicable dimension; decisions may still be open. Record supported and not-applicable dimensions with evidence, and missing facts with the exact question ids they block. Only those dependent questions wait; independent ready questions remain available. Evidence readiness and decision closure are separate: closure requires each technical decision to be answered, parked, or explicitly deferred. Parked or deferred branches stay visible but outside the active closure calculation.
 
 Completion percentages are working signals:
 
 - `0-50%`: branch discovered but unsettled
 - `50-85%`: major direction set, important questions remain
-- `85-99%`: mostly closed, only constants/schema/naming remain
+- `85-99%`: mostly closed, final contract decisions or shared-understanding confirmation remain
 - `100%`: no unanswered items remain, the frontier is empty, shared understanding is explicitly confirmed, and every active technical branch is grounded with no open technical decisions; remaining work is implementation/tuning
 - `parked`: preserved for later, out of current scope
 

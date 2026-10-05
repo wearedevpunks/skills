@@ -12,14 +12,21 @@ Before the first question, invoke `$domain-modeling` and give it the current sta
 
 ## Technical Grounding
 
-Before `$grilling` constructs the first frontier:
+Before `$grilling` constructs the first frontier, identify every active branch whose decisions affect code or architecture. Prepare each applicable technical decision below, including later rounds, partial response sets, and resumed sessions:
 
-1. Identify every active branch whose decisions affect code or architecture.
-2. Inspect the smallest relevant slice of current code, tests, schemas, contracts, configuration, and runtime paths.
-3. Record concrete evidence anchors and the applicable technical dimensions in the status file. Use anchors such as `path:symbol`, a schema, a contract operation, a configuration key, or a runtime flow.
-4. Mark each active technical branch `grounded`. Keep it `unknown`, or park or defer it explicitly, when current evidence cannot ground it. Open the first frontier only when no active technical branch remains `unknown`.
+1. **Locate the behavior.** Trace the actual caller through the smallest relevant slice of code, tests, schemas, contracts, configuration, and runtime paths. Label existing and proposed locations. Record concrete evidence anchors such as `path:symbol`, schema, contract operation, configuration key, or runtime flow.
+2. **Identify the owner.** Show whether the behavior belongs to an existing module, new capability, adapter, private helper, or plain value. Explain why the boundary earns its place, dependency direction, where dependencies are supplied, and who acquires and releases resources. Apply the relevant stack guidance; for Effect, use `$effect-service-design` to qualify services and scoped Layer ownership.
+3. **Inspect the primitive.** Follow the applicable stack skills and project source guide/`opensrc` to inspect the exact library or runtime module/symbol and source version/identity. State its useful guarantees, material limitations, and the responsibility left to the application. Keep installed-version facts, proposed or accepted target-version design, and unproved runtime behavior distinct.
+4. **Show the consequence.** Use `$show-me` to select the smallest useful tree, interface sketch, call sequence, or diff. Label existing and proposed boundaries; expose material ordering, scope/lifetime, transaction participation, and failure consequences beside the view, with the caller-visible result. A sketch or source inspection establishes design evidence; runtime proof remains separate.
+5. **Ask the decision.** State the evidence anchor and observed code constraint, ask one unresolved requirements decision, then state its code consequence. Give a recommendation, rationale, and a meaningful alternative for the human contract or tradeoff.
 
-Technical grounding supplies requirements evidence, not an implementation plan. Ask which ownership, contract, invariant, lifecycle, or boundary must hold. Leave edit order, estimates, task breakdown, and reversible coding tactics to planning.
+These are preparation obligations, not mandatory headings for each question. Product-only branches keep product-level views.
+
+Reuse inspected evidence while its source identity and assumptions remain valid. After an answer or on resume, trace changed decisions through affected paths and refresh only the evidence they invalidate. Persist the evidence and acceptance scope through [artifact-output](artifact-output.md#grill-log-contract).
+
+Record each missing fact or source/version mismatch as an exact prerequisite of the affected question ids. Use `$grilling`'s fact exploration: hold only dependent questions and continue the independent ready frontier. Track evidence readiness in the status file separately from decision closure.
+
+Technical grounding supplies requirements evidence, not an implementation plan. Settle ownership, contract, invariant, lifecycle, and boundary. Once those guarantees are settled, leave illustrative spelling, tuning constants, implementation proof, edit order, estimates, and task breakdown to downstream work; reopen only when they expose a material contract or tradeoff.
 
 ## Live Visual Reasoning
 
@@ -33,7 +40,7 @@ At each `$grilling` round boundary, apply the [round persistence contract](artif
 
 ## Domain Modeling
 
-Use `$domain-modeling` for terminology, relationships, and implementation pressure. For each active technical branch, ask questions for the applicable topology, dependency direction or injection, seams, boundaries, persistence, and module shape. State the evidence anchor and observed code constraint, ask the unresolved requirements decision, then state its code consequence. Persist accepted architecture in grill artifacts for `create-spec`; keep the active glossary implementation-free.
+Use `$domain-modeling` for terminology, relationships, and implementation pressure. Persist accepted architecture in grill artifacts for `create-spec`; keep the active glossary implementation-free.
 
 ## Conservative Closure
 

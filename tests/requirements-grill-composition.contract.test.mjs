@@ -48,7 +48,7 @@ test("requirements-grill uses show-me throughout live branch traversal", () => {
   assert.match(flow, /persisted artifacts remain authoritative/is);
 });
 
-test("requirements-grill grounds technical branches before the first frontier", () => {
+test("requirements-grill grounds technical branches and preserves independent questions", () => {
   assert.match(skill, /Before `\$grilling` constructs the first frontier/is);
   assert.doesNotMatch(skill, /when they clarify the current decision/is);
 
@@ -67,7 +67,7 @@ test("requirements-grill grounds technical branches before the first frontier", 
   );
   assert.match(
     flow,
-    /Open the first frontier only when no active technical branch remains `unknown`/is,
+    /missing fact or source\/version mismatch.*exact prerequisite.*affected question ids.*hold only dependent questions.*independent ready frontier/is,
   );
 });
 
@@ -93,7 +93,7 @@ test("technical grounding blocks premature branch closure", () => {
   );
   assert.match(
     artifact,
-    /`grounded` means evidence anchors exist and every applicable technical dimension is answered, parked, deferred, or marked not applicable with supporting evidence/is,
+    /`grounded` means current evidence anchors support every applicable dimension; decisions may still be open.*closure requires each technical decision to be answered, parked, or explicitly deferred/is,
   );
   assert.match(
     artifact,
