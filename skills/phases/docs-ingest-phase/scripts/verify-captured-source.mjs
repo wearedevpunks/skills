@@ -106,21 +106,32 @@ const requireFields = (path, entry, fields) => {
   }
 };
 
+// Original and derived files live in the record's revision directory.
+const requirePlainName = (path, name, label) => {
+  if (typeof name !== "string" || name === "" || name === "." || name === ".." || /[/\\]/.test(name)) {
+    fail(`invalid source.json: ${path} ${label} is not a plain file name: ${JSON.stringify(name)}`);
+  }
+};
+
 const main = async () => {
   const { recordPath, ref } = parseArgs(process.argv.slice(2));
   const recordInRepo = repoPath(recordPath);
   const commit = commitOf(ref);
   const record = readRecord(commit, ref, recordInRepo);
   requireFields(recordInRepo, record, ["file", "bytes", "sha256"]);
+  requirePlainName(recordInRepo, record.file, "file");
+  const derived = record.derived ?? [];
+  if (!Array.isArray(derived)) fail(`invalid source.json: ${recordInRepo} derived is not a list`);
+  derived.forEach((entry, index) => {
+    requireFields(recordInRepo, entry, ["file", "sha256", "from_sha256"]);
+    requirePlainName(recordInRepo, entry.file, `derived[${index}].file`);
+  });
 
   const base = posix.dirname(recordInRepo);
   const originalPath = posix.join(base, record.file);
   const original = await checkBlob(commit, ref, originalPath, record);
 
-  const derived = record.derived ?? [];
-  if (!Array.isArray(derived)) fail(`invalid source.json: ${recordInRepo} derived is not a list`);
   for (const entry of derived) {
-    requireFields(recordInRepo, entry, ["file", "sha256", "from_sha256"]);
     const derivedPath = posix.join(base, entry.file);
     if (entry.from_sha256 !== record.sha256) {
       fail(`derived from another revision: ${derivedPath} from_sha256 ${entry.from_sha256} is not original sha256 ${record.sha256}`);
