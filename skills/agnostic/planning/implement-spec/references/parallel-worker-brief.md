@@ -55,7 +55,7 @@ Each worker brief should require:
 9. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
 10. not weakening or removing tests unless requirements changed
 11. implementing only the assigned task scope and satisfying all acceptance criteria
-12. running the exact task validation evidence before returning, plus extra plan validation when feasible
+12. running the exact task validation evidence before returning, scoped by [validation-scope.md](validation-scope.md); broader checks only on its broadening triggers
 13. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
 14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
 15. capturing and linking durable before/after screenshot evidence when the task changes UI

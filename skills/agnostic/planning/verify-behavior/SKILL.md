@@ -16,8 +16,8 @@ publication. This skill selects references and returns observed scenario evidenc
 1. Read the caller's accepted checks or failure report, selected scenario and app
    identities, mode, code ref, and runtime bounds. `verify` exercises implemented
    acceptance criteria; `reproduce` exercises the reported baseline failure before
-   fixes. Infer mode only when omitted. Cover every in-scope observable story unless
-   the caller explicitly bounded the run to one scenario.
+   fixes. Infer mode only when omitted. Cover the stories the caller's plan
+   changes; widen coverage only when the caller names more stories.
 2. For every run, read the project index at
    `.agents/skills/verify-behavior/references/README.md`. Select only the required
    Surface Verification References through its app pointers. For a scenario spanning
@@ -67,6 +67,23 @@ result that would disprove the expected behavior. Important behavior includes a
 **Relevant Negative Condition** when applicable, with the actual downstream result
 to inspect; relevance, not an exhaustive negative suite, determines coverage.
 
+Each entry also records its **Observation Manifest**: the fields and stages a run
+captures, read from the generated DTOs and the source predicates that decide the
+outcome. Cover, where the behavior has them: public state, exact release or intent,
+classifier operands, resource ownership, and correlated operation, receipt and error
+stages with timings.
+
+Each assertion carries one **expectation class**:
+
+- **invariant**: a business rule from product authority. Gate.
+- **output semantics**: a field or value the generated DTO or contract defines. Gate.
+- **speculative**: an assumption no requirement or contract supports. Observe and
+  report it; it gates nothing until authority supports it.
+
+Readiness, authorization, lifecycle, concurrency and cleanup checks stay gates. A
+cached action label or one fenced competing operation is an observation to explain,
+not a repeated effect or a duplicated resource.
+
 ## Exercise
 
 1. Record `Channel: browser | computer-use | cli` and why the chosen exposed
@@ -76,18 +93,28 @@ to inspect; relevance, not an exhaustive negative suite, determines coverage.
    return `blocked` with the exact capability or access prerequisite. Do not invent
    tool names, capture APIs, upload commands, recordings, or artifact URLs.
 2. Freeze authority, code, runtime and scenario identities for this proof. Establish
-   only authorized, run-owned state through Launch. Keep credentials, secrets,
+   only authorized, run-owned state through Launch; when the caller supplies an
+   **Owned Stack**, reuse it after a controlled reset instead of a new launch.
+   Complete the Observation Manifest for every selected entry before the first
+   Drive; a field you cannot name from the DTOs or source predicates is a gap to
+   close now, not after a failed run. Keep credentials, secrets,
    personal data and sensitive state out of prompts, screenshots, recordings,
    reports and retained evidence; name a missing prerequisite
    without its value and keep affected checks blocked. Leave required human
    authentication or approval actions to the user.
 3. Pass Doctor before Drive. Follow the selected Feature Map path end-to-end and
    record actions, observed positive result, Scenario Falsifier and its observation.
+   Capture every manifest observation before evaluating assertions, and redact
+   secrets from it.
    For important behavior, exercise the applicable Relevant Negative Condition and
    inspect actual downstream state, not just a successful command or acknowledgement.
    Record why a negative condition is inapplicable when that is the case.
-4. After a surprising failure, restore known run-owned state and renew Doctor
-   before another Drive or interpreting subsequent results.
+4. On a known mismatch, record it, then let the independent observations and
+   checks of the run complete; skip only steps that depend on the failed one. The
+   gate stays failed or blocked whatever the later checks show. After a surprising
+   failure, restore known run-owned state with a controlled reset (relaunch only
+   when a reset cannot restore it) and renew Doctor before another Drive or
+   interpreting subsequent results.
    Distinguish inaccessible setup, reference drift and observed product failure;
    retain the failure evidence for the invoking workflow. Missing interaction proof
    stays missing even if unit tests or source inspection pass.
@@ -107,14 +134,15 @@ to inspect; relevance, not an exhaustive negative suite, determines coverage.
 
 **`verify`:** verified | partially verified | not verified | blocked
 
-`not reproduced` means the complete reported path was exercised and the failure
-was absent. Inaccessible state, missing credentials, failed setup or unavailable
-capabilities mean `blocked`. A contradictory observed result means `not verified`
+Partial evidence is never a full pass: a gate that failed stays failed even when
+every independent check after it passed. `not reproduced` means the complete
+reported path was exercised and the failure was absent. Inaccessible state,
+missing credentials, failed setup or unavailable capabilities mean `blocked`. A contradictory observed result means `not verified`
 in verify mode; partial status names exactly which checks have proof.
 
 Return mode, branch/code ref, channel, authority/runtime/scenario identities,
-selection trace, per-check actions and observations, positive proof, Scenario
-Falsifier, applicable negative condition and downstream result, overall status,
+selection trace, captured Observation Manifest, per-check actions, observations and
+expectation class, positive proof, Scenario Falsifier, applicable negative condition and downstream result, overall status,
 evidence paths or links that exist, cleanup outcome, and blockers with next action.
 Coverage gaps retain the original scenario and affected acceptance criteria for
 lifecycle repair. Do not claim reproduction or verification without cited evidence.

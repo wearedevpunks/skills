@@ -47,6 +47,6 @@ test('implementation resumes original scenario only with complete matching proof
 });
 
 test('failed drive restores owned state before renewed Doctor and retry', () => {
-  assert.match(creator, /restore known owned state,\nthen renew Doctor before another Drive/);
-  assert.match(updater, /restore known owned state \(reset\/relaunch\nwhen needed\), then renew Doctor before another Drive/);
+  assert.match(creator, /restore known owned state\nwith a controlled reset \(relaunch only when a reset cannot restore it\), then renew\nDoctor before another Drive/);
+  assert.match(updater, /restore known owned state with a\ncontrolled reset; relaunch only when a reset cannot restore it\. Then renew Doctor\nbefore another Drive/);
 });

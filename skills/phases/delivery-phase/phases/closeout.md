@@ -14,6 +14,10 @@ docs ingest or no-op, and validation are complete.
 - Compare the trees. When the final tree differs from the pre-review candidate,
   rerun every required release classification and exact-tree provider proof against
   the final commit. A failed or unavailable required proof blocks closeout.
+- Push the final commit, then await its CI result and report it per check. When
+  the project has no full-suite CI or CI runs no E2E, run the one local broad run
+  instead, covering only what CI lacks, and report it as a local broad run.
+  `implement-spec`'s `references/validation-scope.md` owns this policy.
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
   [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md).
@@ -22,7 +26,10 @@ docs ingest or no-op, and validation are complete.
   requires production evidence for every accepted resulting Story and Task.
 - Summarize goal outcome and remaining blockers.
 - Report phase path actually taken; do not imply skipped phases ran.
-- Report validation commands, browser checks, smoke tests, or manual scenarios.
+- Report validation commands, browser checks, smoke tests, or manual scenarios,
+  labelled focused, CI, or local broad run. Focused checks never report as a
+  full-suite pass.
+- Tear down the delivery's Owned Stack through owned cleanup.
 - Report review result and whether findings remain.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.

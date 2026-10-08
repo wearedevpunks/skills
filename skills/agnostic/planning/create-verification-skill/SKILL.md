@@ -40,6 +40,9 @@ long-lived instance. Refuse ambiguous/shared instance ownership.
 Create `features/README.md` and the selected feature files. Each feature links its
 product/domain authority and states user entry, stable driver recipe, positive result,
 Scenario Falsifier, applicable variants, side effects, prerequisites and gotchas.
+Derive its Observation Manifest from the generated DTOs and source predicates, and
+tag each assertion with its expectation class, as `verify-behavior` defines both;
+cite the DTO or predicate behind every gate.
 Use the upstream four sections: Sub-features, How to get to it (user POV), Driving it
 with the selected harness, Gotchas. Include a Relevant Negative Condition and actual
 downstream result when important behavior warrants it. Broader map seeding waits for
@@ -53,8 +56,9 @@ Run the authored instructions, not an improvised substitute: Launch → Doctor �
 mapped public Drive → retain action/result/side-effect evidence → Cleanup → confirm
 that retained evidence still exists outside cleanup targets. This is the Reference
 Smoke Proof. Observe a claimed dry-run's actual effects rather than trusting its name.
-After failure, retain evidence and clean owned residue on that iteration; restore known owned state,
-then renew Doctor before another Drive. Protect secrets and user-owned state.
+After failure, retain evidence and clean owned residue on that iteration; restore known owned state
+with a controlled reset (relaunch only when a reset cannot restore it), then renew
+Doctor before another Drive. Protect secrets and user-owned state.
 
 Return `ready` only with the complete Reference Smoke Proof, written paths, source
 citations, original scenario/criteria, authority/code/runtime/scenario identities,
