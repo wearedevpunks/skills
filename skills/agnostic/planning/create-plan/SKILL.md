@@ -84,7 +84,16 @@ silently renaming them.
 2. Ask only for missing high-impact inputs such as scope, goal, or backlog target.
 3. Every plan-shaping question in each `$grilling` round must use the exact block: `Decision`, `Recommendation`, `Question`, `Why it matters`.
 4. Keep `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, and `$codebase-design` as visible inputs to one planning run; record when `$parallel-research`, `planning-discovery`, or `plan-reviewer` is used or intentionally skipped because the work is not split-friendly or subagents are unavailable.
-5. Scan relevant routed learning artifacts before task synthesis when prior bug knowledge, domain behavior, or project conventions could affect the plan.
+5. Build the plan's Wiki Context before task synthesis. Resolve the wiki
+   contract with the installed `docs-ingest-phase` skill's
+   `references/wiki-contract.md`. Select articles through its discovery
+   entrypoints, by each entry's "Applies when" cue, and through search. Read
+   each selected article and its supporting sources; check every material claim
+   that shapes the plan against primary evidence. Send each novel,
+   evidence-backed finding to `docs-ingest-phase`, or record a knowledge no-op.
+   Done when the plan's `## Wiki Context` section, in the
+   `references/plan-schema.md` format, cites every routed page used or states
+   no applicable context.
 6. Resolve each task's scoped guidance from root `AGENTS.md` down to the nearest `AGENTS.md` for its `location`.
 7. Use each task's required skill guidance while shaping its scope, dependencies, validation, RED target, and review mode; do not merely list skills after the plan is written.
 8. Assign each task the deduplicated union of skills whose exact triggers match
