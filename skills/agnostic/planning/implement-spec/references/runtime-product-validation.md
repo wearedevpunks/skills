@@ -40,7 +40,7 @@ Read scoped repository guidance, runbooks, manifests, and scripts to identify:
 - durable evidence sources
 - cleanup rules
 
-Start the supported runtime and dependencies. Treat a missing or broken runtime as a diagnosis and recovery task before declaring a blocker. Record an exact blocker only after relevant recovery attempts fail or required authority or infrastructure is unavailable.
+Reuse the delivery's Owned Stack after a controlled reset; start the supported runtime and dependencies only when no Owned Stack exists yet. [validation-scope.md](validation-scope.md) owns reuse, reset and teardown rules. Treat a missing or broken runtime as a diagnosis and recovery task before declaring a blocker. Record an exact blocker only after relevant recovery attempts fail or required authority or infrastructure is unavailable.
 
 ## Run an isolated scenario
 
@@ -48,7 +48,7 @@ Start the supported runtime and dependencies. Treat a missing or broken runtime 
 2. Exercise the public product entrypoint a real client uses: API, command, browser flow, mobile action, or equivalent supported surface.
 3. Verify the public result and the durable evidence named by `runtime_evidence`, such as persisted state, operation reports, queue or worker completion, emitted resources, provider results, correlated logs, traces, or spans.
 4. Confirm automated checks also pass; they complement runtime proof but do not replace it.
-5. Clean up only resources conclusively owned by the validation run through its correlation, provenance, or returned resource ids.
+5. Clean up only resources conclusively owned by the validation run through its correlation, provenance, or returned resource ids. The Owned Stack itself stays up for later steps until delivery teardown.
 
 ## Privileged adapter boundary
 

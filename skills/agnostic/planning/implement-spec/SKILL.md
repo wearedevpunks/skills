@@ -79,7 +79,7 @@ Provider mechanics remain inside `write-backlog`.
 11. For tasks with `runtime_validation: required`, follow [references/runtime-product-validation.md](references/runtime-product-validation.md) and do not mark them complete without conclusive runtime evidence; an exact blocker keeps the task blocked.
 12. After task and runtime checks, run `$verify-behavior` in `verify` mode for
     visibly exercisable acceptance criteria before final acceptance
-    classification. A mismatch is runtime evidence: route it to
+    classification. Pass it the stories the plan changes. A mismatch is runtime evidence: route it to
     `debugging-phase`. If the required interaction capability is unavailable,
     record the explicit blocker and keep affected acceptance criteria blocked.
 13. Finish with the shared acceptance audit, manual review checklist, and spec finalization contract. Architecture-bearing plans also require final zero-drift closure and an empty migration ledger.
@@ -99,6 +99,7 @@ Workers write on that recorded branch under exclusive Active Write Scopes.
 - Shared lifecycle, notes contract, tech-debt rules, acceptance audit, finalization: see [references/lifecycle.md](references/lifecycle.md)
 - UI before/after screenshot evidence and PR handoff links: see [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md)
 - Supported-runtime proof and cleanup contract: see [references/runtime-product-validation.md](references/runtime-product-validation.md)
+- Validation scope, Verification Tiers, Owned Stack and CI ownership: see [references/validation-scope.md](references/validation-scope.md)
 - Scoped execution: see [references/parallel.md](references/parallel.md)
 - Plan parsing, Task Gates and frontier release: see [references/parallel-orchestration.md](references/parallel-orchestration.md)
 - Worker brief contract: see [references/parallel-worker-brief.md](references/parallel-worker-brief.md)

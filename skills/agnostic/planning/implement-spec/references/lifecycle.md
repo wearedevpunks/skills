@@ -226,6 +226,10 @@ Do not fake completion.
 
 ## 9. Apply runtime-aware validation
 
+Scope every check by [validation-scope.md](validation-scope.md): focused local
+validation, Verification Tiers, the Owned Stack, and CI ownership of broad
+regression.
+
 Use the task `review_mode`:
 
 - `cli`: tests, commands, type-checks, API calls, or non-visual checks

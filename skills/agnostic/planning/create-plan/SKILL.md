@@ -102,7 +102,10 @@ silently renaming them.
    `implementation_skill_guidance`,
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,
-   `runtime_target`, `runtime_evidence`, and `runtime_cleanup`.
+   `runtime_target`, `runtime_evidence`, and `runtime_cleanup`. Each task's
+   `validation` is focused: tests for the changed behavior, integration checks
+   the change directly touches, and type/lint for affected workspaces. CI owns
+   the full suite; see [validation scope](../implement-spec/references/validation-scope.md).
     Architecture-bearing tasks also carry the convergence fields required by
     `references/architecture-convergence.md`.
 11. Keep the task execution kernel inline: identity, dependencies, owned paths,

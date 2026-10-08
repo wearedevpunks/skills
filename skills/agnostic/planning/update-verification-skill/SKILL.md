@@ -40,12 +40,16 @@ semantics remain with their owning implementation/debugging workflow.
 Follow the app's Launch model: one owned long-lived server/UI instance driven serially,
 or a fresh isolated session for each short-lived CLI drive. Live proof is required even
 when source looks clean. Run Doctor before each fresh session and after surprising or
-failed behavior. After a surprising failure, restore known owned state (reset/relaunch
-when needed), then renew Doctor before another Drive. Capture action,
+failed behavior. After a surprising failure, restore known owned state with a
+controlled reset; relaunch only when a reset cannot restore it. Then renew Doctor
+before another Drive. Capture action,
 observable result, Scenario Falsifier, side effects and applicable Relevant Negative
 Condition's actual downstream result. Confirm evidence survives every cleanup.
 
 - Wrong or missing executable description: repair selected reference drift.
+- Missing Observation Manifest or expectation class on a selected entry: add it from
+  the generated DTOs and source predicates; an assertion without contract support
+  becomes `speculative`.
 - Working behavior the harness cannot drive: repair the selected app-owned helper or
   drive recipe; document executable invocation, then re-drive the corrected path.
 - Doctor failure caused by reference drift: correct within scope, restart only what

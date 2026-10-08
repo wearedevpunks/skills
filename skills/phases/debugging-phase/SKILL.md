@@ -54,6 +54,12 @@ description: >-
    - Instrument or inspect with runtime evidence.
    - Keep an evidence matrix with each hypothesis marked `confirmed`, `rejected`, or `inconclusive`.
    - Cite log lines, recordings, commands, test output, or scenario evidence for every status.
+   - Test each hypothesis at the cheapest Verification Tier that can decide it:
+     saved receipts and pure helpers first, then a focused reproduction on the
+     Owned Stack. Before another expensive run, state its New Discriminator and
+     confirm the Observation Manifest covers it; when the same observation is
+     missing again, revise the plan instead of rerunning. `implement-spec`'s
+     `references/validation-scope.md` owns these rules.
    - Use `$show-me` to present the evidence matrix before selecting a cause or
      fix. The visual explains the comparison; cited evidence and statuses remain
      authoritative.
@@ -66,6 +72,8 @@ description: >-
    - Keep debug instrumentation until post-fix evidence proves success, unless the user explicitly asks for cleanup.
 7. **Verify.**
    - Rerun the failing smoke check, focused test, browser path, CLI command, or manual scenario.
+   - Record failures outside the reported behavior as unrelated, with evidence;
+     they need no baseline run.
    - Compare before/after evidence.
    - Run review appropriate to the touched scope.
 8. **Exit.**
