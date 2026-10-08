@@ -1,6 +1,6 @@
 ---
 name: docs-ingest-phase
-description: Routes docs-affecting work into private/internal ingest and public-facing docs paths. Use when specs need durable domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
+description: Routes docs-affecting work through the project wiki contract into wiki setup/adoption, raw-source capture, wiki health, private/internal ingest, and public-facing docs paths. Use when a wiki needs setup or adoption, a user supplies a raw source to keep, wiki health or maintenance is requested, specs need durable domain capture, public docs need creation or material updates, wiki/Fumadocs routing changes, or code changes alter architecture, setup, contracts, operator workflow, or user-facing behavior.
 ---
 
 # Docs Ingest Phase
@@ -11,17 +11,20 @@ description: Routes docs-affecting work into private/internal ingest and public-
 
 1. Read [phases/router.md](phases/router.md).
 2. Inspect only enough source, diff, spec, notes, wiki, public docs, and root docs state to choose the current docs path.
-3. Load exactly one phase file from `phases/`.
+3. Load exactly the one branch file the router selects.
 4. Complete that path. When the resulting docs describe a complex flow, use
    `$show-me` to add the smallest useful visual view beside the authoritative
    prose; keep simple flows textual.
 5. Write the docs-ingest outcome, then stop or re-enter `docs-ingest-phase` to
    route again.
 
-Completion of one path does not imply loading the other path.
+Completion of one path does not imply loading another path.
 
 ## Entry Modes
 
+- **Wiki setup/adoption:** establish or adopt the project-owned wiki contract and report its readiness.
+- **Source capture:** preserve and commit a supplied raw source with provenance.
+- **Wiki health:** check and maintain the structure and truth of existing wiki knowledge.
 - **Private/internal ingest:** durable capture for specs, project docs, wiki internals, root `docs/`, runbooks, operator workflow, routing metadata, or learning artifacts.
 - **Public docs:** reader-facing product, usage, domain, command, onboarding, or changelog docs.
 - **Mixed docs:** one change needs both private/internal capture and public-facing docs.
@@ -50,5 +53,6 @@ Treat Feature Maps as read-only navigation inputs to ordinary product and domain
 
 - Selected path completed and its resumable outcome was reported.
 - Router finds no docs-affecting change and reports a no-op reason.
+- A wiki contract gap blocks the selected branch and its gap report is written.
 - Required docs surface, route policy, source artifact, or user guidance is missing.
 - Public fragment sufficiency checkpoint is waiting for the user's answer.

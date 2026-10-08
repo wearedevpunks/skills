@@ -19,13 +19,20 @@ Audience is the primary signal. Route topology and permission metadata are secon
 
 ## Routing Order
 
-1. If docs goal bounds or source artifacts are unclear, stop and ask one concrete question.
-2. If no docs-affecting change exists, report a no-op and stop.
-3. If audience classification is unclear after minimal inspection, stop and ask whether the target reader is internal/project/operator or public/adopter/user.
-4. If a spec, project/wiki page, root `docs/`, operator workflow, route metadata, or learning artifact needs ingest and is missing or stale, load [private-internal.md](private-internal.md).
-5. If both private/internal and public docs are required, route private/internal first unless its ingest outcome is already fresh and names the public target plus writer artifact location.
-6. If reader-facing public docs are requested or materially affected, load [public-docs.md](public-docs.md).
-7. Otherwise report a no-op with evidence.
+1. **Scope**: if docs goal bounds or source artifacts are unclear, stop and ask one concrete question.
+2. **Contract**: resolve the wiki contract with [../references/wiki-contract.md](../references/wiki-contract.md#resolve). Done when you hold a resolved contract or its list of gaps.
+3. **Branch**: select the first branch whose trigger matches.
+   - **Setup/adoption**: the user asks to set up or adopt the wiki. Branch file: [../references/wiki-contract.md](../references/wiki-contract.md), sections Adopt or Set up.
+   - **Capture**: the user supplies a raw source to keep. Branch file: [../references/source-capture.md](../references/source-capture.md).
+   - **Health**: the user asks for a wiki health check or maintenance. Branch file: [../references/health.md](../references/health.md).
+   - **Private/internal**: a spec, project/wiki page, root `docs/`, operator workflow, route metadata, or learning artifact needs ingest and is missing or stale. Branch file: [private-internal.md](private-internal.md).
+   - **Public**: reader-facing public docs are requested or materially affected. Branch file: [public-docs.md](public-docs.md).
+   - **No-op**: no docs-affecting change exists. Report the no-op with evidence and stop.
+
+   When audience stays unclear after minimal inspection, ask whether the target reader is internal/project/operator or public/adopter/user. Done when one branch is selected.
+4. **Gap**: when a contract gap covers a destination the selected branch writes, run setup/adoption if the task holds setup authority; otherwise write the [gap report](../references/wiki-contract.md#gap-report) and stop. Done when the selected branch file is loaded, or the gap report is written.
+
+When several branches apply, run capture before ingest of that source, and private/internal before public unless the private/internal outcome is already fresh and names the public target plus writer artifact location. Each branch ends with its own outcome; re-enter this router for the next one.
 
 ## Resume Behavior
 
@@ -38,5 +45,6 @@ Report:
 
 - selected path
 - evidence that selected it
+- wiki contract status: resolved, or each gap
 - path file to load next
 - blocker question if no path can be selected safely
