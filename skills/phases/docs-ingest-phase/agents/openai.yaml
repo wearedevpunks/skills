@@ -1,4 +1,4 @@
 interface:
   display_name: "Docs Ingest Phase"
-  short_description: "Routes private/internal ingest and public docs updates"
-  default_prompt: "Use $docs-ingest-phase to route docs-affecting work between private/internal ingest and public docs. For public docs, present fragments and ask whether they are sufficient before beats, shape, or final writing."
+  short_description: "Routes wiki setup/adoption, source capture, health, private ingest and public docs"
+  default_prompt: "Use $docs-ingest-phase to resolve the wiki contract, then route docs-affecting work to wiki setup/adoption, raw-source capture, wiki health, private/internal ingest, or public docs. For public docs, present fragments and ask whether they are sufficient before beats, shape, or final writing."
