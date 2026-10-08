@@ -4,6 +4,10 @@ Use this reference only after the user explicitly closes the grill.
 
 ## Inputs
 
+`<wiki-root>` and the canonical article tree come from the resolved
+[wiki contract](../../../../phases/docs-ingest-phase/references/wiki-contract.md)
+(`docs-ingest-phase/references/wiki-contract.md`).
+
 Use the grill artifacts as source:
 
 - `<wiki-root>/content/docs/project/grilling/<topic>-grill-status.md`
@@ -87,7 +91,6 @@ Create or update decision pages only when:
 Keep the routed grilling log/status files as the detailed requirements record.
 
 Use other routed `<wiki-root>/content/docs/project/` pages for synthesized project knowledge.
-For the default scaffold, that routed project surface is `apps/wiki/content/docs/project/`.
 
 Keep domain glossaries inside the routed project surface above. Do not create a separate `<wiki-root>/domains/` article tree.
 
@@ -98,9 +101,12 @@ Summarize stable meaning, glossary, and axioms; link back to source docs when us
 
 After wiki changes:
 
-- update the domain index page
-- update root wiki index counts if pages were added
-- append a concise entry to `apps/wiki/log.md`
+- apply the [discovery rules](../../../../phases/docs-ingest-phase/references/fumadocs-routing.md#discovery)
+  (`docs-ingest-phase/references/fumadocs-routing.md#discovery`) to every
+  routed page written
+- append one `grill` entry to `<wiki-root>/log.md` by the
+  [log rule](../../../../phases/docs-ingest-phase/references/wiki-ingest.md#log)
+  (`docs-ingest-phase/references/wiki-ingest.md#log`)
 - preserve existing frontmatter
 - update `updated`
 
