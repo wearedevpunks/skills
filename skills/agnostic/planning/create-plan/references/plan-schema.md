@@ -22,6 +22,7 @@ Include:
 - resolved decision ledger
 - assumptions and constraints
 - codebase findings
+- `## Wiki Context`, in the [Wiki Context](#wiki-context) format
 - external research used
 - dependency graph
 - parallel execution waves
@@ -42,6 +43,29 @@ Each wave labels an earliest Execution Frontier, not a whole-wave release barrie
 Record every eligible task under dependency, write/read, runtime and architecture
 constraints; actual capacity determines dispatch. Planning must expose those
 constraints so independent work can proceed after its own parent Task Gates.
+
+## Wiki Context
+
+`## Wiki Context` records the project wiki knowledge that shapes the plan. The
+wiki contract, discovery-map entries and freshness classes come from the
+installed `docs-ingest-phase` skill's `references/wiki-contract.md`,
+`references/fumadocs-routing.md` and `references/wiki-ingest.md`.
+
+Record:
+
+- **Knowledge used**: one entry per routed page: its link; the "Applies when"
+  cue or search query that selected it; the claims the plan uses; its freshness
+  (_fresh_, _stale_ or _freshness unknown_); and each claim's status, proposal
+  or verified implementation, with the primary evidence checked.
+- **Stale or contradictory claims**: each claim, the primary evidence that
+  disagrees, and its resolution in this plan or the unresolved question that
+  carries it.
+- **Returned findings**: each novel, evidence-backed finding sent to
+  `docs-ingest-phase`, or the knowledge no-op with the evidence compared.
+
+When no routed page applies, write `No applicable context` with the discovery
+entrypoints and searches checked. When the wiki contract has a gap, record its
+missing fields and `No applicable context`.
 
 ## Task contract
 
