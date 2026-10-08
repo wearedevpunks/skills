@@ -63,11 +63,16 @@ Before writing a new learning artifact, check existing routed learning pages in 
 - `delete`: old guidance is clearly obsolete, unreferenced, and no longer useful
 - `mark_stale`: accuracy is ambiguous or needs a human decision
 
-Record the outcome in the ingest report.
+Record the outcome in the ingest report with the evidence that justifies it.
+
+After `consolidate`, `replace` or `delete`, repair every reference to the merged, superseded or removed page: links, `meta.json` entries and discovery-map entries, by the [discovery rules](fumadocs-routing.md#discovery).
+
+Update an operational projection through its canonical source owners: change the canonical source, then regenerate the projection. A projection source's disappearance alone never authorizes deleting durable routed knowledge; record it for the source owner and keep the knowledge until a justified outcome changes it.
 
 For a research report, keep the report as primary evidence and project only
 reusable knowledge. Use the normal `keep`, `update`, `consolidate`, `replace`,
-or `mark_stale` outcomes; do not convert unresolved product choices into facts.
+or `mark_stale` outcomes; keep unresolved product choices attributed and
+unresolved.
 
 ## Future-Use Hooks
 
