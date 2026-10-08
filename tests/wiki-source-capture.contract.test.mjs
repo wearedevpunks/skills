@@ -152,6 +152,55 @@ test("readback rejects derived text attributed to another revision", () => {
   assert.match(result.stderr, /from_sha256/);
 });
 
+// Commit a matching blob at `escaped`, then point the record's field at it.
+const escapeRevisionDir = (root, { field, escaped, bytes, edit }) => {
+  const target = join(root, dir, escaped);
+  mkdirSync(join(target, ".."), { recursive: true });
+  writeFileSync(target, bytes);
+  const recordPath = join(root, dir, "source.json");
+  const record = JSON.parse(readFileSync(recordPath, "utf8"));
+  edit(record, escaped);
+  writeFileSync(recordPath, JSON.stringify(record));
+  git(root, "add", "--", "raw");
+  git(root, "commit", "-q", "-m", `escape via ${field}`);
+};
+
+test("readback rejects an original file outside the revision directory", () => {
+  const root = repo();
+  preserve(root);
+  escapeRevisionDir(root, {
+    field: "file",
+    escaped: "../outside.md",
+    bytes: original,
+    edit: (record, escaped) => {
+      record.file = escaped;
+    },
+  });
+
+  const result = verify(root, `${dir}/source.json`);
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /invalid source\.json: .* file /);
+});
+
+test("readback rejects a derived file outside the revision directory", () => {
+  const root = repo();
+  preserve(root, { withDerived: true });
+  escapeRevisionDir(root, {
+    field: "derived[].file",
+    escaped: "sub/x.txt",
+    bytes: derived,
+    edit: (record, escaped) => {
+      record.derived[0].file = escaped;
+    },
+  });
+
+  const result = verify(root, `${dir}/source.json`);
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /invalid source\.json: .* derived\[0\]\.file /);
+});
+
 test("path-limited capture commit keeps unrelated staged and working changes", () => {
   const root = repo();
   writeFileSync(join(root, "notes.md"), "draft\n");
