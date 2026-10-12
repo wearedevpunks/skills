@@ -51,7 +51,7 @@ Read, in this order:
 3. `<resolved-spec-folder>/SPEC.md`
 4. `<resolved-spec-folder>/PLAN.md`
 5. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
-6. `docs/reference/tech-debt/<domain>/<spec>.md` if present
+6. `apps/wiki/content/docs/project/tech-debt/<domain>/<spec>.md` if present
 
 Carry the pair's exact retained source identities and required architecture
 decision selectors, mapped spec codes and source Q evidence in worker Context Pointers, Read Dependencies and Relevant
@@ -89,7 +89,7 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 
 Persistent implementation drift belongs in:
 
-`docs/reference/tech-debt/<domain>/<spec>.md`
+`apps/wiki/content/docs/project/tech-debt/<domain>/<spec>.md`
 
 This file is not a dumping ground for avoidable "later" work.
 

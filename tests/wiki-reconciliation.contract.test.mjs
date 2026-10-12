@@ -113,7 +113,7 @@ test("private ingest resolves the wiki contract and orders flows before concepts
 
   assert.match(workflow, /\(\.\.\/references\/wiki-contract\.md/u);
   assert.doesNotMatch(path, /`apps\/wiki`|single-repo: `wiki`/u);
-  const order = ["**Learning**", "**Flows**", "**Concepts**", "**Discovery**", "**Root docs**", "**Outcome**"].map(
+  const order = ["**Learning**", "**Flows**", "**Concepts**", "**Discovery**", "**Operations**", "**Outcome**"].map(
     (step) => workflow.indexOf(step),
   );
   assert.ok(order.every((index) => index >= 0), `every step is present: ${order}`);
@@ -140,5 +140,30 @@ test("agent interface names every docs-ingest branch", () => {
     for (const branch of [/setup\/adoption/u, /captur/u, /health/u, /private/u, /public/u]) {
       assert.match(value, branch, `${field} names ${branch}`);
     }
+  }
+});
+
+test("operations live in the wiki and a root docs tree is legacy input to merge", () => {
+  const operations = section(read("phases/private-internal.md"), "Workflow");
+  const legacy = read("references/legacy-root-docs.md");
+
+  assert.match(operations, /\*\*Operations\*\*[^\n]*canonical article tree/u);
+  assert.match(legacy, /legacy input to\s+merge[\s\S]*never a write target/u);
+  assert.match(section(legacy, "Merge"), /delete the root `docs\/` tree/u);
+});
+
+test("tech debt lives in the wiki project tree", () => {
+  const debt = readFileSync(
+    new URL("../skills/phases/resolve-debt-phase/SKILL.md", import.meta.url),
+    "utf8",
+  );
+  const lifecycle = readFileSync(
+    new URL("../skills/agnostic/planning/implement-spec/references/lifecycle.md", import.meta.url),
+    "utf8",
+  );
+
+  for (const text of [debt, lifecycle]) {
+    assert.match(text, /content\/docs\/project\/tech-debt\/<domain>\//u);
+    assert.doesNotMatch(text, /docs\/reference\/tech-debt/u);
   }
 });

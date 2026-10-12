@@ -25,7 +25,7 @@ Completion of one path does not imply loading another path.
 - **Wiki setup/adoption:** establish or adopt the project-owned wiki contract and report its readiness.
 - **Source capture:** preserve and commit a supplied raw source with provenance.
 - **Wiki health:** check and maintain the structure and truth of existing wiki knowledge.
-- **Private/internal ingest:** durable capture for specs, project docs, wiki internals, root `docs/`, runbooks, operator workflow, routing metadata, or learning artifacts.
+- **Private/internal ingest:** durable capture for specs, project docs, wiki internals, legacy root `docs/` merges, runbooks, operator workflow, routing metadata, or learning artifacts.
 - **Public docs:** reader-facing product, usage, domain, command, onboarding, or changelog docs.
 - **Mixed docs:** one change needs both private/internal capture and public-facing docs.
 - **No-op check:** determine whether docs ingest is already complete or intentionally unnecessary.
