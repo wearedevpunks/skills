@@ -51,7 +51,7 @@ Read, in this order:
 3. `<resolved-spec-folder>/SPEC.md`
 4. `<resolved-spec-folder>/PLAN.md`
 5. `<resolved-spec-folder>/IMPLEMENTATION-NOTES.md` if present
-6. `apps/wiki/content/docs/project/tech-debt/<domain>/<spec>.md` if present
+6. the spec's tech-debt item files under `<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/`, if present
 
 Carry the pair's exact retained source identities and required architecture
 decision selectors, mapped spec codes and source Q evidence in worker Context Pointers, Read Dependencies and Relevant
@@ -87,11 +87,15 @@ Use [../assets/IMPLEMENTATION-NOTES-TEMPLATE.md](../assets/IMPLEMENTATION-NOTES-
 
 ## 5. Prepare the tech-debt ledger
 
-Persistent implementation drift belongs in:
+Persistent implementation drift belongs in one item file per debt:
 
-`apps/wiki/content/docs/project/tech-debt/<domain>/<spec>.md`
+`<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/<debt-slug>.md`
 
-This file is not a dumping ground for avoidable "later" work.
+`<wiki-root>` is the wiki location declared in the project wiki contract
+(`apps/wiki` by default). The spec's item files form its ledger; each item file
+is one canonical `resolve-debt-phase` input.
+
+The ledger is not a dumping ground for avoidable "later" work.
 
 Default rule: resolve debt immediately when it appears.
 
@@ -105,16 +109,16 @@ Forbidden debt language:
 
 Use the ledger only for debt that cannot be resolved inside the current run because it is outside the active goal, requires a human product/scope decision, or is blocked by an external dependency.
 
-For every ledger entry, record:
+Each item file records:
 
 - exact debt
 - why it cannot be resolved now
 - decision needed or external blocker
 - owner or next action
 
-If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and run a tiny `$requirements-phase` clarification. Resume execution from its recorded outcome, applying any accepted scope change before continuing.
+If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and hand the human the `$requirements-phase` command with a brief: the exact debt, the decision it needs and current source pointers. Resume execution from its recorded outcome, applying any accepted scope change before continuing.
 
-Do not create the file when nothing durable must survive the run.
+Create an item file only for debt that must survive the run.
 
 ## 6. Shared execution invariants
 
@@ -145,7 +149,7 @@ Do not create the file when nothing durable must survive the run.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
 - Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
-- When unclear debt affects the current implementation and the answer is not already in the spec/plan/backlog, pause for a tiny `$requirements-phase` clarification instead of guessing.
+- When unclear debt affects the current implementation and the spec, plan and backlog leave it open, apply the section 5 `$requirements-phase` handoff.
 - In `provider-task` mode, load `write-backlog`'s
   [delivery-status.md](../../../requirements/write-backlog/references/delivery-status.md) branch
   for lifecycle facts. When work starts, becomes blocked, gains a pull request,
@@ -207,7 +211,7 @@ handoff and finalization. Workers return evidence; the parent performs this upke
   same scenario as a `## Runtime Validation Evidence` row, cross-reference that
   row; avoid duplicate evidence
 - resolve any in-goal debt before advancing
-- update the spec-linked tech-debt file only for blocked or explicitly parked debt with exact owner/next action
+- create or update a spec-linked tech-debt item file only for blocked or explicitly parked debt with exact owner/next action
 - if backlog sync is in scope, prefer native metadata changes or concise comments over body rewrites
 - in `provider-task` mode, verify every observed provider Task fact has exact
   `write-backlog` readback; a missing readback keeps that Task blocked
@@ -217,7 +221,7 @@ handoff and finalization. Workers return evidence; the parent performs this upke
 If a task is blocked:
 
 1. record it in `IMPLEMENTATION-NOTES.md`
-2. update the spec-linked tech-debt file only when the blocker creates durable unresolved debt
+2. create or update a spec-linked tech-debt item file only when the blocker creates durable unresolved debt
 3. skip only tasks truly blocked by it
 4. finish all remaining reachable work
 5. report blocked tasks clearly at the end
@@ -302,7 +306,7 @@ Before reporting back:
   migration ledger
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
-- ensure every tech-debt ledger entry has exact blocker/decision/owner/next action
+- ensure every tech-debt item file has exact blocker/decision/owner/next action
 - set `SPEC.md` frontmatter `status: implemented` and `PLAN.md` `**Status:**
   Complete` only when every acceptance criterion is met, every reachable task is
   complete, and any architecture-bearing plan has successful final architecture
@@ -324,7 +328,7 @@ Summarize:
 - behavior-verification evidence and exact blockers
 - manual review checklist
 - blocked tasks needing input
-- whether the spec-linked tech-debt file was created or updated
+- which spec-linked tech-debt item files were created or updated
 
 ## 14. Return implementation to delivery
 

@@ -5,7 +5,7 @@ until this router selects one.
 
 ## Inputs To Inspect
 
-- User request and explicit mode: private/internal, public docs, mixed, resume, or no-op check.
+- User request and explicit mode: setup/adoption, capture, health, private/internal, public docs, mixed, resume, or no-op check.
 - Source spec folder, `SPEC.md`, implementation notes, review/debug output, diff, PR, issue, branch, or docs target named by the user.
 - Existing private/project wiki pages, public docs pages, any legacy root `docs/` tree, `meta.json`, sidebars, ingest frontmatter, writer artifacts, and validation evidence.
 - Relevant repo guidance only when needed to identify docs ownership, route policy, or validation surface.

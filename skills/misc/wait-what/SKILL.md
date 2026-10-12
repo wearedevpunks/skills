@@ -1,7 +1,6 @@
 ---
 name: wait-what
-description: Stop. That last message did not land — re-pitch it.
-disable-model-invocation: true
+description: Re-pitch a message in ASD-STE100 Simplified Technical English with canonical glossary terms. Use when a message, term, or proposed wording does not land, when presenting grilling questions and recommendations, or when checking a complete plan before writing it.
 ---
 
 Before naming or rewriting domain concepts, read the canonical glossary in the

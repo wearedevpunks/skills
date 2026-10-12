@@ -10,8 +10,9 @@ description: Implement an agent-ready spec folder through a plan-derived Executi
 - **Role:** higher-order execution orchestrator
 - **Entrypoint type:** public entrypoint
 - **Upstream:** current retained agent-ready `ARCHITECTURE.md` / `SPEC.md` pair and execution-ready `PLAN.md`
-- **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, tiny `$requirements-phase` sessions for debt ambiguity, and internal scoped-worker orchestration
-- **Downstream:** `docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
+- **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, and internal scoped-worker orchestration
+- **Human handoff:** a `$requirements-phase` command and brief for debt that needs a decision outside the active goal
+- **Downstream:** `delivery-phase`, which runs `$review-phase` Code Review, then `$docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing agent-ready spec folder; stop and use `create-plan` if `PLAN.md` is missing
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
 
@@ -64,6 +65,8 @@ Provider mechanics remain inside `write-backlog`.
 4. Launch scoped workers for the eligible tasks using
    `references/parallel-worker-brief.md`. Forward every guidance item unchanged,
    preserving its `implementation_skill_guidance` skill and behavior fields.
+   Each brief runs `$simplify` on its task's changed code before the Task
+   Result reaches that task's Task Gate.
 5. Apply each returned Task Result's parent Task Gate immediately and recompute
    the Execution Frontier. Follow `references/parallel-orchestration.md` for
    stable-input checks, scope transfer, capacity queues and parent reconciliation.
@@ -71,7 +74,7 @@ Provider mechanics remain inside `write-backlog`.
    cumulative proof and final closure remain mandatory.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
-8. If a debt item needs a product/scope decision outside the active goal, stop and run a very small `$requirements-phase` clarification before continuing.
+8. If a debt item needs a product/scope decision outside the active goal, stop and hand the human the `$requirements-phase` command with a brief, per `references/lifecycle.md` section 5.
 9. Keep provider Task bodies owner-ready. Route lifecycle facts through
    `write-backlog` instead of rewriting Epic, Story, or Task bodies with
    execution handoff detail.

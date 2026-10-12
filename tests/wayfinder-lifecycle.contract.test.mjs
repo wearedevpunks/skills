@@ -10,9 +10,10 @@ test("prototype phase delegates construction to prototype", () => {
   assert.match(phase, /use the `prototype` skill/i);
 });
 
-test("prototype phase requires explicit Codex invocation", () => {
+test("prototype phase is reachable by the skills that call it", () => {
   const metadata = read("skills/phases/prototype-phase/agents/openai.yaml");
-  assert.match(metadata, /allow_implicit_invocation:\s*false/);
+  assert.match(metadata, /allow_implicit_invocation:\s*true/);
+  assert.doesNotMatch(read("skills/phases/prototype-phase/SKILL.md"), /disable-model-invocation/u);
 });
 
 test("design prototype step composes the primitive, not the standalone phase", () => {
@@ -30,7 +31,8 @@ test("prototype lifecycle keeps durable throwaway evidence and human verdicts", 
   assert.match(primitive, /immutable commit SHA/i);
   assert.match(phase, /accept, iterate, or reject/i);
   assert.match(phase, /PROTOTYPE-VERDICT\.md/);
-  assert.match(phase, /grilling, research,\s+another prototype, or `create-spec`/i);
+  assert.match(phase, /finder-phase` prototype gate/iu);
+  assert.doesNotMatch(phase, /create-spec|Wayfinder/u);
   assert.doesNotMatch(phase, /must.{0,20}grill/i);
   assert.match(verdict, /Artifact commit:/);
 });

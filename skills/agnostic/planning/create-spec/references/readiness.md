@@ -83,4 +83,5 @@ Validate the compiled traceability graph before writing:
 
 On failure, return one `spec-not-ready` result listing every missing decision or
 evidence item and its upstream route: `finder-phase`, `parallel-research`,
-`prototype-phase`, or `requirements-grill`. Write no partial spec.
+`prototype-phase`, or `requirements-phase` / `requirements-grill`.
+Write no partial spec.

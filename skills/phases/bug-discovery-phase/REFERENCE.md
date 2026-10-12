@@ -144,8 +144,8 @@ Include this rationale for each scored finding:
 - current user pain: active runtime symptom, broken workflow, CI failure, or none
 - evidence type: static-only, runtime-suspected, or runtime-proven by external
   evidence
-- recommended route: `$bug-resolution-phase`, `$debugging-phase`, docs/debt
-  handling, false-positive triage/revalidation, or stop
+- recommended route: `$bug-resolution-phase`, `$debugging-phase`, debt
+  classification, false-positive triage/revalidation, or stop
 
 Suggested policy:
 
@@ -153,8 +153,8 @@ Suggested policy:
   current user pain. Route to `$bug-resolution-phase` if the fix target is clear;
   route to `$debugging-phase` if runtime proof is missing but needed.
 - `5-7`: plausible and relevant, but confidence, freshness, or impact is mixed.
-  Inspect more, revalidate, or defer to docs/debt handling when it is not a bug
-  to fix now.
+  Inspect more, revalidate, or defer to debt classification when it is not a
+  bug to fix now.
 - `0-4`: stale, low-confidence, not branch-relevant, duplicate, or likely false
   positive. Triage/revalidate if useful; otherwise stop.
 
@@ -167,10 +167,11 @@ clawpatch fix --finding "$FINDING_ID"
 clawpatch open-pr --patch "$PATCH_ATTEMPT_ID"
 ```
 
-If the user asks for fixing, stop discovery and enter `$bug-resolution-phase`.
-If a finding needs runtime reproduction, enter `$debugging-phase`. If a selected
-finding becomes tech debt, route repo docs through `$docs-ingest-phase`; broad
-discovery itself does not create tech-debt docs.
+If the user asks for fixing, stop discovery and return the exact
+`$bug-resolution-phase` invocation with the finding ID and report path. If a
+finding needs runtime reproduction, recommend `$debugging-phase`. Debt
+classification belongs to `$bug-resolution-phase`, which writes the debt file
+through `$docs-ingest-phase`; broad discovery itself creates no tech-debt docs.
 
 ## Output Checklist
 
@@ -187,7 +188,8 @@ The final report must include:
 - explicit statement: ClawPatch findings are static-review candidates, not
   proven runtime root causes
 - next recommended phase for each important finding:
-  `$bug-resolution-phase`, `$debugging-phase`, `$docs-ingest-phase`, or none
+  `$bug-resolution-phase` (including debt classification), `$debugging-phase`,
+  or none
 
 Keep the summary concise. Preserve report and state paths so later resolution
 goals can resume from the durable ClawPatch ledger.

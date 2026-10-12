@@ -40,7 +40,7 @@ At each `$grilling` round boundary, apply the [round persistence contract](artif
 
 ## Domain Modeling
 
-Use `$domain-modeling` for terminology, relationships, and implementation pressure. Persist accepted architecture in grill artifacts for `create-spec`; keep the active glossary implementation-free.
+Use `$domain-modeling` for terminology, relationships, and implementation pressure. Persist accepted architecture in grill artifacts for `create-architecture`; keep the active glossary implementation-free.
 
 ## Conservative Closure
 

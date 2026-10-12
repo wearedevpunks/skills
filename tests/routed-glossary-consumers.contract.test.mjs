@@ -12,7 +12,7 @@ const consumers = [
   "skills/agnostic/docs/docs-onboarding/SKILL.md",
   "skills/agnostic/requirements/write-backlog/SKILL.md",
   "skills/phases/design-phase/phases/backlog.md",
-  "skills/phases/delivery-phase/phases/backlog.md",
+  "skills/phases/delivery-phase/phases/spec.md",
   "skills/phases/delivery-phase/phases/implement.md",
   "skills/agnostic/backend/backend-domain-structure/SKILL.md",
   "skills/agnostic/frontend/frontend-domain-structure/SKILL.md",

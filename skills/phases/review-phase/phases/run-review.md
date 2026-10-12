@@ -29,11 +29,11 @@ scope; the parent rejects stale, expanded, duplicated, or unverified output.
 
 1. Recompute the frozen target and source hashes before dispatch. A mismatch
    makes the prepared evidence stale and returns to `review_due`.
-2. Load `$review` by its skill path (it is phase-invoked) and run its two axes as
-   parallel readonly subagents over the frozen Review Packet, following that
-   skill's process with this gate's sources in place of its own target and spec
-   discovery. Each axis is one fresh independent context and returns one compact
-   Lens Result per [Review Packet](../references/review-packet.md):
+2. Load `$review` and run its two axes as parallel readonly subagents over the
+   frozen Review Packet, following that skill's process with this gate's
+   sources in place of its own target and spec discovery. Each axis is one
+   fresh independent context and returns one compact Lens Result per
+   [Review Packet](../references/review-packet.md):
 
    | Reviewer identity | Coverage | Owns |
    | --- | --- | --- |

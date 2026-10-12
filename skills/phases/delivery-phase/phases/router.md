@@ -30,8 +30,8 @@ Choose one next phase from current durable authority.
 6. Before planning, require the pair's agent-ready `SPEC.md` with verified remote
    retention and its current Write Backlog result through the
    [Backlog Projection Complete gate](../references/artifact-state.md#backlog-projection-complete).
-   Missing, stale or contradictory required proof routes the exact gap to
-   Requirements Phase before planning. It owns Requirements Grill, Create Architecture,
+   Missing, stale or contradictory required proof selects [spec.md](spec.md),
+   which routes the exact gap to Requirements Phase before planning. It owns Requirements Grill, Create Architecture,
    Create Spec and Write Backlog. Valid current proof proceeds without a new approval gate;
    optional Finder context is passed only when supplied, never manufactured.
 7. A missing or stale execution plan selects [plan.md](plan.md). Incomplete plan

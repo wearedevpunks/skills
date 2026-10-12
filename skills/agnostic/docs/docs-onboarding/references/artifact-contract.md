@@ -66,10 +66,12 @@ Evidence levels:
 
 Reconstructed architecture/spec pairs must link back to relevant Project Map sections and onboarding grill decisions.
 
-Pass confirmed candidates to `requirements-phase`, which compiles architecture
-before spec and completes the canonical spec-to-architecture-to-question mapping.
-Retain both immutable artifact URLs, the final architecture identity in the spec,
-and links to the relevant Project Map evidence and exact grill question entries.
+Hand confirmed candidates to `$requirements-phase` through the explicit human
+handoff in the skill's step 8. Requirements Phase compiles architecture before
+spec and completes the canonical spec-to-architecture-to-question mapping. The
+brief requires both immutable artifact URLs, the final architecture identity in
+the spec, and links to the relevant Project Map evidence and exact grill
+question entries.
 `Inferred` facts remain attributed evidence, not accepted design or requirements.
 `Contradicted` or `Missing` material inputs block compilation until resolved.
 
@@ -77,5 +79,6 @@ Only specs that pass `create-spec` readiness, resolve their complete architectur
 mapping and return a verified stable blob URL may be projected by `write-backlog`,
 within onboarding's existing placement authority. Missing authority blocks only
 projection; retain the compiled pair and name the exact human Finder invocation.
-An `architecture-not-ready` or `spec-not-ready` result returns its named gaps to
-onboarding; it produces neither partial canonical artifacts nor backlog mutations.
+An `architecture-not-ready` or `spec-not-ready` result returns its named gaps
+through Requirements Phase's upstream routes; it produces neither partial
+canonical artifacts nor backlog mutations.

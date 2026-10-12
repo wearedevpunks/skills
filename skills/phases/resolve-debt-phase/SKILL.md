@@ -1,6 +1,6 @@
 ---
 name: resolve-debt-phase
-description: Resolves one candidate or accepted tech debt item through validation, resolution spec creation, delivery, and closeout. Use when the user asks to resolve a tech debt entry, process a debt candidate, or continue from a canonical `<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/<debt-slug>.md` artifact.
+description: Resolves one candidate or accepted tech debt item through validation, requirements, delivery, and closeout. Use when the user asks to resolve a tech debt entry, process a debt candidate, or continue from a canonical `<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/<debt-slug>.md` artifact.
 disable-model-invocation: true
 ---
 
@@ -12,9 +12,9 @@ disable-model-invocation: true
 - **Scope:** one candidate or accepted debt item, never generic debt management
 - **Canonical input:** `<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/<debt-slug>.md`, where `<wiki-root>` is the wiki location declared in the project wiki contract (`apps/wiki` by default)
 - **Source of truth:** debt file; backlog mirrors are secondary and may be stale
-- **Delegates to:** `$parallel-research` for independent readonly checks; `$create-spec` or equivalent spec workflow for accepted debt
-- **Manual delivery handoff:** accepted debt presents a bounded brief for explicit user invocation of `$delivery-phase`
-- **Stop conditions:** draft decision requested, accepted item waiting for explicit user `$delivery-phase` invocation, resolved item no-oped, or completed item marked resolved with links
+- **Delegates to:** `$parallel-research` for independent readonly checks
+- **Manual handoffs:** accepted debt presents a bounded brief for explicit user invocation of `$requirements-phase`, then of `$delivery-phase`
+- **Stop conditions:** draft decision requested, accepted item waiting for explicit user `$requirements-phase` or `$delivery-phase` invocation, resolved item no-oped, or completed item marked resolved with links
 
 ## Use When
 
@@ -48,15 +48,15 @@ Run readonly validation before asking for a lifecycle decision.
 5. Synthesize evidence with citations to local files, commands, logs, or sources.
 6. Ask the user to choose exactly one: accept, delete, or authorize more research.
 
-Do not create a resolution spec from a `draft` item until the user accepts it.
+Start the requirements handoff only after the user accepts the `draft` item.
 
 ### `accepted`
 
-Move the one accepted item toward delivery.
+Move the one accepted item toward delivery through two explicit user handoffs.
 
-1. Create or update a debt-resolution spec tied to the original domain/spec and debt slug.
-2. The resolution spec must state the initial debt, why it matters, the bounded fix, non-goals, acceptance checks, and closeout requirements.
-3. Build and present a delivery brief naming the resolution spec, bounded fix, acceptance checks, closeout requirements, and implementation scope.
+1. Without a current Requirements result for this debt, build a requirements brief tied to the original domain/spec and debt slug. It states the initial debt, why it matters, the bounded fix, non-goals, acceptance checks, and closeout requirements.
+2. Tell the user to invoke `$requirements-phase` explicitly with that brief, then stop without loading or running it. Requirements Phase compiles the debt-resolution `ARCHITECTURE.md` and `SPEC.md` pair and projects its backlog.
+3. With that Requirements result, build and present a delivery brief naming the resolution spec, backlog identities, bounded fix, acceptance checks, closeout requirements, and implementation scope.
 4. Tell the user to invoke `$delivery-phase` explicitly with that brief, then stop without loading or running it.
 
 ### `resolved`
@@ -84,6 +84,6 @@ Always report:
 
 - debt file path and status before/after
 - evidence inspected or validation performed
-- decision requested for `draft`, manual `$delivery-phase` handoff or returned delivery result for `accepted`, or no-op reason for `resolved`
+- decision requested for `draft`, manual `$requirements-phase` or `$delivery-phase` handoff or returned delivery result for `accepted`, or no-op reason for `resolved`
 - resolution spec and implementation notes links when present
 - backlog mirror sync outcome when available

@@ -61,11 +61,11 @@ test("writing-for-agents remains canonical with a disabled legacy compatibility 
   assert.match(compatibility, /(?:Prefer|use) writing-for-agents/iu);
 });
 
-test("wait-what is the upstream user-invoked anti-jargon corrective", () => {
+test("wait-what is the model-invoked anti-jargon corrective", () => {
   const skill = read("skills/misc/wait-what/SKILL.md");
 
   assert.match(skill, /name: wait-what/);
-  assert.match(skill, /disable-model-invocation: true/);
+  assert.doesNotMatch(skill, /disable-model-invocation/u);
   assert.match(skill, /ASD-STE100 Simplified Technical English/);
   assert.match(skill, /ubiquitous language from `GLOSSARY\.md`/);
 });

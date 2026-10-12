@@ -55,18 +55,19 @@ Each worker brief should require:
 9. treating RED-phase tests or the approved non-testable verification plan as the implementation contract
 10. not weakening or removing tests unless requirements changed
 11. implementing only the assigned task scope and satisfying all acceptance criteria
-12. running the exact task validation evidence before returning, scoped by [validation-scope.md](validation-scope.md); broader checks only on its broadening triggers
-13. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
-14. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
-15. capturing and linking durable before/after screenshot evidence when the task changes UI
-16. returning status, log, touched files, and gotchas for parent reconciliation before handoff closes
-17. loading every forwarded skill and applying its stated behavior where the
+12. running `$simplify` on the task's changed code once GREEN, so the validation below proves the simplified code
+13. running the exact task validation evidence before returning, scoped by [validation-scope.md](validation-scope.md); broader checks only on its broadening triggers
+14. resolving any in-goal debt immediately instead of leaving TODOs, temporary workarounds, or "later" notes
+15. stopping for parent clarification when a debt item requires a product/scope decision outside the assigned task
+16. capturing and linking durable before/after screenshot evidence when the task changes UI
+17. returning status, log, touched files, and gotchas for parent reconciliation before handoff closes
+18. loading every forwarded skill and applying its stated behavior where the
     task evidence supports it
-18. returning exactly one evidence record per guidance entry with skill,
+19. returning exactly one evidence record per guidance entry with skill,
     `loaded`, `applied`, or `not_applicable` status, and a how/where pointer;
     `not_applicable` also states why and where it was assessed
-19. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
-20. for an architecture-bearing task, implementing toward the declared ownership topology and dependency graph, proving each due `responsibility_acceptance_criteria` item by `criterion_id`, and reporting every public-seam and migration-ledger delta with its architecture wave
+20. refusing completion for required runtime validation without conclusive recorded evidence; returning an exact blocker leaves the task blocked
+21. for an architecture-bearing task, implementing toward the declared ownership topology and dependency graph, proving each due `responsibility_acceptance_criteria` item by `criterion_id`, and reporting every public-seam and migration-ledger delta with its architecture wave
 
 ## Task Result
 

@@ -5,7 +5,7 @@ description: Requirements grilling with durable branch artifacts, glossary/axiom
 
 # Requirements Grill
 
-Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-spec` can compile after closure.
+Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-architecture` and then `create-spec` can compile after closure.
 
 This skill composes `$domain-modeling`, `$brainstorm`, and `$grilling` with durable artifacts. Use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
 
@@ -26,7 +26,7 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 - `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` and `<topic>-grill-status.md` are the detailed requirements and glossary record
 - while the grill is active, the status glossary is `$domain-modeling`'s working persistence; leave canonical domain publication until explicit closure
 - other routed `<wiki-root>/content/docs/project/` pages are the synthesized project knowledge surface
-- closed shared understanding routes to `create-spec`; backlog projection is later and outside this skill's scope
+- closed shared understanding routes to `create-architecture`, then `create-spec`, through the [Handoff](#handoff); backlog projection is later and outside this skill's scope
 
 ## Core Behavior
 
@@ -52,4 +52,6 @@ Both workflows can happen in one long session, but keep the responsibilities dis
 
 At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
 
-After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `create-spec`. If grilling remains incomplete, return to Wayfinder instead of implying backlog readiness.
+After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `$create-architecture`, the next step of `$requirements-phase`; its retained `ARCHITECTURE.md` then feeds `$create-spec`.
+
+When a question stays open because it depends on one precise unknown that neither a user answer nor `$grilling`'s fact exploration can close, invoke `$wayfinder` with that unknown, its owning branch and question ID, the evidence so far, and the user as decision owner. Run the returned route: `grilling` as the next round of this grill; `research` through `$parallel-research`; `prototype` through `$prototype` on a `prototype/<slug>` branch, with the unknown and owning question as its brief, and the human's verdict closing it; park the owning question until the verdict returns. Persist the route result against the owning question through `artifact-output`, then resume the grill there.

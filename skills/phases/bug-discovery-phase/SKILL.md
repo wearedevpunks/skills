@@ -36,7 +36,7 @@ Load [REFERENCE.md](REFERENCE.md) before running ClawPatch.
 3. Inspect readiness with `doctor`, `status`, and existing `.clawpatch/` state.
 4. Run discovery and report generation within the bounded scope.
 5. Inspect important findings, rank them `0-10`, and route each to resolution,
-   debugging, debt docs, false-positive triage, or stop.
+   debugging, debt classification, false-positive triage, or stop.
 6. Stop before mutation unless the user makes a new explicit resolution request.
 
 ## Output

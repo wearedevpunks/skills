@@ -29,8 +29,7 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 ## Phase Files
 
 - [phases/router.md](phases/router.md): choose the next phase from artifacts and evidence.
-- [phases/spec.md](phases/spec.md): route missing or stale Architecture/SPEC proof to Requirements Phase.
-- [phases/backlog.md](phases/backlog.md): verify or project the agent-ready spec into delivery backlog items.
+- [phases/spec.md](phases/spec.md): route missing or stale Architecture/SPEC or backlog projection proof to Requirements Phase.
 - [phases/plan.md](phases/plan.md): create or repair the execution-ready plan.
 - [phases/implement.md](phases/implement.md): execute the accepted plan.
 - [phases/review.md](phases/review.md): prepare the explicit review handoff or

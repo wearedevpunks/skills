@@ -15,7 +15,7 @@ description: >-
 - **Entrypoint type:** standalone public skill, or inner phase of `delivery-phase`
 - **Standalone inputs:** user-reported broken behavior, failing smoke checks, logs, recordings, runtime symptoms
 - **Delivery-internal inputs:** `implement-spec` validation failure or `review-phase` runtime failure
-- **Wraps:** `$verify-behavior`, `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review
+- **Wraps:** `$verify-behavior`, `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review handoff
 - **Owns:** evidence matrices, cited log references, hypothesis status, fix verification
 - **Exit conditions:** bug fixed, concrete blocker proven, or `human_steering_required`
 
@@ -69,13 +69,17 @@ description: >-
 6. **Fix only proven causes.**
    - Make the smallest bounded patch that addresses confirmed evidence.
    - Remove speculative changes from rejected hypotheses.
-   - Keep debug instrumentation until post-fix evidence proves success, unless the user explicitly asks for cleanup.
+   - Keep debug instrumentation until `$debug-agent` Cleanup removes it.
 7. **Verify.**
    - Rerun the failing smoke check, focused test, browser path, CLI command, or manual scenario.
    - Record failures outside the reported behavior as unrelated, with evidence;
      they need no baseline run.
    - Compare before/after evidence.
-   - Run review appropriate to the touched scope.
+   - Hand off review by entry mode:
+     - Delivery-internal: return the repair to `delivery-phase` for Focused
+       Repair Validation; this phase opens no review pass.
+     - Standalone: hand the human a `$review-phase` command naming the fix
+       target (branch, commit range or changed paths).
 8. **Exit.**
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
@@ -85,7 +89,7 @@ description: >-
 
 `debugging-phase` may run with `parallel: true` or `parallel: false`.
 
-- `parallel: false`: one thread owns hypotheses, instrumentation, fix, verification, and review.
+- `parallel: false`: one thread owns hypotheses, instrumentation, fix, verification, and review handoff.
 - `parallel: true`: fan out readonly research for independent hypotheses only.
 - Disjoint worker fixes are allowed only after the cause is proven and file ownership is explicit.
 - Never let parallel workers make speculative fixes against unproven hypotheses.

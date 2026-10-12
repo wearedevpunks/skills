@@ -1,13 +1,13 @@
 ---
 name: prototype-phase
-description: Run a standalone human-evaluated prototype when Wayfinder routes an uncertain product or technical claim to experimentation.
-disable-model-invocation: true
+description: Run one human-evaluated prototype of an uncertain product or technical claim through a verdict. Use when the finder-phase prototype gate runs it.
 ---
 
 # Prototype Phase
 
 Own one claim from construction through a human verdict, then return evidence
-to Wayfinder. Use the `prototype` skill to build the throwaway artifact.
+to the `finder-phase` prototype gate. Use the `prototype` skill to build the
+throwaway artifact.
 
 ## Steps
 
@@ -29,8 +29,7 @@ to Wayfinder. Use the `prototype` skill to build the throwaway artifact.
 
 ## Completion
 
-- Accept and reject return to `finder-phase`; iterate updates the verdict and
-  remains here.
-- Wayfinder recomputes the frontier. It may route next to grilling, research,
-  another prototype, or `create-spec`; no route is mandatory.
+- Accept and reject return the verdict to the `finder-phase` prototype gate;
+  iterate updates the verdict and remains here.
+- The Finder router re-enters with the verdict and chooses the next route.
 - The verdict is evidence, not production authorization.

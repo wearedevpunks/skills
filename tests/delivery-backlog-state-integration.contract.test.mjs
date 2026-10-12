@@ -12,7 +12,6 @@ const implementation = [
 ].map(read).join("\n");
 
 const delivery = [
-  "skills/phases/delivery-phase/phases/backlog.md",
   "skills/phases/delivery-phase/phases/implement.md",
   "skills/phases/delivery-phase/phases/closeout.md",
   "skills/phases/delivery-phase/phases/router.md",

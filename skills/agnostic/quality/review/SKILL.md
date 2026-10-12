@@ -1,7 +1,6 @@
 ---
 name: review
-description: Two-axis Standards and Spec review core of review-phase; runs only from its Run Review gate.
-disable-model-invocation: true
+description: Two-axis Standards and Spec review core of review-phase. Use when the review-phase Run Review gate runs its axes.
 ---
 
 Two-axis review of either a frozen Git/diff target or a deterministic standalone
@@ -66,7 +65,7 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Spawn both sub-agents in parallel
 
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
+Under `review-phase`, its Run Review gate owns dispatch: each axis subagent runs `autoreview` once over the frozen Review Packet and returns the helper's Lens Result unchanged; the sources each prompt below names go into that axis's packet facts. Otherwise, send a single message with two `Agent` tool calls, using the `general-purpose` subagent for both.
 
 **Standards sub-agent prompt** — include:
 

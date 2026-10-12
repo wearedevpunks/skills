@@ -79,7 +79,7 @@ test("TDD activates only for explicit test-first intent or unresolved behavior d
   assert.doesNotMatch(pointer, /feature|bugfix|regression|integration-style/iu);
 });
 
-test("Verify Behavior remains reachable from its orchestrators without implicit Codex discovery", () => {
+test("Verify Behavior is model-invoked on Claude and Codex so its orchestrators reach it", () => {
   const skill = read("skills/agnostic/planning/verify-behavior/SKILL.md");
   const pointer = description(skill);
   const codexPolicy = read(
@@ -89,5 +89,5 @@ test("Verify Behavior remains reachable from its orchestrators without implicit 
   assert.doesNotMatch(skill, /disable-model-invocation/u);
   assert.match(pointer, /Debugging Phase invokes reproduce/u);
   assert.match(pointer, /Implement Spec invokes verify/u);
-  assert.match(codexPolicy, /allow_implicit_invocation:\s*false/u);
+  assert.match(codexPolicy, /allow_implicit_invocation:\s*true/u);
 });

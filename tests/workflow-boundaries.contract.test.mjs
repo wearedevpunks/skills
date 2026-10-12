@@ -88,7 +88,7 @@ test("review routes scope decisions before repair", async () => {
 
 test("autoreview runs only inside review-phase", () => {
   const skill = read("skills/agnostic/quality/autoreview/SKILL.md");
-  assert.match(skill, /^disable-model-invocation: true$/mu);
+  assert.doesNotMatch(skill, /disable-model-invocation/u);
   assert.match(skill, /Outside `review-phase`, never run the structured review helper/iu);
   assert.match(skill, /routes to an\s+explicit `\$review-phase` invocation/iu);
   assert.doesNotMatch(skill, /after non-trivial code edits/iu);

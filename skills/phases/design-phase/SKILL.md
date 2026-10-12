@@ -24,7 +24,7 @@ Completion of one phase does not imply loading the rest.
 - **Grill:** close lean goals, constraints, scope, and conflicts.
 - **Prototype:** produce the requested image reference or prototype artifact.
 - **Approval:** record accepted artifacts per user-visible scope unit.
-- **Backlog:** convert approved artifacts into backlog context.
+- **Backlog:** link approved artifacts to the accepted specification's backlog.
 - **Delivery handoff:** prepare the approved brief for explicit user invocation of `$delivery-phase`.
 
 Direct entry into any mode still starts at the router.
@@ -36,7 +36,7 @@ Direct entry into any mode still starts at the router.
 - [phases/grill.md](phases/grill.md): run a lean requirements grill.
 - [phases/prototype.md](phases/prototype.md): delegate artifact production.
 - [phases/approval.md](phases/approval.md): record approved artifact sets.
-- [phases/backlog.md](phases/backlog.md): call `write-backlog` with artifact context.
+- [phases/backlog.md](phases/backlog.md): against an agent-ready `SPEC.md`, attach fitting evidence through `$repo-asset-management` or return new Stories/Tasks to `$requirements-phase`.
 - [phases/delivery-handoff.md](phases/delivery-handoff.md): present the brief and stop for explicit user invocation of `$delivery-phase`.
 
 ## Rules

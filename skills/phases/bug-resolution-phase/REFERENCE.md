@@ -83,6 +83,7 @@ Actions:
 2. Route into `$debugging-phase`.
 3. Pass input artifacts: finding ID, report path, source evidence, expected behavior, observed or suspected behavior, affected scenario, and any failed revalidation.
 4. Let `$debugging-phase` own hypotheses, runtime evidence, fix, and verification.
+5. After `$debugging-phase` fixes the finding, the operator re-invokes `$bug-resolution-phase` with that finding ID and the debugging result; that run revalidates with `clawpatch revalidate --finding <id>`.
 
 ### `tech-debt`
 
@@ -92,8 +93,8 @@ Actions:
 
 1. Classify the selected finding first. Discovery alone must not create debt docs.
 2. Update ClawPatch triage/history with the tech-debt reason.
-3. Run `$docs-ingest-phase` to create or update durable repo debt/docs context.
-4. Preserve these fields in the durable context:
+3. Run `$docs-ingest-phase` to create or update the canonical debt file `<wiki-root>/content/docs/project/tech-debt/<domain>/<spec>/<debt-slug>.md`, the `$resolve-debt-phase` input. It records status `draft`, domain, originating spec, linked backlog mirror when present, evidence, and proposed resolution.
+4. Preserve these fields in the debt file:
    - ClawPatch finding ID
    - ClawPatch report path or state path
    - source evidence and affected paths
@@ -102,7 +103,7 @@ Actions:
    - why immediate resolution is unsafe or too broad
 5. Do not write speculative architecture as current truth.
 
-The debt context should be small and reviewable. It should point to the
+The debt file should be small and reviewable. It should point to the
 ClawPatch report and finding instead of copying the full report. It should name
 the human decision needed before architecture, product scope, or acceptance
 criteria can change.

@@ -7,7 +7,7 @@ const read = (path) =>
 
 const skillPath = "skills/agnostic/planning/verify-behavior";
 
-test("verify-behavior is orchestrator-reachable without top-level implicit discovery", () => {
+test("verify-behavior is model-invoked on Claude and Codex so its orchestrators reach it", () => {
   const skill = read(`${skillPath}/SKILL.md`);
   const codexPolicy = read(`${skillPath}/agents/openai.yaml`);
   const license = read(`${skillPath}/LICENSE`);
@@ -17,7 +17,7 @@ test("verify-behavior is orchestrator-reachable without top-level implicit disco
   assert.doesNotMatch(skill, /disable-model-invocation/);
   assert.match(skill, /Debugging Phase invokes reproduce/);
   assert.match(skill, /Implement Spec invokes verify/);
-  assert.match(codexPolicy, /allow_implicit_invocation:\s*false/);
+  assert.match(codexPolicy, /allow_implicit_invocation:\s*true/);
   assert.match(license, /Copyright \(c\) 2026 Warp/);
   assert.match(upstream, /ab21d0c5b70e38abe1a53ff6e2934d2637415c5b/);
   assert.match(upstream, /adjacent `LICENSE`/);

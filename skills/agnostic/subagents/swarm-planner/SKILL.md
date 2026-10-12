@@ -1,10 +1,6 @@
 ---
 name: swarm-planner
-description: >
-  [EXPLICIT INVOCATION ONLY] Creates dependency-aware implementation plans optimized for parallel
-  multi-agent execution.
-metadata:
-  invocation: explicit-only
+description: Build a dependency-aware task graph for parallel multi-agent execution. Use when create-plan decomposes work into Tn tasks, or when a plan needs waves, dependencies and disjoint write scopes.
 ---
 
 # Swarm-Ready Planner
@@ -78,7 +74,7 @@ T6: [depends_on: [T2, T5]] Add API endpoints
 T7: [depends_on: [T6]] Write integration tests
 ```
 
-Use [the canonical task schema](../../planning/create-plan/references/plan-schema.md) for
+Use [the canonical task schema](../create-plan/references/plan-schema.md) for
 scope, stability, capacity and architecture constraints. Plan the complete
 Execution Frontier; task-local parent gates release eligible dependents while
 unrelated work runs. Record actual read/write or runtime conflicts separately

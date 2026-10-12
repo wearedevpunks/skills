@@ -1,6 +1,6 @@
 ---
 name: docs-onboarding
-description: Onboard an existing project into the scaffolded Harness wiki by inspecting code, docs and backlog, closing reconstruction decisions, then compiling architecture/spec pairs through requirements-phase. Use after hi init or when initial wiki/spec context must be reconstructed.
+description: Onboard an existing project into the scaffolded Harness wiki by inspecting code, docs and backlog, closing reconstruction decisions, then handing accepted flows to requirements-phase for architecture/spec compilation. Use after hi init or when initial wiki/spec context must be reconstructed.
 ---
 
 # Docs Onboarding
@@ -28,18 +28,21 @@ silently renaming them.
 6. Activate `write-backlog`'s backlog-initialization branch to reconcile the
    Product/Backlog Root, Product Areas, Initiatives, `V*` context, and saved
    views from accepted wiki and provider evidence.
-7. For every candidate existing flow accepted by the onboarding grill, invoke
-   `requirements-phase` with its confirmed status/log and Project Map evidence.
-   Require `create-architecture` before `create-spec`, then record the retained
-   pair and its readiness result. Pass the onboarding projection boundary:
-   an agent-ready spec and its mapped architecture may reach `write-backlog`
-   only when reconstructed evidence already supplies the exact existing Epic/Story
-   and accepted projection authority required by that branch. Otherwise record
-   the missing authority and exact human Finder invocation; retain the compiled
-   pair and return a blocked backlog delta without provider mutation. Onboarding
-   never invokes a Finder implicitly and does not create higher-level placement.
-8. Update onboarding navigation and indexes using
+7. Update onboarding navigation and indexes using
    [references/artifact-contract.md](references/artifact-contract.md).
+8. Hand every candidate existing flow accepted by the onboarding grill to
+   `$requirements-phase` as an explicit human handoff, then stop. For each flow,
+   name the exact `$requirements-phase` command and a brief carrying the
+   confirmed onboarding grill status/log, its open per-flow decisions, its
+   Project Map evidence, and its onboarding projection boundary. Requirements
+   Phase compiles `create-architecture` before `create-spec`. The boundary lets
+   an agent-ready spec and its mapped architecture reach `write-backlog` only
+   when reconstructed evidence already supplies the exact existing Epic/Story
+   and accepted projection authority required by that branch. Otherwise record
+   the missing authority and exact human Finder invocation in the brief; the
+   compiled pair is retained and the backlog delta returns blocked without
+   provider mutation. Onboarding never invokes a Finder implicitly and does not
+   create higher-level placement.
 
 ## Discovery Depth
 
@@ -53,8 +56,9 @@ Grill contradictions, missing backlog location, unclear feature ownership and
 inferred requirements before either compiler runs. Observed code-only facts may
 remain `Inferred` in the Project Map as evidence; they become accepted requirements
 or design choices only through confirmed intent and the recorded grill decisions.
-Pass unresolved material decisions back to `requirements-phase`; an inferred
-current implementation is not permission to choose architecture or requirements.
+Carry unresolved per-flow material decisions in the step 8 handoff brief; an
+inferred current implementation is not permission to choose architecture or
+requirements.
 
 ## Resumability
 

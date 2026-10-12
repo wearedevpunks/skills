@@ -33,6 +33,9 @@ Completion of one path does not imply loading another path.
 ## Phase Files
 
 - [phases/router.md](phases/router.md): choose the next docs path from artifacts and audience.
+- [references/wiki-contract.md](references/wiki-contract.md): set up or adopt the wiki, sections Adopt or Set up.
+- [references/source-capture.md](references/source-capture.md): capture a raw source the user supplies to keep.
+- [references/health.md](references/health.md): run a wiki health check or maintenance.
 - [phases/private-internal.md](phases/private-internal.md): ingest specs, project/wiki docs, root docs, routing metadata, and learning artifacts.
 - [phases/public-docs.md](phases/public-docs.md): create or update reader-facing docs through the public writer flow.
 

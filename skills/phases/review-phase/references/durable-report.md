@@ -96,9 +96,11 @@ hashes, outcome, and evidence. Isolation is proven no-write, disposable
 checkout, or disposable snapshot. Retained validation records require equal
 before/after hashes.
 
-Delivery ordinals are 1 through 3. Review 1 has null preceding-repair ordinal;
-review 2 or 3 records respectively 1 or 2. Standalone delivery-goal identity,
-review ordinal, and preceding-repair ordinal are all null.
+Delivery ordinals are positive integers. Review 1 has null preceding-repair
+ordinal; [Review epoch](#review-epoch) owns the default-pass ceiling,
+human-directed passes, and later preceding-repair ordinals. Standalone
+delivery-goal identity, review ordinal, and preceding-repair ordinal are all
+null.
 
 The snapshot hash excludes only the report itself, navigation metadata, and the
 wiki log envelope. Navigation ordering does not affect freshness. The report and
@@ -140,8 +142,8 @@ evidence. A candidate is a valid retained pass only when every predicate holds:
    report, navigation, and wiki-log envelope paths;
 7. the approved retained ref contains that exact report commit with boolean
    `true` containment evidence;
-8. delivery ordinal is an integer from 1 through 3; standalone delivery-only
-   fields are null.
+8. delivery ordinal is a positive integer, at most 2 unless verified matching
+   human direction authorizes it; standalone delivery-only fields are null.
 
 A malformed report, wrong lineage or run id, wrong blob or freshness hash,
 outside-envelope commit path, missing ref containment, or invalid ordinal is not

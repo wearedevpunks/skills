@@ -24,16 +24,17 @@ They guess based on code alone. You **cannot** and **must NOT** fix bugs this wa
    - **Otherwise**: ask the user to reproduce it. Provide clear, numbered steps. Remind them to restart apps/services if instrumented files are cached or bundled. Offer: "If you'd like me to write a reproduction script instead, let me know."
    - Once the user confirms a reproduction pathway (manual or automated), reuse it for all subsequent iterations without re-asking.
 4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence
-5. **Fix only with 100% confidence** and log proof; do NOT remove instrumentation yet
+5. **Fix only with 100% confidence** and log proof; keep instrumentation in place for verification
 6. **Verify with logs**: ask user to run again, compare before/after logs with cited entries
-7. **If logs prove success** and user confirms: remove all instrumentation by searching for `#region debug log` / `#endregion` markers and deleting those blocks (see Cleanup section). **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
+7. **If logs prove success**: continue to step 8. **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
 8. **After confirmed success**: explain the problem and provide a concise summary of the fix (1-2 lines)
+9. **Clean up on every exit**, including a blocked one: remove instrumentation when the Cleanup rule applies (see Cleanup section), then stop the logging server (see Logging STEP 6)
 
 **Critical constraints:**
 
 - NEVER fix without runtime evidence first
 - ALWAYS rely on runtime information + code (never code alone)
-- Do NOT remove instrumentation before post-fix verification logs prove success and user confirms that there are no more issues
+- Keep instrumentation until the Cleanup rule removes it
 - Fixes often fail; iteration is expected and preferred. Taking longer with more data yields better, more precise fixes
 
 ---
@@ -68,7 +69,7 @@ Capture and remember these values:
 If the server fails to start, STOP IMMEDIATELY and inform the user.
 
 - DO NOT PROCEED with instrumentation without valid logging configuration.
-- The server is idempotent — if one is already running, it returns the existing server's info instead of starting a duplicate.
+- The server is idempotent — if one is already running, it returns the existing server's info instead of starting a duplicate. Before the command, check for `debug-server.lock` in the log path's directory: a lock naming a reachable server means the command reuses that server, and STEP 6 leaves it running.
 - You do not need to pre-create the log file; it will be created automatically when your instrumentation first writes to it.
 
 ### STEP 1: Understand the log format
@@ -139,19 +140,21 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 ### STEP 5: Keep logs during fixes
 
-- When implementing a fix, DO NOT remove debug logs yet.
-- Logs MUST remain active for verification runs.
+- Logs MUST remain active through fixes and verification runs; the Cleanup section alone decides when they go.
 - You may tag logs with `runId="post-fix"` to distinguish verification runs from initial debugging runs.
-- FORBIDDEN: Removing or modifying any previously added logs in any files before post-fix verification logs are analyzed or the user explicitly confirms success.
-- Only remove logs after a successful post-fix verification run (log-based proof) or explicit user request to remove.
+
+### STEP 6: Stop the logging server (MANDATORY at session end)
+
+- On every exit, including a blocked one, stop the server this session started: `kill $(lsof -t -iTCP:PORT -sTCP:LISTEN)` (replace `PORT` with the port from Step 0). Leave a reused server running.
+- Copy the log lines you cite into your report, then delete this session's file at the **log path**, plus `debug-server.lock` when it still names the stopped server.
+- Verify the stop: `curl -s ENDPOINT` fails to connect.
 
 ---
 
 ## Critical Reminders (must follow)
 
-- Keep instrumentation active during fixes; do not remove or modify logs until verification succeeds or the user explicitly confirms.
+- Keep instrumentation active during fixes and verification runs; the Cleanup section owns its removal.
 - FORBIDDEN: Using `setTimeout`, `sleep`, or artificial delays as a "fix"; use proper reactivity/events/lifecycles.
-- FORBIDDEN: Removing instrumentation before analyzing post-fix verification logs or receiving explicit user confirmation.
 - Verification requires before/after log comparison with cited log lines; do not claim success without log proof.
 - Clear logs by sending a DELETE request to the server endpoint.
 - Do not create the log file manually; it's created automatically.
@@ -164,7 +167,7 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 ## Cleanup
 
-When it is time to remove instrumentation (after verified fix or user request):
+Remove instrumentation once post-fix verification logs prove success, or earlier on explicit user request. Then:
 
 1. Search all files for `#region debug log` markers (e.g., grep/ripgrep for `#region debug log`)
 2. For each match, delete everything from the `#region debug log` line through its corresponding `#endregion` line (inclusive)

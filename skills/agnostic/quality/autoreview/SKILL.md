@@ -1,7 +1,6 @@
 ---
 name: autoreview
-description: "Structured review engine of the review-phase Standards and Spec axes; runs only from its Run Review gate and refuses runs without a review packet. Codex review defaults to gpt-5.6-terra with high reasoning when no reviewer settings are set."
-disable-model-invocation: true
+description: "Structured review engine of the review-phase Standards and Spec axes. Use when a review-phase Run Review axis subagent reviews its Review Packet."
 ---
 
 # Auto Review

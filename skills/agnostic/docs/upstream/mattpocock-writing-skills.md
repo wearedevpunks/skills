@@ -32,7 +32,7 @@ with upstream files.
 | `agnostic/requirements/grilling` | `in-progress/batch-grill-me` | imported with local contract | [`9603c1cc`](https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b/skills/in-progress/batch-grill-me) |
 | `agnostic/research/improve-codebase-architecture` | `engineering/improve-codebase-architecture` | adapted | [`62f43a18`](https://github.com/mattpocock/skills/tree/62f43a18177be6ec82da242e59ffbc490a4c22ea/skills/engineering/improve-codebase-architecture) |
 | `agnostic/research/prototype` | `engineering/prototype` | adapted | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/engineering/prototype) |
-| `misc/wait-what` | `productivity/wait-what` | imported unchanged | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/productivity/wait-what) |
+| `misc/wait-what` | `productivity/wait-what` | adapted | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/productivity/wait-what) |
 
 The retained writing skills were in upstream `skills/in-progress` at import
 time, so they remain licensed and attributed even though they are not part of
@@ -75,7 +75,7 @@ Matt's license or attribution solely because the names overlap.
 | `handoff` | direct adaptation: `agnostic/generic/handoff` |
 | `to-questionnaire` | — |
 | `teach` | — |
-| `wait-what` | imported unchanged: `misc/wait-what` |
+| `wait-what` | adapted: `misc/wait-what` |
 | `writing-for-agents` | imported unchanged: `agnostic/docs/writing-for-agents` |
 | `codebase-design` | direct adaptation: `agnostic/quality/codebase-design` |
 | `domain-modeling` | — |
