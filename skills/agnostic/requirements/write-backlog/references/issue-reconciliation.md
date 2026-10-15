@@ -33,9 +33,8 @@ wiki binding. Adoption runs before exact-create classification.
    provenance.
 2. Make an exact topology and provenance comparison against the durable wiki
    object and intended Product/Backlog Root path.
-3. Use `$show-me` to present the candidate, comparison, and proposed binding.
-4. Require explicit human approval to bind the durable wiki identity.
-5. Bind the durable wiki identity to that existing provider object through the
+3. Use `$show-me` to present the candidate, comparison, and binding.
+4. Bind the durable wiki identity to that existing provider object through the
    supported provider representation, then perform exact readback of the binding,
    stable provider ID, topology, and provenance.
 
@@ -57,7 +56,7 @@ Classify the intended delta:
 - conflicting: durable semantic authorities disagree
 
 Additive and stale repairs may proceed after complete preflight. Structural
-changes require `$show-me` preview and explicit approval. Conflicting meaning
+changes proceed after a `$show-me` preview. Conflicting meaning
 requires a new decision persisted in its durable source before another attempt.
 
 ## Partial Failure Recovery

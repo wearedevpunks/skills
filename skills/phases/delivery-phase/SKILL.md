@@ -46,6 +46,9 @@ Within accepted bounds, full delivery grants its selected inner steps the author
   before dependent dispatch in every entry mode, including local and resumed
   delivery. Reuse fresh matching authority; activate child skills only from
   their selected phase.
+- One delivery run ships exactly one pull request. Every phase, including
+  implementation, repair, review fixes, and docs, commits to that run's branch
+  and PR. Split or stack PRs only when the user explicitly asks.
 - Full Delivery continues within accepted bounds. Other modes emit one common
   Phase Result and stop at their requested boundary.
 - [references/context-continuity.md](references/context-continuity.md) owns

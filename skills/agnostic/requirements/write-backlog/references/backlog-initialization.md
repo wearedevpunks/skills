@@ -44,7 +44,7 @@ initialization does not invent empty Epics, Stories, or Tasks.
 
 Creating a root, Product Area, Initiative, semantic field, or saved view is a
 material structural change. Use `$show-me` to preview existing versus intended
-topology and obtain explicit approval before writing.
+topology before writing.
 
 ## Milestone Context
 
@@ -60,8 +60,8 @@ When the provider supports milestone metadata, write:
 3. Included product outcomes or capability changes
 
 When those metadata fields are unsupported, name only is sufficient. Moving
-work between milestones changes roadmap commitment and requires explicit
-approval.
+work between milestones changes roadmap commitment and is a previewed
+structural change.
 
 ## Product-Owner Views
 
@@ -78,11 +78,11 @@ Create or preserve exactly these semantic views:
   status, owner, and blocker readiness.
 
 Reuse an equivalent configured view. Creating or materially changing a view
-requires the structural preview and approval gate.
+requires the structural preview.
 
 ## Completion
 
-Write only the approved missing or stale delta. Read back the root metadata,
+Write only the validated missing or stale delta. Read back the root metadata,
 hierarchy, milestone context, semantic fields, and four views. Return exact
 created, enriched, and unchanged identities. Initialization is incomplete when
 any intended structure or representation cannot be read back.

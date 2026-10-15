@@ -23,8 +23,8 @@ Initiative membership. Initiative, Epic, Story, and Task Issues share the
 Product Area Project and team; required `Kind/*` labels and recursive
 `parentId` relations preserve semantic type and ownership. A nested native
 Initiative, a Project per semantic Initiative or Epic, an extra parent, or a
-mismatched Project is divergent topology. It remains unchanged until an
-explicitly approved Normalization operation targets it.
+mismatched Project is divergent topology. It remains unchanged until a
+Normalization operation targets it.
 
 ## Destination and Read-Before-Write
 
@@ -59,7 +59,7 @@ Use the configured issue label group for exact labels including
 distinguishes the Root and Product Area Project. Missing, overlapping, or
 non-exclusive Kind labels return setup guidance and zero writes. Ordinary
 projection reuses configured label IDs; initialization may provision labels
-only after a structural preview and explicit approval.
+only after a structural preview.
 
 Preserve semantically equivalent existing views before proposing another:
 
@@ -99,9 +99,8 @@ evidence and are excluded from automatic Normalization.
 ## Small Mutation and Exact Readback
 
 Build the complete intended mutation envelope in memory: ordered operations,
-stable IDs, preconditions, immutable source identities, approval record, and
-expected readback. Preview every material structural change and obtain explicit
-approval before writing. Write only the validated delta, parent-first, using
+stable IDs, preconditions, immutable source identities, and expected readback.
+Preview every material structural change before writing. Write only the validated delta, parent-first, using
 stable IDs; capture each returned ID before a dependent operation.
 
 Exact readback must prove:

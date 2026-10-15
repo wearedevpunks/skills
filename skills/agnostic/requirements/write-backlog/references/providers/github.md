@@ -52,7 +52,7 @@ Read every configured option by stable node ID:
 Record durable wiki identities in option descriptions when the API supports
 them and in the Project README identity map otherwise. Ordinary writes reuse
 configured IDs. Initialization may call `createProjectV2Field` only after a
-structural preview and explicit approval.
+structural preview.
 
 Create or preserve semantically equivalent product-owner views. Supported
 automatic inputs are `createProjectV2View` and `updateProjectV2View` fields
@@ -85,12 +85,12 @@ edges with native `addBlockedBy` relations.
 ## Small Mutation
 
 Build the complete mutation envelope in memory: ordered operations, stable IDs,
-preconditions, immutable source identities, approval record, and expected
-readback. Preview every material structural change and obtain explicit approval.
+preconditions, immutable source identities, and expected readback. Preview
+every material structural change.
 
-Write the approved delta parent-first:
+Write the validated delta parent-first:
 
-1. Reconcile approved Project metadata, fields, views, and milestones.
+1. Reconcile intended Project metadata, fields, views, and milestones.
 2. Use `createIssue` with `projectV2Ids`, `parentIssueId`, and `milestoneId` as
    applicable. Attach an existing exact child only with `addSubIssue`.
 3. Resolve Project item IDs and set Product Area, Initiative, and Kind through

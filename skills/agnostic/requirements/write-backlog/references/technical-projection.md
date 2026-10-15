@@ -61,8 +61,8 @@ precedence.
 
 ## Write and Read Back
 
-Preview the complete authority-derived topology with `$show-me`; obtain
-approval for material structural movement. Write only the validated Epic,
+Preview the complete authority-derived topology, including material structural
+movement, with `$show-me`. Write only the validated Epic,
 Stories, Tasks, parents, `V*` membership, blockers, source links, and provenance.
 Read every identity, enrichment, and relation back exactly. Return the stable
 Epic, Story, and Task identities plus blocker edges to planning and delivery

@@ -96,6 +96,9 @@ Provider mechanics remain inside `write-backlog`.
 Read [references/lifecycle.md](references/lifecycle.md) before implementation for
 recorded branch/base authority, existing PR identity and early draft visibility.
 Workers write on that recorded branch under exclusive Active Write Scopes.
+One delivery run ships exactly one pull request: every wave, repair, and review
+fix lands on that branch and PR. Split or stack PRs only when the user
+explicitly asks, even when the plan groups tasks into waves or backlog items.
 
 ## Advanced features
 

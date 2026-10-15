@@ -51,7 +51,6 @@ Validate the complete reachable Task graph before mutation:
 ## Mutation Boundary
 
 Construct and validate the full intended provider delta before the first write.
-An authority, identity, hierarchy, milestone, representation, or approval
-failure produces zero provider mutations. After writing, exact readback must
+An authority, identity, hierarchy, milestone, or representation failure produces zero provider mutations. After writing, exact readback must
 prove every intended object and relation. A partial failure returns observed
 provider IDs and the residual delta without claiming atomic success.

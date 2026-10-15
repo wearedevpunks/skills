@@ -47,7 +47,7 @@ test("Linear rejects the wrong workspace and legacy destinations before a small 
   assert.match(linear, /workspace ID[\s\S]*workspace URL[\s\S]*wrong workspace[\s\S]*zero (?:writes|provider mutations)/iu);
   assert.match(linear, /legacy[\s\S]*destination[\s\S]*`hi ensure`[\s\S]*zero (?:writes|provider mutations)/iu);
   assert.match(linear, /complete intended mutation envelope[\s\S]*stable IDs[\s\S]*preconditions[\s\S]*expected readback/iu);
-  assert.match(linear, /preview[\s\S]*explicit approval[\s\S]*write only/iu);
+  assert.match(linear, /preview[\s\S]*before writing[\s\S]*write only/iu);
   assert.match(linear, /partial[\s\S]*stop[\s\S]*observed writes[\s\S]*residual delta/iu);
 });
 

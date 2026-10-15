@@ -29,15 +29,15 @@ test("GitHub initialization preserves stable semantic identity and exact views",
     assert.match(github, new RegExp(`\\*\\*${view}\\*\\*`, "u"));
   }
   assert.match(github, /stable node ID[\s\S]*durable wiki identity/iu);
-  assert.match(github, /createProjectV2Field[\s\S]*structural preview[\s\S]*explicit approval/iu);
+  assert.match(github, /createProjectV2Field[\s\S]*structural preview/iu);
   assert.match(github, /createProjectV2View[\s\S]*updateProjectV2View/iu);
   assert.match(github, /grouping[\s\S]*unavailable[\s\S]*manual setup guidance[\s\S]*exact view readback/iu);
 });
 
-test("GitHub writes a small approved delta and proves or reports residual state", () => {
+test("GitHub writes a small validated delta and proves or reports residual state", () => {
   assert.match(github, /complete mutation envelope/iu);
   assert.match(github, /stable IDs,[\s\S]*preconditions[\s\S]*expected\s+readback/iu);
-  assert.match(github, /preview[\s\S]*explicit approval[\s\S]*write/iu);
+  assert.match(github, /preview[\s\S]*write the validated delta/iu);
   assert.match(github, /createIssue[\s\S]*projectV2Ids[\s\S]*parentIssueId[\s\S]*milestoneId/iu);
   assert.match(github, /updateProjectV2ItemFieldValue/iu);
   assert.match(github, /exact readback[\s\S]*parent chain[\s\S]*milestone[\s\S]*blocker[\s\S]*source links/iu);

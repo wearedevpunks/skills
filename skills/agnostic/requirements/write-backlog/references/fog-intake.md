@@ -63,7 +63,7 @@ Its direct children use these provider-neutral semantics:
 
 A Fog may target a fitting existing `V*` milestone iteration when intake
 selects it. Reuse that target downstream unless a later explicit decision
-changes it. Moving the Fog requires a topology preview and approval.
+changes it. Moving the Fog requires a topology preview.
 
 Returning from a Finder's bounded result leaves the Fog open. This branch
 records intake and provenance; it never infers production or completes the Fog.

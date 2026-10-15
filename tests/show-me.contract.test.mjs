@@ -106,7 +106,7 @@ test("backlog visualizes material topology decisions while handoff stays untouch
   assert.match(backlog, /\$show-me.*authority-derived topology/isu);
   assert.match(
     backlog,
-    /Boundary, goal,[\s\S]*reparenting, or reorganization changes require explicit approval/iu,
+    /Boundary, goal,[\s\S]*reparenting,[\s\S]*structural changes/iu,
   );
   assert.match(
     backlog,

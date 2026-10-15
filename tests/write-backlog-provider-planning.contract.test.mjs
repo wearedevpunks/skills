@@ -36,7 +36,8 @@ test("both adapters consume one semantic policy and return exact residual state"
   assert.match(envelope, /Provider-Neutral|provider write/iu);
   for (const adapter of [linear, github]) {
     assert.match(adapter, /stable provider identity[\s\S]*durable wiki identity/iu);
-    assert.match(adapter, /preview[\s\S]*explicit approval/iu);
+    assert.match(adapter, /preview\s+every\s+material\s+structural\s+change/iu);
+    assert.doesNotMatch(adapter, /approv/iu);
     assert.match(adapter, /exact readback/iu);
     assert.match(adapter, /partial provider failure[\s\S]*observed writes[\s\S]*residual\s+delta/iu);
   }

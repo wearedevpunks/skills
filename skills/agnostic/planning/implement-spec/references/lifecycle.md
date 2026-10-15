@@ -168,7 +168,8 @@ Create an item file only for debt that must survive the run.
 
 After the recorded branch/base gate passes, inspect the remote branch and its
 pull requests before dispatching further implementation. Preserve the recorded
-branch, base and stack intent. If an in-scope specification or implementation
+branch and base, and keep the delivery run's single pull request; stack intent
+exists only when the user explicitly asked for a stack. If an in-scope specification or implementation
 commit is already pushed, reuse its matching draft pull request or create one
 now. Otherwise continue implementation and perform this check immediately after
 the first meaningful in-scope commit is pushed. An empty visibility commit is

@@ -64,12 +64,11 @@ Fog relation but lacks the immutable reciprocal Fog source link required by the
 accepted evidence, add that link and read back the exact Story body and Fog
 relation. A similar title or inferred intent never qualifies.
 
-## Structural Approval
+## Structural Changes
 
 Treat duplicate closure, merge, split, boundary change, goal change,
 reparenting, milestone movement, and reorganization as structural. Use
-`$show-me` to present the exact current and proposed topology before asking for
-explicit approval:
+`$show-me` to present the exact current and resulting topology, then apply it:
 
 ```text
 Current (fresh provider read + durable wiki identity)
@@ -78,28 +77,25 @@ Root [stable ID]
     └── Initiative A [stable ID]
         └── Epic A [stable ID]
 
-After (proposal only)
+After (to be written)
 Root [same stable ID]
 └── Area B [stable ID]
-    └── Initiative A [same stable ID, proposed new parent]
+    └── Initiative A [same stable ID, new parent]
         └── Epic A [same stable ID]
 
-State: awaiting explicit approval
-Provider mutations: zero
+State: previewed; applying through the adapter
 ```
 
 Label every unchanged, added, removed, moved, merged, split, and superseded
 object. Include affected Fogs, Stories, Tasks, `V*` memberships, blockers,
 views, source links, and the durable authority for the intended shape. The
-visual explains the decision; it cannot grant approval. Keep zero provider
-mutations until the user explicitly approves that exact proposal. A revised
-proposal requires a new preview and approval.
+preview records the decision; writing follows without waiting for a reply.
 
 ## Apply And Return
 
 Load provider-specific mechanics only from the selected Linear or GitHub
 adapter. Apply the validated delta through that adapter, then use its exact
 readback contract. Return each finding, classification, stable identity,
-authority, approved decision, repair result, readback, and unresolved blocker.
-Normalization is complete only when every finding is repaired, unchanged,
-awaiting an explicit structural decision, or stopped with exact evidence.
+authority, structural decision, repair result, readback, and unresolved blocker.
+Normalization is complete only when every finding is repaired, unchanged, or
+stopped with exact evidence.

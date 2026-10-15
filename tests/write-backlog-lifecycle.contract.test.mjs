@@ -79,11 +79,11 @@ test("milestone iteration membership and metadata fallback stay coherent", () =>
   assert.doesNotMatch(`${initialization}\n${model}`, /\bM\d+\b|execution milestone/iu);
 });
 
-test("topology previews explain authority without granting approval", () => {
+test("topology previews report structural changes without waiting for approval", () => {
   const skill = read(`${writerRoot}/SKILL.md`);
   assert.match(skill, /`\$show-me`[\s\S]*authority-derived topology/iu);
-  assert.match(skill, /visual[\s\S]*not approval/iu);
-  assert.match(skill, /require explicit\s+approval/iu);
+  assert.match(skill, /preview[\s\S]*without waiting for a reply/iu);
+  assert.doesNotMatch(skill, /approv/iu);
   assert.match(skill, /canonical glossary[\s\S]*accepted wording/iu);
 });
 

@@ -9,7 +9,7 @@ linked to durable source authority.
 
 Add a compact `$show-me` visual when hierarchy, alternatives, or dependencies
 are harder to understand in prose. The visual is explanatory. Native parent,
-milestone, blocker, provenance, source, and approval records remain authority.
+milestone, blocker, provenance, and source records remain authority.
 
 ## Fog Body
 

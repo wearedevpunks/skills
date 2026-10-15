@@ -8,7 +8,7 @@ one current and one future `V*` milestone under stable identities.
 
 Existing structure is reused. The proposal enriches missing root metadata,
 links the wiki and repository, and adds the missing Fogs view. `$show-me`
-presents that structural delta. After explicit approval, exact readback proves
+presents that structural delta before the write. Exact readback proves
 the metadata, links, milestone context, and Product Map, Roadmap, Fogs, and
 Current Delivery views.
 

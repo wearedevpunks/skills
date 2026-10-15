@@ -17,7 +17,7 @@ test("write-backlog owns one fail-closed mutation pipeline", () => {
   assert.match(skill, /sole physical provider mutation authority/iu);
   assert.match(skill, /project context[\s\S]*repository[\s\S]*provider workspace[\s\S]*fresh provider state/iu);
   assert.match(skill, /complete provider search[\s\S]*zero stable matches[\s\S]*same durable wiki identity/iu);
-  assert.match(skill, /preview[\s\S]*explicit\s+approval/iu);
+  assert.match(skill, /preview[\s\S]*without waiting for a reply/iu);
   assert.match(skill, /write.*exact readback/isu);
   assert.match(skill, /zero provider mutations/iu);
   assert.match(
@@ -116,7 +116,7 @@ test("Finder ceilings stop before delivery projection derives provider identitie
   assert.match(business, /reuse[\s\S]*enrich[\s\S]*create/iu);
   assert.match(business, /Product Area[\s\S]*Initiative ceiling/iu);
   assert.match(business, /neither Epic, Story, nor Task/iu);
-  assert.match(business, /scope expansion[\s\S]*explicit approval/iu);
+  assert.match(business, /scope expansion[\s\S]*preview[\s\S]*write it/iu);
 
   assert.match(functional, /immutable accepted Functional/iu);
   assert.match(functional, /Epic ceiling/iu);
@@ -223,7 +223,7 @@ test("inherited provider objects require explicit identity adoption", () => {
     all,
     /full provider candidate[\s\S]*stable provider ID[\s\S]*exact topology[\s\S]*provenance comparison/iu,
   );
-  assert.match(all, /`\$show-me`[\s\S]*explicit human approval[\s\S]*bind the durable wiki identity/iu);
+  assert.match(all, /`\$show-me`[\s\S]*bind the durable wiki identity/iu);
   assert.match(all, /bind[\s\S]*existing provider object[\s\S]*exact readback/iu);
   assert.match(all, /ambiguous[\s\S]*conflicting candidates[\s\S]*zero writes/iu);
   assert.match(all, /never[\s\S]*title-only[\s\S]*automatic adoption/iu);

@@ -38,8 +38,8 @@ test("Normalization repairs only exact stale mappings and gates every structural
     guidance,
     /duplicate closure[\s\S]*merge[\s\S]*split[\s\S]*boundary[\s\S]*goal[\s\S]*reparent[\s\S]*milestone movement[\s\S]*reorganization/iu,
   );
-  assert.match(guidance, /structural[\s\S]*before[\s\S]*after[\s\S]*explicit approval/iu);
-  assert.match(guidance, /zero provider\s+mutations[\s\S]*approval/iu);
+  assert.match(guidance, /structural[\s\S]*current[\s\S]*after[\s\S]*without waiting/iu);
+  assert.doesNotMatch(guidance, /approv/iu);
   assert.match(guidance, /ambiguous[\s\S]*conflicting[\s\S]*zero (?:writes|provider mutations)/iu);
 });
 

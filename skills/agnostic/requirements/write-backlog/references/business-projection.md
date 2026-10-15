@@ -16,7 +16,7 @@ or enriches neither Epic, Story, nor Task delivery depth.
 4. Exact-create only a missing Product Area or Initiative when a complete
    search finds zero matches and accepted evidence authorizes it.
 5. Treat a cross-Area or cross-Initiative request as scope expansion. Preview
-   the split with `$show-me` and require explicit approval.
+   the split with `$show-me`, then write it.
 
 ## Write and Read Back
 
