@@ -36,10 +36,12 @@ Normalization operation targets it.
 3. Require the returned workspace ID and workspace URL to identify the same
    workspace encoded by the configured Root URL. A wrong workspace returns its
    observed identity, expected identity, and zero provider mutations.
-4. Treat a Linear Project URL, legacy project destination, or any non-Initiative
+4. Read `viewer` through that same connection. Its user ID is the
+   authenticated user for this workspace.
+5. Treat a Linear Project URL, legacy project destination, or any non-Initiative
    Root URL as invalid. Return exact `hi ensure` destination guidance and zero
    writes rather than guessing or creating another Root.
-5. Read all candidate Projects, Issues, parents, labels, milestones, relations,
+6. Read all candidate Projects, Issues, parents, labels, milestones, relations,
    views, and durable identity links before choosing create, reuse, or enrich.
 
 Stable provider identity plus durable wiki identity is the reuse key. A title
@@ -101,7 +103,8 @@ evidence and are excluded from automatic Normalization.
 Build the complete intended mutation envelope in memory: ordered operations,
 stable IDs, preconditions, immutable source identities, and expected readback.
 Preview every material structural change before writing. Write only the validated delta, parent-first, using
-stable IDs; capture each returned ID before a dependent operation.
+stable IDs; capture each returned ID before a dependent operation. Create every
+Task with `assigneeId` set to the authenticated user.
 
 Exact readback must prove:
 
@@ -112,7 +115,8 @@ Exact readback must prove:
 5. exactly one contextual `V*` milestone per Story and the same one per Task
 6. semantic views, Fog provenance, immutable sources, and source links
 7. every native `relatedTo`, `blockedBy`, and `blocks` relation
-8. created, enriched, repaired, or unchanged classification for every object
+8. the authenticated user as assignee of every created Task
+9. created, enriched, repaired, or unchanged classification for every object
 
 A mismatch remains unresolved reconciliation. On partial provider failure,
 stop further writes, read back every affected object, and return observed writes,

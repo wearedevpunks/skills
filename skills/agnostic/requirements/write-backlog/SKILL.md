@@ -18,9 +18,10 @@ silently renaming them.
 ## Mutation Pipeline
 
 1. Read [project context](references/project-context.md). Resolve settings,
-   Product/Backlog Root, wiki, repository, and actual provider workspace. A
-   missing or legacy destination returns exact `hi ensure` guidance and zero
-   writes. Completion means every destination identity is proven.
+   Product/Backlog Root, wiki, repository, actual provider workspace, and
+   authenticated user. A missing or legacy destination returns exact
+   `hi ensure` guidance and zero writes. Completion means every destination
+   identity and the authenticated user are proven.
 2. Read fresh provider state for every intended object, parent, relation,
    milestone, field, and view. Completion means the current topology is known
    by stable provider identity, not inferred from names.
@@ -40,7 +41,8 @@ silently renaming them.
    - [record observed delivery state](references/delivery-status.md)
 5. Construct the complete intended delta in memory. Validate authority, stable
    identity, provider-neutral hierarchy, adapter representation, source links,
-   contextual `V*` membership, and the full reachable Task blocker graph.
+   contextual `V*` membership, created-Task assignees, and the full reachable
+   Task blocker graph.
    Completion means validation accepts the whole delta before the first write.
 6. Use `$show-me` to preview the authority-derived topology, then continue to
    the write without waiting for a reply. Boundary, goal, parent, roadmap,

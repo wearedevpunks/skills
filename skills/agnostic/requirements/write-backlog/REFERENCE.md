@@ -50,7 +50,8 @@ provider-item cardinality.
 
 Before the first provider write:
 
-1. Prove Product/Backlog Root, repository, wiki, and actual provider workspace.
+1. Prove Product/Backlog Root, repository, wiki, actual provider workspace, and
+   authenticated user.
 2. Read every target and relation from the provider.
 3. Apply the exact create/reuse/enrich/stop decision table from
    [issue reconciliation](references/issue-reconciliation.md). A title is only
@@ -67,10 +68,11 @@ Before the first provider write:
 
 ## Result Envelope
 
-Return provider, workspace, and Product/Backlog Root identities; operation and
-immutable evidence identity; stable provider IDs and durable wiki identities;
-created, enriched, repaired, or unchanged classification; exact parents,
-relations, `V*` membership, semantic fields, views, source links, and statuses;
+Return provider, workspace, Product/Backlog Root, and authenticated-user
+identities; operation and immutable evidence identity; stable provider IDs and
+durable wiki identities; created, enriched, repaired, or unchanged
+classification; exact parents, relations, `V*` membership, assignees, semantic
+fields, views, source links, and statuses;
 structural changes; observed writes; recovery point; and residual delta.
 
 Only exact readback proves success. A successful provider request with a

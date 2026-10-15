@@ -38,6 +38,17 @@ identity, or incomplete search returns exact setup guidance and zero provider
 mutations. Historical staged tickets remain unchanged and excluded from
 automatic Normalization.
 
+## Authenticated User
+
+Read the authenticated user through the same provider connection that proved
+the workspace: Linear `viewer` or GitHub `viewer`. Each workspace gives the same
+person a different user ID, so use only the ID read through the proven
+connection. Git author and committer values are free text and prove no person.
+
+Assign every Task the run creates to the authenticated user. Existing Tasks keep
+their current assignee. An authenticated account that the provider cannot
+assign returns its observed identity, setup guidance, and zero writes.
+
 ## Conflict Handling
 
 - Provider state defeats cached state for operational facts.
