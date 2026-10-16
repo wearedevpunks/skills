@@ -5,14 +5,15 @@ import test from "node:test";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("technical grilling closes accepted architecture outside GLOSSARY.md", () => {
-  const grill = read("skills/agnostic/requirements/requirements-grill/SKILL.md");
+  const grillRouter = read("skills/agnostic/requirements/requirements-grill/phases/router.md");
   const modeling = read("skills/agnostic/requirements/domain-modeling/SKILL.md");
   const plan = read("skills/agnostic/planning/create-plan/SKILL.md");
 
-  assert.match(grill, /code- or architecture-bearing/u);
+  assert.match(grillRouter, /every code-bearing branch is grounded with no open technical decision/u);
   assert.match(modeling, /Pressure-test implementation and architecture consequences/u);
   assert.match(modeling, /Keep `GLOSSARY\.md` glossary-only/u);
-  assert.match(plan, /derive and validate the architecture contract accepted in `SPEC\.md`/u);
+  assert.match(plan, /Derive applicable convergence detail from the current Architecture\/SPEC pair/u);
+  assert.match(plan, /Applicability never waives the architecture artifact/u);
 });
 
 test("rule authoring is concise and limited to scaffold or update handoffs", () => {

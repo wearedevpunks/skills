@@ -107,7 +107,10 @@ test("Finder research support requires durable report evidence", () => {
   assert.match(gate, /immutable commit SHA and path/iu);
   assert.match(gate, /cannot accept product direction or authorize backlog\s+projection/iu);
   assert.match(research, /durable-report mode is mandatory/i);
-  assert.match(research, /Every run writes one consolidated report\s+to the\s+project wiki/is);
+  assert.match(
+    research,
+    /Every run persists one consolidated report\s+in the\s+repository at the intended project-wiki folder or path/is,
+  );
 });
 
 test("research durable mode is mandatory", () => {
@@ -115,7 +118,7 @@ test("research durable mode is mandatory", () => {
     "skills/agnostic/research/parallel-research/SKILL.md",
   );
   assert.match(research, /durable-report mode is mandatory/i);
-  assert.match(research, /findings must not remain response-only or context-only/i);
+  assert.match(research, /findings must not\s+remain response-only or context-only/i);
 });
 
 test("research and docs ingest preserve one primary-source report", () => {
@@ -130,7 +133,7 @@ test("research and docs ingest preserve one primary-source report", () => {
   assert.match(report, /one consolidated report/i);
   assert.match(report, /primary source for every retained\s+factual claim/i);
   assert.match(report, /research\/<slug>/);
-  assert.match(report, /immutable commit SHA\s+and path/i);
+  assert.match(report, /Persist the consolidated report[\s\S]*before returning/i);
   assert.match(ingest, /report as primary evidence/i);
   assert.match(ingest, /keep`, `update`, `consolidate`, `replace`,\s+or `mark_stale`/i);
 });
@@ -139,11 +142,15 @@ test("research parent enforces one durable report writer", () => {
   const research = read(
     "skills/agnostic/research/parallel-research/SKILL.md",
   );
+  const contract = read(
+    "skills/agnostic/research/parallel-research/DURABLE-REPORT.md",
+  );
   assert.match(research, /lanes remain readonly/i);
   assert.match(
     research,
-    /only the coordinator or one designated\s+consolidator may write and commit exactly one report/i,
+    /only the coordinator or one designated\s+consolidator may write the report after synthesis/i,
   );
+  assert.match(contract, /There is exactly one writer and\s+one consolidated report/i);
 });
 
 test("parallel research durable retention commit does not trigger its skip rule", () => {
@@ -152,26 +159,18 @@ test("parallel research durable retention commit does not trigger its skip rule"
   );
   assert.match(research, /skip.{0,200}source or code mutation/is);
   assert.match(research, /skip.{0,200}unrelated\s+writes/is);
-  assert.match(research, /one retained durable-report commit/i);
   assert.doesNotMatch(research, /skip this skill[^.]*\bcommits\b/i);
 });
 
-test("durable research stays on the current checkout branch", () => {
+test("durable research persists its report without branch or worktree changes", () => {
   const skill = read("skills/agnostic/research/parallel-research/SKILL.md");
   const contract = read("skills/agnostic/research/parallel-research/DURABLE-REPORT.md");
   const all = `${skill}\n${contract}`;
 
-  assert.match(contract, /record the current checkout and branch/iu);
   assert.match(
     contract,
-    /write and commit.*current checkout.*current branch/isu,
+    /Persist the consolidated report in the repository at the resolved intended\s+project-wiki path before returning/iu,
   );
-  assert.match(
-    contract,
-    /never create, switch, checkout,\s+or use another branch or worktree/isu,
-  );
-  assert.match(contract, /same branch\s+contains the report commit/isu);
-  assert.match(contract, /before returning the immutable commit SHA\s+and path/isu);
   assert.doesNotMatch(
     all,
     /(?:create|switch|checkout|retain|push)[^\n]*`research\/<slug>`/iu,
@@ -229,10 +228,12 @@ test("spec compiler emits agent-ready traceable specs or one atomic failure", ()
   assert.match(template, /Accepted Technical Decisions/);
   assert.match(template, /Accepted Testing Decisions/);
   assert.match(template, /Verification Seams/);
-  assert.match(requirements, /requirements-grill -> create-spec/);
-  assert.match(requirements, /invoke `create-spec` immediately/i);
+  const deliveryState = read("skills/phases/delivery-phase/references/artifact-state.md");
+  assert.match(requirements, /requirements-grill -> create-architecture -> create-spec/);
+  assert.match(requirements, /After `architecture-written`, invoke `create-spec`/i);
   assert.match(requirements, /spec-written/);
-  assert.match(delivery, /agent-ready/);
+  assert.match(delivery, /\(\.\.\/references\/artifact-state\.md#architecturespec-pair-complete\)/);
+  assert.match(deliveryState, /matching agent-ready `SPEC\.md` has `readiness: agent-ready`/);
   assert.doesNotMatch(all, /write-backlog` automatically|before final drafting/i);
 });
 
@@ -249,11 +250,11 @@ test("agent-ready compiler output is sufficient for downstream delivery", () => 
   const all = `${createSpec}\n${createPlan}\n${implementSpec}\n${implementLifecycle}\n${delivery}\n${router}\n${spec}`;
 
   assert.match(createSpec, /`readiness: agent-ready` is sufficient downstream/i);
-  assert.match(router, /matching agent-ready `SPEC\.md`/i);
+  assert.match(router, /the pair's agent-ready `SPEC\.md`/i);
   const continuity = read("skills/phases/delivery-phase/references/context-continuity.md");
   assert.match(router, /context-continuity\.md/);
   assert.match(continuity, /Direct phase, explicit\s+HITL checkpoint[\s\S]*stop at the requested boundary/i);
-  assert.match(spec, /Do not add a spec\s+review or approval stop unless the user explicitly requested a HITL checkpoint/i);
+  assert.match(spec, /Compiler\s+readiness needs no additional approval gate/i);
   assert.doesNotMatch(all, /(?:approved|reviewed) spec(?:ification| folder)?/i);
   assert.doesNotMatch(all, /no reviewed matching spec/i);
 });
@@ -321,11 +322,13 @@ test("delivery routes retained specifications through Requirements Phase before 
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
   assert.match(router, /agent-ready `SPEC\.md`[\s\S]*Requirements Phase/iu);
   const state = read("skills/phases/delivery-phase/references/artifact-state.md");
-  assert.match(router, /Spec Complete and Backlog Projection Complete gates\]\(\.\.\/references\/artifact-state\.md\)/u);
+  assert.match(router, /Architecture\/SPEC Pair Complete gate\]\(\.\.\/references\/artifact-state\.md#architecturespec-pair-complete\)/u);
+  assert.match(router, /Backlog Projection Complete gate\]\(\.\.\/references\/artifact-state\.md#backlog-projection-complete\)/u);
+  assert.match(state, /`SPEC\.md` satisfies\s+\*\*Spec Complete\*\* below/u);
   assert.match(router, /current Write Backlog result/iu);
   assert.match(state, /current Write Backlog result[\s\S]*exact\s+Epic and Story identities[\s\S]*provider Task IDs and URLs/iu);
   assert.match(state, /Exact provider readback[\s\S]*current retained\s+specification identity and provider state/iu);
-  assert.match(requirements, /requirements-grill -> create-spec -> write-backlog/iu);
+  assert.match(requirements, /requirements-grill -> create-architecture -> create-spec -> write-backlog/iu);
   assert.match(requirements, /verified stable blob URL/iu);
   assert.match(requirements, /Write Backlog result[\s\S]*residual delta/iu);
   assert.doesNotMatch(router, /\[backlog\.md\]\(backlog\.md\)/u);
@@ -334,16 +337,22 @@ test("delivery routes retained specifications through Requirements Phase before 
 test("delivery routes specs lacking verified remote authority through Requirements Phase", () => {
   const router = read("skills/phases/delivery-phase/phases/router.md");
   const spec = read("skills/phases/delivery-phase/phases/spec.md");
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
 
   assert.match(router, /agent-ready `SPEC\.md`/iu);
   const state = read("skills/phases/delivery-phase/references/artifact-state.md");
-  assert.match(router, /matching agent-ready `SPEC\.md` with verified remote\s+retention/iu);
-  assert.match(router, /Missing, stale or contradictory required proof routes the exact gap to\s+Requirements Phase before planning/iu);
+  assert.match(router, /agent-ready `SPEC\.md` with verified remote\s+retention/iu);
+  assert.match(
+    router,
+    /Missing, stale or contradictory required proof selects \[spec\.md\]\(spec\.md\),\s+which routes the exact gap to Requirements Phase before planning/iu,
+  );
   assert.match(state, /retained ref contains the exact spec\s+commit[\s\S]*verified immutable blob URL[\s\S]*bytes matching\s+the current SPEC identity/iu);
   assert.match(state, /stored URL or local file alone is insufficient/iu);
   assert.match(router, /Requirements Phase/iu);
-  assert.match(spec, /verify the retained ref contains the spec commit/iu);
-  assert.match(spec, /construct and verify a stable blob URL before backlog/iu);
+  assert.match(spec, /Verify the retained Architecture\/SPEC pair and its exact identities, verified\s+immutable blob URLs/iu);
+  assert.match(spec, /Requirements Phase\. It owns `requirements-grill -> create-architecture ->\s+create-spec -> write-backlog`/iu);
+  assert.match(createSpec, /Verify the retained ref contains the spec commit/iu);
+  assert.match(createSpec, /construct and verify its stable blob URL before `write-backlog`/iu);
 });
 
 test("planning persists plan-derived worker waves for resume", () => {
@@ -433,9 +442,13 @@ test("spec compiler rejects incomplete dependency and story coverage", () => {
 test("spec compiler returns remotely verified blob authority before backlog projection", () => {
   const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
   const requirements = read("skills/phases/requirements-phase/SKILL.md");
+  assert.match(createSpec, /verify\s+(?:the\s+)?retained ref contains (?:the\s+)?spec commit/iu);
+  assert.match(
+    requirements,
+    /Require `create-spec` to verify both retained artifact URLs[\s\S]*push or explicitly retain the\s+spec commit before `write-backlog`/iu,
+  );
   for (const document of [createSpec, requirements]) {
-    assert.match(document, /push or explicitly retain the spec commit/iu);
-    assert.match(document, /verify\s+(?:the\s+)?retained ref contains (?:the\s+)?spec commit/iu);
+    assert.match(document, /push or explicitly retain the\s+spec commit/iu);
     assert.match(document, /stable blob URL/iu);
     assert.match(document, /before `write-backlog`/iu);
     assert.doesNotMatch(document, /commit SHA plus repository-relative path, or a stable blob URL/u);
