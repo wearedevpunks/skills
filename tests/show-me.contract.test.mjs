@@ -31,6 +31,19 @@ test("show-me uses the smallest authority-preserving visual", () => {
   assert.doesNotMatch(skill, /Bash\(open/);
 });
 
+test("show-me keeps wide views readable in the chat column", () => {
+  const skill = read(`${showMePath}/SKILL.md`);
+
+  assert.match(skill, /mapping.*two or more attributes.*Markdown table/is);
+  assert.match(skill, /Inline renderer.*html_preview.*html_render/is);
+  assert.match(skill, /Inline renderer[\s\S]*HTML file[\s\S]*Markdown/u);
+  assert.match(skill, /text fence line fits in 80 columns/iu);
+  assert.match(
+    skill,
+    /criteria bind the final reply.*research, subagents, or another skill/is,
+  );
+});
+
 test("planning entrypoints present requirements, specs, plans, and delivery", () => {
   const grill = read(
     "skills/agnostic/requirements/requirements-grill/SKILL.md",
