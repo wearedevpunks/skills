@@ -1,9 +1,13 @@
 # Upstream provenance
 
-Copied without modification from [`emilkowalski/skills`](https://github.com/emilkowalski/skills/tree/e879241fab3cdb22e8d95587cdbf40b57a88d7da/skills/animate-expo) at commit:
+Adapted from [`emilkowalski/skills`](https://github.com/emilkowalski/skills/tree/2d228630ba1446365f614a108cb8252f1feda202/skills/animate-expo) (path `skills/animate-expo`) at commit:
 
 ```text
-e879241fab3cdb22e8d95587cdbf40b57a88d7da
+2d228630ba1446365f614a108cb8252f1feda202
 ```
 
-The adjacent `LICENSE` is the byte-identical upstream MIT license retained for this skill.
+The adjacent `LICENSE` is the byte-identical upstream MIT license (repository root `LICENSE`) retained for this skill.
+
+## Local edits
+
+- Removed the `## Initial Response` greeting section (heading, the "When this skill is first invoked" instruction, the quoted greeting, and the "Do not provide any other information" line). The skill runs autonomously when a phase activates it. The scope paragraph that followed the greeting is kept under the title.

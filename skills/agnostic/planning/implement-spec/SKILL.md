@@ -38,6 +38,12 @@ Follow [references/parallel.md](references/parallel.md) as the execution contrac
 The parent owns Task Gates, Active Write Scopes and shared artifacts. Scoped workers own
 implementation tasks.
 
+When the delivery brief names a `design-phase` promote commit, its UI files are
+Design-Owned UI Code: accepted input that tasks extend with logic and data. Put
+that rule in each worker brief that touches those files. A change to a
+design-owned file is a defect fix only; record each one in
+`IMPLEMENTATION-NOTES.md` with the defect and the file.
+
 ## Task identity state
 
 Read the plan's uniform `task_identity_mode` before execution.

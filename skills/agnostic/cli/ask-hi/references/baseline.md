@@ -66,7 +66,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | debug | default | - | debugging-phase, bug-discovery-phase, bug-resolution-phase, debug-agent |
 | docs | default | - | docs-ingest-phase, docs-onboarding, writing-fragments, writing-beats, writing-shape, writing-for-agents, write-graph-based-skills, rule-authoring |
 | misc | default | - | show-me, wait-what |
-| planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, design-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase, review, autoreview |
+| planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase, review, autoreview |
 | quality | default | - | tdd, make-tsuite, codebase-design, simplify; lint vitest-core |
 | research | default | - | parallel-research, prototype, improve-codebase-architecture |
 | requirements | default | - | requirements-phase, requirements-grill, brainstorm, domain-modeling, repo-asset-management, write-backlog |
@@ -74,7 +74,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | subagents | default | - | swarm-planner |
 | verification | default | - | create-verification-skill, update-verification-skill, verify-behavior |
 | backend | surface | signals above | backend-domain-structure, backend-recoverable-actions, logging-best-practices |
-| frontend | surface | nextjs/react | agent-browser, animate, design-taste-frontend, image-to-code, imagegen-frontend-mobile, imagegen-frontend-web, frontend-domain-structure, improve-mobile-frontend, review-animations |
+| frontend | surface | nextjs/react | agent-browser, animate, brandkit, break-ui, design-phase, design-taste-frontend, emil-design-eng, find-animation-opportunities, full-output-enforcement, image-to-code, imagegen-frontend-mobile, imagegen-frontend-web, frontend-domain-structure, mobile-native, prototype-variants, redesign-existing-projects, review-animations, shadcn |
 | better-auth | detected | better-auth | better-auth-best-practices |
 | drizzle | detected | drizzle-kit, drizzle-orm | source guide only |
 | effect | detected | effect, @effect/ | effect, effect-backend-structure, effect-recoverable-actions, effect-service-design; lint effect-no-barrel-imports, effect-tsgo-recommended |

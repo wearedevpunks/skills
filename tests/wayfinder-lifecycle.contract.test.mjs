@@ -16,13 +16,6 @@ test("prototype phase is reachable by the skills that call it", () => {
   assert.doesNotMatch(read("skills/phases/prototype-phase/SKILL.md"), /disable-model-invocation/u);
 });
 
-test("design prototype step composes the primitive, not the standalone phase", () => {
-  const design = read("skills/phases/design-phase/phases/prototype.md");
-  assert.match(design, /activate the lean `prototype` primitive/u);
-  assert.match(design, /Standalone `prototype-phase` remains a Finder route/u);
-  assert.doesNotMatch(design, /Activate `?\$prototype-phase`?|activate `?\$prototype-phase`?/u);
-});
-
 test("prototype lifecycle keeps durable throwaway evidence and human verdicts", () => {
   const primitive = read("skills/agnostic/research/prototype/SKILL.md");
   const phase = read("skills/phases/prototype-phase/SKILL.md");

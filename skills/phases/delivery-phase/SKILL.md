@@ -49,6 +49,9 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 - One delivery run ships exactly one pull request. Every phase, including
   implementation, repair, review fixes, and docs, commits to that run's branch
   and PR. Split or stack PRs only when the user explicitly asks.
+- Design-Owned UI Code from a `design-phase` promote commit is accepted input.
+  Delivery adds logic, data, and the rest of the requirement to it. A change to a
+  design-owned file is a defect fix only, recorded in the Phase Result.
 - Full Delivery continues within accepted bounds. Other modes emit one common
   Phase Result and stop at their requested boundary.
 - [references/context-continuity.md](references/context-continuity.md) owns

@@ -108,9 +108,9 @@ Model-invoked; Pack `research`. Readonly parallel subagent fan-out with one dura
 
 ## `$prototype`
 Model-invoked; Pack `research`. Throwaway code that answers one design question.
-- **Use when:** `$prototype-phase` or `$design-phase` needs an artifact. **Not for:** production code; human-verdict tracking, which `$prototype-phase` owns.
+- **Use when:** `$prototype-phase` or a `$requirements-grill` Wayfinder route needs a throwaway artifact. **Not for:** production code; human-verdict tracking, which `$prototype-phase` owns.
 - **Steps:** 1 Branch: logic → `LOGIC.md` (one self-contained HTML, pure module, free-play + guided tabs); UI → `UI.md` (3-5 radical variants via `?variant=`, floating switcher, stubbed mutations). 2 Throwaway, one-command run, no persistence, no polish or tests. 3 Commit to `prototype/<slug>`, push, verify the remote ref, link from the issue. Done when run instruction, branch, SHA, artifact path, remote ref and open question are returned.
-- **Calls:** none. **Called by:** `$prototype-phase`, `$design-phase` (prototype phase), `$write-backlog` (Fog support).
+- **Calls:** none. **Called by:** `$prototype-phase`, `$requirements-grill` (Wayfinder route), `$write-backlog` (Fog support).
 - **Writes:** branch `prototype/<slug>`; the caller writes `PROTOTYPE-VERDICT.md`.
 - **Stops / gates:** prototype code never merges unchanged; no real DB writes.
 - **Source:** `.agents/skills/prototype/SKILL.md`, `LOGIC.md`, `UI.md`

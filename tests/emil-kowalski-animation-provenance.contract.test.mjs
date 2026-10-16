@@ -1,50 +1,113 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url));
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const exists = (path) => existsSync(new URL(`../${path}`, import.meta.url));
 const sha256 = (path) => createHash("sha256").update(read(path)).digest("hex");
 
-const imports = [
+const emilPin = "2d228630ba1446365f614a108cb8252f1feda202";
+const emilLicenseSha256 = "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b";
+
+const emilSkills = [
+  "skills/agnostic/frontend/animate",
+  "skills/agnostic/frontend/break-ui",
+  "skills/agnostic/frontend/emil-design-eng",
+  "skills/agnostic/frontend/find-animation-opportunities",
+  "skills/agnostic/frontend/mobile-native",
+  "skills/agnostic/frontend/prototype-variants",
+  "skills/agnostic/frontend/review-animations",
+  "skills/frameworks/expo/animate-expo",
+];
+
+const otherVendoredSkills = [
   {
-    directory: "skills/frameworks/expo/animate-expo",
-    files: {
-      "SKILL.md": "2121fc72ffa476492c1b91ccf96c7b26aade9d1a332dc5834ba3526e1102b00d",
-      "RECIPES.md": "1193cb71334da2e2341778dd92bec9ac79d989cb07fd55d661f324ed5871e718",
-    },
+    directory: "skills/agnostic/frontend/brandkit",
+    repository: /github\.com\/Leonxlnx\/taste-skill/,
+    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
   },
   {
-    directory: "skills/agnostic/frontend/animate",
-    files: {
-      "SKILL.md": "f6317335da2662e92270dc0a6128bea95d7216cd751f86628e3ac6b72804e805",
-      "RECIPES.md": "21ff63d84391db8d96ecdf9170095f55a42c836ccc36fd3269c4772bab031ba2",
-    },
+    directory: "skills/agnostic/frontend/full-output-enforcement",
+    repository: /github\.com\/Leonxlnx\/taste-skill/,
+    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
   },
   {
-    directory: "skills/agnostic/frontend/review-animations",
-    files: {
-      "SKILL.md": "61cf8ac0c4c8e1f63385298c546b16c65ca9aec34abddcd04e821c16712d671d",
-      "STANDARDS.md": "e7d3605034acda54ca13e43aec9e64d65b53de20f75b11b8d694e373012fbe07",
-    },
+    directory: "skills/agnostic/frontend/redesign-existing-projects",
+    repository: /github\.com\/Leonxlnx\/taste-skill/,
+    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
+  },
+  {
+    directory: "skills/agnostic/frontend/shadcn",
+    repository: /github\.com\/shadcn-ui\/ui/,
+    pin: "af983e842ab31ed26da30ba4d9a418772150dff0",
   },
 ];
 
-test("Emil Kowalski animation skills retain pinned source and license bytes", () => {
-  for (const { directory, files } of imports) {
-    for (const [file, expected] of Object.entries(files)) {
-      assert.equal(sha256(`${directory}/${file}`), expected, `${directory}/${file}`);
-    }
+const frontmatterName = (skill) => skill.match(/^---\n[\s\S]*?^name: (.+)$/m)?.[1];
 
-    assert.equal(
-      sha256(`${directory}/LICENSE`),
-      "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b",
-      `${directory}/LICENSE`,
-    );
+test("vendored Emil Kowalski skills name the shared pin, keep the license, and record local edits", () => {
+  for (const directory of emilSkills) {
+    const provenance = read(`${directory}/UPSTREAM.md`);
+    assert.match(provenance, /github\.com\/emilkowalski\/skills/, directory);
+    assert.ok(provenance.includes(emilPin), `${directory}/UPSTREAM.md must name ${emilPin}`);
+    assert.match(provenance, /^## Local edits$/m, directory);
+    assert.match(provenance, /`## Initial Response`/, directory);
 
-    const provenance = read(`${directory}/UPSTREAM.md`).toString("utf8");
-    assert.match(provenance, /github\.com\/emilkowalski\/skills/);
-    assert.match(provenance, /e879241fab3cdb22e8d95587cdbf40b57a88d7da/);
-    assert.match(provenance, /byte-identical upstream MIT license/);
+    assert.equal(sha256(`${directory}/LICENSE`), emilLicenseSha256, `${directory}/LICENSE`);
+    assert.doesNotMatch(read(`${directory}/SKILL.md`), /Initial Response/, `${directory}/SKILL.md`);
+  }
+});
+
+test("prototype-variants builds variants on the real route behind a dev-only switch", () => {
+  const directory = "skills/agnostic/frontend/prototype-variants";
+  const skill = read(`${directory}/SKILL.md`);
+  const picker = read(`${directory}/PICKER.md`);
+  const provenance = read(`${directory}/UPSTREAM.md`);
+
+  assert.equal(frontmatterName(skill), "prototype-variants");
+  assert.match(skill, /real route, on the working branch, behind a dev-only `\?variant=` switch/);
+  assert.doesNotMatch(skill, /isolated route or page \(`\/prototypes\/<slug>`/);
+  assert.doesNotMatch(skill, /single self-contained HTML file/);
+  assert.doesNotMatch(skill, /delete the prototype surface/);
+  assert.match(skill, /remove the `\?variant=` switch and the losing variants/);
+  assert.match(skill, /Default \*\*3 variants\*\*; up to 5/);
+  for (const verdict of ["riff", "combine", "keep", "reject"]) {
+    assert.match(skill, new RegExp(`^\\| \`${verdict}\\b`, "m"), verdict);
+  }
+
+  assert.match(picker, /searchParams\.set\('variant'/);
+  assert.doesNotMatch(picker, /searchParams\.(?:set|get)\('v'/);
+
+  for (const edit of ["name: prototype-variants", "Hard Rule 1", "Phase 4", "Phase 6", "`combine`", "`reject`", "`PICKER.md`"]) {
+    assert.ok(provenance.includes(edit), `UPSTREAM.md must record ${edit}`);
+  }
+});
+
+test("break-ui points at the vendored prototype-variants skill", () => {
+  const directory = "skills/agnostic/frontend/break-ui";
+  assert.ok(exists(`${directory}/CATALOG.md`));
+  assert.match(read(`${directory}/SKILL.md`), /that's `prototype-variants`/);
+  assert.match(read(`${directory}/UPSTREAM.md`), /`prototype-variants`/);
+});
+
+test("taste-skill and shadcn imports name their pinned source and keep the license", () => {
+  for (const { directory, repository, pin } of otherVendoredSkills) {
+    const provenance = read(`${directory}/UPSTREAM.md`);
+    assert.match(provenance, repository, directory);
+    assert.ok(provenance.includes(pin), `${directory}/UPSTREAM.md must name ${pin}`);
+    assert.match(provenance, /^## Local edits$/m, directory);
+    assert.ok(exists(`${directory}/LICENSE`), `${directory}/LICENSE`);
+  }
+
+  assert.equal(frontmatterName(read("skills/agnostic/frontend/full-output-enforcement/SKILL.md")), "full-output-enforcement");
+  for (const file of ["rules", "design-system.md", "design-system-page.md", "scripts"]) {
+    assert.ok(exists(`skills/agnostic/frontend/shadcn/${file}`), `shadcn/${file}`);
+  }
+});
+
+test("retired frontend skills stay removed", () => {
+  for (const directory of ["skills/agnostic/frontend/gpt-taste", "skills/agnostic/frontend/improve-mobile-frontend"]) {
+    assert.equal(exists(directory), false, directory);
   }
 });
