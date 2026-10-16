@@ -65,6 +65,13 @@ transaction/side-effect boundaries, recovery, and observable completion.]
 [Beside each view: question/evidence anchors and a causal plain-language
 conclusion. Include accepted dependency/lifecycle constraints where they apply.]
 
+## Modules and Interfaces
+
+[Place each accepted L3 Modules decision here: module, interface, seam or
+adapter, dependency direction, and file layout as supplied. Use a shallow module
+or file tree. Link each to its block selector and Q anchor. Remove this section
+when the grill settled no L3 Modules decision.]
+
 ## Accepted Detail Coverage
 
 | Question + exact entry/evidence anchor | Exact accepted choice and supplied detail | Provided rationale / alternatives | Architecture selector + applicable visual | System constraint served |
@@ -93,8 +100,8 @@ only to targets present in the retained tree. Pair URLs belong in the handoff.]
 
 ## Flow Failure Coverage
 
-[Use every exact lens label from brainstorm's Flow failure lenses; the list is
-owned there. Reference accepted guarantees and their evidence.]
+[Use every exact lens label from `flow-lenses`; that skill owns the list.
+Reference accepted guarantees and their evidence.]
 
 | Lens | Evidence / unknown / justified not applicable | Guarantee at stake | Material unresolved gap |
 | --- | --- | --- | --- |

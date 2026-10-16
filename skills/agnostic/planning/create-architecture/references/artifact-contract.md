@@ -67,8 +67,9 @@ or rationale that was never provided is `not recorded`, not an invented value
 or automatic blocker. Required missing evidence, contradictions, or a newly
 exposed material decision do block readiness.
 
-Resolve the installed `brainstorm` skill and read its canonical **Flow failure
-lenses**; use its exact lens labels in the artifact's coverage rows. Each row records grounded evidence,
+Resolve the installed `flow-lenses` skill and read its canonical Flow Lenses;
+`flow-lenses` owns the lens labels. Use its exact lens labels in the artifact's
+coverage rows. Each row records grounded evidence,
 an explicit unknown, or a justified not-applicable result. For an unknown, name
 the guarantee at stake and whether it is material to the accepted scope.
 Non-material unknowns remain visible; material unresolved guarantees block.
@@ -147,7 +148,9 @@ On a source, identity, coverage, or consistency failure, preserve the prior
 canonical artifact and return one `architecture-not-ready` result listing **all**
 exact gaps, affected question/evidence anchors, guarantees at stake, and upstream
 routes. Route decisions and contradictions to `requirements-phase` /
-`requirements-grill`; request targeted evidence through that phase when needed.
+`requirements-grill`, each decision gap with the Altitude (L1 Outcome, L2 Shape,
+or L3 Modules) of the question it implies; request targeted evidence through
+that phase when needed.
 Do not interview, fill gaps with defaults, or publish a partial replacement.
 
 A retention failure also returns `architecture-not-ready`, naming the failed

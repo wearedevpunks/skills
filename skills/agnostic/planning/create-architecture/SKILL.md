@@ -22,20 +22,22 @@ create-spec -> write-backlog`; `SPEC.md` need not exist to run this compiler.
    Use `ARCHITECTURE.md` in that folder, applying the same identity and collision
    rules. Reserve the future sibling `SPEC.md` path without requiring or
    fabricating the file. Reuse an existing artifact only for the same capability.
-3. Resolve and invoke the installed `$brainstorm` skill on the accepted
-   bounded flow from the operating agent's perspective. Trace intake, state,
-   control, feedback, recovery, and handoff across linked abstraction levels.
-   Account for every lens in its **Flow failure lenses** with evidence, an
-   explicit unknown, or a justified not-applicable result. Its suggestions remain
-   candidates. Route material gaps through the contract; compilation cannot
-   accept a new mechanism or guarantee.
+3. Resolve and invoke the installed `$flow-lenses` skill on the accepted
+   bounded flow. Trace intake, state, control, feedback, recovery, and handoff
+   across linked abstraction levels. Account for every lens in its Flow Lenses
+   with evidence, an explicit unknown, or a justified not-applicable result. Its
+   candidate gaps remain candidates. Return each material gap to
+   `requirements-grill` with its Altitude through the contract; compilation
+   cannot accept a new mechanism or guarantee.
 4. Compile a complete candidate using
    [ARCHITECTURE-TEMPLATE.md](assets/ARCHITECTURE-TEMPLATE.md). Start with actors,
    purpose, capability boundary, and canonical terms. Connect owners,
    authoritative state, entrypoints, critical flows, interfaces, dependencies,
    recovery, and observable completion across levels. Preserve every accepted
-   detail through the contract's decision coverage. Assign stable block and flow
-   selectors under its **Spec traceability** rules; preserve exact grill entry
+   detail through the contract's decision coverage; place accepted L3 Modules
+   decisions in the template's **Modules and Interfaces** section. Assign stable
+   block and flow selectors under the contract's **Spec traceability** rules;
+   preserve exact grill entry
    anchors. Before SPEC exists, leave spec-code mapping explicitly pending.
    Explain how each low-level choice supports a system constraint; keep unknowns
    and parked work visible.

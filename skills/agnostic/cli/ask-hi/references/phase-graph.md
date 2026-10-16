@@ -27,6 +27,7 @@ An explicit-only entry starts only when the human types it. When an agent finds 
 ```text
 $business-finder | $functional-finder → $finder-phase ⇄ $prototype-phase
         └─ returns to human ─→ $requirements-phase
+$brainstorm (proposal loop, one $show-me view per turn) ─ Brainstorm Brief ─→ $requirements-grill
 $requirements-phase → $requirements-grill → $create-architecture → $create-spec → $write-backlog
         └─ result ─→ $delivery-phase
 $design-phase → (grill, brand, design system, compose, motion plan, variant rounds ⇄ quality gate, verdict, promote, backlog) ─ brief ─→ human → $delivery-phase
@@ -43,7 +44,7 @@ $goalify → active goal → $delivery-phase (full delivery when the goal asks f
 | Phase | Composes | Ends with |
 | --- | --- | --- |
 | `$finder-phase` | `$grilling`, `$parallel-research`, `$prototype-phase`, `$write-backlog`, `$wait-what`, `$show-me` | bounded result or `human_steering_required`; control to the human |
-| `$requirements-phase` | `$requirements-grill` (with `$grilling`, `$brainstorm`, `$domain-modeling`, `$wait-what`, `$show-me`), `$create-architecture`, `$create-spec`, `$write-backlog` | retained architecture/spec pair and backlog IDs, or a blocked result |
+| `$requirements-phase` | `$requirements-grill` (Altitude-routed graph with `$grilling`, `$flow-lenses`, `$domain-modeling`, `$wait-what`, `$show-me`), `$create-architecture`, `$create-spec`, `$write-backlog` | retained architecture/spec pair and backlog IDs, or a blocked result |
 | `$prototype-phase` | `$prototype`, `$show-me` | committed `PROTOTYPE-VERDICT.md` returned to the Finder gate |
 | `$design-phase` | `$requirements-grill`, `$brandkit`, `$shadcn`, `$expo-tailwind-setup`, `$imagegen-frontend-web`, `$imagegen-frontend-mobile`, `$find-animation-opportunities`, `$prototype-variants`, `$design-taste-frontend`, `$image-to-code`, `$emil-design-eng`, `$animate`, `$animate-expo`, `$mobile-native`, `$redesign-existing-projects`, `$break-ui`, `$review-animations`, `$repo-asset-management` | delivery brief; the human invokes `$delivery-phase` |
 | `$delivery-phase` | `$create-plan` (with `$swarm-planner`, `$tdd`, `$codebase-design`), `$implement-spec` (with `$tdd`, `$simplify`, `$verify-behavior`, `$create-verification-skill`, `$update-verification-skill`), `$review-phase`, `$debugging-phase`, `$docs-ingest-phase`, `$write-backlog`, `$repo-asset-management` | closeout: commit, push, CI, backlog status readback |
@@ -57,6 +58,6 @@ $goalify → active goal → $delivery-phase (full delivery when the goal asks f
 
 ## Standalone skills
 
-Model-invoked skills that no phase must call, reached by their own trigger: `$improve-codebase-architecture`, `$make-tsuite`, `$security-best-practices`, `$audit-cicd-security`, `$architect-pipeline`, `$handoff`, `$hi-cli`, `$wayfinder`, `$writing-for-agents`, `$write-graph-based-skills`, and the framework and language Pack skills. `$rule-authoring` runs only from `hi init` or `hi update` handoffs.
+Model-invoked skills that no phase must call, reached by their own trigger: `$brainstorm`, `$improve-codebase-architecture`, `$make-tsuite`, `$security-best-practices`, `$audit-cicd-security`, `$architect-pipeline`, `$handoff`, `$hi-cli`, `$wayfinder`, `$writing-for-agents`, `$write-graph-based-skills`, and the framework and language Pack skills. `$rule-authoring` runs only from `hi init` or `hi update` handoffs.
 
 **Source:** `.agents/skills/<phase>/SKILL.md` and its `phases/router.md` when present.

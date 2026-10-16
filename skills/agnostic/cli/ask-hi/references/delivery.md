@@ -53,7 +53,7 @@ Model-invoked; Pack `quality`. Test-drives behavior changes with vertical red-gr
 Model-invoked; Pack `quality`. Shared vocabulary and method for deep modules, seams, adapters, leverage, locality and testable boundaries.
 - **Use when:** designing interfaces or seams, testability, or another skill needs the vocabulary. **Not for:** discovery of refactor candidates, which `$improve-codebase-architecture` runs.
 - **Steps:** apply the glossary and principles (one adapter = hypothetical seam, two = real seam; deletion test); classify dependencies in-process / local-substitutable / remote-owned / true-external; Design It Twice: frame, ≥2 alternatives, compare depth, locality, seam, test surface, migration cost, recommend.
-- **Calls:** readonly subagents for alternatives. **Called by:** `$create-plan`, `$tdd`, `$implement-spec`, `$improve-codebase-architecture`.
+- **Calls:** readonly subagents for alternatives. **Called by:** `$create-plan`, `$tdd`, `$implement-spec`, `$improve-codebase-architecture`, `$requirements-grill` (checkpoint, L3 derivation).
 - **Writes:** `codebase_design_notes` in `PLAN.md`.
 - **Stops / gates:** none.
 - **Source:** `.agents/skills/codebase-design/SKILL.md`, `DEEPENING.md`, `DESIGN-IT-TWICE.md`

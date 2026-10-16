@@ -69,7 +69,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase, review, autoreview |
 | quality | default | - | tdd, make-tsuite, codebase-design, simplify; lint vitest-core |
 | research | default | - | parallel-research, prototype, improve-codebase-architecture |
-| requirements | default | - | requirements-phase, requirements-grill, brainstorm, domain-modeling, repo-asset-management, write-backlog |
+| requirements | default | - | requirements-phase, requirements-grill, brainstorm, flow-lenses, domain-modeling, repo-asset-management, write-backlog |
 | security | default | - | architect-pipeline, audit-cicd-security, security-best-practices |
 | subagents | default | - | swarm-planner |
 | verification | default | - | create-verification-skill, update-verification-skill, verify-behavior |

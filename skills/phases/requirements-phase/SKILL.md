@@ -31,7 +31,8 @@ workflow or a Finder lifecycle owner.
    matching status exists, start the bounded Requirements Grill directly.
 3. While material decisions remain open, use `requirements-grill` for the HITL
    interview. Research recommendations are evidence, not decisions. Complete
-   this step when every material branch is accepted or explicitly parked.
+   this step when every material branch is settled at its Target Altitude or
+   explicitly parked.
 4. When the user confirms shared understanding and the remaining branches are
    closed or explicitly parked, invoke `create-architecture` with the current
    grill status and log. Require its
