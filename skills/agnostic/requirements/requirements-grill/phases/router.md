@@ -92,7 +92,8 @@ The Close Guard passes when all of these hold:
   Altitude with the user's reason recorded;
 - every auto-pinned default records its Altitude;
 - every code-bearing branch is grounded with no open technical decision;
-- every round's Required Calls record is complete.
+- every round's Required Calls record is complete; rounds before a recorded
+  `Altitude upgrade: R<N>` are exempt.
 
 ## Route Precedence
 
@@ -108,19 +109,22 @@ output.
 | 5 | The status `Closure` line reads `closed R<N>` and current evidence holds no new decision content | terminal `grill_closed` |
 | 6 | Current evidence holds answers, parks, deferrals, corrections, auto-pin authorization, or a scope direction for this grill | [`checkpoint.md`](checkpoint.md) |
 | 7 | Current evidence holds the user's reply to a pending confirmation or closure request, with no new decision content | [`close.md`](close.md) |
-| 8 | The Current Round is presented, its round calls are recorded, it has no `checkpoint` call yet, each of its frontier questions is still `unanswered`, and current evidence holds no reply | checkpoint `answers_required` |
+| 8 | The latest round's round lines are complete, it has no checkpoint lines, each of its frontier questions is still `unanswered`, and current evidence holds no reply | checkpoint `answers_required` |
 | 9 | Shared-understanding confirmation is `pending`, or `confirmed` without explicit closure, and current evidence holds no reply | checkpoint `shared_understanding_required` or `closure_required` |
-| 10 | The latest round's Required Calls record lacks a `checkpoint` call, or records one as `missing` | [`checkpoint.md`](checkpoint.md) |
-| 11 | The latest round's Required Calls record lacks a `round` call | [`round.md`](round.md) to complete that round |
+| 10 | The latest round's round lines are complete and its checkpoint lines are absent, incomplete, or record a call as `missing` | [`checkpoint.md`](checkpoint.md) |
+| 11 | The latest round's round lines are incomplete | [`round.md`](round.md) to complete that round with its recorded frontier |
 | 12 | A branch has every question at its working level answered or parked, that level is below its Target Altitude, and neither next-level questions nor a settled-by-evidence record exists | [`checkpoint.md`](checkpoint.md) |
 | 13 | A ready question exists | [`round.md`](round.md) at the Round Selection Altitude |
 | 14 | Open questions exist and none is ready | blocked `facts_pending` |
 | 15 | No open question exists and the Close Guard passes | [`close.md`](close.md) |
 | 16 | No open question exists and the Close Guard fails | blocked `grill_state_conflict` |
 
-Rows 10 and 11 hold the next round: the router starts round R<N+1> only after
-the Required Calls record of R<N> lists every required call of `round` and
-`checkpoint`.
+In the [Required Calls record](../references/artifact-output.md#required-calls),
+the round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its
+checkpoint lines are `domain-modeling`, `flow-lenses`, and `level derivation`.
+A set of lines is complete when each line is present and reads `run` or
+`not due`. Rows 10 and 11 hold the next round: the router starts round R<N+1>
+only after both sets of R<N> are complete.
 
 Before loading a selected gate, read its latest Gate Outcomes entry. When it
 is `blocked` and current evidence adds nothing that resolves the recorded

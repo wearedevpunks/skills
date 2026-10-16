@@ -228,12 +228,18 @@ test("each round asks exactly one Altitude, the shallowest with a ready question
 test("a missing required-call record holds the next round", () => {
   const text = router();
   const rows = section(text, "Route Precedence");
-  const holdRow = rows.indexOf("lacks a `checkpoint` call");
+  const checkpointRow = rows.indexOf("round lines are complete and its checkpoint lines are absent");
+  const completeRow = rows.indexOf("round lines are incomplete");
   const roundRow = rows.indexOf("| A ready question exists |");
-  assert.ok(holdRow !== -1 && roundRow > holdRow);
+  assert.ok(checkpointRow !== -1 && completeRow > checkpointRow && roundRow > completeRow);
   assert.match(
     text,
-    /starts round R<N\+1> only after\s+the Required Calls record of R<N> lists every required call of `round` and\s+`checkpoint`/u,
+    /round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its\s+checkpoint lines are `domain-modeling`, `flow-lenses`, and `level derivation`/u,
+  );
+  assert.match(text, /starts round R<N\+1>\s+only after both sets of R<N> are complete/u);
+  assert.match(
+    section(text, "Close Guard"),
+    /rounds before a recorded\s+`Altitude upgrade: R<N>` are exempt/u,
   );
   assert.match(
     step(section(gate("checkpoint"), "Bounded Action"), 8),
