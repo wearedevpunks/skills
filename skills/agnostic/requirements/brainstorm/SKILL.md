@@ -1,50 +1,71 @@
 ---
 name: brainstorm
-description: Brainstorm a bounded system from the operating agent’s perspective. Use when asked to brainstorm a system or another skill invokes `$brainstorm`.
+description: Brainstorm a bounded system with the user as a proposal loop that converges on one shape and a Brainstorm Brief. Use when the user asks to brainstorm a system, shape, or architecture.
 ---
 
 # Brainstorm
 
-1. Bound the system, operator, accepted constraints, and available evidence.
-   Mark every unsupported premise unknown.
-2. Put yourself in the operating agent's seat. Ask: "What would most enable me
-   to understand the situation accurately and control it optimally, producing
-   the best and most accurate results with the least expenditure of resources?"
-   Conceptualize the project as one synthetic SYSTEM: maximally coherent,
-   cohesive, modular, interconnected; a tower of linked abstractions maximally
-   legible to an agent. Trace intake, state, control, feedback, recovery, and
-   handoff through that tower. Account for each applicable surface with
-   evidence, or record why it does not apply.
-   For software flows, apply Flow failure lenses below. Account for each lens
-   with grounded findings, an explicit unknown, or a reason it does not apply.
-   Surface material gaps as candidate decisions within the accepted scope.
-3. Derive the smallest changes that make the system agent-intuitive (clear
-   meaning), agent-ergonomic (efficient control), and agent-accretive (reusable
-   verified knowledge benefiting later runs). For each candidate, state
-   evidence, consequence, and unresolved tradeoff, including required
-   design-document and plan changes. Apply document or plan edits only when
-   authorized by the caller; otherwise propose them. Completion requires
-   reconciling every affected design document and plan when edits are
-   authorized, and reporting unresolved inconsistencies across abstractions.
-4. Return evidence-grounded observations and unresolved decisions. Completion
-   requires every observation to trace to evidence or an explicit unknown.
-   Observations remain candidates until the caller accepts them.
+Brainstorm proposes; the user steers. Each turn moves one proposal toward a
+shape the user accepts. Question rounds belong to `$requirements-grill`.
 
-### Flow failure lenses
+## Frame
 
-Approach the problem through an end-to-end control-flow, state-consistency and failure-recovery lens. Examine:
+Bound the system: scope, accepted constraints, available evidence. Name its
+real operators: end users, agents, human operators, or a mix. Shape it through
+these lenses:
 
-1. Entry points and path convergence: where can this behavior start? Do equivalent actions reach the same rules, or take divergent/bypass paths?
-2. Critical execution paths: what must happen, in which order? Where does execution branch, wait, delegate or continue asynchronously?
-3. State ownership and authority: what state changes, who owns it, who may change it, and which representation is authoritative?
-4. Transaction and side-effect boundaries: what commits together? Which effects occur outside that boundary? What intermediate states can become visible?
-5. Concurrency and stale state: what if two actors run this simultaneously, or state changes between validation and execution?
-6. Idempotency and retries: what happens when a request is repeated, execution resumes, or an acknowledgement is lost after success?
-7. Partial failure and recovery: what remains after failure at each boundary? Can we safely retry, reconcile, compensate or roll back?
-8. Execution lifetime and durability: what survives a disconnect, cancellation or process crash? Who owns unfinished work?
-9. Lifecycle and dependency transitions: what happens during creation, update, replacement and removal? What still depends on the old state?
-10. Completion and observability: what proves the requested outcome occurred? Can an operator distinguish accepted, applied, running, failed and partially complete?
+- **Agent legibility**, when agents operate the system: agent-intuitive (clear
+  meaning), agent-ergonomic (efficient control), agent-accretive (verified
+  knowledge that later runs reuse).
+- **`$flow-lenses`**, optional, on your own shapes. Show each finding as a
+  tradeoff of the shape it touches.
 
-Use these lenses to surface missing architectural decisions before treating the flow as understood. Ground concerns in the actual system; propose mechanisms only for supported risks.
+## Turn
 
-Completion: each applicable lens is covered by evidence or an explicit unknown; non-applicable lenses have a reason. Each material gap is recorded as a candidate decision, with its evidence or unknown and the guarantee at stake.
+Every turn carries, in order:
+
+1. **Current shape**: the proposed shape, refined by the user's last reaction.
+2. **Alternatives**: two or three other shapes, each with its tradeoff against
+   the current shape.
+3. **Evidence**: an anchor (file, doc, source, user quote) for each claim, or
+   an explicit unknown.
+4. **Forks**: each open decision as a proposal with a default: "I take X
+   unless you steer."
+5. **View**: one `$show-me` view of the current shape: a rendered page when
+   the host supports it, otherwise `show-me` text views.
+6. **Close**: end on the proposal and an invitation to react.
+
+Every open point stays a fork with a default; a turn holds no question round,
+no numbered question list, and no `AskUserQuestion` call.
+
+Completion: all six items are present, every claim has an anchor or an
+explicit unknown, and the Brief reflects every acceptance, rejection, and
+preference so far.
+
+## Exits
+
+Exactly two:
+
+- **Another turn**, when the user steers.
+- **`$requirements-grill` with the Brainstorm Brief**, when the user is ready
+  to settle requirements.
+
+Brainstorm edits no code, writes no plan, and starts no implementation.
+
+## Brainstorm Brief
+
+The Brief is the only durable write. Write it at
+`<wiki-root>/content/docs/project/grilling/<topic>-brainstorm-brief.md` with
+the grill artifacts' routed-wiki frontmatter (title
+`"<Topic> Brainstorm Brief"`) and its `grilling/meta.json` entry, per the
+[Routed Wiki Contract](../requirements-grill/references/artifact-output.md#routed-wiki-contract).
+
+Update it at the end of every turn in which the user accepted or rejected a
+shape or stated a preference. It holds:
+
+1. Bounded system and operators.
+2. Chosen shape.
+3. Rejected shapes, each with the reason.
+4. User-stated preferences, quoted verbatim.
+5. Open forks, each with the proposed default.
+6. Evidence anchors.
