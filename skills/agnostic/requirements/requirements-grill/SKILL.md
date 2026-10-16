@@ -1,57 +1,40 @@
 ---
 name: requirements-grill
-description: Requirements grilling with durable branch artifacts, glossary/axiom decisions, and optional wiki synthesis. Use when the user wants product or architecture requirements discovery, a long design interview, branch-by-branch decision closure, canonical terminology, compaction-safe grill logs/status updates, or wiki synthesis from closed grill decisions.
+description: Requirements grilling in Altitude-routed rounds (L1 Outcome, L2 Shape, L3 Modules) with durable grill log and status, glossary and axiom decisions, and wiki synthesis after closure. Use when the user wants requirements discovery, a long design interview, branch-by-branch decision closure down to module level, canonical terminology, a compaction-safe grill, or wiki synthesis from closed grill decisions; or when a Brainstorm Brief or a compile gap is handed to the grill.
 ---
 
 # Requirements Grill
 
-Use this skill to turn uncertain product, architecture, or implementation ideas into pinned requirements, canonical glossary, and domain axioms that `create-architecture` and then `create-spec` can compile after closure.
+A Durable Workflow Graph. It asks every requirements question round, routes
+each round to one Altitude, and closes when every branch is settled at its
+Target Altitude or parked. The closed grill feeds `create-architecture`, then
+`create-spec`.
 
-This skill composes `$domain-modeling`, `$brainstorm`, and `$grilling` with durable artifacts. Use `requirements-grill` when the result must survive as routed grill log/status/wiki knowledge.
+## Bootstrap
 
-This skill has three scoped references:
+1. Load [the grill router](phases/router.md) on every invocation and resume,
+   including direct entry into any gate.
+2. Recompute the route from the precision inputs, the grill status file and
+   log, and the current message; the transcript is never required.
+3. Load exactly the one gate the router selects, or return its single
+   terminal, checkpoint, or blocked outcome.
+4. After the gate writes its outcome to the status file, stop or re-enter
+   this bootstrap.
 
-- Live grilling behavior: use `$grilling`, then see [references/grilling-flow.md](references/grilling-flow.md) for requirements-specific pressure tests
-- Durable grill artifacts: see [references/artifact-output.md](references/artifact-output.md)
-- Wiki synthesis from closed grill branches: see [references/wiki-output.md](references/wiki-output.md)
+The router is the sole route authority and the single home of the
+[Altitude Ladder](phases/router.md#altitude-ladder). Gate files own executable
+work and every child-skill call:
 
-## Quick Routing
+- `ground`: facts through subagents, Brainstorm Brief import, and branch
+  Altitudes; it never asks the user.
+- `round`: one `$grilling` round at one Altitude, presented through
+  `$wait-what` with a `$show-me` view; `$wayfinder` for one stuck unknown.
+- `checkpoint`: records each response set, runs `$domain-modeling` and
+  `$flow-lenses`, derives next-level questions, and records each required
+  call's evidence.
+- `close`: confirmation, final `$domain-modeling`, `$show-me` of the persisted
+  understanding, wiki synthesis, and the `$create-architecture` handoff.
 
-Use active grilling when the user is still iterating on requirements, terminology, tradeoffs, branch closure, or status percentages. During a serious grilling session, load both `grilling-flow` and `artifact-output`; the interview and durable artifacts move together.
-
-Use wiki synthesis when the user asks to turn closed grill decisions into high-level routed wiki flows/concepts, or sync domain knowledge from grill artifacts.
-
-Both workflows can happen in one long session, but keep the responsibilities distinct:
-
-- `<wiki-root>/content/docs/project/grilling/<topic>-grill-log.md` and `<topic>-grill-status.md` are the detailed requirements and glossary record
-- while the grill is active, the status glossary is `$domain-modeling`'s working persistence; leave canonical domain publication until explicit closure
-- other routed `<wiki-root>/content/docs/project/` pages are the synthesized project knowledge surface
-- closed shared understanding routes to `create-architecture`, then `create-spec`, through the [Handoff](#handoff); backlog projection is later and outside this skill's scope
-
-## Core Behavior
-
-- Use `$wait-what` to present every grilling question and recommendation to the user. A round is complete only when every frontier item has been presented, answered, parked, or explicitly deferred, and the updated durable artifacts are persisted before continuing.
-- Use `$show-me` throughout the active grill as a live reasoning view. Invoke it for difficult questions, comparisons, interacting parts, and key turning points; select the smallest applicable view from `$show-me`'s full view catalog. Keep every conclusion traceable to current evidence and the durable artifacts, and persist corrections through `artifact-output`.
-- Give `$domain-modeling` the active status glossary before the first question. Invoke it whenever a round changes terminology, relationships, or domain decisions, and persist its accepted results through `artifact-output` before continuing.
-- Inspect relevant routed learning artifacts before grilling requirements that depend on known behavior, prior bugs, project conventions, or domain facts.
-- Before `$grilling` constructs the first frontier, identify the active technical branches. Apply [technical grounding](references/grilling-flow.md#technical-grounding) to every applicable decision in initial and later rounds, after partial responses, and on resume. Present concrete `$show-me` views and persist the accepted scope through `artifact-output`.
-- After preparing the available technical evidence, complete `$brainstorm` before the first frontier. Add its unresolved decisions to the design tree; treat all output as candidate material until accepted.
-- **Response-set checkpoint:** After every `$grilling` response set, including an incomplete frontier response, record supplied answers through `artifact-output`, then invoke `$brainstorm` against updated decisions and evidence before computing and persisting the next frontier or requesting closure. Recheck its applicable lenses, reusing still-valid evidence and tracing changed decisions through affected paths and dependent branches. Add newly exposed uncertainties and decisions to the existing technical grounding record and design tree. The review is complete when every new material finding is resolved, queued, or explicitly parked/deferred; queued findings remain open under the existing branch and grill closure rules. Preserve stable question IDs and accepted decisions; surface contradictions as explicit questions.
-- Prefer conservative defaults once enough context exists.
-- If the user authorizes auto-pinning defaults, record obvious remaining defaults without needless extra questions.
-- Treat parked branches as preserved knowledge, not deleted scope.
-- Apply the round persistence contract in `artifact-output` alongside `$grilling`.
-- After `$grilling` completes and the durable artifacts are current, invoke
-  `$show-me` to present the persisted shared understanding before requesting
-  approval. When `$grilling` reports completion, treat the presentation as a
-  derived view and persist any correction
-  through `artifact-output`, then present the corrected state again. Approval
-  applies to the durable artifacts, not the presentation.
-
-## Handoff
-
-At the end, report branch percentages, parked branches, remaining non-design validation work, and the recommended next planning direction.
-
-After `$grilling` completes with shared understanding and all branches closed or explicitly parked, invoke `$domain-modeling` for a final consistency pass. After the user explicitly closes the grill, run wiki synthesis so accepted terms land at `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`, then hand the durable grill artifacts to `$create-architecture`, the next step of `$requirements-phase`; its retained `ARCHITECTURE.md` then feeds `$create-spec`.
-
-When a question stays open because it depends on one precise unknown that neither a user answer nor `$grilling`'s fact exploration can close, invoke `$wayfinder` with that unknown, its owning branch and question ID, the evidence so far, and the user as decision owner. Run the returned route: `grilling` as the next round of this grill; `research` through `$parallel-research`; `prototype` through `$prototype` on a `prototype/<slug>` branch, with the unknown and owning question as its brief, and the human's verdict closing it; park the owning question until the verdict returns. Persist the route result against the owning question through `artifact-output`, then resume the grill there.
+The grill status file and log are the requirements record:
+[artifact output](references/artifact-output.md). Synthesized project pages
+come only after explicit closure: [wiki output](references/wiki-output.md).
