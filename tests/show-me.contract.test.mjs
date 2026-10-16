@@ -46,7 +46,7 @@ test("show-me keeps wide views readable in the chat column", () => {
 
 test("planning entrypoints present requirements, specs, plans, and delivery", () => {
   const grill = read(
-    "skills/agnostic/requirements/requirements-grill/SKILL.md",
+    "skills/agnostic/requirements/requirements-grill/phases/close.md",
   );
   const spec = read("skills/agnostic/planning/create-spec/SKILL.md");
   const plan = read("skills/agnostic/planning/create-plan/SKILL.md");
@@ -63,18 +63,24 @@ test("planning entrypoints present requirements, specs, plans, and delivery", ()
 });
 
 test("requirements grill delegates completion scheduling while retaining presentation", () => {
-  const grill = read(
-    "skills/agnostic/requirements/requirements-grill/SKILL.md",
-  );
+  const grillRoot = "skills/agnostic/requirements/requirements-grill";
+  const skill = read(`${grillRoot}/SKILL.md`);
+  const close = read(`${grillRoot}/phases/close.md`);
 
   assert.match(
-    grill,
-    /After `\$grilling` completes and the durable artifacts are current, invoke\s+`\$show-me`/u,
+    read(`${grillRoot}/phases/router.md`),
+    /No open question exists and the Close Guard passes \| \[`close\.md`\]/u,
   );
-  assert.doesNotMatch(
-    grill,
-    /frontier is empty|frontier remains open|empty-frontier/iu,
+  assert.match(
+    close,
+    /run `\$domain-modeling` for a final consistency pass over the full\s+status glossary and persist its results;\s+2\. invoke `\$show-me`/u,
   );
+  for (const text of [skill, close]) {
+    assert.doesNotMatch(
+      text,
+      /frontier is empty|frontier remains open|empty-frontier/iu,
+    );
+  }
 });
 
 test("phase entrypoints present complex state without taking authority", () => {

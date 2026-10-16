@@ -2,114 +2,102 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const skill = readFileSync(
-  new URL(
-    "../skills/agnostic/requirements/requirements-grill/SKILL.md",
-    import.meta.url,
-  ),
-  "utf8",
-);
+const skillRoot = "skills/agnostic/requirements/requirements-grill";
+const read = (path) =>
+  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const skill = () => read(`${skillRoot}/SKILL.md`);
+const router = () => read(`${skillRoot}/phases/router.md`);
+const gate = (name) => read(`${skillRoot}/phases/${name}.md`);
+const artifact = () => read(`${skillRoot}/references/artifact-output.md`);
 
-const flow = readFileSync(
-  new URL(
-    "../skills/agnostic/requirements/requirements-grill/references/grilling-flow.md",
-    import.meta.url,
-  ),
-  "utf8",
-);
-
-const artifact = readFileSync(
-  new URL(
-    "../skills/agnostic/requirements/requirements-grill/references/artifact-output.md",
-    import.meta.url,
-  ),
-  "utf8",
-);
-
-test("requirements-grill delegates live completion semantics to grilling", () => {
-  assert.match(skill, /When `\$grilling` reports completion/);
-  assert.doesNotMatch(skill, /After the frontier is empty/);
+test("requirements-grill runs each round through $grilling and closes only through the router's Close Guard", () => {
+  assert.match(
+    gate("round"),
+    /`\$grilling` is the\s+per-round interview primitive, unchanged: the router's frontier is its\s+frontier/u,
+  );
+  assert.match(router(), /No open question exists and the Close Guard passes \| \[`close\.md`\]/u);
+  assert.match(gate("close"), /Re-check every condition of the\s+\[Close Guard\]/u);
+  assert.doesNotMatch(skill(), /After the frontier is empty/u);
 });
 
 test("requirements-grill uses show-me throughout live branch traversal", () => {
   assert.match(
-    skill,
-    /\$show-me.*throughout the active grill.*difficult questions.*comparisons.*interacting parts.*key turning points/is,
-  );
-  assert.match(skill, /smallest applicable view.*full view catalog/is);
-  assert.match(
-    flow,
-    /inside any grilling branch.*difficult question.*comparison.*interacting parts.*key turning point/is,
+    gate("round"),
+    /through `\$wait-what` with one `\$show-me` view: the smallest\s+applicable view from its catalog, derived from the status, log, and code\s+evidence/u,
   );
   assert.match(
-    flow,
-    /each persisted round boundary.*next frontier.*glossary.*parked branches.*flow.*\$show-me/is,
+    gate("round"),
+    /material ordering,\s+lifetime, transaction, and failure consequences beside the view/u,
   );
-  assert.match(flow, /persisted artifacts remain authoritative/is);
+  assert.match(
+    gate("checkpoint"),
+    /a `\$show-me` interface sketch or module\s+tree of the proposed modules/u,
+  );
+  assert.match(
+    gate("close"),
+    /invoke `\$show-me` to present the persisted shared understanding:\s+branches with Target and Settled Altitudes, parks with Altitude and\s+reason, glossary, and axioms/u,
+  );
+  assert.match(gate("close"), /The view is derived; approval applies to\s+the status file and log/u);
 });
 
 test("requirements-grill grounds technical branches and preserves independent questions", () => {
-  assert.match(skill, /Before `\$grilling` constructs the first frontier/is);
-  assert.doesNotMatch(skill, /when they clarify the current decision/is);
+  const rows = router();
+  const groundRow = rows.indexOf("[`ground.md`](ground.md)");
+  const roundRow = rows.indexOf("| A ready question exists | [`round.md`]");
+  assert.ok(groundRow !== -1 && roundRow > groundRow);
+  assert.match(gate("ground"), /Before the first round, give `\$domain-modeling`/u);
 
-  const grounding = flow.indexOf("## Technical Grounding");
-  const firstFrontier = flow.indexOf(
-    "Before `$grilling` constructs the first frontier",
-  );
-  const roundIntegration = flow.indexOf("## Round Artifact Integration");
-
-  assert.notEqual(grounding, -1);
-  assert.ok(firstFrontier > grounding);
-  assert.ok(firstFrontier < roundIntegration);
   assert.match(
-    flow,
-    /concrete evidence anchors.*`path:symbol`.*schema.*contract operation.*configuration key.*runtime flow/is,
+    gate("ground"),
+    /`path:symbol`, schema, contract operation, configuration key, or\s+runtime-flow anchors/u,
   );
   assert.match(
-    flow,
-    /missing fact or source\/version mismatch.*exact prerequisite.*affected question ids.*hold only dependent questions.*independent ready frontier/is,
+    gate("ground"),
+    /missing fact or a source and version mismatch as\s+an exact prerequisite of the question ids it affects; only those questions\s+wait/u,
+  );
+  assert.match(
+    artifact(),
+    /Only those dependent questions wait; independent ready questions remain available/u,
   );
 });
 
 test("technical questions carry evidence and code consequences", () => {
   assert.match(
-    flow,
-    /State the evidence anchor and observed code constraint.*unresolved requirements decision.*code consequence/is,
+    gate("round"),
+    /state the evidence\s+anchor and observed constraint, ask one decision, and state its code\s+consequence/u,
   );
   assert.match(
-    artifact,
-    /Evidence anchor:.*Observed constraint:.*Question:.*Code consequence:/is,
+    artifact(),
+    /Evidence anchor:.*Observed constraint:.*Question:.*Code consequence:/isu,
   );
   assert.match(
-    flow,
-    /requirements evidence, not an implementation plan.*ownership.*contract.*invariant.*lifecycle.*boundary/is,
+    router(),
+    /Planning stays downstream with `create-plan`: edit order, task breakdown,\s+waves, estimates, tuning constants\. No grill question asks them/u,
   );
 });
 
 test("technical grounding blocks premature branch closure", () => {
   assert.match(
-    artifact,
-    /Technical Grounding.*Evidence anchors.*Applicable dimensions.*Open technical decisions.*Grounding/is,
+    artifact(),
+    /Technical Grounding.*Evidence anchors.*Applicable dimensions.*Open technical decisions.*Grounding/isu,
   );
   assert.match(
-    artifact,
-    /`grounded` means current evidence anchors support every applicable dimension; decisions may still be open.*closure requires each technical decision to be answered, parked, or explicitly deferred/is,
+    artifact(),
+    /`grounded` means current evidence anchors support every applicable dimension; decisions may still be open.*closure requires each technical decision to be answered, parked, or explicitly deferred/isu,
   );
   assert.match(
-    artifact,
-    /Keep a branch below `100%`.*technical grounding is `unknown` or has open decisions/is,
+    artifact(),
+    /`100%`: the branch is settled at its Target Altitude, no question is\s+open,[\s\S]{0,120}code-bearing\s+branch is grounded with no open technical decision/u,
   );
+  assert.match(artifact(), /Keep a branch below `100%` while any `100%` condition fails/u);
   assert.match(
-    artifact,
-    /no unanswered item.*unknown technical grounding.*open technical decision.*`100%`/is,
+    router(),
+    /every code-bearing branch is grounded with no open technical decision/u,
   );
 });
 
 test("Requirements Phase preserves full requirements authority before projection", () => {
-  const requirementsPhase = readFileSync(
-    new URL("../skills/phases/requirements-phase/SKILL.md", import.meta.url),
-    "utf8",
-  );
+  const requirementsPhase = read("skills/phases/requirements-phase/SKILL.md");
 
   assert.match(requirementsPhase, /only\s+orchestration\s+route/iu);
 
