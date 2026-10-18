@@ -7,8 +7,8 @@ The command is `hi`; `hint` is an alias. The npm package remains `@punks/cli`. T
 - **Registry:** the public, versioned source of every Baseline. Default URL `https://api.harness-intelligence.devpunks.com/r`; override with `HI_REGISTRY_URL` or the `registry` field in `.devpunks/settings.json`. The CLI sends no credential.
 - **Baseline:** one immutable Registry version, named `YYYY.MM.DD-<short sha>`. The catalog `latest` pointer names the newest one. Each Baseline declares a compatible CLI range.
 - **Registry Item:** one named bundle of files in the Registry. A Pack selects Registry Items.
-- **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` does not, except the one-time migration rewrite.
-- **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces excluding the wiki root, Pack ids, detected technologies, wiki root), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
+- **Project settings** (`.devpunks/settings.json`): intent only. Packs, `lint.scopes`/`lint.exclude`, providers, required tools, `commitGate`, optional `registry`. A human, `hi init`, or the agent on request writes it. `hi update` writes only `packs`: the one-time migration rewrite, and newly detected Packs.
+- **Installed Record** (`.devpunks/installed.json`): written only by the installer, last. Installed Baseline, Recorded Shape (workspaces excluding the wiki root, Pack ids, detected technologies, wiki root), `detectedPacks` (the Packs detection proposed on that run), Registry Items, path-to-item map, added devDependencies, failed links. It contains no content hash.
 - **Managed Artifact kinds:** a **Copied Artifact** is written verbatim and overwritten on update. A **Built Artifact** is rendered from a template, Project settings, and the Recorded Shape, and re-rendered on update. An **Authored Artifact** is written once when absent and never compared or overwritten. `AGENTS.md` starters, `.agents/subagents/manifest.mjs`, `.codex/config.toml`, and Project Skills are Authored. The Registry installs no wiki; wiki setup belongs to the project.
 - **Project Skill:** a skill under `.agents/skills/<id>` that no Registry Item provides. The installer never removes, compares, or overwrites it.
 
@@ -22,7 +22,7 @@ Use once per repository, or again to reconfigure settings. Flags: `--yes`, `--js
 4. Confirm interactively only on a TTY without `--yes`; otherwise accept the proposal, including the proposed Software Scopes.
 5. Run the update pipeline in init mode. It writes `.devpunks/settings.json` only after merge-target validation, so a refused, unavailable, or invalid-target run writes nothing.
 
-Detection only proposes: a detected Pack that is not in settings `packs` is information, not drift. Exit code: 0 only when the Baseline is applied; 1 for `partial`, `refused`, or `unavailable`.
+At `hi init`, detection only proposes. Later, `hi update` adopts newly detected Packs (see below). A detected Pack that is not in settings `packs` is information, not drift. Exit code: 0 only when the Baseline is applied; 1 for `partial`, `refused`, or `unavailable`.
 
 Skills that exist before Harness under `.claude/skills`, `.codex/skills`, `.cursor/skills`, or `.opencode/skills` move to `.agents/skills/<id>` as Project Skills and stay reachable through the harness links.
 
@@ -36,8 +36,8 @@ The pipeline runs in this order:
 
 1. Fetch the catalog. If the running CLI is outside the Baseline's CLI range, write nothing and report the required range; run `hi upgrade`.
 2. Plan, in memory, the migration of an older manifest-based repository that has no `installed.json` (see [Migration of older repositories](#migration-of-older-repositories-historical-files)).
-3. Resolve the Packs in settings to Registry Items.
-4. Plan every path. Validate that every JSON or YAML merge target parses and is not a symlink. One invalid target stops the run before any write. Only then write settings (`hi init`'s selection or the migration rewrite) and the migration's skill moves and deletions.
+3. Detect the Packs. From CLI 6.2.0, a Pack detected now that the previous Installed Record's `detectedPacks` does not list (for example after the repository adds `expo`) is added to settings `packs` and reported in `adoptedPacks`. A Pack removed from settings by hand stays removed. A record without `detectedPacks` adopts nothing on that run. Then resolve the Packs in settings to Registry Items.
+4. Plan every path. Validate that every JSON or YAML merge target parses and is not a symlink. One invalid target stops the run before any write. Only then write settings (`hi init`'s selection, the migration rewrite, or adopted Packs) and the migration's skill moves and deletions.
 5. Write Copied Artifacts (identical content is `skipped`), render Built Artifacts, write absent Authored Artifacts, apply merges (a rewritten file keeps its mode), create symlinks, add required workspace devDependencies and remove stale ones, remove stale Copied Artifacts and report stale Authored Artifacts.
 6. Write the Installed Record last.
 7. Run managed lint on the real repository when Software Scopes exist. Lint findings do not change the update exit code.
@@ -57,7 +57,7 @@ Rules to know:
 - A failed or interrupted run converges when you run it again.
 - Exit code: 0 only when `status` is `applied`; 1 for `partial`, `refused`, or an unavailable Registry. Lint findings never change it.
 
-Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `moved-project-skill`, `renamed-project-skill`, `migrated-deleted`, `migrated-skipped` (a migration path whose parent resolves outside the repository is skipped, never followed). The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `refusal`, and the migration summary.
+Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `moved-project-skill`, `renamed-project-skill`, `migrated-deleted`, `migrated-skipped` (a migration path whose parent resolves outside the repository is skipped, never followed). The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `adoptedPacks`, `refusal`, and the migration summary.
 
 
 ## Migration of older repositories (historical files)

@@ -43,6 +43,7 @@ Otherwise apply [Project Verifier preservation](#project-verifier-preservation),
 | Report row or field | Required follow-through |
 | --- | --- |
 | `migration` present | The run migrated a manifest-based repository. Confirm the settings `packs` it wrote, list each `migrated-deleted` path, and confirm moved Project Skills. Then complete the [Init](#init) steps 2 to 5 that the repository has not done yet. |
+| `adoptedPacks` present | The run added newly detected Packs to settings `packs` and installed them. Name each Pack and the dependency that detects it, and keep the settings change in the same commit. To decline a Pack, remove it from `packs` and run `hi update` again; it is not re-added. |
 | `written` or `overwritten-local-edit` on a skill | Inspect the affected skills only. For an overwritten local edit, read the previous bytes from git and move project-specific knowledge into project guidance. |
 | Prompt spec (`.devpunks/specs/prompts/**`) written | Activate `$writing-for-agents`, then `$rule-authoring`; reconcile only the affected `AGENTS.md` scopes. |
 | `.devpunks/AGENT-HANDOFF.md` written | Read it and follow only its new items. |
