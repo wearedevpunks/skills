@@ -126,7 +126,10 @@ test("brainstorm has exactly two exits and starts no build work", () => {
     options[1],
     /\*\*`\$requirements-grill` with the Brainstorm Brief\*\*/u,
   );
-  assert.match(exits, /edits no code, writes no plan, and starts no implementation/u);
+  assert.match(
+    exits,
+    /edits no code, writes no plan, creates no branch, commit or\s+worktree, and starts no implementation agent; implementation starts only on the\s+user's explicit go\./u,
+  );
 });
 
 test("the Brainstorm Brief is the only durable write at the routed grilling path", () => {

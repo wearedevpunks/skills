@@ -50,7 +50,9 @@ Exactly two:
 - **`$requirements-grill` with the Brainstorm Brief**, when the user is ready
   to settle requirements.
 
-Brainstorm edits no code, writes no plan, and starts no implementation.
+Brainstorm edits no code, writes no plan, creates no branch, commit or
+worktree, and starts no implementation agent; implementation starts only on the
+user's explicit go.
 
 ## Brainstorm Brief
 
