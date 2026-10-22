@@ -19,7 +19,7 @@ How the installed Baseline works inside this repository: what `hi` writes, where
 | `hi init` | repository (detection), git remote, catalog | `.devpunks/settings.json`, then the full `hi update` pipeline |
 | `hi update` | settings, Recorded Shape, latest Baseline | every Managed Artifact, then `.devpunks/installed.json` last; runs managed lint |
 | `hi diff` | local bytes, installed and latest Baseline | nothing (three-way Drift Check) |
-| `hi check` | root catalog, `installed.json`, settings | nothing (version, CLI range, missing tools) |
+| `hi check` | root catalog, `installed.json`, settings | nothing (version, CLI range, missing tools, dependency findings) |
 
 - `hi init` detects once, proposes Packs and Software Scopes, confirms, and writes settings only after every merge target validates. A re-run pre-fills from settings; it is the way to reconfigure.
 - `hi update` is idempotent: an interrupted run converges on re-run. It never writes settings.
@@ -59,13 +59,14 @@ To change a Copied or Built file, change its source: settings, an Authored input
 - **detected**: proposed when a manifest lists a trigger package. A trailing `/` is a prefix match (`@effect/` matches `@effect/platform`).
 - **surface**: proposed from repository signals: technologies, or `api`/`backend`/`server`/`service(s)` path or package-name segments for backend; Next.js or React for frontend.
 - **language**: proposed from detected Python or TypeScript.
+- **optional**: never detected and never auto-selected; `hi init --yes`, `hi update` adoption of newly detected Packs and `hi diff` never propose it. Opt in through the `hi init` prompt or settings `packs`.
 - **Detection proposes; settings select.** Wiki roots, harness dirs and git-ignored paths never drive detection. To add or drop a Pack, rerun `hi init` or edit `packs`, then `hi update`.
 
 | Pack | Category | Trigger | Members |
 | --- | --- | --- | --- |
 | debug | default | - | debugging-phase, bug-discovery-phase, bug-resolution-phase, debug-agent |
 | docs | default | - | docs-ingest-phase, docs-onboarding, writing-fragments, writing-beats, writing-shape, writing-for-agents, write-graph-based-skills, rule-authoring |
-| misc | default | - | show-me, wait-what |
+| misc | default | - | show-me, wait-what, ask-hi, retro |
 | planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase, review, autoreview |
 | quality | default | - | tdd, make-tsuite, codebase-design, simplify; lint vitest-core |
 | research | default | - | parallel-research, prototype, improve-codebase-architecture |
@@ -74,7 +75,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | subagents | default | - | swarm-planner |
 | verification | default | - | create-verification-skill, update-verification-skill, verify-behavior |
 | backend | surface | signals above | backend-domain-structure, backend-recoverable-actions, logging-best-practices |
-| frontend | surface | nextjs/react | agent-browser, animate, brandkit, break-ui, design-phase, design-taste-frontend, emil-design-eng, find-animation-opportunities, full-output-enforcement, image-to-code, imagegen-frontend-mobile, imagegen-frontend-web, frontend-domain-structure, mobile-native, prototype-variants, redesign-existing-projects, review-animations, shadcn |
+| frontend | surface | nextjs/react | agent-browser, animate, brandkit, break-ui, design-phase, design-taste-frontend, emil-design-eng, find-animation-opportunities, image-to-code, imagegen-frontend-mobile, imagegen-frontend-web, frontend-domain-structure, mobile-native, prototype-variants, review-animations, shadcn |
 | better-auth | detected | better-auth | better-auth-best-practices |
 | drizzle | detected | drizzle-kit, drizzle-orm | source guide only |
 | effect | detected | effect, @effect/ | effect, effect-backend-structure, effect-recoverable-actions, effect-service-design; lint effect-no-barrel-imports, effect-tsgo-recommended |
@@ -89,6 +90,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | turborepo | detected | turbo | turborepo |
 | python | language | Python files | async-python-patterns, backend-domain-structure, python-backend-structure, python-code-style, python-design-patterns, python-testing-patterns |
 | typescript | language | typescript | quality-types; lint typescript-anti-slop; `typegraph-runtime` |
+| video | optional | - | cinetic, earshot, real-sound |
 
 Source guides (`opensrc/<lib>.md`) ride with their Pack; `opensrc/README.md` indexes them.
 
@@ -153,12 +155,13 @@ Source guides (`opensrc/<lib>.md`) ride with their Pack; `opensrc/README.md` ind
 - **Session hook** `scaffold-update-check.mjs`: runs `hi check --json` at session start and prints "Run hi update." on `update-available`. It checks version only, never drift.
 - **Edit hook** `format-edited-file.mjs`: runs after each edit and formats/lints the edited file (Oxfmt and the scope's lint route; Ruff via `uv` for `.py`). It skips every Copied/Built path in `installed.json`, and a missing record means it manages nothing. The edit always lands; lint findings return as feedback (on Codex as a repair request, until three unchanged attempts).
 - **Hook layout**: Copied to `.agents/hooks/`, symlinked into `.claude/hooks/`, `.codex/hooks/`, `.cursor/hooks/`, `.opencode/plugins/`. Registered by merge into `.claude/settings.json` and `.cursor/hooks.json`, and in Authored `.codex/config.toml`; OpenCode auto-loads plugins.
-- **Git hooks (Commit Gate)**: Copied `.agents/scripts/commit-gate-runner.mjs`, Built `.devpunks/commit-gate-contracts.json` (one contract per Software Scope), one HI `pre-commit` entry merged into `lefthook.yml`, `lefthook` devDependency. Run `lefthook install` once, then `hi commit-gate verify`. Settings `commitGate: disabled` turns it off; CI stays merge authority.
+- **Git hooks (Commit Gate)**: Copied `.agents/scripts/commit-gate-runner.mjs`, Built `.devpunks/commit-gate-contracts.json` (one contract per Software Scope), one HI `pre-commit` entry merged into `lefthook.yml` (`no_auto_install: true`, `lefthook: node_modules/.bin/lefthook`, `assert_lefthook_installed: true`), `lefthook` devDependency seeded at 2.2.2. The Managed Hook Script, Copied `.githooks/pre-commit`, runs the checkout's own lefthook and fails closed when lefthook is missing. Hook Activation, Copied `.agents/scripts/activate-git-hooks.mjs`, sets `core.hooksPath` to `.githooks` when it is unset and lefthook is 2.1.14 or later; worktrees share `.git/config`, so every worktree runs the script. A different `core.hooksPath` stays unchanged. `hi init`/`hi update` add root `scripts.prepare` only when none exists (otherwise they report the command to append) and run activation once. `hi commit-gate verify` reports the gate inactive while `core.hooksPath` is unset. Settings `commitGate: disabled` removes `.githooks/pre-commit` and unsets `core.hooksPath` only when it is `.githooks`; CI stays merge authority.
 - **Managed lint**: Copied runners `.agents/scripts/managed-lint*.mjs`; Built `<scope>/oxlint.config.ts` per `lint.scopes` entry; Authored `<scope>/oxlint.local.ts` for project rules (applied last); Copied lint assets under `.devpunks/specs/lint/assets/`; merged `scripts.lint`. Tool versions are seeded once, then project-owned. For adoption and findings, see `$hi-cli` `references/managed-lint.md`.
-- **Required tools**: settings `requiredTools` (Baseline: agent-browser, opensrc, portless, skills; plus skill `requiresTools`). `hi check` lists `missingTools`; `hi tools ensure` installs them.
+- **Required tools**: settings `requiredTools` (Baseline: agent-browser, opensrc, portless, skills; plus skill `requiresTools`). `hi check` lists `missingTools`; `hi tools ensure` installs them. It installs `earshot` with `uv tool install` at a pinned full SHA and reinstalls only when the uv receipt `rev` differs. Check-only Tools (`uv`, `ffmpeg`, `ffprobe`, `python3` >= 3.11, `node` >= 22) are verified, never installed; a missing one fails as not available, a too-old one names the minimum and found version. Deselecting a Pack uninstalls no tool.
+- **Dependency ranges**: when a required devDependency is already declared with a Non-reproducible Range (`latest`, `next`, `*`, `x` or empty), `hi update` keeps `package.json` unchanged and emits an advisory `dependency-range-unreproducible` row (package, range, catalog seed); `hi check --json` lists it in `dependencyFindings` with `status` unchanged.
 - **Tool Runtime `typegraph-runtime`**: typescript Pack only. `hi update` installs a pinned `typegraph-mcp` under `~/.local/share/hi-tools/`, probes Compiler Projects, and writes `[mcp_servers.typegraph_<project>]` inside the fenced `# BEGIN hi typegraph` block of `.codex/config.toml`. Codex gets semantic reads (`ts_find_symbol`, `ts_definition`, `ts_references`, `ts_type_info`, `ts_module_exports`); start a new session after tsconfig, dependency or branch changes. Typecheck and lint stay the gates.
 
-**Source:** `.agents/hooks/`; `lefthook.yml`; `.devpunks/specs/lint/`; `.codex/config.toml`; `.devpunks/AGENT-HANDOFF.md`
+**Source:** `.agents/hooks/`; `lefthook.yml`; `.githooks/pre-commit`; `.devpunks/specs/lint/`; `.codex/config.toml`; `.devpunks/AGENT-HANDOFF.md`
 
 ## Verification
 
