@@ -24,18 +24,8 @@ const emilSkills = [
 const otherVendoredSkills = [
   {
     directory: "skills/agnostic/frontend/brandkit",
-    repository: /github\.com\/Leonxlnx\/taste-skill/,
-    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
-  },
-  {
-    directory: "skills/agnostic/frontend/full-output-enforcement",
-    repository: /github\.com\/Leonxlnx\/taste-skill/,
-    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
-  },
-  {
-    directory: "skills/agnostic/frontend/redesign-existing-projects",
-    repository: /github\.com\/Leonxlnx\/taste-skill/,
-    pin: "f624f37a8c650b9cc550253104925efe4c8de246",
+    repository: /github\.com\/Leonxlnx\/imagegen-skills/,
+    pin: "beb16b0d0f4dae9a6f5cb04ea41e97b93a54ab8e",
   },
   {
     directory: "skills/agnostic/frontend/shadcn",
@@ -100,14 +90,18 @@ test("taste-skill and shadcn imports name their pinned source and keep the licen
     assert.ok(exists(`${directory}/LICENSE`), `${directory}/LICENSE`);
   }
 
-  assert.equal(frontmatterName(read("skills/agnostic/frontend/full-output-enforcement/SKILL.md")), "full-output-enforcement");
   for (const file of ["rules", "design-system.md", "design-system-page.md", "scripts"]) {
     assert.ok(exists(`skills/agnostic/frontend/shadcn/${file}`), `shadcn/${file}`);
   }
 });
 
 test("retired frontend skills stay removed", () => {
-  for (const directory of ["skills/agnostic/frontend/gpt-taste", "skills/agnostic/frontend/improve-mobile-frontend"]) {
+  for (const directory of [
+    "skills/agnostic/frontend/gpt-taste",
+    "skills/agnostic/frontend/improve-mobile-frontend",
+    "skills/agnostic/frontend/redesign-existing-projects",
+    "skills/agnostic/frontend/full-output-enforcement",
+  ]) {
     assert.equal(exists(directory), false, directory);
   }
 });

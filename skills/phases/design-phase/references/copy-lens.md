@@ -14,9 +14,6 @@ Read the sources at use time; this file points to them and copies none:
 - `imagegen-frontend-web`, section "Content slop" under "Anti-AI-slop rules"
   (its copy tells list; this skill has no section named "Copy AI tells").
 
-`full-output-enforcement` is a separate guard against truncated or
-placeholder code. It does not check copy and is not part of this lens.
-
 ## Brief Paragraph
 
 Append this paragraph to a brief, after the shadcn-Primitive Directive:

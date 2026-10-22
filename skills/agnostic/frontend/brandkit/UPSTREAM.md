@@ -1,9 +1,9 @@
 # Upstream provenance
 
-Copied from [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill/tree/f624f37a8c650b9cc550253104925efe4c8de246/skills/brandkit) (path `skills/brandkit`) at commit:
+Copied from [`Leonxlnx/imagegen-skills`](https://github.com/Leonxlnx/imagegen-skills/tree/beb16b0d0f4dae9a6f5cb04ea41e97b93a54ab8e/skills/brandkit) (path `skills/brandkit`) at commit:
 
 ```text
-f624f37a8c650b9cc550253104925efe4c8de246
+beb16b0d0f4dae9a6f5cb04ea41e97b93a54ab8e
 ```
 
 The adjacent `LICENSE` is the byte-identical upstream MIT license (repository root `LICENSE`) retained for this skill.

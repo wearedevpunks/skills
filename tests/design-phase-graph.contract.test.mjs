@@ -152,7 +152,7 @@ test("variants live on the real route behind a dev-only ?variant= switch", () =>
   assert.match(text, /`animate-expo` on Expo/u);
   assert.match(
     text,
-    /`redesign-existing-projects`, only when intake recorded existing-UI\s+intent/u,
+    /existing-UI intent `improve-existing`, pass that intent to\s+`design-taste-frontend` and run its route "Redesign, restyle or review of\s+an existing page or app screen"/u,
   );
   for (const skill of ["prototype-variants", "image-to-code", "emil-design-eng", "shadcn"]) {
     assert.match(text, new RegExp(`\`${skill}\``, "u"), skill);
@@ -249,7 +249,6 @@ test("compose briefs carry DESIGN.md, the directive, and the copy lens", () => {
   const lens = reference("copy-lens");
   assert.match(lens, /`design-taste-frontend`, file `references\/copy\.md`/u);
   assert.match(lens, /"Copy AI tells"/u);
-  assert.match(lens, /`full-output-enforcement` is a separate guard against truncated/u);
 });
 
 test("design-system fills the Stitch template and applies shadcn Steps 3 to 7 without a stop", () => {

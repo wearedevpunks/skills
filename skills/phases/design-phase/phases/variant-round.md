@@ -51,8 +51,9 @@ handoff write.
    - `animate` on web, or `animate-expo` on Expo, for every `accepted` Motion
      Plan entry;
    - `mobile-native`, mandatory for responsive web;
-   - `redesign-existing-projects`, only when intake recorded existing-UI
-     intent `improve-existing`.
+   - for existing-UI intent `improve-existing`, pass that intent to
+     `design-taste-frontend` and run its route "Redesign, restyle or review of
+     an existing page or app screen".
 5. Check every built variant at 375px and 1280px: it renders, its
    interactions respond, the console is clean, and nothing overflows
    horizontally. Screenshot both widths and get durable links through
