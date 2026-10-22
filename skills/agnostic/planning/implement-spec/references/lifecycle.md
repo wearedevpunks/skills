@@ -172,8 +172,9 @@ Create an item file only for debt that must survive the run.
 
 After the recorded branch/base gate passes, inspect the remote branch and its
 pull requests before dispatching further implementation. Preserve the recorded
-branch and base, and keep the delivery run's single pull request; stack intent
-exists only when the user explicitly asked for a stack. If an in-scope specification or implementation
+branch and base for each Touched Repository. One plan creates at most one pull
+request per Touched Repository; split or stack PRs only when the user explicitly
+asks. If an in-scope specification or implementation
 commit is already pushed, reuse its matching draft pull request or create one
 now. Otherwise continue implementation and perform this check immediately after
 the first meaningful in-scope commit is pushed. An empty visibility commit is
@@ -184,7 +185,8 @@ and exact provider readback in implementation notes. Search by recorded head
 and base before creation; on resume or an ambiguous creation response, read back
 that identity before retrying. A conflicting base, stack or existing non-draft
 PR requires reconciliation against accepted intent before mutation. Completion
-of this visibility step is one matching draft PR with observed provider state,
+of this visibility step is one matching draft PR per Touched Repository with
+observed provider state,
 not a locally prepared URL. Route observed lifecycle facts through the existing
 `write-backlog` contract. A provider failure records the exact visibility blocker;
 independent eligible work can continue within its accepted scope.

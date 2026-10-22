@@ -147,8 +147,8 @@ sections into `PLAN.md` and validate that they are internally consistent.
 - Preserve `No Stack Required` or `Ready` plus its dependency evidence.
 - Do not decide stack topology in `create-plan`.
 - `depends_on` preserves provider-native Task blocker edges. Those delivery
-  blockers do not imply stacked PRs; accepted branch/base intent owns PR
-  topology separately.
+  blockers do not imply stacked PRs. One plan creates at most one pull request
+  per Touched Repository; split or stack PRs only when the user explicitly asks.
 - `Blocked` is invalid agent-ready input. Stop planning and report the stale or
   contradictory spec instead of producing an execution-ready plan.
 - If `Branch/Base Intent` is not `Not applicable`, make implementation tasks

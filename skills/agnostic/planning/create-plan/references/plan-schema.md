@@ -43,6 +43,9 @@ Each wave labels an earliest Execution Frontier, not a whole-wave release barrie
 Record every eligible task under dependency, write/read, runtime and architecture
 constraints; actual capacity determines dispatch. Planning must expose those
 constraints so independent work can proceed after its own parent Task Gates.
+One plan creates at most one pull request per Touched Repository; split or stack
+PRs only when the user explicitly asks. The task graph never proposes per-Story
+or per-Task PRs; its waves stay inside the one branch per Touched Repository.
 
 ## Wiki Context
 

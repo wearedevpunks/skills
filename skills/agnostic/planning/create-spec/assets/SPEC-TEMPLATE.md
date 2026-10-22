@@ -36,8 +36,10 @@ and list each dependency's immutable landing or branch/base evidence._
 
 ## Branch/Base Intent
 
-_When accepted intent exists, record the intended parent or base, child branch
-constraint, and supporting evidence. Otherwise write `Not applicable`._
+_When accepted intent exists, record for each Touched Repository the intended
+branch, parent or base, child branch constraint, and supporting evidence. One
+plan creates at most one pull request per Touched Repository; split or stack PRs
+only when the user explicitly asks. Otherwise write `Not applicable`._
 
 ## Architecture Source
 

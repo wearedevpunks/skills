@@ -80,7 +80,7 @@ silently renaming them.
 - `create-plan` preserves provider Task identities and owns files, commands,
   workers, and validation detail.
 - `Dependency Readiness` and `Branch/Base Intent` preserve accepted dependency
-  evidence and parent/base constraints for `create-plan`.
+  evidence and branch/base constraints per Touched Repository for `create-plan`.
 - `readiness: agent-ready` is sufficient downstream. Do not add a review or
   approval stop; pause only for a user-requested HITL checkpoint.
 - Compiler state is `compiled`. Human approval, when explicitly requested, is

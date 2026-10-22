@@ -49,6 +49,9 @@ dependency, validation, and test target.
 ## Planner behavior
 
 Produce exactly one named `PLAN.md` in the target spec folder.
+One plan creates at most one pull request per Touched Repository; split or stack
+PRs only when the user explicitly asks. The task graph never proposes per-Story
+or per-Task PRs; its waves stay inside the one branch per Touched Repository.
 
 Preserve `$swarm-planner` behavior:
 

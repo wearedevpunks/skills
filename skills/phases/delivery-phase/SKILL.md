@@ -45,9 +45,10 @@ Within accepted bounds, full delivery grants its selected inner steps the author
   before dependent dispatch in every entry mode, including local and resumed
   delivery. Reuse fresh matching authority; activate child skills only from
   their selected phase.
-- One delivery run ships exactly one pull request. Every phase, including
-  implementation, repair, review fixes, and docs, commits to that run's branch
-  and PR. Split or stack PRs only when the user explicitly asks.
+- One plan creates at most one pull request per Touched Repository; split or
+  stack PRs only when the user explicitly asks. Every phase, including
+  implementation, repair, review fixes, and docs, commits to that repository's
+  branch and PR.
 - Design-Owned UI Code from a `design-phase` promote commit is accepted input.
   Delivery adds logic, data, and the rest of the requirement to it. A change to a
   design-owned file is a defect fix only, recorded in the Phase Result.

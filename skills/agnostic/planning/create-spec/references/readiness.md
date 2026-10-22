@@ -64,9 +64,11 @@ Serialize both sections in every compiled spec:
 - `Dependency Readiness`: write `No Stack Required` when no dependency exists.
   Otherwise write `Ready` and list every dependency's immutable landing or
   branch/base evidence.
-- `Branch/Base Intent`: when accepted intent exists, record the intended parent
-  or base, child branch constraint, and supporting evidence. Otherwise write
-  `Not applicable` explicitly.
+- `Branch/Base Intent`: when accepted intent exists, record for each Touched
+  Repository the intended branch, parent or base, child branch constraint, and
+  supporting evidence. One plan creates at most one pull request per Touched
+  Repository; split or stack PRs only when the user explicitly asks. Otherwise
+  write `Not applicable` explicitly.
 
 Never emit `Blocked` with `readiness: agent-ready`; blocked or unevidenced
 dependencies produce `spec-not-ready` instead.
