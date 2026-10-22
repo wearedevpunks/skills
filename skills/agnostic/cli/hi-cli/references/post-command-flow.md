@@ -14,14 +14,7 @@ Existing `.devpunks/` files describe project state. Read a file only when the ac
 
 1. Apply [Project Verifier preservation](#project-verifier-preservation).
 2. Read `.devpunks/installed.json` (installed Baseline, Recorded Shape, path-to-item map, failed links), then `.devpunks/AGENT-HANDOFF.md`, then `.devpunks/AGENT-SYSTEM-PROMPT.md`. If one is missing, continue and report it.
-3. Activate `$writing-for-agents`, then `$rule-authoring`. Author root and scoped `AGENTS.md` files from `.devpunks/specs/prompts/**`. These prompt specs are Built Artifacts and are the complete prompt-authoring contract; the `AGENTS.md` files are Authored Artifacts that the installer never overwrites.
-   - ground scoped prompts in current code evidence: structure, placement, dependencies, and boundaries first; applied coding conventions second; enforced constraints outrank the nearest stable module-family pattern
-   - keep each scoped prompt lean with exact-trigger pointers to co-authored reference content; references disclose content and never create deeper prompt scopes
-   - render every selected non-phase skill in one final `## Skills` table with `Skill | Exact trigger`; each row names the exact invocation condition
-   - open every selected installed skill's `SKILL.md`; that installed file remains workflow authority
-   - keep root `AGENTS.md` table-free; phase wrappers remain global orchestration entrypoints and are excluded from scoped tables
-   - always link `opensrc/README.md` from scoped prompts and read it when work depends on third-party library behavior
-   - keep each sibling `CLAUDE.md` as a symlink to its `AGENTS.md`
+3. Author root and scoped `AGENTS.md` files through [Prompt Authoring](#prompt-authoring).
 4. Tailor `.agents/subagents/manifest.mjs` (Authored) to the real owned paths, guidance files, and skills, following the Built guide `.agents/subagents/manifest.prompt.md`. Keep the manifest self-contained with no relative imports; the CLI loads it from a `data:` URL. Then run `hi update` once so the Harness Adapters rebuild the agent files in `.claude/agents`, `.codex/agents`, `.cursor/agents`, and `.opencode/agents`. Never hand-edit those agent files.
 5. Report each Project Skill the run moved into `.agents/skills`, and each `renamed-project-skill` row (`.agents/skills/[DEPRECATED] <id>`). A deprecated copy is project knowledge: compare it with the Registry skill, keep what the project still needs in project guidance, and suggest `hi report` when the knowledge belongs in the shared skill.
 6. Review the `lint.scopes` and `lint.exclude` that `hi init` saved against the real software owners, using [managed lint selection and adoption](managed-lint.md).
@@ -45,7 +38,7 @@ Otherwise apply [Project Verifier preservation](#project-verifier-preservation),
 | `migration` present | The run migrated a manifest-based repository. Confirm the settings `packs` it wrote, list each `migrated-deleted` path, and confirm moved Project Skills. Then complete the [Init](#init) steps 2 to 5 that the repository has not done yet. |
 | `adoptedPacks` present | The run added newly detected Packs to settings `packs` and installed them. Name each Pack and the dependency that detects it, and keep the settings change in the same commit. To decline a Pack, remove it from `packs` and run `hi update` again; it is not re-added. |
 | `written` or `overwritten-local-edit` on a skill | Inspect the affected skills only. For an overwritten local edit, read the previous bytes from git and move project-specific knowledge into project guidance. |
-| Prompt spec (`.devpunks/specs/prompts/**`) written | Activate `$writing-for-agents`, then `$rule-authoring`; reconcile only the affected `AGENTS.md` scopes. |
+| Prompt spec (`.devpunks/specs/prompts/**`) written | Reconcile only the affected `AGENTS.md` scopes through [Prompt Authoring](#prompt-authoring). |
 | `.devpunks/AGENT-HANDOFF.md` written | Read it and follow only its new items. |
 | `renamed-project-skill` | Handle as in [Init](#init) step 5. |
 | `stale-reported` | A file is no longer in the Baseline. An Authored Artifact is project-owned; a locally edited Copied file was kept without `--yes`. Ask before deleting either, or before `hi update --yes` removes the Copied file. |
@@ -112,6 +105,20 @@ Report `hi-cli` and legacy `dp-cli` state for global and project scopes:
 With CLI 5.0.1 or newer, each install or update command resolves the newest canonical shared-skills `main` revision once and verifies installed files against that source content. Report and use the exact revision returned by the command. On CLI 5.0.0 or 4.x, run `hi upgrade` before requesting the newest operator skill.
 
 Operator writes require Skills CLI 1.5.20 or newer. If an action partially fails, return the exact failed Skills CLI command from the result. After successful install, update, or migrate, reload or reactivate `$hi-cli`.
+
+## Prompt Authoring
+
+Activate `$writing-for-agents`, then `$rule-authoring`. Each prompt spec under `.devpunks/specs/prompts/**` is a Built Artifact and the complete authoring contract for its target; each `AGENTS.md` is an Authored Artifact that the installer never overwrites. `.devpunks/specs/prompts/shared-agents.md` gives the house structure every target follows.
+
+- **Skills catalogue**: a scoped `## Skills` table (`Skill | Exact trigger`) holds exactly the rows its prompt spec lists, plus each Candidate skill that passes the spec's evidence test; delete every other row. The spec lists only the scope's own Packs (detected, language, and surface). Default Pack skills route through root guidance and phase entrypoints, so the root `AGENTS.md` stays table-free; phase wrappers remain global orchestration entrypoints and are excluded from scoped tables.
+- **Trigger rows**: copy each row's exact trigger text from the spec, and open each listed skill's installed `SKILL.md`; that file remains workflow authority.
+- **Spec authority**: take rows only from a spec that `.devpunks/installed.json` records. An unrecorded spec is stale; ask before deleting it.
+- **Nested prompts**: a project-authored `AGENTS.md` nested below a scope's prompt has no spec of its own; its table lists only skills that no parent prompt lists, and it omits the table when none remain.
+- **Evidence**: ground each scoped prompt in current code: structure, placement, dependencies, and boundaries first; applied coding conventions second. Enforced constraints outrank the nearest stable module-family pattern. Keep root policy inherited rather than restated.
+- **Lean pointers**: keep each scoped prompt lean with exact-trigger pointers to co-authored reference content; references disclose content and never create deeper prompt scopes; always link `opensrc/README.md` from scoped prompts and read it when work depends on third-party library behavior.
+- **Mirrors**: keep each sibling `CLAUDE.md` a symlink to its `AGENTS.md`.
+
+Done when every scoped table's skill IDs equal its spec's listed IDs plus accepted candidates, and every `CLAUDE.md` resolves to its `AGENTS.md`.
 
 ## Project Verifier preservation
 

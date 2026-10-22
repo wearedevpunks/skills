@@ -11,6 +11,10 @@ test("hi post-command flow preserves the complete structure-first authoring cont
   assert.match(flow, /structure, placement, dependencies, and boundaries first/u);
   assert.match(flow, /exact-trigger pointers/u);
   assert.match(flow, /always link `opensrc\/README\.md`/u);
+  assert.match(flow, /holds exactly the rows its prompt spec lists/u);
+  assert.match(flow, /only the scope's own Packs/u);
+  assert.match(flow, /Default Pack skills route through root guidance/u);
+  assert.match(flow, /\[Prompt Authoring\]\(#prompt-authoring\)/u);
 });
 
 test("create-plan combines exact scoped triggers with implementation evidence guidance", () => {
