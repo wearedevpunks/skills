@@ -66,3 +66,16 @@ test("create-plan tasks carry cumulative architecture conformance fields", () =>
   assert.match(reference, /canonical.*SKILL\.md.*\$show-me/is);
   assert.doesNotMatch(reference, /MUST use `\$grilling`/);
 });
+
+test("create-plan routes frontend scope to the composition layer model", () => {
+  const convergence = read(
+    "skills/agnostic/planning/create-plan/references/architecture-convergence.md",
+  );
+  const frontend = convergence
+    .split(/\n\s*\n/)
+    .find((paragraph) => paragraph.includes("For frontend scope"));
+
+  assert.match(frontend, /\$frontend-domain-structure/);
+  assert.match(frontend, /`composition\/`/);
+  assert.match(frontend, /React scope[\s\S]*providers,\s+shells\s+and\s+page\s+templates\s+into\s+`composition\/`/);
+});

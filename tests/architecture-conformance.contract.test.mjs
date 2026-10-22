@@ -85,3 +85,15 @@ test("worker briefs and implementation notes carry architecture evidence", () =>
   assert.match(combined, /responsibility[-_ ]acceptance/i);
   assert.match(combined, /migration ledger/i);
 });
+
+test("implement-spec checks frontend scope against the composition layer model", () => {
+  const conformance = read(
+    "skills/agnostic/planning/implement-spec/references/architecture-conformance.md",
+  );
+  const frontend = conformance
+    .split(/\n\s*\n/)
+    .find((paragraph) => paragraph.includes("frontend scope"));
+
+  assert.match(frontend, /`composition\/`/);
+  assert.match(frontend, /`frontend-layers` lint[\s\S]*changed files/);
+});

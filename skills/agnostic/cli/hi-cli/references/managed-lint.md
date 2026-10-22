@@ -105,6 +105,18 @@ cannot evaluate is preserved verbatim under a comment. Put project rules, catego
 `ignorePatterns` there; a JS-plugin rule must name a built-in Oxlint plugin or a
 `jsPlugins` alias that file declares.
 
+The `react-frontend-layers` asset applies in each Software Scope where the
+`react` Pack applies, that is, where the scope's own manifest declares `react`
+or `react-dom`. It installs the `frontend-layers` JS plugin at
+`<scope>/tools/oxlint/frontend-layers/index.mjs` and checks only a package whose
+layer root contains `app/` or `routes/`. Every violation is an error, with no
+baseline. To turn a rule off, set `frontend-layers/<rule>` to `off` in
+`oxlint.local.ts`. In a Software Scope other than the repository root, the
+plugin alias is `frontend-layers-<scope>`, with each scope-path character other than a letter,
+digit, `_` or `$` changed to `-` (`apps/web` gives `frontend-layers-apps-web`),
+so the key is `frontend-layers-<scope>/<rule>`. For the rules and the layer
+model, read `$frontend-domain-structure` `references/structure.md`.
+
 The runner is `node .agents/scripts/managed-lint-runner.mjs`. Pass large file
 sets with `--files-from <path>` (one repository-relative path per line) instead
 of argv. The runner streams Oxlint output through a temporary file and batches

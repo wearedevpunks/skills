@@ -83,7 +83,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | expo | detected | expo, @expo/ | 20 Expo skills (expo-*, eas-*, building-native-ui, ...) |
 | nextjs | detected | next | next-best-practices, next-cache-components; lint next-core |
 | pulumi | detected | @pulumi/ | pulumi-* skills, provider-upgrade, package-usage |
-| react | detected | react, react-dom | async-react-patterns, react-doctor, vercel-composition-patterns, vercel-react-best-practices; lint react-core, react-you-might-not-need-an-effect |
+| react | detected | react, react-dom | async-react-patterns, react-doctor, vercel-composition-patterns, vercel-react-best-practices; lint react-core, react-frontend-layers, react-you-might-not-need-an-effect |
 | sqlalchemy | detected | sqlalchemy, alembic | sqlalchemy-schema-design |
 | tanstack-query | detected | @tanstack/react-query | tanstack-query; lint tanstack-query-core |
 | trpc | detected | @trpc/ | source guide only |
