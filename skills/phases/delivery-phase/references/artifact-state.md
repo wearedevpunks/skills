@@ -54,8 +54,14 @@ never whether `ARCHITECTURE.md` is required.
 
 ## Plan Complete
 
+Delivery entry requires this gate. Requirements Phase owns plan creation;
+a missing or stale plan routes there through `phases/spec.md`.
+
 - `PLAN.md` exists and matches the current Architecture/SPEC pair, carrying
   both source identities and required decision selectors through Context Pointers.
+- The plan is retained: its commit is pushed or explicitly retained on a
+  verified ref, and its verified immutable blob URL resolves bytes matching the
+  current `PLAN.md`. A stored URL or local file alone is insufficient.
 - One uniform `task_identity_mode` applies. In `provider-task` mode every `Tn`
   resolves one stable provider Task ID and URL, preserves the same `V*`, and
   mirrors native blocker edges through `depends_on`. In `planning-only` mode

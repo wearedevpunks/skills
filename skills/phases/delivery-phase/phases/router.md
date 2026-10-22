@@ -32,11 +32,14 @@ Choose one next phase from current durable authority.
    [Backlog Projection Complete gate](../references/artifact-state.md#backlog-projection-complete).
    Missing, stale or contradictory required proof selects [spec.md](spec.md),
    which routes the exact gap to Requirements Phase before planning. It owns Requirements Grill, Create Architecture,
-   Create Spec and Write Backlog. Valid current proof proceeds without a new approval gate;
+   Create Spec, Write Backlog and Create Plan. Valid current proof proceeds without a new approval gate;
    optional Finder context is passed only when supplied, never manufactured.
-7. A missing or stale execution plan selects [plan.md](plan.md). Incomplete plan
-   work, invalidated implementation evidence or an observed provider lifecycle
-   fact lacking exact readback selects [implement.md](implement.md).
+7. Require the retained execution plan through the
+   [Plan Complete gate](../references/artifact-state.md#plan-complete). A
+   missing or stale plan selects [spec.md](spec.md), which routes it to
+   Requirements Phase; delivery creates no plan. Incomplete plan work,
+   invalidated implementation evidence or an observed provider lifecycle fact
+   lacking exact readback selects [implement.md](implement.md).
 8. Every completed implementation selects [review.md](review.md) until a valid
    retained completed review pass covers this delivery lineage. No delivery
    reaches docs ingest or closeout without one. `review-phase` is the only

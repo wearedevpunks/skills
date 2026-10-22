@@ -9,12 +9,13 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** current retained agent-ready `ARCHITECTURE.md` and `SPEC.md`, including for an explicit planning request
+- **Upstream:** `requirements-phase` after a written or provider-absent Write Backlog result, with the current retained agent-ready `ARCHITECTURE.md` and `SPEC.md`; `implement-spec` for an execution-only amendment
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
-- **Downstream:** execution-ready `PLAN.md` for `implement-spec`
+- **Downstream:** retained execution-ready `PLAN.md` and its verified immutable blob URL, returned to `requirements-phase` for the Requirements result; `delivery-phase` and `implement-spec` execute it
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing
-- **Stop conditions:** `PLAN.md` is complete; eligible in-scope backlog sync is
-  complete, or an explicit skip reason is recorded; no implementation started
+- **Stop conditions:** `PLAN.md` is complete and retained with a verified
+  immutable blob URL; eligible in-scope backlog sync is complete, or an explicit
+  skip reason is recorded; no implementation started
 
 ## Required Inner Skills
 
@@ -75,7 +76,13 @@ silently renaming them.
 16. Before writing `PLAN.md`, invoke `$wait-what` on the complete plan. Proceed
     only when its language contract passes without changing the resolved
     decision ledger.
-17. Read `references/stop-conditions.md` and stop exactly there.
+17. Persist the completed `PLAN.md` in a dedicated git commit. Never stage
+    unrelated changes.
+18. Push or explicitly retain the plan commit through the repository-approved
+    remote mechanism. Verify the retained ref contains the plan commit, and
+    construct and verify its immutable blob URL and bytes before returning.
+    A local commit SHA plus path is insufficient.
+19. Read `references/stop-conditions.md` and stop exactly there.
 
 ## Workflows
 
@@ -129,8 +136,8 @@ silently renaming them.
     for pointer selection and stale-context handling. Preserve authoritative
     decisions in their source instead of copying whole documents into the plan.
 13. For complex work, express the plan as a swarm graph of `Tn` tasks with dependency-aware validation gates, expected outcomes, assertions, or checks that let the executor self-verify before moving on.
-14. Stop after plan creation and either eligible in-scope backlog sync or its
-    explicit skip record. Do not implement code or spawn implementation workers.
+14. Stop after plan creation, plan retention, and either eligible in-scope
+    backlog sync or its explicit skip record. Do not implement code or spawn implementation workers.
 
 ### Stack-aware preservation
 

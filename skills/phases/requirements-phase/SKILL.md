@@ -1,13 +1,13 @@
 ---
 name: requirements-phase
-description: Close bounded product decisions and project the accepted delivery backlog.
+description: Close bounded product decisions, project the accepted delivery backlog, and retain its execution plan.
 disable-model-invocation: true
 ---
 
 # Requirements Phase
 
 Requirements Phase is independently invocable. It is the only orchestration
-route for `requirements-grill -> create-architecture -> create-spec -> write-backlog`.
+route for `requirements-grill -> create-architecture -> create-spec -> write-backlog -> create-plan`.
 
 ## Inputs
 
@@ -64,16 +64,25 @@ workflow or a Finder lifecycle owner.
    Product Area, Initiative, and Epic before placing those delivery items. Each
    Story is a shippable product outcome. Each Task is atomic, independently
    ownable, and understandable from its Story and stable specification.
-8. Return one stable Requirements result naming the retained architecture and
-   specification, their exact identities and verified stable blob URLs, plus the
-   Write Backlog result and exact residual delta. The result is ready for
-   `delivery-phase` and `create-plan`.
+8. Route on the Write Backlog result. A written result invokes `create-plan`
+   with the retained pair and that result. When no backlog provider is
+   configured, invoke `create-plan` with `task_identity_mode: planning-only`.
+   A blocked result (a configured provider failed or authority is missing)
+   stops this phase with no plan and returns the exact blocked delta.
+   Require `create-plan` to commit and push or explicitly retain `PLAN.md`,
+   then verify its immutable blob URL resolves bytes matching the plan. Complete
+   this step when the retained plan is verified or the blocked result returns.
+9. Return one stable Requirements result naming the retained architecture,
+   specification and plan, their exact identities and verified stable blob URLs,
+   plus the Write Backlog result and exact residual delta. The result is ready
+   for `delivery-phase`.
 
 ## Boundary
 
 Requirements Phase owns decision closure, compilation order, and authorization
 of delivery-depth projection. `write-backlog` owns hierarchy derivation,
-provider mechanics, mutation approval, and readback. Finder remains optional
+provider mechanics, mutation approval, and readback. `create-plan` owns the
+task graph and `PLAN.md` retention. Finder remains optional
 context and owns no part of this workflow.
 
 Grilling-child, specification, Story, and Task cardinality are outputs of the

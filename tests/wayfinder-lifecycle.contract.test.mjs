@@ -360,11 +360,11 @@ test("planning persists plan-derived worker waves for resume", () => {
   const schema = read(
     "skills/agnostic/planning/create-plan/references/plan-schema.md",
   );
-  const phase = read("skills/phases/delivery-phase/phases/plan.md");
+  const phase = read("skills/phases/delivery-phase/phases/spec.md");
   const artifactState = read(
     "skills/phases/delivery-phase/references/artifact-state.md",
   );
-  for (const document of [createPlan, phase, artifactState]) {
+  for (const document of [createPlan, artifactState]) {
     assert.match(document, /currently unblocked task/iu);
     assert.match(document, /disjoint/iu);
     assert.doesNotMatch(document, /execution_mode|default to `sequential`/iu);
@@ -376,7 +376,8 @@ test("planning persists plan-derived worker waves for resume", () => {
     assert.match(schema, new RegExp(`\\b${field}\\b`));
   }
   assert.doesNotMatch(schema, /execution_mode|default to `sequential`/iu);
-  assert.match(phase, /one-task wave only when dependencies or ownership/iu);
+  assert.match(artifactState, /one-task waves are justified by dependencies or ownership/iu);
+  assert.match(phase, /missing\s+or stale plan[\s\S]*Requirements Phase/iu);
 });
 
 test("create-plan syncs backlog only for eligible in-scope spec projections", () => {

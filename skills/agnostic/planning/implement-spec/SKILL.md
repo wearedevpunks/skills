@@ -13,7 +13,7 @@ description: Implement an agent-ready spec folder through a plan-derived Executi
 - **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, and internal scoped-worker orchestration
 - **Human handoff:** a `$requirements-phase` command and brief for debt that needs a decision outside the active goal
 - **Downstream:** `delivery-phase`, which runs `$review-phase` Code Review, then `$docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
-- **Entry conditions:** existing agent-ready spec folder; stop and use `create-plan` if `PLAN.md` is missing
+- **Entry conditions:** existing agent-ready spec folder; route a missing or invalid `PLAN.md` to `requirements-phase`
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
 
 ## Required Inner Skills
