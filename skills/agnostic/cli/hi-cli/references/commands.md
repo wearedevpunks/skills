@@ -46,7 +46,7 @@ The pipeline runs in this order:
 Rules to know:
 
 - Without `--yes`, a locally edited Copied Artifact is kept (`kept`). If the Baseline also changed it, the run is `partial` (exit 1) and says to run `hi update --yes`. With `--yes`, the edit is overwritten and reported (`overwritten-local-edit`); git keeps the local version.
-- When devDependencies change, the package-manager install runs once with `--ignore-scripts` (`dependencyInstall`). When the Commit Gate adds `lefthook`, the report prints a `lefthook install` hint.
+- When devDependencies change, the package-manager install runs once with `--ignore-scripts` (`dependencyInstall`). When the Commit Gate adds `lefthook`, the report prints a hint to run `node .agents/scripts/activate-git-hooks.mjs`, then `hi commit-gate verify`. `hi init` and `hi update` also run that Hook Activation script once; with settings `commitGate: "disabled"`, `hi update` runs the Commit Gate Opt-Out instead (removes the Managed Hook Script `.githooks/pre-commit` when its digest matches, unsets `core.hooksPath` only when it is `.githooks`, and keeps an old `.git/hooks/pre-commit`).
 - Authored Artifacts are never overwritten, with or without `--yes`.
 - Without `--yes`, a stale Copied file with a local edit is kept, reported `stale-reported`, and stays in the Installed Record.
 - A Registry Item's `postInstall` command runs only when the CLI allowlist names it (today only `effect-tsgo patch --no-typescript --oxlint`), with a minimal environment (`PATH` with `node_modules/.bin` first, `HOME`, `TMPDIR`, `SystemRoot`). Other commands are skipped and named in the `dependencyInstall` detail.
@@ -105,7 +105,7 @@ Report each failed tool with the exact failed command or recovery guidance from 
 
 ## `hi commit-gate verify`
 
-Use after `lefthook install` to verify the live Lefthook hook, dependency, lockfile, and configuration. It only observes and writes no file.
+Use after Hook Activation (`node .agents/scripts/activate-git-hooks.mjs` sets `core.hooksPath` to `.githooks`) to verify the live Managed Hook Script, lefthook dependency, lockfile, and configuration. It only observes and writes no file. It passes only for the `managed` state: `core.hooksPath` is `.githooks` and the `.githooks/pre-commit` digest matches the shipped script. `inactive` (`core.hooksPath` unset) names the activation command. `other` (another hook path, such as `.husky`, or an edited script) means another hook manager owns the hook; never override it. A warning `commit-gate-inert-hook` names an old `.git/hooks/pre-commit` that Git ignores; do not delete it unless the user asks.
 
 ## `hi report`
 
