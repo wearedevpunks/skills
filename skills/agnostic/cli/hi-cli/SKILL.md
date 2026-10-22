@@ -27,6 +27,8 @@ hi operator status
 
 Read [references/commands.md](references/commands.md) when choosing or explaining a command.
 
+Before `hi report`, run its `$retro` step in [references/commands.md](references/commands.md#hi-report).
+
 ## Workflow
 
 For managed lint setup, Software Scope changes, policy migration, conflicting commands, or lint findings, read [references/managed-lint.md](references/managed-lint.md). Review the Software Scopes `hi init` saved before relying on managed lint; `--yes` accepts detection's proposal, which is not a deliberate owner decision.

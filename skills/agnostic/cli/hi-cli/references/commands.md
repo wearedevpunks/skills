@@ -111,6 +111,8 @@ Use after `lefthook install` to verify the live Lefthook hook, dependency, lockf
 
 Use to submit reusable Harness friction for GitHub-backed maintainer triage. Reports are for shared Harness, docs, tooling, skill, or workflow issues, not ordinary project backlog.
 
+Before submitting, activate `$retro` scoped to only the issue the user wants to report: read only the session moments for that report area, and put its findings into `--steps`, `--expected`, and `--actual` instead of proposing project-environment fixes.
+
 Include `--type`, `--severity`, `--area`, `--skill-pack`, `--command`, `--expected`, `--actual`, `--steps`, and `--labels` when applicable. Success requires a returned GitHub issue URL.
 
 ## `hi upgrade`
