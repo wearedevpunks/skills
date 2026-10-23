@@ -139,6 +139,15 @@ test("an engine timeout falls to the next engine", (t) => {
   assert.equal(lens.attempts[1].usage, null, "Claude reports no usage");
 });
 
+test("an incomplete upstream review falls to the next engine", (t) => {
+  const fx = fixtureRepo(t);
+  const prepared = prepare(fx);
+  const run = cli(fx, ["run", "--run-dir", prepared.out.run_dir], engines("claude-clean", "codex-partial", { HI_REVIEW_ENGINES: "codex,claude" }));
+  assert.deepEqual(run.out.spec, { outcome: "clean", engine: "claude", attempts: 2 });
+  const lens = JSON.parse(readFileSync(path.join(prepared.out.run_dir, "spec.json"), "utf8"));
+  assert.deepEqual(lens.attempts.map(({ outcome }) => outcome), ["incomplete", "scoped-clean"]);
+});
+
 test("when every engine fails each axis is incomplete with every cause and run prints a blocker", (t) => {
   const fx = fixtureRepo(t);
   const prepared = prepare(fx);
