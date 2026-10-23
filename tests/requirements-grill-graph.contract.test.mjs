@@ -208,7 +208,7 @@ test("Target Altitude is L3 for code-bearing and L1 for product-only, and only r
   assert.match(ladder, /A Target Altitude\s+only rises; less depth needs a user park at a named Altitude/u);
   assert.match(ladder, /\*\*Settled Altitude\*\*: the deepest Altitude at which every question/u);
   assert.match(
-    step(section(gate("checkpoint"), "Bounded Action"), 4),
+    step(section(gate("checkpoint"), "Bounded Action"), 5),
     /code consequence, mark the\s+branch code-bearing and raise its Target Altitude to L3/u,
   );
 });
@@ -234,7 +234,7 @@ test("a missing required-call record holds the next round", () => {
   assert.ok(checkpointRow !== -1 && completeRow > checkpointRow && roundRow > completeRow);
   assert.match(
     text,
-    /round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its\s+checkpoint lines are `domain-modeling`, `flow-lenses`, and `level derivation`/u,
+    /round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its\s+checkpoint lines are `domain-modeling`, `flow-lenses`, `expand`, and\s+`level derivation`/u,
   );
   assert.match(text, /starts round R<N\+1>\s+only after both sets of R<N> are complete/u);
   assert.match(
@@ -242,7 +242,7 @@ test("a missing required-call record holds the next round", () => {
     /rounds before a recorded\s+`Altitude upgrade: R<N>` are exempt/u,
   );
   assert.match(
-    step(section(gate("checkpoint"), "Bounded Action"), 8),
+    step(section(gate("checkpoint"), "Bounded Action"), 9),
     /`missing` with the reason; the router holds the next round until it runs/u,
   );
 });
@@ -293,7 +293,7 @@ test("checkpoint runs on every response set: record, domain model, flow lenses, 
     lenses,
     /Each candidate gap becomes an `unanswered`\s+question at its implied Altitude[\s\S]*resolved by evidence[\s\S]*parked or deferred/u,
   );
-  const derive = step(action, 6);
+  const derive = step(action, 7);
   assert.match(derive, /derive the branch's level N\+1\s+questions/u);
   for (const input of [
     /`\$codebase-design`\s+vocabulary/u,
@@ -304,14 +304,33 @@ test("checkpoint runs on every response set: record, domain model, flow lenses, 
     assert.match(derive, input);
   }
   assert.match(
-    step(action, 8),
-    /Write the `checkpoint` lines:\s+`domain-modeling`, `flow-lenses`, and `level derivation`/u,
+    step(action, 9),
+    /Write the `checkpoint` lines:\s+`domain-modeling`, `flow-lenses`, `expand` \([\s\S]*?\), and `level derivation`/u,
   );
   assert.match(
     text,
     /^Required calls: `\$domain-modeling` and `\$flow-lenses` on every response set;\s+for an L3 derivation, `\$codebase-design`, the applicable stack skills,\s+`opensrc`, and `\$show-me`/mu,
   );
   assert.match(artifact(), /^- flow-lenses: R<N> run — /mu);
+});
+
+test("a level takes rounds until Expand and Flow Lenses add nothing at it", () => {
+  const action = section(gate("checkpoint"), "Bounded Action");
+  const expand = step(action, 4);
+  assert.match(expand, /name the decisions it\s+opens at its own Altitude, by the design tree of `\$grilling`/u);
+  assert.match(expand, /"agree all"\s+reply accepts the round's recommendations, and the level settles only by\s+the \[Settled Altitude\]/u);
+  assert.match(expand, /Imported Brief answers are\s+trusted; Expand reads only this response set/u);
+  assert.match(step(action, 7), /When a branch's level N settles in step 6/u);
+
+  const ladder = section(router(), "Altitude Ladder");
+  assert.match(
+    ladder,
+    /latest\s+checkpoint's Expand and Flow Lenses passes added no question to the branch\s+at that Altitude/u,
+  );
+  assert.match(ladder, /A level can take any number of rounds/u);
+  assert.match(section(router(), "Route Precedence"), /\| 12 \| A branch's working level is settled/u);
+  assert.match(section(router(), "Close Guard"), /rounds before the grill's first\s+`expand` line need no `expand` line/u);
+  assert.match(artifact(), /^- expand: R<N> run — <new Q ids at the round Altitude \| none>/mu);
 });
 
 test("close admits closure only through the Close Guard and explicit confirmation", () => {
