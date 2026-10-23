@@ -1,9 +1,9 @@
 # Upstream provenance
 
-Copied from [`Leonxlnx/earshot`](https://github.com/Leonxlnx/earshot/tree/925ebe56a1b755e5d354ab642bb8f344440cfa9c/skills/real-sound) (path `skills/real-sound`) at commit:
+Copied from [`Leonxlnx/earshot`](https://github.com/Leonxlnx/earshot/tree/591fa3e028032e6dce56620a20e932e35667e8d8/skills/real-sound) (path `skills/real-sound`) at commit:
 
 ```text
-925ebe56a1b755e5d354ab642bb8f344440cfa9c
+591fa3e028032e6dce56620a20e932e35667e8d8
 ```
 
 The adjacent `LICENSE` is the byte-identical upstream MIT license (repository root `LICENSE`) retained for this skill.
