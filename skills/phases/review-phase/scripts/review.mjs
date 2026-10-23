@@ -44,7 +44,13 @@ class Blocker extends Error {}
 
 const sha256 = (text) => createHash("sha256").update(text).digest("hex");
 const short = (sha) => sha.slice(0, 12);
+// The run root is shared by every user of the machine, so it is sticky like /tmp
+// and only a private directory of this user counts as a run directory.
 const runsRoot = () => path.join(os.tmpdir(), "hi-review");
+const isOwnRunDir = (stat) => Boolean(stat?.isDirectory() && stat.uid === process.getuid() && (stat.mode & 0o022) === 0);
+const reportPathOf = ({ mode, goal, ordinal, base, head, run_id: runId }) => mode === "delivery"
+  ? `${goal}/reviews/pass-${ordinal}.json`
+  : `.devpunks/delivery/standalone/reviews/${short(base)}-${short(head)}-${runId}.json`;
 const sentence = (text) => String(text).replace(/\s+/gu, " ").trim().split(/(?<=\.)\s/u)[0].replace(/\.$/u, "");
 
 const git = (repo, args, env) =>
@@ -275,8 +281,9 @@ const prepare = async (options) => {
   }
 
   const runId = `${new Date().toISOString().replace(/[-:]/gu, "").replace(/\.\d+Z$/u, "Z")}-${randomBytes(3).toString("hex")}`;
+  if (fs.mkdirSync(runsRoot(), { recursive: true }) !== undefined) fs.chmodSync(runsRoot(), 0o1777);
   const runDir = path.join(runsRoot(), runId);
-  fs.mkdirSync(runDir, { recursive: true });
+  fs.mkdirSync(runDir, { mode: 0o700 });
   try {
     const promptDir = process.env.HI_REVIEW_PROMPT_DIR ?? path.join(import.meta.dirname, "../references");
     const prompts = Object.fromEntries(AXES.map((axis) => {
@@ -327,9 +334,6 @@ const prepare = async (options) => {
       prepared_head: commitOf(repo, "HEAD"),
       review_commit: review.commit,
       ordinal,
-      report_path: mode === "delivery"
-        ? `${goalRel}/reviews/pass-${ordinal}.json`
-        : `.devpunks/delivery/standalone/reviews/${short(target.base)}-${short(target.head)}-${runId}.json`,
       packet_identity: reviewPacketIdentity({
         review_run_id: runId,
         accepted_bounds_hash: sha256(JSON.stringify({ mode, goal: goalRel, locator: target.locator, base: target.base, head: target.head })),
@@ -354,6 +358,7 @@ const prepare = async (options) => {
     const [engine] = engineOrder();
     const sizes = await Promise.all(AXES.map((axis) => sizeAxis(packet, runDir, axis, engine)));
     packet.axes = Object.fromEntries(AXES.map((axis, index) => [axis, sizes[index]]));
+    packet.report_path = reportPathOf(packet);
     writeJson(path.join(runDir, "packet.json"), packet);
     // A new delivery pass supersedes older run directories of the same goal.
     if (mode === "delivery") {
@@ -370,9 +375,13 @@ const prepare = async (options) => {
 
 const STALE = "HEAD moved since prepare, so this run no longer matches the reviewed change; run prepare again";
 const loadRun = (runDir) => {
+  const stat = runDir ? fs.lstatSync(runDir, { throwIfNoEntry: false }) : undefined;
+  if (stat && !isOwnRunDir(stat)) throw new Blocker(`${runDir} is not a private run directory of this user, so it is not trusted; run prepare`);
   const packet = runDir && readJson(path.join(runDir, "packet.json"));
   if (!packet) throw new Blocker(`Run directory ${runDir} holds no packet.json; run prepare`);
-  return { packet, stale: commitOf(packet.repo_root, "HEAD") !== packet.prepared_head };
+  const repo = repoRoot();
+  if (packet.repo_root !== repo) throw new Blocker(`packet.json names repository ${packet.repo_root}, which does not match this repository ${repo}`);
+  return { packet, stale: commitOf(repo, "HEAD") !== packet.prepared_head };
 };
 const engineOrder = () => {
   try {
@@ -470,6 +479,11 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
   if (tokens !== undefined && !/^\d+$/u.test(tokens)) throw new Blocker("--subagent-tokens must be a non-negative integer");
   const { packet, stale } = loadRun(runDir);
   const repo = packet.repo_root;
+  if (packet.mode === "delivery") goalPath(repo, path.join(repo, packet.goal ?? ""));
+  const derived = reportPathOf(packet);
+  if (packet.report_path !== derived) {
+    throw new Blocker(`packet.json names Pass Report ${packet.report_path}, which does not match the path ${derived} derived from its goal and ordinal`);
+  }
   const reportFile = path.join(repo, packet.report_path);
   let existing = readJson(reportFile);
   if (existing === null) throw new Blocker(`${packet.report_path} exists but is not valid JSON, so this run cannot write pass ${packet.ordinal}`);
@@ -549,7 +563,9 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
 const goalRuns = (repo, goalRel) => {
   if (!fs.existsSync(runsRoot())) return [];
   return fs.readdirSync(runsRoot())
-    .map((name) => ({ dir: path.join(runsRoot(), name), packet: readJson(path.join(runsRoot(), name, "packet.json")) }))
+    .map((name) => path.join(runsRoot(), name))
+    .filter((dir) => isOwnRunDir(fs.lstatSync(dir, { throwIfNoEntry: false })))
+    .map((dir) => ({ dir, packet: readJson(path.join(dir, "packet.json")) }))
     .filter(({ packet }) => packet?.repo_root === repo && packet.goal === goalRel)
     .sort((left, right) => left.packet.created_at.localeCompare(right.packet.created_at));
 };

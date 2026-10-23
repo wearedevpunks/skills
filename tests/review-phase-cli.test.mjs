@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -298,6 +298,46 @@ test("the Pass Report ordinal is created exclusively and a retry reports the exi
   assert.deepEqual(retry.out, first.out);
   assert.equal(fx.git("rev-list", "--count", "HEAD"), "3");
   assert.deepEqual(readdirSync(path.join(fx.goal, "reviews")), ["pass-1.json"]);
+});
+
+test("run directories are private and the shared root is sticky", (t) => {
+  const fx = fixtureRepo(t);
+  const runDir = prepare(fx).out.run_dir;
+  assert.equal(statSync(path.dirname(runDir)).mode & 0o7777, 0o1777);
+  assert.equal(statSync(runDir).mode & 0o777, 0o700);
+});
+
+test("a run directory that others can write is refused by run and retain and ignored by status", (t) => {
+  const fx = fixtureRepo(t);
+  const runDir = reviewedRun(fx);
+  adjudicate(runDir, { findings: [], rejected: [] });
+  chmodSync(runDir, 0o770);
+  const trust = /is not a private run directory of this user/u;
+  assert.match(cli(fx, ["run", "--run-dir", runDir]).out.blocker, trust);
+  assert.match(cli(fx, ["retain", "--run-dir", runDir, "--subagent-tokens", "1"]).out.blocker, trust);
+  assert.equal(cli(fx, ["status", "--goal", GOAL]).out.run_dir, null);
+  assert.equal(existsSync(path.join(fx.goal, "reviews")), false);
+});
+
+test("status skips stray entries in the shared run root", (t) => {
+  const fx = fixtureRepo(t);
+  write(path.join(fx.tmp, "hi-review/stray"), "not a run\n");
+  mkdirSync(path.join(fx.tmp, "hi-review/empty"));
+  assert.deepEqual(cli(fx, ["status", "--goal", GOAL]).out, { next: "prepare", run_dir: null, pass_count: 0, blocker: null });
+});
+
+test("retain refuses a packet whose Pass Report path or repository differs from the derived one", (t) => {
+  const fx = fixtureRepo(t);
+  const runDir = reviewedRun(fx);
+  adjudicate(runDir, { findings: [], rejected: [] });
+  const packetFile = path.join(runDir, "packet.json");
+  const packet = JSON.parse(readFileSync(packetFile, "utf8"));
+  for (const tampered of [{ report_path: "src/app.mjs" }, { report_path: `${GOAL}/reviews/pass-9.json` }, { repo_root: fx.tmp }]) {
+    writeFileSync(packetFile, JSON.stringify({ ...packet, ...tampered }));
+    assert.match(cli(fx, ["retain", "--run-dir", runDir, "--subagent-tokens", "1"]).out.blocker, /does not match/u, JSON.stringify(tampered));
+  }
+  assert.equal(readFileSync(path.join(fx.repo, "src/app.mjs"), "utf8"), "export const limit = 2;\n");
+  assert.equal(fx.git("rev-list", "--count", "HEAD"), "2");
 });
 
 test("an oversized review plan blocks prepare before any engine starts", (t) => {
