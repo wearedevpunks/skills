@@ -194,21 +194,22 @@ requested | reported`.
 
 - grilling: R<N> run — <frontier ids>
 - wait-what: R<N> run
-- show-me: R<N> run — <view>
+- show-me: R<N> run — <view> via <html_render | html file | markdown>
 - domain-modeling: R<N> run — <glossary change | no change>
 - flow-lenses: R<N> run — <candidate gaps -> Q ids | none>
+- expand: R<N> run — <new Q ids at the round Altitude | none>
 - level derivation: R<N> run — <branch L<N+1> Q ids> | not due
 
 ### Close
 
 - domain-modeling: run
-- show-me: run — <view>
+- show-me: run — <view> via <html_render | html file | markdown>
 - wiki synthesis: run — <pages> | not yet closed
 ```
 
 `round` writes the `grilling`, `wait-what`, `show-me`, and optional
 `wayfinder` lines; `checkpoint` writes the `domain-modeling`, `flow-lenses`,
-and `level derivation` lines. A call that could not run reads
+`expand`, and `level derivation` lines. A call that could not run reads
 `<call>: R<N> missing — <reason>`. A round's record is complete when every
 line is `run` or `not due`.
 

@@ -55,13 +55,16 @@ frontier. Round never records an answer; `checkpoint` does.
    applicable view from its catalog, derived from the status, log, and code
    evidence. Label existing and proposed boundaries; put material ordering,
    lifetime, transaction, and failure consequences beside the view. At L3,
-   the view is an interface sketch or a module tree.
+   the view is an interface sketch or a module tree. Load `$show-me` before
+   building the view and render it on its first supported surface; in T3
+   Code that is the inline HTML renderer.
 5. **Complete a round (route row 11).** Present, through the missing call,
    the round's remaining `unanswered` questions; when none remain, present the
    round's accepted answers for the user to correct.
 6. **Record calls.** Write the round's call evidence under
    [Required Calls](../references/artifact-output.md#required-calls):
-   `grilling`, `wait-what`, and `show-me` with the view name; add `wayfinder`
+   `grilling`, `wait-what`, and `show-me` with the view name and the surface
+   it rendered on; add `wayfinder`
    when step 2 ran. Then stop for the user's answers.
 
 Required calls: `$grilling`, `$wait-what`, `$show-me`; `$wayfinder` for a stuck

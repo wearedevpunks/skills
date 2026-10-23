@@ -44,6 +44,22 @@ test("show-me keeps wide views readable in the chat column", () => {
   );
 });
 
+test("show-me renders every view inline on T3 Code and loads deferred tools", () => {
+  const skill = read(`${showMePath}/SKILL.md`);
+  const inline = read(`${showMePath}/references/inline-html.md`);
+  const round = read(
+    "skills/agnostic/requirements/requirements-grill/phases/round.md",
+  );
+
+  assert.match(skill, /render every view through it, whatever its size/u);
+  assert.match(skill, /\[inline HTML\]\(references\/inline-html\.md\)/u);
+  assert.match(skill, /rendered through the inline renderer whenever the host has one/u);
+  assert.match(inline, /ToolSearch\s+`select:mcp__t3-code__html_preview,mcp__t3-code__html_render`/u);
+  assert.match(inline, /until one\s+load attempt fails/u);
+  assert.match(round, /Load `\$show-me` before\s+building the view/u);
+  assert.match(round, /surface\s+it rendered on/u);
+});
+
 test("planning entrypoints present requirements, specs, plans, and delivery", () => {
   const grill = read(
     "skills/agnostic/requirements/requirements-grill/phases/close.md",

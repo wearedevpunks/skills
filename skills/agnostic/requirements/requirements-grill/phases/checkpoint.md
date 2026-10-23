@@ -55,13 +55,21 @@ Run every step on every response set, a partial set included. On route rows
    paths and dependent branches. Each candidate gap becomes an `unanswered`
    question at its implied Altitude under the owning branch, or is recorded
    as resolved by evidence, or is parked or deferred with a reason.
-4. **Target raise.** When an accepted answer has a code consequence, mark the
+4. **Expand.** For each answer recorded in step 1, name the decisions it
+   opens at its own Altitude, by the design tree of `$grilling`, and record
+   each as an `unanswered` question under the owning branch. An "agree all"
+   reply accepts the round's recommendations, and the level settles only by
+   the [Settled Altitude](router.md#altitude-ladder) rule. For it, dig
+   deeper: for each accepted recommendation, name what it now forces
+   (dependent choices, edge states, failure paths) and record each open one.
+   Imported Brief answers are trusted; Expand reads only this response set.
+5. **Target raise.** When an accepted answer has a code consequence, mark the
    branch code-bearing and raise its Target Altitude to L3 by the
    [Altitude Ladder](router.md#altitude-ladder).
-5. **Settle.** Update each branch's Settled Altitude by the
+6. **Settle.** Update each branch's Settled Altitude by the
    [Altitude Ladder](router.md#altitude-ladder).
-6. **Derive.** When every level-N question of a branch is answered or parked
-   and N is below its Target Altitude, derive the branch's level N+1
+7. **Derive.** When a branch's level N settles in step 6 and N is below its
+   Target Altitude, derive the branch's level N+1
    questions from that level's ladder contents and the accepted decisions.
    - L3 derivation uses `$codebase-design` vocabulary (module, interface,
      seam, adapter, depth), the applicable stack skills (for example
@@ -72,18 +80,19 @@ Run every step on every response set, a partial set included. On route rows
      for it; the router then sends `ground` to record it.
    - A derived technical question gets a Technical Grounding row and a fact
      request for the evidence it needs; `ground` dispatches it.
-7. **Recompute.** Update the open-question rows with their Altitude, the
+8. **Recompute.** Update the open-question rows with their Altitude, the
    Branch Dashboard (completion, Target Altitude, Settled Altitude, open
    items, parks), and Technical Grounding. While any question is open, set
    shared-understanding confirmation to `not-ready`.
-8. **Call evidence.** Under
+9. **Call evidence.** Under
    [Required Calls](../references/artifact-output.md#required-calls) for the
    round, read the `round` lines and leave an absent one absent, so the
    router sends `round` to complete the round. Write the `checkpoint` lines:
-   `domain-modeling`, `flow-lenses`, and `level derivation` (run, with the
+   `domain-modeling`, `flow-lenses`, `expand` (run, with the new question ids
+   at the round Altitude, or `none`), and `level derivation` (run, with the
    derived ids, or `not due`). A call that could not run is written as
    `missing` with the reason; the router holds the next round until it runs.
-9. **Persist.** Write the status file and log before leaving the gate.
+10. **Persist.** Write the status file and log before leaving the gate.
 
 Required calls: `$domain-modeling` and `$flow-lenses` on every response set;
 for an L3 derivation, `$codebase-design`, the applicable stack skills,
@@ -103,7 +112,9 @@ for an L3 derivation, `$codebase-design`, the applicable stack skills,
 - each supplied answer is in the log with its Altitude and in status as
   `answered`; each omitted id is still `unanswered`
 - the round's Required Calls lines exist for `domain-modeling`,
-  `flow-lenses`, and `level derivation`
+  `flow-lenses`, `expand`, and `level derivation`
+- each answer's same-Altitude follow-ups are open questions, or `expand`
+  reads `none`
 - each candidate gap is a question, resolved by evidence, parked, or deferred
 - the Branch Dashboard shows current Target and Settled Altitudes
 

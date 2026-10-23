@@ -69,8 +69,10 @@ Each branch has exactly one Target Altitude and one Settled Altitude.
   or a runtime path); its Target Altitude then rises to L3. A Target Altitude
   only rises; less depth needs a user park at a named Altitude.
 - **Settled Altitude**: the deepest Altitude at which every question of the
-  branch, at that Altitude and above, is answered or parked; `none` before L1
-  settles.
+  branch, at that Altitude and above, is answered or parked, and the latest
+  checkpoint's Expand and Flow Lenses passes added no question to the branch
+  at that Altitude; `none` before L1 settles. A level settled by evidence
+  needs no Expand pass. A level can take any number of rounds.
 - One Round asks questions at exactly one Altitude.
 
 ## Round Selection
@@ -93,7 +95,8 @@ The Close Guard passes when all of these hold:
 - every auto-pinned default records its Altitude;
 - every code-bearing branch is grounded with no open technical decision;
 - every round's Required Calls record is complete; rounds before a recorded
-  `Altitude upgrade: R<N>` are exempt.
+  `Altitude upgrade: R<N>` are exempt, and rounds before the grill's first
+  `expand` line need no `expand` line.
 
 ## Route Precedence
 
@@ -113,7 +116,7 @@ output.
 | 9 | Shared-understanding confirmation is `pending`, or `confirmed` without explicit closure, and current evidence holds no reply | checkpoint `shared_understanding_required` or `closure_required` |
 | 10 | The latest round's round lines are complete and its checkpoint lines are absent, incomplete, or record a call as `missing` | [`checkpoint.md`](checkpoint.md) |
 | 11 | The latest round's round lines are incomplete | [`round.md`](round.md) to complete that round with its recorded frontier |
-| 12 | A branch has every question at its working level answered or parked, that level is below its Target Altitude, and neither next-level questions nor a settled-by-evidence record exists | [`checkpoint.md`](checkpoint.md) |
+| 12 | A branch's working level is settled, that level is below its Target Altitude, and neither next-level questions nor a settled-by-evidence record exists | [`checkpoint.md`](checkpoint.md) |
 | 13 | A ready question exists | [`round.md`](round.md) at the Round Selection Altitude |
 | 14 | Open questions exist and none is ready | blocked `facts_pending` |
 | 15 | No open question exists and the Close Guard passes | [`close.md`](close.md) |
@@ -121,7 +124,8 @@ output.
 
 In the [Required Calls record](../references/artifact-output.md#required-calls),
 the round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its
-checkpoint lines are `domain-modeling`, `flow-lenses`, and `level derivation`.
+checkpoint lines are `domain-modeling`, `flow-lenses`, `expand`, and
+`level derivation`.
 A set of lines is complete when each line is present and reads `run` or
 `not due`. Rows 10 and 11 hold the next round: the router starts round R<N+1>
 only after both sets of R<N> are complete.

@@ -30,7 +30,8 @@ work and every child-skill call:
 - `round`: one `$grilling` round at one Altitude, presented through
   `$wait-what` with a `$show-me` view; `$wayfinder` for one stuck unknown.
 - `checkpoint`: records each response set, runs `$domain-modeling` and
-  `$flow-lenses`, derives next-level questions, and records each required
+  `$flow-lenses`, expands each answer into same-Altitude follow-ups, derives
+  next-level questions once a level settles, and records each required
   call's evidence.
 - `close`: confirmation, final `$domain-modeling`, `$show-me` of the persisted
   understanding, wiki synthesis, and the `$create-architecture` handoff.
