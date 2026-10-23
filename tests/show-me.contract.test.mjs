@@ -112,7 +112,7 @@ test("phase entrypoints present complex state without taking authority", () => {
     /\$show-me[\s\S]*each decision[\s\S]*observable workflow[\s\S]*milestone context[\s\S]*final Epic projection/iu,
   );
   assert.match(debugging, /\$show-me.*evidence matrix/is);
-  assert.match(review, /\$show-me.*retained.*report/is);
+  assert.match(review, /\$show-me.*Pass\s+Report/is);
   assert.match(prototype, /\$show-me.*variant.*verdict/is);
 });
 

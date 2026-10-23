@@ -27,7 +27,7 @@ with upstream files.
 | `agnostic/docs/writing-for-agents` | `productivity/writing-for-agents` | imported unchanged | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/productivity/writing-for-agents) |
 | `agnostic/generic/handoff` | `productivity/handoff` | adapted | [`221ffca9`](https://github.com/mattpocock/skills/tree/221ffca96736afefdc08ca7cf0b3965e9ea83f41/skills/productivity/handoff) |
 | `agnostic/quality/codebase-design` | `engineering/codebase-design` | adapted | [`221ffca9`](https://github.com/mattpocock/skills/tree/221ffca96736afefdc08ca7cf0b3965e9ea83f41/skills/engineering/codebase-design) |
-| `agnostic/quality/review` | `in-progress/review` | adapted | [`801dca68`](https://github.com/mattpocock/skills/tree/801dca688564c529fa84f247f64472520d9ebe28/skills/in-progress/review) |
+| `phases/review-phase` | `in-progress/review` | adapted | [`801dca68`](https://github.com/mattpocock/skills/tree/801dca688564c529fa84f247f64472520d9ebe28/skills/in-progress/review) |
 | `agnostic/quality/tdd` | `engineering/tdd` | adapted | [`62f43a18`](https://github.com/mattpocock/skills/tree/62f43a18177be6ec82da242e59ffbc490a4c22ea/skills/engineering/tdd) |
 | `agnostic/requirements/grilling` | `in-progress/batch-grill-me` | imported with local contract | [`9603c1cc`](https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b/skills/in-progress/batch-grill-me) |
 | `agnostic/research/improve-codebase-architecture` | `engineering/improve-codebase-architecture` | adapted | [`62f43a18`](https://github.com/mattpocock/skills/tree/62f43a18177be6ec82da242e59ffbc490a4c22ea/skills/engineering/improve-codebase-architecture) |
@@ -62,7 +62,7 @@ Matt's license or attribution solely because the names overlap.
 | `to-spec` | local analogue: `agnostic/planning/create-spec` |
 | `to-tickets` | local analogue: `agnostic/requirements/write-backlog` |
 | `implement` | local analogue: `agnostic/planning/implement-spec` |
-| `code-review` | direct adaptation: `agnostic/quality/review` |
+| `code-review` | direct adaptation: `phases/review-phase` (`references/axis-*.md`) |
 | `wayfinder` | local analogue: `agnostic/planning/wayfinder` |
 | `prototype` | direct adaptation: `agnostic/research/prototype` |
 | `research` | local analogue: `agnostic/research/parallel-research` |

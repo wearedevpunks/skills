@@ -16,7 +16,7 @@ const directMattSkills = [
   "skills/agnostic/docs/writing-for-agents",
   "skills/agnostic/generic/handoff",
   "skills/agnostic/quality/codebase-design",
-  "skills/agnostic/quality/review",
+  "skills/phases/review-phase",
   "skills/agnostic/quality/tdd",
   "skills/agnostic/requirements/domain-modeling",
   "skills/agnostic/requirements/grilling",
