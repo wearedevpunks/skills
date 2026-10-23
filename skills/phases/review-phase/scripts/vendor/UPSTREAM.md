@@ -7,6 +7,7 @@
 - Commit: `6b38162c6f27792871f9a3c5df4e041eb7c5f15f`
 - Source path: `skills/autoreview/scripts/autoreview` (mode `100755`, blob `a1d8e5e1016cbdcd3b771a60a25bafcf8c2a339e`)
 - License: MIT, Copyright (c) 2026 openclaw, from the upstream repository root `LICENSE`.
+- The adjacent `LICENSE` is the upstream MIT license, copied unchanged from the same tag.
 
 `python3 skills/phases/review-phase/scripts/vendor/autoreview --version` prints:
 
