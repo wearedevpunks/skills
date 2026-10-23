@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -199,6 +199,21 @@ test("prepare freezes the packet, source context and mechanical-check candidates
     "skill_evidence: T1 tdd has no Skill Application Evidence row",
     "acceptance_record: AC-002 has no Verification or acceptance record in specs/feature/IMPLEMENTATION-NOTES.md",
   ]);
+});
+
+test("a symlinked AGENTS.md enters the source context as its in-repo target, once", (t) => {
+  const fx = fixtureRepo(t, {
+    extraChange: (repo) => {
+      write(path.join(repo, "lib/util.mjs"), "export const util = 1;\n");
+      symlinkSync("../AGENTS.md", path.join(repo, "lib/AGENTS.md"));
+      write(path.join(repo, "tools/run.mjs"), "export const run = 1;\n");
+      symlinkSync("../../outside/AGENTS.md", path.join(repo, "tools/AGENTS.md"));
+    },
+  });
+  const prepared = prepare(fx);
+  assert.equal(prepared.out.blocker, null, prepared.stderr);
+  const packet = JSON.parse(readFileSync(path.join(prepared.out.run_dir, "packet.json"), "utf8"));
+  assert.deepEqual(packet.source_context.standards, [".agents/rules/src/source-rule.md", ".agents/skills/tdd/SKILL.md", "AGENTS.md", "src/AGENTS.md"]);
 });
 
 test("retain writes and commits the Pass Report, routes it and status reports done", (t) => {

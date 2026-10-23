@@ -297,10 +297,21 @@ const prepare = async (options) => {
     const review = reviewCommit(repo, runDir, target, changed.filter((file) => PASS_REPORT_PATH.test(file)));
     const blobs = new Map(zList(git(repo, ["ls-tree", "-r", "-z", review.tree])).map((entry) => {
       const [meta, file] = entry.split("\t");
-      return [file, meta.split(" ")[2]];
+      const [mode, , oid] = meta.split(" ");
+      return [file, { mode, oid }];
     }));
     const files = [...blobs.keys()];
-    const readAt = (file) => (blobs.has(file) ? git(repo, ["cat-file", "blob", blobs.get(file)]) : null);
+    const readAt = (file) => (blobs.has(file) ? git(repo, ["cat-file", "blob", blobs.get(file).oid]) : null);
+    // The helper refuses symlinked evidence: a symlink enters as its regular
+    // in-repo target, and any other non-regular entry stays out.
+    const regular = (file) => blobs.get(file)?.mode.startsWith("100");
+    const evidenceOf = (file) => {
+      if (regular(file)) return [file];
+      if (blobs.get(file)?.mode !== "120000") return [];
+      const link = readAt(file);
+      const target = path.posix.normalize(path.posix.join(path.posix.dirname(file), link));
+      return !link.startsWith("/") && regular(target) ? [target] : [];
+    };
 
     let specFolder = options.spec ? path.relative(repo, path.resolve(options.spec)).split(path.sep).join("/") : null;
     if (!specFolder) {
@@ -316,7 +327,7 @@ const prepare = async (options) => {
       assignedSkillFiles: assignedSkillFiles(specFolder && readAt(`${specFolder}/PLAN.md`), files),
       specFolderFiles,
     };
-    const sourceContext = Object.fromEntries(AXES.map((axis) => [axis, selectSourceContext({ axis, ...sources })]));
+    const sourceContext = Object.fromEntries(AXES.map((axis) => [axis, [...new Set(selectSourceContext({ axis, ...sources }).flatMap(evidenceOf))]]));
     if (sourceContext.spec.length === 0 && (mode === "delivery" || options.spec)) {
       throw new Blocker(`The Spec axis has no source because ${specFolder ?? "no spec folder"} holds no SPEC.md, ARCHITECTURE.md, PLAN.md or IMPLEMENTATION-NOTES.md at the reviewed head; name the spec folder with --spec`);
     }
@@ -339,7 +350,7 @@ const prepare = async (options) => {
         accepted_bounds_hash: sha256(JSON.stringify({ mode, goal: goalRel, locator: target.locator, base: target.base, head: target.head })),
         snapshot_hash: sha256(`${target.base}\n${review.tree}`),
         source_set_hash: sha256(JSON.stringify({
-          context: Object.fromEntries(AXES.map((axis) => [axis, sourceContext[axis].map((file) => `${file} ${blobs.get(file)}`)])),
+          context: Object.fromEntries(AXES.map((axis) => [axis, sourceContext[axis].map((file) => `${file} ${blobs.get(file).oid}`)])),
           prompts: Object.fromEntries(AXES.map((axis) => [axis, sha256(prompts[axis])])),
         })),
       }),
