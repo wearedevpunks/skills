@@ -10,4 +10,4 @@ The adjacent `LICENSE` is the byte-identical upstream MIT license (repository ro
 
 ## Local edits
 
-None.
+- Changed the `## Current Project Context` dynamic context command from `` !`npx shadcn@latest info --json` `` to `` !`npx shadcn@latest info --json || true` ``. Claude Code runs the command from the session working directory when it loads the skill, including the `skills:` preload of a subagent. At a monorepo root, `shadcn info` exits 1 with a `monorepo_root` JSON error, and Claude Code then aborts the skill load or the subagent spawn. With `|| true`, the skill loads, and the agent reads the error JSON, which lists the workspace targets for `-c <workspace>`.
