@@ -21,6 +21,8 @@ pass's only write.
 
 ## Procedure
 
+The six steps are the whole pass: each step needs only the output of the
+command before it, and a reference loads only at the step that names it.
 Delivery enters at step 1 and continues at the step its `next` names
 (`prepare` 2, `run` 3, `adjudicate` 4, `retain` 5, `done` 6). Standalone review
 enters at step 2.
@@ -44,13 +46,13 @@ enters at step 2.
    resumes this procedure: read the command's output once for its one JSON
    line. Complete when that line is in context with `"blocker": null`; relay a
    non-null `blocker` unchanged and stop.
-4. **Adjudicate.** Start exactly one readonly Adjudicator subagent with the
-   brief in [references/adjudicator.md](references/adjudicator.md) and the
-   `run_dir`. Complete when the Adjudicator has returned and its notification
-   reports its token total.
+4. **Adjudicate.** Start exactly one readonly Adjudicator subagent in the
+   foreground and wait for it to return, with the brief in
+   [references/adjudicator.md](references/adjudicator.md) and the `run_dir`.
+   Complete when its result is in context with its token total.
 5. **Retain.** `node <skill>/scripts/review.mjs retain --run-dir <run_dir>
    --subagent-tokens <n>`, with `<n>` the token total from the Adjudicator's
-   notification. When `retain` refuses `adjudication.json`, send its error to
+   result. When `retain` refuses `adjudication.json`, send its error to
    the same Adjudicator, which rewrites the file, and retain again. Complete
    when the line carries `pass_report`, `run_id`, `commit`, `route` and
    `findings`.

@@ -98,6 +98,8 @@ test("review-phase is the one review procedure and never waits on an engine", ()
   assert.match(skill, /review\.mjs run --run-dir <run_dir>` as\s+a background command and end the turn/u);
   assert.doesNotMatch(skill, /sleep|poll|monitor|watch/iu);
   assert.match(skill, /exactly one readonly Adjudicator/u);
+  assert.match(skill, /Adjudicator subagent in the\s+foreground and wait for it to return/u);
+  assert.match(skill, /six steps are the whole pass/u);
   assert.match(skill, /retain --run-dir <run_dir>\s+--subagent-tokens <n>`/u);
   assert.match(read("skills/phases/review-phase/references/adjudicator.md"), /Run a command only to test one specific candidate/u);
   const standards = read("skills/phases/review-phase/references/axis-standards.md");
