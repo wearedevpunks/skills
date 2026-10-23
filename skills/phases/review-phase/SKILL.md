@@ -28,8 +28,13 @@ enters at step 2.
 1. **Status.** `node <skill>/scripts/review.mjs status --goal <delivery-dir>`.
    Complete when the line carries `next`, `run_dir` and `pass_count`.
 2. **Prepare.** `node <skill>/scripts/review.mjs prepare --goal <delivery-dir>
-   --base <sha>`, or `prepare --standalone <commit-or-range>`. `prepare`
-   enforces the pass budget: one pass by default, a second only on an
+   --base <sha>`, or `prepare --standalone <commit-or-range>`. Add each option
+   the caller supplies:
+   - `--spec <folder>`: the governing spec folder.
+   - `--accepted-risk <kind>:<evidence>`: the trigger for a second pass.
+   - `--human-direction <evidence>`: the direction for a further pass.
+
+   `prepare` enforces the pass budget: one pass by default, a second only on an
    accepted-risk trigger, a further pass only with explicit human direction.
    Complete when the line carries `run_id`, `run_dir` and `"blocker": null`. A
    non-null `blocker` is one sentence: relay it unchanged to the caller and

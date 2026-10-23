@@ -1,7 +1,7 @@
 # Implement Phase
 
 Use this phase when an accepted plan exists and implementation work remains, or
-when a retained review opened `repair_active` for in-scope non-runtime blockers.
+when a Pass Report route opened `repair_active` for in-scope non-runtime blockers.
 
 ## Delegate
 
@@ -37,18 +37,17 @@ silently renaming them.
 - When the next action exceeds accepted bounds, return the required decision
   to the router before expanding worker ownership.
 - Parent orchestration owns shared notes and final validation evidence.
-- Workers and the parent never run `autoreview` here; Code Review happens once
-  in `review-phase` over the frozen combined change.
+- Code Review happens once in `review-phase` over the combined change after
+  implementation completes; workers and the parent start no review engine here.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.
 - If runtime evidence appears during validation, finish the phase handoff and route to debug.
-- Preserve review lineage, `review_count`, `repair_count`, and the opening
-  `review_run_id` through the repair.
+- Preserve the opening `pass_report` and `review_run_id` through the repair.
 
 ## Accepted Repair Continuity
 
 Follow [review.md](review.md) for Focused Repair Validation, affected Verification
-reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
-ordinals and consumed repair run IDs. On failure, use
+reruns and risk-triggered second-pass eligibility. Preserve the opening
+`pass_report` and consumed repair run IDs. On failure, use
 [bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Completion State

@@ -79,8 +79,8 @@ description: >-
    - Hand off review by entry mode:
      - Delivery-internal: return the repair to `delivery-phase` for Focused
        Repair Validation; this phase opens no review pass.
-     - Standalone: hand the human a `$review-phase` command naming the fix
-       target (branch, commit range or changed paths).
+     - Standalone: hand the human the `$review-phase <commit-or-range>`
+       command naming the commit or `base..head` range that holds the fix.
 8. **Exit.**
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.

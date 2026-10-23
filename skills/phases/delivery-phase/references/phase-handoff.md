@@ -38,34 +38,32 @@ For a delivery goal with review activity, also persist:
 delivery_goal_identity:
 accepted_bounds_identity:
 accepted_bounds_hash:
-review_lineage_id:
+goal_dir: .devpunks/delivery/<goal>
+pass_report: .devpunks/delivery/<goal>/reviews/pass-<n>.json
 review_run_id:
-state: review_due | review_running | report_retention_pending | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff | human_steering_required
+state: review_due | review_running | review_routed | debt_follow_up | debug_active | repair_active | focused_validation | docs_ingest | closeout | clean_handoff | human_steering_required
 primary_route:
-secondary_architecture_follow_up:
+secondary_debt:
 post_debt_route:
-review_count:
-repair_count:
-authoritative_report_path:
-authoritative_report_commit:
-verified_retained_ref:
 stable_finding_ids:
 debt_follow_up_artifact:
 debt_follow_up_keys:
 captured_debt_finding_ids:
 ```
 
-`review_count` is a projection of the highest valid retained report ordinal for
-the lineage. Reconcile it on resume. An opening repair transition atomically
-writes active state, primary route, `repair_count = review_count`, and
-idempotency `review_run_id`; complete the transition only after the write. A
-recorded run id resumes its state without increment or guard fallthrough.
+`pass_report`, `review_run_id`, `primary_route` and `secondary_debt` hold the
+`pass_report`, `review_run_id`, `route.primary` and `route.secondary_debt` that
+`$review-phase` returns. The completed pass count is `pass_count` from
+`scripts/review.mjs status --goal <goal_dir>` in the
+[review-phase](../../review-phase/SKILL.md) skill: the number of valid Pass
+Reports in `<goal_dir>/reviews/`. Read it there on every resume. An opening repair transition is the one write the
+[routing reference](../../review-phase/references/routing.md) names; a recorded
+`review_run_id` resumes its state without opening a second repair.
 
-Each debt follow-up key is the tuple of authoritative report commit,
-authoritative report path, and stable finding ID. The debt artifact links the
-delivery goal and accepted Spec, records those keys, and lives outside the
-immutable report. Replaying a recorded key reuses the existing entry. It never
-opens implementation work for unaccepted debt.
+Each debt follow-up key is the pair of `pass_report` path and stable finding ID.
+The debt artifact links the delivery goal and accepted Spec, records those keys,
+and lives outside the Pass Report. Replaying a recorded key reuses the existing
+entry. It never opens implementation work for unaccepted debt.
 
 `post_debt_route` is durable before debt capture starts. It is `debugging` or
 `implementation` for secondary debt, and `docs_ingest` or `closeout` for
@@ -81,30 +79,29 @@ Delivery persists this block for `review_due`:
 ```text
 review_invocation_authority: full_delivery | explicit_operator
 review_invocation_skill: $review-phase
-review_invocation_mode: delivery
 delivery_goal_identity:
 accepted_bounds_identity:
 accepted_bounds_hash:
-review_lineage_id:
-recovered_review_count:
+goal_dir: .devpunks/delivery/<goal>
+base: delivery base commit SHA
+spec: spec folder or none
+accepted_risk: <kind>:<evidence> or none
+human_direction: evidence or none
 current_route:
-normalized_target:
 ```
 
-The `review_due` handoff leaves `review_run_id` unset. Full delivery consumes the
-context immediately; other modes return it for explicit operator invocation.
-Consumption fixes the attempt run id and proposed next completed ordinal and
-enters `review_running`; only valid completed retained coverage advances the count.
-
-For `report_retention_pending`, the explicit resume context additionally carries
-the existing `review_run_id`, ordinal, local report path and SHA-256, target hash,
-source hashes, and intended retained ref. Full delivery resumes `$review-phase`;
-other modes return the context for explicit retry without rerunning lenses.
+`goal_dir`, `base`, `spec`, `accepted_risk` and `human_direction` are the
+`review.mjs prepare` options `--goal`, `--base`, `--spec`, `--accepted-risk` and
+`--human-direction`; `none` omits the option. The `review_due` handoff leaves
+`review_run_id` unset. Full delivery consumes the context immediately; other
+modes return it for explicit operator invocation. Consumption enters
+`review_running`; only the Pass Report that `retain` commits advances the count.
+A `review_running` resume re-enters `$review-phase`, whose `status` names the
+next step from its run directory.
 
 After accepted repair, retain Focused Repair Validation and affected Verification
 evidence under the transition rules in [review.md](../phases/review.md). A clean
-handoff links the retained review, final changes and passing required checks.
-Historical ordinals remain unchanged during legacy read-time normalization.
+handoff links the Pass Report, final changes and passing required checks.
 
 For `human_steering_required`, store the blocked action, evidence, and required
 decision in the pointed durable state artifact. Keep only its pointer and exact

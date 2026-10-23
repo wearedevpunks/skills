@@ -5,9 +5,10 @@ docs ingest or no-op, and validation are complete.
 
 ## Checks
 
-- Require a valid retained completed review pass for this delivery lineage
-  before any other check. A missing one returns to [review.md](review.md);
-  a direct `autoreview` run or a worker's own review never substitutes for it.
+- Require a valid Pass Report for this delivery (`review.mjs status` reports
+  `pass_count` of at least 1) before any other check. A missing one returns to
+  [review.md](review.md); only a Pass Report from `review-phase` counts as Code
+  Review.
 - After review and docs ingest or its verified no-op, create the final path-limited commit
   from delivery-owned paths. Preserve unrelated dirty user
   files and exclude them from staging.
@@ -38,8 +39,8 @@ docs ingest or no-op, and validation are complete.
 ## Accepted Repair Continuity
 
 Follow [review.md](review.md) for Focused Repair Validation, affected Verification
-reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
-ordinals and consumed repair run IDs. On failure, use
+reruns and risk-triggered second-pass eligibility. Preserve the opening
+`pass_report` and consumed repair run IDs. On failure, use
 [bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Output

@@ -97,13 +97,14 @@ not grant Full Delivery continuation.
 
 ## Legacy cold reconstruction
 
-For a legacy plan, notes, handoff or retained report, derive the current compact
-projection at read time. Preserve every historical byte, valid report identity
-and ordinal. Resolve goal/bounds, Git target, next action and evidence from the
-legacy artifact's named durable authorities, not absent guessed fields. Keep
-unknowns explicit. Unreconstructable required authority returns `blocked` with
-the exact artifact pointer and missing proof. Only new writes use the compact
-contracts; normalization never bulk-migrates history or resets review lineage.
+For a legacy plan, notes or handoff, derive the current compact projection at
+read time. Preserve every historical byte. Resolve goal/bounds, Git target, next
+action and evidence from the legacy artifact's named durable authorities, not
+absent guessed fields. Keep unknowns explicit. Unreconstructable required
+authority returns `blocked` with the exact artifact pointer and missing proof.
+Only new writes use the compact contracts; normalization never bulk-migrates
+history. Legacy wiki review reports count no pass; the pass count comes only
+from Pass Reports.
 
-Completion: before/after legacy digests match, recovered report identities and
-ordinals match, and all required projected authority is proven or exactly blocked.
+Completion: before/after legacy digests match and all required projected
+authority is proven or exactly blocked.

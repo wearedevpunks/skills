@@ -13,15 +13,16 @@ Choose one next phase from current durable authority.
    for every delivery, including existing, resumed and local work. Missing,
    stale or conflicting architecture/spec proof routes the exact gap to
    Requirements Phase / `requirements-grill` before review, repair, debug,
-   implementation or closeout can resume. Preserve review lineage and counts.
+   implementation or closeout can resume. Preserve committed Pass Reports.
 4. For failed tasks or repair evidence, apply
    [failure continuity](../references/failure-continuity.md). Independent eligible
    work continues through the implementation owner's gates.
-5. Recover review lineage, valid completed ordinals and durable active repair
-   state separately from current evidence freshness. Review due, retention pending,
-   unrouted findings, or budget decisions select [review.md](review.md), the sole
-   delivery review-transition authority. It validates bounds and target before
-   budget evaluation and distinguishes incomplete attempts from completed passes.
+5. Read `pass_count` from the [review-phase](../../review-phase/SKILL.md)
+   `scripts/review.mjs status --goal <goal_dir>` and durable active repair state
+   separately from current evidence freshness. Review due, an active review run,
+   an unrouted Pass Report, or a budget decision selects [review.md](review.md),
+   the sole delivery review-transition authority. It validates bounds before the
+   pass budget.
    Resume `debug_active` through [debug.md](debug.md), `repair_active` through
    [implement.md](implement.md), and debt capture through [review.md](review.md).
    Route legacy `focused_validation` to its recorded implementation/debugging
@@ -41,9 +42,9 @@ Choose one next phase from current durable authority.
    invalidated implementation evidence or an observed provider lifecycle fact
    lacking exact readback selects [implement.md](implement.md).
 8. Every completed implementation selects [review.md](review.md) until a valid
-   retained completed review pass covers this delivery lineage. No delivery
-   reaches docs ingest or closeout without one. `review-phase` is the only
-   place `autoreview` runs; phases and workers never run it directly.
+   Pass Report covers this delivery. No delivery
+   reaches docs ingest or closeout without one. `review-phase` starts every
+   review engine; phases and workers reach Code Review only through it.
    Accepted repair follows that same transition authority's Focused Repair
    Validation and risk-triggered second-pass rules. Passing ordinary focused
    checks proceed without automatically reopening Code Review.
@@ -54,7 +55,6 @@ Read only the selected phase. Each exit emits the common Phase Result. Full
 Delivery re-enters here; other modes stop at the requested boundary. An unclear
 goal blocks with the exact missing authority rather than inferred scope.
 
-Same-goal revision, resume, rebase, commit, retry and handoff preserve review
-lineage and historical counts. Only an explicitly new delivery goal with new
-accepted bounds establishes a new lineage; read-time legacy normalization never
-resets valid report identities or ordinals.
+Same-goal revision, resume, rebase, commit, retry and handoff keep the goal's
+Pass Reports, so its pass count persists. Only an explicitly new delivery goal
+with new accepted bounds starts a new `reviews/` folder and count.

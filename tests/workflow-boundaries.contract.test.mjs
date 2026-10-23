@@ -105,12 +105,35 @@ test("review-phase is the one review procedure and never waits on an engine", ()
   assert.doesNotMatch(standards, /simplif/iu);
 });
 
+test("delivery handoff points at the Pass Report and derives the pass count", () => {
+  const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
+  const fields = [...handoff.matchAll(/```text\n([\s\S]*?)```/gu)]
+    .flatMap(([, block]) => [...block.matchAll(/^([a-z_]+):/gmu)].map(([, name]) => name));
+  assert.ok(fields.includes("pass_report"), "pass_report field");
+  assert.ok(fields.includes("review_run_id"), "review_run_id field");
+  for (const removed of [/verified_retained_ref/u, /report_(path|commit|sha)/u, /sha256/u, /review_count/u]) {
+    assert.equal(fields.some((name) => removed.test(name)), false, String(removed));
+  }
+  assert.doesNotMatch(handoff, /verified_retained_ref|SHA-256/u);
+  assert.match(handoff, /review\.mjs status/u);
+  for (const path of [
+    "SKILL.md",
+    "references/artifact-state.md",
+    "references/context-continuity.md",
+    ...["review", "router", "closeout", "implement", "debug"].map((name) => `phases/${name}.md`),
+  ]) {
+    const text = read(`skills/phases/delivery-phase/${path}`);
+    assert.doesNotMatch(text, /review_count|repair_count|verified_retained_ref|autoreview|retained (report|review)/u, path);
+  }
+});
+
 test("delivery always passes through review-phase before closeout", () => {
   const router = read("skills/phases/delivery-phase/phases/router.md");
   const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
   const implement = read("skills/phases/delivery-phase/phases/implement.md");
   assert.match(router, /Every completed implementation selects \[review\.md\]\(review\.md\)/u);
   assert.match(router, /No delivery\s+reaches docs ingest or closeout without one/u);
-  assert.match(closeout, /Require a valid retained completed review pass/u);
-  assert.match(implement, /never run `autoreview` here/u);
+  assert.match(router, /`review-phase` starts every\s+review engine/u);
+  assert.match(closeout, /Require a valid Pass Report for this delivery/u);
+  assert.match(implement, /Code Review happens once in `review-phase`/u);
 });

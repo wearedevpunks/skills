@@ -8,7 +8,7 @@ Finder returns to its invoking wrapper at the bounded result. Requirements
 Phase is independently invocable and owns any later requirements closure,
 specification compilation, and delivery-depth backlog projection.
 
-Review requests persist their target and return the exact explicit `$review-phase` invocation
-to the human. Finder may preserve that context, but
+Review requests persist their Git commit or `base..head` range and return the
+exact explicit `$review-phase <commit-or-range>` invocation to the human. Finder may preserve that context, but
 it must never invoke, delegate to, or
 model-select `review-phase`.

@@ -48,7 +48,7 @@ $goalify → active goal → $delivery-phase (full delivery when the goal asks f
 | `$prototype-phase` | `$prototype`, `$show-me` | committed `PROTOTYPE-VERDICT.md` returned to the Finder gate |
 | `$design-phase` | `$requirements-grill`, `$brandkit`, `$shadcn`, `$expo-tailwind-setup`, `$imagegen-frontend-web`, `$imagegen-frontend-mobile`, `$find-animation-opportunities`, `$prototype-variants`, `$design-taste-frontend`, `$image-to-code`, `$emil-design-eng`, `$animate`, `$animate-expo`, `$mobile-native`, `$break-ui`, `$review-animations`, `$repo-asset-management` | delivery brief; the human invokes `$delivery-phase` |
 | `$delivery-phase` | `$implement-spec` (with `$tdd`, `$simplify`, `$verify-behavior`, `$create-verification-skill`, `$update-verification-skill`), `$review-phase`, `$debugging-phase`, `$docs-ingest-phase`, `$write-backlog`, `$repo-asset-management` | closeout: commit, push, CI, backlog status readback |
-| `$review-phase` | `$review` (Standards and Spec axes), `$autoreview` once per axis, `$show-me` | retained review report and one return route |
+| `$review-phase` | `scripts/review.mjs` (two Axis Runs with Engine Fallback), one Adjudicator subagent, `$show-me` | one committed Pass Report and one return route |
 | `$debugging-phase` | `$verify-behavior` (reproduce), `$debug-agent`, `$show-me`, `$parallel-research` | cited cause and bounded fix, or evidence returned to delivery |
 | `$bug-discovery-phase` | ClawPatch CLI | ranked findings; stops before mutation |
 | `$bug-resolution-phase` | `$debugging-phase`, `$docs-ingest-phase` | resolved, triaged or blocked findings |

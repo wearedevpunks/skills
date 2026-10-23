@@ -11,7 +11,7 @@ disable-model-invocation: true
 `delivery-phase` is a reusable phase router.
 
 1. Read [phases/router.md](phases/router.md).
-2. Inspect only enough issue, architecture, spec, plan, notes, diff, retained review, durable
+2. Inspect only enough issue, architecture, spec, plan, notes, diff, Pass Report, durable
    handoff, validation, and docs state to choose the current gate.
 3. If approved artifact links or UI Evidence links are present, carry them as routing evidence.
 4. Load exactly one phase file from `phases/`.
@@ -32,7 +32,7 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 - [phases/spec.md](phases/spec.md): route missing or stale Architecture/SPEC, backlog projection or plan proof to Requirements Phase.
 - [phases/implement.md](phases/implement.md): execute the accepted plan.
 - [phases/review.md](phases/review.md): prepare the explicit review handoff or
-  classify findings from a retained report.
+  route findings from a Pass Report.
 - [phases/debug.md](phases/debug.md): investigate runtime-evidence failures.
 - [phases/human-steering.md](phases/human-steering.md): return a scope or authority boundary for human steering.
 - [phases/docs-ingest.md](phases/docs-ingest.md): ingest docs-affecting changes or record a no-op.

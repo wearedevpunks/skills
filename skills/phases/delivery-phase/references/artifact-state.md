@@ -32,7 +32,7 @@ never whether `ARCHITECTURE.md` is required.
   or incomplete mapping blocks dispatch; route the exact gap to Requirements.
 - Carry both source identities and required decision selectors in the action's
   Context Pointers. Changed inputs invalidate affected dependent proof; keep
-  historical review lineage, report identities and completed ordinals intact.
+  committed Pass Reports intact.
 - A missing, stale, conflicting or unreconstructable pair blocks its dependent
   action and routes the exact artifact, selector and missing proof to
   Requirements Phase / `requirements-grill`. Recompile architecture before spec
@@ -95,17 +95,14 @@ a missing or stale plan routes there through `phases/spec.md`.
 
 ## Review Complete
 
-- An immutable report matches the delivery lineage, accepted bounds and frozen
-  reviewed target/source identities. Unchanged implementation retains fresh proof;
-  subsequent accepted repair requires the evidence specified by the review
-  transition below rather than an automatic replacement report.
-- Its commit exists on a verified retained ref; a local report alone is pending.
-- The highest valid retained ordinal is authoritative and the handoff
-  `review_count` is its reconciled projection.
-- Findings are routed by stable ids. Review itself entered no repair state.
+- `review.mjs status --goal <goal_dir>` reports `pass_count` of at least 1: a
+  valid Pass Report in `<goal_dir>/reviews/`, committed by `retain` on the
+  delivery branch, covers this delivery. The handoff `pass_report` names it.
+- Findings are routed by stable ids from the Pass Report `route`. Review itself
+  entered no repair state.
 - Accepted repair follows [review transition](../phases/review.md): retain Focused
-  Repair Validation and affected Verification evidence; preserve historical report
-  identities and ordinals during read-time normalization.
+  Repair Validation and affected Verification evidence; only a risk-triggered
+  pass adds a Pass Report.
 
 ## Debug Complete
 

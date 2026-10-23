@@ -1,56 +1,48 @@
 # Review Phase
 
-Use after `implement-spec` returns complete implementation evidence. For a stale
-or missing retained review, first recheck the same completion gates against the
-current snapshot.
+Use after `implement-spec` returns complete implementation evidence, or to
+resume an active review run or route an unrouted Pass Report. `review.mjs` is
+the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
+`<goal_dir>` is `.devpunks/delivery/<goal>`.
 
 ## Prepare Review
 
 1. Recheck the [Architecture/SPEC pair](../references/artifact-state.md#architecturespec-pair-complete)
-   before review or retained-state resume. Carry the exact architecture identity
-   and required decision selectors as governing review sources alongside Spec
-   and plan, including in the frozen Review Packet.
+   before review or resume. Carry the exact architecture identity and required
+   decision selectors as governing review sources alongside Spec and plan, and
+   pass the spec folder as `--spec`.
    Require implementation, applicable task checks and Task Gates, Verification,
    parent shared-summary reconciliation, Architecture Checkpoints and final
    acceptance evidence. Missing or stale proof returns the exact owning gate;
    it cannot enter Code Review. Review consumes Verification evidence while
    implementation owns verifier execution and maintenance.
-2. Validate accepted bounds and normalize the supported Git/diff target without
-   mutation. Invalid bounds or unsupported targets return `review_failed` with
-   exact evidence, no report and no completed-count change.
-3. Recover completed Full Code Review Passes from valid retained evidence for
-   this delivery lineage and reconcile `review_count`. Interrupted, incomplete
-   or invalidated attempts are neither clean nor completed; preserve their
-   attempt identity and missing coverage without consuming completed allowance.
-4. Default to one Full Code Review Pass over the frozen implemented change.
-   After a completed pass, apply the repair rules below before opening another.
-   At two completed passes, return `review_budget_exhausted` unless explicit
-   human direction authorizes another. Record the exhausted route evidence;
-   preserve retained reports, counts and pending work.
-5. For an eligible pass, persist `review_due`, the normalized target and
-   `$review-phase` invocation context from the phase-handoff reference. Full
+2. Validate accepted bounds. The review target is the delivery branch from its
+   base commit to `HEAD`. Invalid bounds return `review_failed` with exact
+   evidence; the pass count stays unchanged.
+3. Read `pass_count` from `review.mjs status --goal <goal_dir>`. It counts the
+   valid Pass Reports in `<goal_dir>/reviews/`; an incomplete or interrupted run
+   has no Pass Report and counts no pass.
+4. Default to one Full Code Review Pass over the implemented change.
+   After a completed pass, apply the repair rules below before opening another;
+   a risk-triggered second pass passes `--accepted-risk <kind>:<evidence>`.
+   At two completed passes, a further pass needs explicit
+   human direction, passed as `--human-direction <evidence>`. Without it return
+   `review_budget_exhausted` with the `prepare` blocker and keep the Pass
+   Reports and pending work.
+5. For an eligible pass, persist `review_due` and the
+   `$review-phase` invocation context from the
+   [phase-handoff reference](../references/phase-handoff.md#review-invocation-context). Full
    delivery invokes it immediately; other modes return that context and stop.
-   Invocation fixes the attempt identity and proposed next completed ordinal;
-   only complete coverage plus valid retained evidence establishes completion.
+   Only the Pass Report that `retain` commits completes the pass.
 
-The review owner prepares one frozen Review Packet for the `review`
-Standards and Spec axes, run as parallel readonly subagents that each run
-`autoreview` once. Completion requires an explicit outcome from each axis.
-Standards also covers skill adherence,
-architecture, simplify and security. The parent adjudicates findings and owns
-the report. Every delivery takes this full pass, whatever its size. Reach
-[review-phase](../../review-phase/SKILL.md) for that protocol; no worker or
-delivery phase runs `review` or `autoreview` itself.
+`$review-phase` runs the whole Full Code Review Pass: two Axis Runs with Engine
+Fallback, one Adjudicator and one Pass Report, and it starts every review
+engine. Every delivery takes this full pass, whatever its size.
 
-A semantic input change during an active attempt invalidates it. Record the
-changed input, preserve the incomplete attempt evidence and start a fresh attempt
-over the new frozen target after rechecking affected implementation gates. This
-is distinct from accepted repair after a completed pass.
-
-For `report_retention_pending`, recheck target/source freshness and resume the
-existing run and local report identity without rerunning reviewers. Semantic
-change instead invalidates the attempt. A retention retry alone grants neither
-a new pass nor a second completed ordinal.
+A semantic input change during an active run invalidates it: `status` returns
+`next: prepare` once `HEAD` moves after `prepare`. Record the changed input,
+recheck affected implementation gates and prepare a fresh run over the new
+target. This is distinct from accepted repair after a completed pass.
 
 ## Validate Accepted Repair
 
@@ -61,53 +53,34 @@ routing without automatically opening a second Full Code Review Pass.
 
 One second completed pass is eligible only when accepted repair changes
 architecture, security or authorization, a public contract, runtime or deployment
-topology, or accepted scope. Record the changed risk category and accepted repair
-evidence before requesting it; changed accepted scope must already have explicit
-authority. Recheck implementation completion and freeze the repaired target.
-The two-completed-pass ceiling still applies.
+topology, or accepted scope. Record that change as the `accepted_risk` kind
+`architecture`, `security`, `public_contract`, `runtime_topology` or
+`accepted_scope` with its accepted repair evidence; changed accepted scope must
+already have explicit authority. Recheck implementation completion before the
+pass. The two-completed-pass ceiling still applies.
 
 Continue a repair only when new evidence advances diagnosis or validation, or a
 remaining discriminating diagnostic can resolve the failure. Record that evidence
 or diagnostic before retrying. A stagnant loop returns an exact blocker and
 remaining work; it never counts as progress or expands the review allowance.
 
-## Route Retained Findings
+## Route Findings
 
-After the retained report establishes the completed ordinal:
-
-1. Recompute aggregate routing from every finding's validated `return_route`
-   with the review contract helper. Reject a mismatch with the retained routing
-   object.
-2. For primary `human_steering_required`, preserve the returned decision record
-   and stop. It never opens a repair state.
-3. When `secondary_architecture_follow_up` is true, enter `debt_follow_up`
-   first and persist the primary `debugging` or `implementation` route as
-   `post_debt_route`.
-4. Without secondary debt, `debugging` opens debugging and `implementation`
-   opens implementation.
-5. Primary `debt_follow_up` enters debt capture with `post_debt_route` set to
-   `docs_ingest` when documentation remains, otherwise `closeout`.
-6. `docs_ingest` enters docs ingest. `closeout` enters closeout.
-
-Architecture debt may remain a secondary follow-up beside debugging or
-implementation. Open its repair only after debt capture. Opening either repair
-route is one atomic durable handoff write of active state, route,
-`repair_count = review_count`, and idempotency `review_run_id`. Reject a
-mismatched or already-consumed repair ordinal. Complete the transition only
-after that write. Resume an already-recorded run directly without another
-increment.
+`$review-phase` returns the Pass Report `route`. The
+[routing reference](../../review-phase/references/routing.md) is the single
+route table: follow the transition it names for `route.primary` and
+`route.secondary_debt`, including its one handoff write that opens a repair. For
+primary `human_steering_required`, preserve the returned decision record and
+stop; delivery never opens a repair state from it.
 
 ## Capture Debt Follow-Up
 
 For each primary or secondary debt finding, enter `debt_follow_up` and upsert a
-goal/spec-linked debt artifact exactly once. Key each entry by retained report
-commit, retained report path, and stable finding ID. Persist the artifact path,
-keys, captured finding IDs, and `post_debt_route` in the review handoff before
-leaving this state. Set `post_debt_route` to the higher-priority `debugging` or
-`implementation` route for secondary debt. For primary debt, set it to
-`docs_ingest` when required documentation remains, otherwise `closeout`. On
-resume, reuse matching keys, add only missing entries, and follow the recorded
-route after every key is present.
+goal/spec-linked debt artifact exactly once. Key each entry by Pass Report path
+and stable finding ID. Persist the artifact path, keys, captured finding IDs,
+and the `post_debt_route` from the route table in the review handoff before
+leaving this state. On resume, reuse matching keys, add only missing entries,
+and follow the recorded route after every key is present.
 
 Debt capture records unaccepted work; it does not implement the debt or open an
 implementation task. Primary capture resumes `docs_ingest` or `closeout`;
@@ -117,8 +90,7 @@ route.
 ## Completion
 
 Before review, completion is a durable `review_due` handoff plus an invocation
-context; full delivery consumes it immediately. After review returns `review_routed`, completion
-records report path, report SHA-256, report commit SHA, verified retained ref,
-lineage, run id, recovered/projected counts, stable finding ids, primary route,
-secondary debt route when present, and resulting state. Full delivery re-enters
-routing; other modes stop at their boundary.
+context; full delivery consumes it immediately. After `$review-phase` returns,
+`review_routed` records `pass_report`, `review_run_id`, stable finding ids,
+`route.primary`, `route.secondary_debt` and the resulting state. Full delivery
+re-enters routing; other modes stop at their boundary.

@@ -67,7 +67,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | debug | default | - | debugging-phase, bug-discovery-phase, bug-resolution-phase, debug-agent |
 | docs | default | - | docs-ingest-phase, docs-onboarding, writing-fragments, writing-beats, writing-shape, writing-for-agents, write-graph-based-skills, rule-authoring |
 | misc | default | - | show-me, wait-what, ask-hi, retro |
-| planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase, review, autoreview |
+| planning | default | - | business-finder, finder-phase, functional-finder, wayfinder, prototype-phase, delivery-phase, goalify, grilling, handoff, create-architecture, create-spec, create-plan, implement-spec, repo-asset-management, resolve-debt-phase, review-phase |
 | quality | default | - | tdd, make-tsuite, codebase-design, simplify; lint vitest-core |
 | research | default | - | parallel-research, prototype, improve-codebase-architecture |
 | requirements | default | - | requirements-phase, requirements-grill, brainstorm, flow-lenses, domain-modeling, repo-asset-management, write-backlog |

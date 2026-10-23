@@ -16,14 +16,13 @@ Load `debugging-phase` only after this phase is selected.
 - Speculative parallel fixes are not allowed.
 - When the next action exceeds accepted bounds, return the required decision
   to the router before opening another goal.
-- Preserve review lineage, `review_count`, `repair_count`, and the opening
-  `review_run_id` through the repair.
+- Preserve the opening `pass_report` and `review_run_id` through the repair.
 
 ## Accepted Repair Continuity
 
 Follow [review.md](review.md) for Focused Repair Validation, affected Verification
-reruns and risk-triggered second-pass eligibility. Preserve lineage, retained
-ordinals and consumed repair run IDs. On failure, use
+reruns and risk-triggered second-pass eligibility. Preserve the opening
+`pass_report` and consumed repair run IDs. On failure, use
 [bounded diagnosis and scope custody](../references/failure-continuity.md).
 
 ## Completion State
@@ -34,7 +33,7 @@ Write or verify:
 - root cause or narrowed hypothesis
 - fix or explicit blocker
 - rerun validation
-- resulting state and preserved counter evidence
+- resulting state and the preserved `pass_report` and `review_run_id`
 
 Then stop or re-enter `delivery-phase` for routing.
 
