@@ -215,27 +215,35 @@ test("retain writes and commits the Pass Report, routes it and status reports do
   };
 
   adjudicate(runDir, verdict);
-  assert.equal(cli(fx, ["status", "--goal", GOAL]).out.next, "adjudicate", "subagent_tokens is still missing");
+  assert.equal(cli(fx, ["status", "--goal", GOAL]).out.next, "retain", "the Adjudicator wrote its verdict");
   const refused = cli(fx, ["retain", "--run-dir", runDir]);
   assert.equal(refused.code, 1);
-  assert.match(refused.out.blocker, /adjudication\.json is invalid.*subagent_tokens/u);
-  adjudicate(runDir, { ...verdict, subagent_tokens: 52000, findings: [finding("f001", "closeout")] });
-  assert.match(cli(fx, ["retain", "--run-dir", runDir]).out.blocker, /return_route/u);
+  assert.match(refused.out.blocker, /--subagent-tokens/u);
+  for (const invalid of ["-1", "12.5", "many", ""]) {
+    assert.match(cli(fx, ["retain", "--run-dir", runDir, `--subagent-tokens=${invalid}`]).out.blocker, /--subagent-tokens must be a non-negative integer/u, invalid);
+  }
+  adjudicate(runDir, { ...verdict, findings: [finding("f001", "closeout")] });
+  assert.match(cli(fx, ["retain", "--run-dir", runDir, "--subagent-tokens", "1234"]).out.blocker, /return_route/u);
   assert.equal(existsSync(path.join(fx.goal, "reviews")), false, "a refused retain writes nothing");
 
-  adjudicate(runDir, { ...verdict, subagent_tokens: 52000 });
-  assert.equal(cli(fx, ["status", "--goal", GOAL]).out.next, "retain");
-  const retained = cli(fx, ["retain", "--run-dir", runDir]);
+  adjudicate(runDir, verdict);
+  const retained = cli(fx, ["retain", "--run-dir", runDir, "--subagent-tokens", "1234"]);
   assert.deepEqual(retained.out, {
     pass_report: `${GOAL}/reviews/pass-1.json`,
+    run_id: path.basename(runDir),
     commit: fx.git("rev-parse", "HEAD"),
     route: { primary: "implementation", secondary_debt: true },
+    findings: [
+      { id: "f001", axis: "standards", severity: "high", location: "src/app.mjs:1", return_route: "implementation" },
+      { id: "f002", axis: "standards", severity: "high", location: "src/app.mjs:1", return_route: "debt_follow_up" },
+    ],
+    rejected_count: 1,
     blocker: null,
   });
   assert.equal(fx.git("show", "--name-only", "--format=", "HEAD"), `${GOAL}/reviews/pass-1.json`);
   assert.equal(existsSync(runDir), false, "retain removes the run directory");
   const report = readReport(fx, retained.out.pass_report);
-  assert.equal(report.adjudication.subagent_tokens, 52000);
+  assert.equal(report.adjudication.subagent_tokens, 1234);
   assert.deepEqual(Object.keys(report.axes.spec.attempts[0]), ["engine", "model", "seconds", "outcome", "usage"]);
   assert.equal(report.axes.spec.attempts[0].usage.tokens.input_tokens, 1200);
   assert.deepEqual(cli(fx, ["status", "--goal", GOAL]).out, { next: "done", run_dir: null, pass_count: 1, blocker: null });

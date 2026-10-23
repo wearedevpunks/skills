@@ -58,8 +58,9 @@ A candidate is one entry of the packet candidates or of a Lens Result
 
 ## Output
 
-Write `<run_dir>/adjudication.json` with exactly these keys; the root agent
-adds `subagent_tokens` after you return:
+Write `<run_dir>/adjudication.json` with exactly the keys `findings` and
+`rejected`. The root agent passes your token total to `retain
+--subagent-tokens`, which records it in the Pass Report:
 
 ```json
 {

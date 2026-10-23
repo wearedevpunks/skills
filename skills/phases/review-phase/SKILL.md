@@ -41,25 +41,26 @@ enters at step 2.
    stop.
 3. **Run.** Start `node <skill>/scripts/review.mjs run --run-dir <run_dir>` as
    a background command and end the turn. The harness notification of its exit
-   resumes this procedure with the one JSON line. Complete when that line is in
-   context with `"blocker": null`; relay a non-null `blocker` unchanged and
-   stop.
+   resumes this procedure: read the command's output once for its one JSON
+   line. Complete when that line is in context with `"blocker": null`; relay a
+   non-null `blocker` unchanged and stop.
 4. **Adjudicate.** Start exactly one readonly Adjudicator subagent with the
    brief in [references/adjudicator.md](references/adjudicator.md) and the
-   `run_dir`. When it returns, set `subagent_tokens` in
-   `<run_dir>/adjudication.json` to the token total the harness reports for
-   that subagent. Complete when `adjudication.json` exists with
-   `subagent_tokens` set.
-5. **Retain.** `node <skill>/scripts/review.mjs retain --run-dir <run_dir>`.
-   When `retain` refuses `adjudication.json`, send its error to the same
-   Adjudicator, which rewrites the file, and retain again. Complete when the
-   line carries `pass_report`, `commit` and `route`. Then present the Pass
-   Report's findings per axis and its route with `$show-me`; the Pass Report
-   stays the review authority.
-6. **Return.** Return `pass_report`, `review_run_id` (the Pass Report's
-   `run_id`), `route.primary` and `route.secondary_debt` to the caller, with
-   the transition [references/routing.md](references/routing.md) names for
-   that route. After `next: done`, read these fields from
+   `run_dir`. Complete when the Adjudicator has returned and its notification
+   reports its token total.
+5. **Retain.** `node <skill>/scripts/review.mjs retain --run-dir <run_dir>
+   --subagent-tokens <n>`, with `<n>` the token total from the Adjudicator's
+   notification. When `retain` refuses `adjudication.json`, send its error to
+   the same Adjudicator, which rewrites the file, and retain again. Complete
+   when the line carries `pass_report`, `run_id`, `commit`, `route` and
+   `findings`.
+6. **Return.** Return `pass_report`, `review_run_id` (the `run_id`),
+   `route.primary`, `route.secondary_debt` and the `findings` list to the
+   caller, with the transition [references/routing.md](references/routing.md)
+   names for that route. The retain line is the presentation source: its
+   `findings` (`id`, `axis`, `severity`, `location`, `return_route`) and
+   `rejected_count` are the caller's summary; the Pass Report stays the review
+   authority. After `next: done`, read these fields from
    `<delivery-dir>/reviews/pass-<pass_count>.json`. Complete when the caller
    holds the route.
 

@@ -34,7 +34,7 @@ const HELP = `review.mjs — one Full Code Review Pass; each subcommand prints o
   prepare --standalone <commit|base..head> [--spec <folder>]
                                                        freeze the target, size both axes
   run     --run-dir <dir>                              both Axis Runs with Engine Fallback
-  retain  --run-dir <dir>                              write and commit the Pass Report
+  retain  --run-dir <dir> --subagent-tokens <n>        write and commit the Pass Report
 
 Env: HI_REVIEW_ENGINES, HI_REVIEW_ENGINE_TIMEOUT_SECONDS (default ${DEFAULT_ENGINE_TIMEOUT_SECONDS}),
 HI_REVIEW_MAX_ENGINE_PASSES (default ${DEFAULT_MAX_ENGINE_PASSES}), HI_REVIEW_PROMPT_DIR, CODEX_BIN, CLAUDE_BIN.
@@ -466,7 +466,8 @@ const routeOf = (findings) => {
 // an exclusive link, so a second writer fails and a crash leaves no partial
 // ordinal; (3) commit only that path, which a retry repeats safely; (4) remove
 // the run directory last.
-const retain = ({ "run-dir": runDir }) => {
+const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
+  if (tokens !== undefined && !/^\d+$/u.test(tokens)) throw new Blocker("--subagent-tokens must be a non-negative integer");
   const { packet, stale } = loadRun(runDir);
   const repo = packet.repo_root;
   const reportFile = path.join(repo, packet.report_path);
@@ -477,8 +478,11 @@ const retain = ({ "run-dir": runDir }) => {
     const lenses = AXES.map((axis) => lensOf(runDir, packet, axis));
     const missing = AXES.filter((axis, index) => !lenses[index] || lenses[index].outcome === "incomplete");
     if (missing.length > 0) throw new Blocker(`The ${missing.join(" and ")} Review Lens Result is missing or incomplete; run run first`);
-    const adjudication = readJson(path.join(runDir, "adjudication.json"));
+    let adjudication = readJson(path.join(runDir, "adjudication.json"));
     if (adjudication === undefined) throw new Blocker(`${runDir}/adjudication.json is missing; start the Adjudicator`);
+    // Compatibility: an adjudication.json that already holds subagent_tokens needs no option.
+    if (tokens !== undefined) adjudication = { ...adjudication, subagent_tokens: Number(tokens) };
+    else if (adjudication?.subagent_tokens === undefined) throw new Blocker("retain needs --subagent-tokens <n>, the token total the harness reports for the Adjudicator");
     const report = {
       schema: "pass-report-v1",
       run_id: packet.run_id,
@@ -528,7 +532,16 @@ const retain = ({ "run-dir": runDir }) => {
   }
   const commit = git(repo, ["log", "-1", "--format=%H", "--", packet.report_path]);
   fs.rmSync(runDir, { recursive: true, force: true });
-  return { pass_report: packet.report_path, commit, route: existing.route, blocker: null };
+  const { findings, rejected } = existing.adjudication;
+  return {
+    pass_report: packet.report_path,
+    run_id: packet.run_id,
+    commit,
+    route: existing.route,
+    findings: findings.map(({ id, axis, severity, location, return_route }) => ({ id, axis, severity, location, return_route })),
+    rejected_count: rejected.length,
+    blocker: null,
+  };
 };
 
 // ---------- status ----------
@@ -556,10 +569,9 @@ const status = ({ goal }) => {
     return { next: done ? "done" : "prepare", run_dir: null, pass_count: passCount, blocker: null };
   }
   const { packet, dir } = latest;
-  const adjudication = readJson(path.join(dir, "adjudication.json"));
   const next = commitOf(repo, "HEAD") !== packet.prepared_head ? "prepare"
     : AXES.some((axis) => (lensOf(dir, packet, axis)?.outcome ?? "incomplete") === "incomplete") ? "run"
-      : Number.isSafeInteger(adjudication?.subagent_tokens) ? "retain" : "adjudicate";
+      : fs.existsSync(path.join(dir, "adjudication.json")) ? "retain" : "adjudicate";
   return { next, run_dir: dir, pass_count: passCount, blocker: null };
 };
 
@@ -568,7 +580,7 @@ const status = ({ goal }) => {
 const FAILURE_SHAPES = {
   prepare: { run_id: null, run_dir: null, ordinal: null, axes: null },
   run: { standards: null, spec: null },
-  retain: { pass_report: null, commit: null, route: null },
+  retain: { pass_report: null, run_id: null, commit: null, route: null, findings: null, rejected_count: null },
   status: { next: null, run_dir: null, pass_count: null },
 };
 const COMMANDS = { prepare, run, retain, status };
@@ -584,7 +596,7 @@ const main = async () => {
   try {
     const { values } = parseArgs({
       args: rest,
-      options: Object.fromEntries(["goal", "base", "standalone", "spec", "accepted-risk", "human-direction", "run-dir"].map((name) => [name, { type: "string" }])),
+      options: Object.fromEntries(["goal", "base", "standalone", "spec", "accepted-risk", "human-direction", "run-dir", "subagent-tokens"].map((name) => [name, { type: "string" }])),
     });
     result = await COMMANDS[command](values);
   } catch (error) {
