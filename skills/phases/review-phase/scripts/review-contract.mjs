@@ -1,185 +1,13 @@
+// Pure review-phase policy for scripted passes. Callers inject environment,
+// file lists and parsed reports; this module reads no files, processes or env.
 import { createHash } from "node:crypto";
-import { isDeepStrictEqual } from "node:util";
 
 const RECORD_HEADER = Buffer.from("review-identity-v1\n", "utf8");
-
-const asText = (value, field) => {
-  if (typeof value !== "string") {
-    throw new TypeError(`${field} must be a string`);
-  }
-  return value;
-};
-
-const frame = (value) => {
-  const bytes = Buffer.from(value, "utf8");
-  return Buffer.concat([Buffer.from(`${bytes.length}:`, "ascii"), bytes]);
-};
-
-export const canonicalRecord = (label, fields) =>
-  Buffer.concat([
-    RECORD_HEADER,
-    frame(asText(label, "label")),
-    ...fields.map((value, index) => frame(asText(value, `field ${index}`))),
-  ]);
-
-export const sha256Hex = (bytes) =>
-  createHash("sha256").update(bytes).digest("hex");
-
-export const hashRecord = (label, fields) =>
-  sha256Hex(canonicalRecord(label, fields));
-
-export const sortUtf8 = (values) =>
-  [...values].sort((left, right) =>
-    Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8")),
-  );
-
-export const inclusiveScopeHash = (entries) =>
-  hashRecord("inclusive-scope", sortUtf8(entries));
-
-export const acceptedBoundsHash = (identity, scopeEntries) =>
-  hashRecord("accepted-bounds", [identity, inclusiveScopeHash(scopeEntries)]);
-
-export const deliveryLineageId = (deliveryGoalIdentity) => {
-  if (
-    typeof deliveryGoalIdentity !== "string" ||
-    deliveryGoalIdentity.length === 0
-  ) {
-    throw new TypeError("delivery goal identity must be a non-empty string");
-  }
-  return hashRecord("delivery-lineage", [deliveryGoalIdentity]);
-};
-
-export const standaloneLineageId = (locator, boundsHash) =>
-  hashRecord("standalone-lineage", [locator, boundsHash]);
-
-export const deliveryRunId = (lineageId, ordinal) => {
-  if (!Number.isSafeInteger(ordinal) || ordinal < 1) {
-    throw new TypeError("ordinal must be a positive safe integer");
-  }
-  return hashRecord("delivery-run", [lineageId, String(ordinal)]);
-};
-
-export const snapshot12 = (snapshotHash) => {
-  if (!/^[0-9a-f]{64}$/u.test(snapshotHash)) {
-    throw new TypeError("snapshot hash must be 64 lowercase hexadecimal digits");
-  }
-  return snapshotHash.slice(0, 12);
-};
-
-export const standaloneRunId = (lineageId, snapshotHash) =>
-  hashRecord("standalone-run", [lineageId, snapshot12(snapshotHash)]);
-
-export const reviewScopeSlug = (lineageId) => {
-  if (!/^[0-9a-f]{64}$/u.test(lineageId)) {
-    throw new TypeError("lineage id must be 64 lowercase hexadecimal digits");
-  }
-  return `review-${lineageId.slice(0, 20)}`;
-};
-
-export const deliverySnapshotHash = ({
-  locator,
-  actualBaseRef,
-  fixedPointSha,
-  headIdentity,
-  scopeEntries,
-  canonicalPatchHash,
-}) =>
-  hashRecord("delivery-snapshot", [
-    locator,
-    actualBaseRef,
-    fixedPointSha,
-    headIdentity,
-    inclusiveScopeHash(scopeEntries),
-    canonicalPatchHash,
-  ]);
-
-const orderedFiles = (files) =>
-  [...files].sort((left, right) =>
-    Buffer.compare(
-      Buffer.from(left.identity, "utf8"),
-      Buffer.from(right.identity, "utf8"),
-    ),
-  );
-
-export const orderedBundleContentHash = (files) =>
-  hashRecord(
-    "artifact-bundle",
-    orderedFiles(files).flatMap(({ identity, bytes }) => [
-      identity,
-      sha256Hex(bytes),
-    ]),
-  );
-
-export const standaloneSnapshotHash = ({ locator, files, scopeEntries }) => {
-  const ordered = orderedFiles(files);
-  return hashRecord("standalone-snapshot", [
-    locator,
-    hashRecord(
-      "ordered-files",
-      ordered.map(({ identity }) => identity),
-    ),
-    inclusiveScopeHash(scopeEntries),
-    orderedBundleContentHash(ordered),
-    "no-git-fixed-point",
-  ]);
-};
-
-export const sourceSetHash = (sources) =>
-  hashRecord(
-    "source-set",
-    [...sources]
-      .sort((left, right) =>
-        Buffer.compare(
-          Buffer.from(left.path, "utf8"),
-          Buffer.from(right.path, "utf8"),
-        ),
-      )
-      .flatMap(({ path, hash }) => [path, hash]),
-  );
-
-const assertReviewedAt = (reviewedAt, field) => {
-  const match = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/u.exec(
-    reviewedAt,
-  );
-  if (!match) {
-    throw new TypeError(`${field} must use YYYYMMDDTHHMMSSZ UTC format`);
-  }
-  const [, year, month, day, hour, minute, second] = match;
-  const iso = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
-  const instant = new Date(iso);
-  if (Number.isNaN(instant.valueOf()) || instant.toISOString() !== iso) {
-    throw new TypeError(`${field} must name a real UTC instant`);
-  }
-};
-
-export const reviewReportPath = ({ lineageId, reviewedAt, snapshotHash }) => {
-  assertReviewedAt(reviewedAt, "reviewedAt");
-  return `apps/wiki/content/docs/project/reviews/${reviewScopeSlug(lineageId)}-${reviewedAt}-${snapshot12(snapshotHash)}-review-report.md`;
-};
-
-const REPORT_BLOCK_OPEN = "```review-report-json\n";
-const REPORT_BLOCK_CLOSE = "\n```";
-const FRONTMATTER_KEYS = [
-  "title",
-  "domain",
-  "type",
-  "surface",
-  "permission",
-  "links",
-  "review_lineage_id",
-  "review_run_id",
-  "review_mode",
-  "reviewed_at",
-  "accepted_bounds_identity",
-  "accepted_bounds_hash",
-  "snapshot_hash",
-  "created",
-  "updated",
-];
 const HEX_64 = /^[0-9a-f]{64}$/u;
 const COMMIT_SHA = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u;
-const LENS_KEYS = ["standards", "spec"];
-const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+const AXES = ["standards", "spec"];
+const ENGINES = ["codex", "claude"];
+const SEVERITIES = ["critical", "high", "medium", "low"];
 const FINDING_ROUTES = [
   "human_steering_required",
   "debugging",
@@ -187,16 +15,43 @@ const FINDING_ROUTES = [
   "debt_follow_up",
   "docs_ingest",
 ];
+const RISK_TRIGGERS = ["architecture", "security", "public_contract", "runtime_topology", "accepted_scope"];
+const SPEC_SOURCES = ["SPEC.md", "ARCHITECTURE.md", "PLAN.md", "IMPLEMENTATION-NOTES.md"];
+const PASS_REPORT_DIR = /^\.devpunks\/delivery\/(?:[^/]+\/)*reviews\//u;
+const PASS_REPORT_NAME = /^pass-([1-9]\d*)\.json$/u;
+
+const nonemptyString = (value) => typeof value === "string" && value.length > 0;
+const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+const exactKeys = (value, keys) =>
+  isObject(value) && Object.keys(value).length === keys.length && keys.every((key) => Object.hasOwn(value, key));
+const sortUtf8 = (values) =>
+  [...values].sort((left, right) =>
+    Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8")),
+  );
+
+const frame = (value, field) => {
+  if (typeof value !== "string") throw new TypeError(`${field} must be a string`);
+  const bytes = Buffer.from(value, "utf8");
+  return Buffer.concat([Buffer.from(`${bytes.length}:`, "ascii"), bytes]);
+};
+
+const hashRecord = (label, fields) =>
+  createHash("sha256")
+    .update(Buffer.concat([
+      RECORD_HEADER,
+      frame(label, "label"),
+      ...fields.map((value, index) => frame(value, `field ${index}`)),
+    ]))
+    .digest("hex");
+
+export const reviewPacketIdentity = (report) => hashRecord("review-packet", [
+  report.review_run_id, report.accepted_bounds_hash, report.snapshot_hash, report.source_set_hash,
+]);
 
 export const deriveReviewRouting = (findings) => {
   if (
     !Array.isArray(findings) ||
-    findings.some(
-      (finding) =>
-        finding === null ||
-        typeof finding !== "object" ||
-        !FINDING_ROUTES.includes(finding.return_route),
-    )
+    findings.some((finding) => !isObject(finding) || !FINDING_ROUTES.includes(finding.return_route))
   ) {
     throw new TypeError("invalid finding return route");
   }
@@ -208,198 +63,6 @@ export const deriveReviewRouting = (findings) => {
       routes.has("debt_follow_up") &&
       (primary === "debugging" || primary === "implementation"),
   };
-};
-
-const exactKeys = (value, keys) =>
-  value !== null &&
-  typeof value === "object" &&
-  !Array.isArray(value) &&
-  isDeepStrictEqual(Object.keys(value).sort(), [...keys].sort());
-
-const nonemptyString = (value) =>
-  typeof value === "string" && value.length > 0;
-
-const sortedUniqueStrings = (values) =>
-  Array.isArray(values) &&
-  values.every(nonemptyString) &&
-  new Set(values).size === values.length &&
-  isDeepStrictEqual(values, sortUtf8(values));
-
-const reportDate = (reviewedAt) => {
-  assertReviewedAt(reviewedAt, "reviewed_at");
-  return `${reviewedAt.slice(0, 4)}-${reviewedAt.slice(4, 6)}-${reviewedAt.slice(6, 8)}`;
-};
-
-const frontmatterFor = (report, domain) => {
-  const date = reportDate(report.reviewed_at);
-  return {
-    title: `${reviewScopeSlug(report.review_lineage_id)} review report`,
-    domain,
-    type: "review-report",
-    surface: "project",
-    permission: "internal",
-    links: [],
-    review_lineage_id: report.review_lineage_id,
-    review_run_id: report.review_run_id,
-    review_mode: report.mode,
-    reviewed_at: report.reviewed_at,
-    accepted_bounds_identity: report.accepted_bounds_identity,
-    accepted_bounds_hash: report.accepted_bounds_hash,
-    snapshot_hash: report.snapshot_hash,
-    created: date,
-    updated: date,
-  };
-};
-
-const encodeFrontmatter = (frontmatter) =>
-  [
-    "---",
-    ...FRONTMATTER_KEYS.map((key) =>
-      `${key}: ${key === "links" ? "[]" : JSON.stringify(frontmatter[key])}`,
-    ),
-    "---",
-  ].join("\n");
-
-export const encodeReviewReport = (
-  report,
-  { domain, trailingProse = "" },
-) => {
-  if (!report || typeof report !== "object" || Array.isArray(report)) {
-    throw new TypeError("report must be an object");
-  }
-  if (!nonemptyString(domain)) throw new TypeError("domain must be a string");
-  if (typeof trailingProse !== "string") {
-    throw new TypeError("trailing prose must be a string");
-  }
-  const suffix = trailingProse.length === 0 ? "" : `\n${trailingProse}`;
-  return Buffer.from(
-    `${encodeFrontmatter(frontmatterFor(report, domain))}\n\n${REPORT_BLOCK_OPEN}${JSON.stringify(report)}${REPORT_BLOCK_CLOSE}${suffix}`,
-    "utf8",
-  );
-};
-
-const parseFrontmatter = (text) => {
-  if (!text.startsWith("---\n")) throw new TypeError("missing frontmatter");
-  const close = text.indexOf("\n---\n", 4);
-  if (close < 0) throw new TypeError("unclosed frontmatter");
-  const frontmatter = Object.create(null);
-  for (const line of text.slice(4, close).split("\n")) {
-    const separator = line.indexOf(": ");
-    if (separator < 1) throw new TypeError("malformed frontmatter line");
-    const key = line.slice(0, separator);
-    if (PROTOTYPE_KEYS.has(key)) {
-      throw new TypeError("prototype-sensitive frontmatter key");
-    }
-    if (Object.hasOwn(frontmatter, key)) throw new TypeError("duplicate frontmatter key");
-    const raw = line.slice(separator + 2);
-    frontmatter[key] = raw === "[]" ? [] : JSON.parse(raw);
-  }
-  const remainder = text.slice(close + 5);
-  if (!remainder.startsWith(`\n${REPORT_BLOCK_OPEN}`)) {
-    throw new TypeError("authority block must immediately follow frontmatter");
-  }
-  return { frontmatter, authority: remainder.slice(1) };
-};
-
-export const parseReviewReport = (bytes) => {
-  if (!Buffer.isBuffer(bytes)) throw new TypeError("report bytes must be a Buffer");
-  const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-  const { frontmatter, authority } = parseFrontmatter(text);
-  const close = authority.indexOf(REPORT_BLOCK_CLOSE, REPORT_BLOCK_OPEN.length);
-  if (close < 0) throw new TypeError("review-report-json block is unclosed");
-  const trailing = authority.slice(close + REPORT_BLOCK_CLOSE.length);
-  if (trailing !== "" && !trailing.startsWith("\n")) {
-    throw new TypeError("report prose must follow the closed authority block");
-  }
-  if (trailing.includes("```review-report-json")) {
-    throw new TypeError("report contains duplicate review-report-json blocks");
-  }
-  if (trailing.includes("\n---\n") || trailing.startsWith("\n---\n")) {
-    throw new TypeError("report contains duplicate frontmatter");
-  }
-  const report = JSON.parse(
-    authority.slice(REPORT_BLOCK_OPEN.length, close),
-  );
-  if (!report || typeof report !== "object" || Array.isArray(report)) {
-    throw new TypeError("review-report-json must decode to one object");
-  }
-  return { frontmatter, report };
-};
-
-export const normalizeReviewTarget = (mode, evidence) => {
-  if (mode === "delivery") {
-    if (
-      !nonemptyString(evidence.locator) ||
-      !nonemptyString(evidence.actualBaseRef) ||
-      !COMMIT_SHA.test(evidence.fixedPointSha) ||
-      !nonemptyString(evidence.headIdentity) ||
-      !Array.isArray(evidence.scopeEntries) ||
-      evidence.scopeEntries.length === 0 ||
-      !sortedUniqueStrings(sortUtf8(evidence.scopeEntries)) ||
-      !Buffer.isBuffer(evidence.canonicalPatchBytes)
-    ) {
-      throw new TypeError("invalid delivery target evidence");
-    }
-    return {
-      kind: "delivery-git-diff",
-      locator: evidence.locator,
-      actual_base_ref: evidence.actualBaseRef,
-      fixed_point_sha: evidence.fixedPointSha,
-      head_identity: evidence.headIdentity,
-      inclusive_scope: sortUtf8(evidence.scopeEntries),
-      canonical_patch_hash: sha256Hex(evidence.canonicalPatchBytes),
-    };
-  }
-  if (mode === "standalone") {
-    if (
-      !Array.isArray(evidence.scopeEntries) ||
-      evidence.scopeEntries.length === 0
-    ) {
-      throw new TypeError("invalid standalone target evidence");
-    }
-    const files = orderedFiles(evidence.files);
-    const identities = files.map(({ identity }) => identity);
-    const scope = sortUtf8(evidence.scopeEntries);
-    if (
-      !nonemptyString(evidence.locator) ||
-      identities.length === 0 ||
-      !sortedUniqueStrings(identities) ||
-      !files.every(({ bytes }) => Buffer.isBuffer(bytes)) ||
-      !isDeepStrictEqual(scope, identities)
-    ) {
-      throw new TypeError("invalid standalone target evidence");
-    }
-    return {
-      kind: "standalone-artifact",
-      locator: evidence.locator,
-      ordered_file_identities: identities,
-      inclusive_scope: scope,
-      ordered_bundle_content_hash: orderedBundleContentHash(files),
-      git_fixed_point: null,
-    };
-  }
-  throw new TypeError("unsupported review mode");
-};
-
-export const normalizeReviewSources = (sources) => {
-  if (
-    !Array.isArray(sources) ||
-    sources.length === 0 ||
-    sources.some(
-      ({ path, bytes }) => !nonemptyString(path) || !Buffer.isBuffer(bytes),
-    ) ||
-    new Set(sources.map(({ path }) => path)).size !== sources.length
-  ) {
-    throw new TypeError("invalid source evidence");
-  }
-  return [...sources]
-    .sort((left, right) =>
-      Buffer.compare(
-        Buffer.from(left.path, "utf8"),
-        Buffer.from(right.path, "utf8"),
-      ),
-    )
-    .map(({ path, bytes }) => ({ path, hash: sha256Hex(bytes) }));
 };
 
 export const planDeliveryReviewGate = ({
@@ -426,583 +89,136 @@ export const planDeliveryReviewGate = ({
   }
   if (recoveredReviewCount === 1 &&
       !(exactKeys(acceptedRiskTrigger, ["kind", "evidence"]) &&
-        ["architecture", "security", "public_contract", "runtime_topology", "accepted_scope"].includes(acceptedRiskTrigger.kind) &&
+        RISK_TRIGGERS.includes(acceptedRiskTrigger.kind) &&
         nonemptyString(acceptedRiskTrigger.evidence))) {
     return { state: "focused_validation", handoffWrites: [] };
   }
   return { state: "review_due", handoffWrites: ["review_due_context"] };
 };
 
-export const assessReadonlyValidation = ({ beforeHash, afterHash }) => {
-  if (!HEX_64.test(beforeHash) || !HEX_64.test(afterHash)) {
-    return { state: "review_failed", passConsumed: false };
+// The Codex marker (CODEX_THREAD_ID) and an unknown host both keep the
+// upstream default order, Codex first.
+export const planEngineOrder = (env) => {
+  const override = env.HI_REVIEW_ENGINES;
+  if (nonemptyString(override)) {
+    const order = override.split(",").map((name) => name.trim());
+    if (order.some((name) => !ENGINES.includes(name)) || new Set(order).size !== order.length) {
+      throw new TypeError(`HI_REVIEW_ENGINES must list distinct engines from ${ENGINES.join(", ")}; got "${override}"`);
+    }
+    return order;
   }
-  if (beforeHash !== afterHash) {
-    return { state: "review_due", passConsumed: false };
-  }
-  return { state: "validation_accepted", passConsumed: false };
+  return env.CLAUDECODE === "1" ? ["claude", "codex"] : [...ENGINES];
 };
 
-export const requiredReportFields = [
-  "review_lineage_id",
-  "review_run_id",
-  "accepted_bounds_identity",
-  "accepted_bounds_hash",
-  "reviewed_at",
-  "mode",
-  "normalized_target",
-  "snapshot_hash",
-  "excluded_envelope",
-  "source_paths_and_hashes",
-  "source_set_hash",
-  "lens_outcomes",
-  "findings",
-  "routing",
-  "validation",
-  "delivery_goal_identity",
-  "review_ordinal",
-  "preceding_repair_ordinal",
-  "review_epoch",
-];
+const baseName = (path) => path.slice(path.lastIndexOf("/") + 1);
+const reviewable = (paths) => paths.filter((path) => !PASS_REPORT_DIR.test(path));
 
-const validateTargetSchema = (target, mode, errors) => {
-  const deliveryKeys = [
-    "kind",
-    "locator",
-    "actual_base_ref",
-    "fixed_point_sha",
-    "head_identity",
-    "inclusive_scope",
-    "canonical_patch_hash",
-  ];
-  const standaloneKeys = [
-    "kind",
-    "locator",
-    "ordered_file_identities",
-    "inclusive_scope",
-    "ordered_bundle_content_hash",
-    "git_fixed_point",
-  ];
-  if (!exactKeys(target, mode === "delivery" ? deliveryKeys : standaloneKeys)) {
-    errors.push("malformed:normalized_target_schema");
-    return;
-  }
-  if (
-    !nonemptyString(target.locator) ||
-    !Array.isArray(target.inclusive_scope) ||
-    target.inclusive_scope.length === 0 ||
-    !sortedUniqueStrings(target.inclusive_scope)
-  ) {
-    errors.push("malformed:normalized_target_common_fields");
-  }
-  if (mode === "delivery") {
-    if (
-      target.kind !== "delivery-git-diff" ||
-      !nonemptyString(target.actual_base_ref) ||
-      !COMMIT_SHA.test(target.fixed_point_sha) ||
-      !nonemptyString(target.head_identity) ||
-      !HEX_64.test(target.canonical_patch_hash)
-    ) {
-      errors.push("malformed:delivery_target_fields");
-    }
-  } else if (
-    target.kind !== "standalone-artifact" ||
-    !sortedUniqueStrings(target.ordered_file_identities) ||
-    !HEX_64.test(target.ordered_bundle_content_hash) ||
-    target.git_fixed_point !== null ||
-    !isDeepStrictEqual(target.inclusive_scope, target.ordered_file_identities)
-  ) {
-    errors.push("malformed:standalone_target_fields");
-  }
-};
-
-export const reviewPacketIdentity = (report) => hashRecord("review-packet", [
-  report.review_run_id, report.accepted_bounds_hash, report.snapshot_hash, report.source_set_hash,
-]);
-
-const validateReviewEpoch = (report, errors) => {
-  const epoch = report.review_epoch;
-  if (!exactKeys(epoch, epoch && Object.hasOwn(epoch, "human_direction")
-      ? ["protocol", "packet_identity", "results", "adjudications", "human_direction"]
-      : ["protocol", "packet_identity", "results", "adjudications"]) ||
-      epoch.protocol !== "two-axis-v1" || !Array.isArray(epoch.results) ||
-      !Array.isArray(epoch.adjudications)) {
-    errors.push("malformed:review_epoch");
-    return;
-  }
-  let packet;
-  try { packet = reviewPacketIdentity(report); } catch { errors.push("malformed:packet_identity"); }
-  if (epoch.packet_identity !== packet) errors.push("mismatch:packet_identity");
-  const axes = new Set();
-  const reviewers = new Set();
-  const resultKeys = new Set();
-  const candidateRefs = new Set();
-  for (const result of epoch.results) {
-    if (!exactKeys(result, ["reviewer_identity", "coverage", "packet_identity", "outcome", "candidates", "unavailable_coverage", "cause", "follow_up"]) ||
-        !nonemptyString(result.reviewer_identity) || !nonemptyString(result.coverage) ||
-        result.packet_identity !== packet ||
-        !["clean", "findings", "incomplete"].includes(result.outcome) || !Array.isArray(result.candidates)) {
-      errors.push("malformed:lens_result");
-      continue;
-    }
-    const key = JSON.stringify([result.reviewer_identity, result.coverage]);
-    if (resultKeys.has(key)) errors.push("duplicate:lens_result");
-    resultKeys.add(key);
-    if (!LENS_KEYS.includes(result.coverage) || axes.has(result.coverage)) errors.push("malformed:axis_coverage");
-    axes.add(result.coverage);
-    reviewers.add(result.reviewer_identity);
-    if (result.outcome === "incomplete") errors.push("incomplete:review_epoch");
-    else if (!Array.isArray(result.unavailable_coverage) || result.unavailable_coverage.length !== 0 ||
-        result.cause !== null || result.follow_up !== null ||
-        (result.outcome === "findings") !== (result.candidates.length > 0)) errors.push("malformed:completed_coverage");
-    result.candidates.forEach((candidate, index) => {
-      candidateRefs.add(JSON.stringify([result.reviewer_identity, result.coverage, index]));
-      if (!exactKeys(candidate, ["location", "evidence_pointer", "impact", "proposed_severity", "proposed_return_route", "uncertainty"]) ||
-          ![candidate.location, candidate.evidence_pointer, candidate.impact, candidate.uncertainty].every(nonemptyString) ||
-          !["critical", "high", "medium", "low"].includes(candidate.proposed_severity) ||
-          !FINDING_ROUTES.includes(candidate.proposed_return_route)) errors.push("malformed:review_candidate");
+export const selectSourceContext = ({
+  axis,
+  changedPaths = [],
+  agentsFiles = [],
+  matchedRules = [],
+  assignedSkillFiles = [],
+  specFolderFiles = [],
+}) => {
+  let selected;
+  if (axis === "standards") {
+    const touched = reviewable(changedPaths);
+    const chain = agentsFiles.filter((file) => {
+      if (baseName(file) !== "AGENTS.md") return false;
+      const directory = file.slice(0, -"AGENTS.md".length);
+      return touched.some((path) => path.startsWith(directory));
     });
+    selected = [...chain, ...matchedRules, ...assignedSkillFiles];
+  } else if (axis === "spec") {
+    selected = specFolderFiles.filter((file) => SPEC_SOURCES.includes(baseName(file)));
+  } else {
+    throw new TypeError(`unknown review axis "${axis}"`);
   }
-  if (axes.size !== LENS_KEYS.length || reviewers.size !== LENS_KEYS.length) errors.push("incomplete:axis_coverage");
-  const accounted = new Set();
-  const accepted = new Set();
-  for (const item of epoch.adjudications) {
-    if (!exactKeys(item, ["candidate_refs", "finding_id", "evidence"]) || !Array.isArray(item.candidate_refs) ||
-        item.candidate_refs.length === 0 || !nonemptyString(item.evidence) ||
-        !(item.finding_id === null || nonemptyString(item.finding_id))) {
-      errors.push("malformed:adjudication");
-      continue;
-    }
-    for (const ref of item.candidate_refs) {
-      if (!candidateRefs.has(ref) || accounted.has(ref)) errors.push("mismatch:candidate_accounting");
-      accounted.add(ref);
-    }
-    if (item.finding_id !== null) accepted.add(item.finding_id);
-  }
-  if (accounted.size !== candidateRefs.size) errors.push("incomplete:candidate_accounting");
-  const findings = new Set(Array.isArray(report.findings) ? report.findings.map(finding => finding.id) : []);
-  if (!isDeepStrictEqual(accepted, findings)) errors.push("mismatch:accepted_provenance");
+  return sortUtf8(new Set(reviewable(selected)));
 };
 
-const validateReportSemantics = (report, errors) => {
-  if (!exactKeys(report, requiredReportFields)) {
-    errors.push("malformed:report_schema");
-    return;
+// Schema checks push "<field path>: <problem>" messages into `errors`.
+const fieldPath = (path, key) => (path ? `${path}.${key}` : key);
+const is = (accepts, expected) => (value, path, errors) => {
+  if (!accepts(value)) errors.push(`${path}: must be ${expected}`);
+};
+const oneOf = (values) => is((value) => values.includes(value), values.join(" | "));
+const text = is(nonemptyString, "a non-empty string");
+const commitSha = is((value) => COMMIT_SHA.test(value), "a commit SHA");
+const shape = (fields) => (value, path, errors) => {
+  if (!isObject(value)) return void errors.push(`${path || "report"}: must be an object`);
+  for (const key of Object.keys(value)) {
+    if (!Object.hasOwn(fields, key)) errors.push(`${fieldPath(path, key)}: unknown field`);
   }
-  validateReviewEpoch(report, errors);
-  if (!exactKeys(report.lens_outcomes, LENS_KEYS)) {
-    errors.push("malformed:lens_keys");
-  } else {
-    for (const [lens, outcome] of Object.entries(report.lens_outcomes)) {
-      if (outcome !== "clean" && outcome !== "findings") {
-        errors.push(`malformed:lens_outcome:${lens}`);
-      }
-    }
+  for (const [key, check] of Object.entries(fields)) check(value[key], fieldPath(path, key), errors);
+};
+const listOf = (item, { nonEmpty = false } = {}) => (value, path, errors) => {
+  if (!Array.isArray(value) || (nonEmpty && value.length === 0)) {
+    return void errors.push(`${path}: must be ${nonEmpty ? "a non-empty" : "an"} array`);
   }
-
-  if (!Array.isArray(report.findings)) {
-    errors.push("malformed:findings");
-  } else {
-    const findingKeys = [
-      "id",
-      "lens",
-      "severity",
-      "location",
-      "impact",
-      "evidence",
-      "action",
-      "return_route",
-    ];
-    const ids = new Set();
-    const findingLenses = new Set();
-    for (const finding of report.findings) {
-      if (
-        !exactKeys(finding, findingKeys) ||
-        !/^[a-z0-9][a-z0-9._-]*$/u.test(finding.id ?? "") ||
-        ids.has(finding.id) ||
-        !LENS_KEYS.includes(finding.lens) ||
-        !["critical", "high", "medium", "low"].includes(finding.severity) ||
-        ![finding.location, finding.impact, finding.evidence, finding.action].every(
-          nonemptyString,
-        )
-      ) {
-        errors.push("malformed:finding");
-        continue;
-      }
-      ids.add(finding.id);
-      findingLenses.add(finding.lens);
-    }
-    if (exactKeys(report.lens_outcomes, LENS_KEYS)) {
-      for (const lens of LENS_KEYS) {
-        const hasFindings = findingLenses.has(lens);
-        if ((report.lens_outcomes[lens] === "findings") !== hasFindings) {
-          errors.push(`mismatch:lens_findings:${lens}`);
-        }
-      }
-    }
-  }
-
-  if (
-    !exactKeys(report.routing, ["primary", "secondary_architecture_follow_up"]) ||
-    ![
-      "human_steering_required",
-      "debugging",
-      "implementation",
-      "debt_follow_up",
-      "docs_ingest",
-      "closeout",
-    ].includes(report.routing?.primary) ||
-    typeof report.routing?.secondary_architecture_follow_up !== "boolean"
-  ) {
-    errors.push("malformed:routing");
-  } else {
-    try {
-      if (!isDeepStrictEqual(report.routing, deriveReviewRouting(report.findings))) {
-        errors.push("mismatch:routing");
-      }
-    } catch {
-      errors.push("malformed:finding_return_route");
-    }
-  }
-
-  const validationKeys = [
-    "command",
-    "isolation",
-    "before_hash",
-    "after_hash",
-    "outcome",
-    "evidence",
-  ];
-  if (!Array.isArray(report.validation)) {
-    errors.push("malformed:validation");
-  } else {
-    for (const validation of report.validation) {
-      if (
-        !exactKeys(validation, validationKeys) ||
-        !nonemptyString(validation.command) ||
-        !["proven-no-write", "disposable-checkout", "disposable-snapshot"].includes(
-          validation.isolation,
-        ) ||
-        !HEX_64.test(validation.before_hash ?? "") ||
-        validation.before_hash !== validation.after_hash ||
-        !["passed", "failed", "skipped"].includes(validation.outcome) ||
-        !nonemptyString(validation.evidence)
-      ) {
-        errors.push("malformed:validation_record");
-      }
-    }
-  }
+  value.forEach((entry, index) => item(entry, `${path}[${index}]`, errors));
 };
 
-const validateFrontmatter = (
-  frontmatter,
-  report,
-  expected,
-  { lineageId, runId, snapshotHash },
-  errors,
-) => {
-  if (!exactKeys(frontmatter, FRONTMATTER_KEYS)) {
-    errors.push("malformed:frontmatter_schema");
-    return;
-  }
-  let date;
-  try {
-    date = reportDate(report.reviewed_at);
-  } catch {
-    errors.push("malformed:frontmatter_reviewed_at");
-  }
-  const required = {
-    title: `${reviewScopeSlug(lineageId)} review report`,
-    domain: expected.wikiDomain,
-    type: "review-report",
-    surface: "project",
-    permission: "internal",
-    links: [],
-    review_lineage_id: lineageId,
-    review_run_id: runId,
-    review_mode: report.mode,
-    reviewed_at: report.reviewed_at,
-    accepted_bounds_identity: report.accepted_bounds_identity,
-    accepted_bounds_hash: report.accepted_bounds_hash,
-    snapshot_hash: snapshotHash,
-    created: date,
-    updated: date,
-  };
-  for (const key of FRONTMATTER_KEYS) {
-    if (!isDeepStrictEqual(frontmatter[key], required[key])) {
-      errors.push(`mismatch:frontmatter:${key}`);
-    }
-  }
-};
+const axisReport = shape({
+  lens_result: oneOf(["clean", "findings"]),
+  attempts: listOf(shape({
+    engine: oneOf(ENGINES),
+    model: text,
+    seconds: is((value) => Number.isFinite(value) && value >= 0, "a non-negative number"),
+    outcome: text,
+    usage: is((value) => value === null || isObject(value), "an object or null"),
+  }), { nonEmpty: true }),
+});
 
-const inspectRetainedPass = (candidate, expected) => {
+const passReportShape = shape({
+  schema: oneOf(["pass-report-v1"]),
+  run_id: text,
+  ordinal: is((value) => value === null || (Number.isSafeInteger(value) && value > 0), "a positive integer or null"),
+  mode: oneOf(["delivery", "standalone"]),
+  base: commitSha,
+  head: commitSha,
+  packet_identity: is((value) => HEX_64.test(value), "64 lowercase hexadecimal digits"),
+  axes: shape({ standards: axisReport, spec: axisReport }),
+  adjudication: shape({
+    subagent_tokens: is((value) => Number.isSafeInteger(value) && value >= 0, "a non-negative integer"),
+    findings: listOf(shape({
+      id: text,
+      axis: oneOf(AXES),
+      severity: oneOf(SEVERITIES),
+      location: text,
+      evidence: text,
+      action: text,
+      return_route: oneOf(FINDING_ROUTES),
+    })),
+    rejected: listOf(shape({ candidate_ref: text, reason: text })),
+  }),
+  route: shape({ primary: oneOf([...FINDING_ROUTES, "closeout"]), secondary_debt: oneOf([true, false]) }),
+});
+
+export const validatePassReport = (report) => {
   const errors = [];
-  if (Object.hasOwn(candidate, "report")) {
-    errors.push("unexpected:detached_report_sidecar");
+  passReportShape(report, "", errors);
+  if (errors.length > 0) return { ok: false, errors };
+  if ((report.mode === "delivery") !== (report.ordinal !== null)) {
+    errors.push("ordinal: must be a positive integer in delivery mode and null in standalone mode");
   }
-  let frontmatter;
-  let report;
-  try {
-    ({ frontmatter, report } = parseReviewReport(candidate.reportBytes));
-  } catch {
-    return { valid: false, errors: [...errors, "malformed_report_blob"] };
+  const { findings } = report.adjudication;
+  if (new Set(findings.map(({ id }) => id)).size !== findings.length) {
+    errors.push("adjudication.findings: finding ids must be unique");
   }
-  validateReportSemantics(report, errors);
-  const assignments = expected.assignedCoverage;
-  const results = report.review_epoch?.results;
-  if (!Array.isArray(assignments) || assignments.length === 0 ||
-      assignments.some(item => !exactKeys(item, ["reviewer_identity", "coverage"]) ||
-        !nonemptyString(item.reviewer_identity) || !nonemptyString(item.coverage)) ||
-      !Array.isArray(results) || results.some(item => item === null || typeof item !== "object")) {
-    errors.push("missing:assigned_coverage");
-  } else {
-    const assignmentKey = ({ reviewer_identity, coverage }) => JSON.stringify([reviewer_identity, coverage]);
-    if (!isDeepStrictEqual(sortUtf8(assignments.map(assignmentKey)), sortUtf8(results.map(assignmentKey)))) {
-      errors.push("mismatch:assigned_coverage");
-    }
+  const derived = deriveReviewRouting(findings);
+  if (report.route.primary !== derived.primary || report.route.secondary_debt !== derived.secondary_architecture_follow_up) {
+    errors.push(`route: must equal the route derived from findings (${derived.primary}, secondary_debt ${derived.secondary_architecture_follow_up})`);
   }
-  validateTargetSchema(report.normalized_target, expected.mode, errors);
-
-  let currentTarget;
-  let currentSources;
-  try {
-    currentTarget = normalizeReviewTarget(expected.mode, expected.targetEvidence);
-    currentSources = normalizeReviewSources(expected.sourceEvidence);
-  } catch {
-    return { valid: false, errors: [...errors, "malformed_current_evidence"] };
-  }
-  const scopeEntries = currentTarget.inclusive_scope;
-  const boundsHash = acceptedBoundsHash(
-    expected.acceptedBoundsIdentity,
-    scopeEntries,
-  );
-  const sourceHash = sourceSetHash(currentSources);
-  let lineageId;
-  try {
-    lineageId =
-      expected.mode === "delivery"
-        ? deliveryLineageId(expected.deliveryGoalIdentity)
-        : standaloneLineageId(currentTarget.locator, boundsHash);
-  } catch {
-    errors.push("invalid:delivery_goal_identity");
-  }
-  const snapshotHash =
-    expected.mode === "delivery"
-      ? deliverySnapshotHash({
-          locator: currentTarget.locator,
-          actualBaseRef: currentTarget.actual_base_ref,
-          fixedPointSha: currentTarget.fixed_point_sha,
-          headIdentity: currentTarget.head_identity,
-          scopeEntries,
-          canonicalPatchHash: currentTarget.canonical_patch_hash,
-        })
-      : hashRecord("standalone-snapshot", [
-          currentTarget.locator,
-          hashRecord("ordered-files", currentTarget.ordered_file_identities),
-          inclusiveScopeHash(scopeEntries),
-          currentTarget.ordered_bundle_content_hash,
-          "no-git-fixed-point",
-        ]);
-  const ordinal =
-    expected.mode === "delivery" ? expected.reviewOrdinal : null;
-  let runId;
-  try {
-    runId =
-      expected.mode === "delivery"
-        ? deliveryRunId(lineageId, ordinal)
-        : standaloneRunId(lineageId, snapshotHash);
-  } catch {
-    errors.push("invalid:review_ordinal");
-  }
-  let reportPath;
-  try {
-    reportPath = reviewReportPath({
-      lineageId,
-      reviewedAt: report.reviewed_at,
-      snapshotHash,
-    });
-  } catch {
-    errors.push("invalid:reviewed_at");
-  }
-  try {
-    validateFrontmatter(
-      frontmatter,
-      report,
-      expected,
-      { lineageId, runId, snapshotHash },
-      errors,
-    );
-  } catch {
-    errors.push("malformed:frontmatter_values");
-  }
-
-  const exactFields = [
-    ["mode", expected.mode],
-    ["review_lineage_id", lineageId],
-    ["review_run_id", runId],
-    ["accepted_bounds_identity", expected.acceptedBoundsIdentity],
-    ["accepted_bounds_hash", boundsHash],
-    ["snapshot_hash", snapshotHash],
-    ["source_set_hash", sourceHash],
-  ];
-  for (const [field, value] of exactFields) {
-    if (report[field] !== value) errors.push(`mismatch:${field}`);
-  }
-  if (!isDeepStrictEqual(report.normalized_target, currentTarget)) {
-    errors.push("mismatch:normalized_target");
-  }
-  const envelopePaths = reportPath
-    ? [reportPath, ...expected.auxiliaryEnvelopePaths]
-    : expected.auxiliaryEnvelopePaths;
-  if (!isDeepStrictEqual(report.excluded_envelope, envelopePaths)) {
-    errors.push("mismatch:excluded_envelope");
-  }
-  if (!isDeepStrictEqual(report.source_paths_and_hashes, currentSources)) {
-    errors.push("mismatch:source_paths_and_hashes");
-  }
-
-  if (candidate.reportPath !== reportPath) {
-    errors.push("mismatch:report_path");
-  }
-  if (
-    !Buffer.isBuffer(candidate.reportBytes) ||
-    candidate.reportSha256 !== sha256Hex(candidate.reportBytes)
-  ) {
-    errors.push("mismatch:report_sha256");
-  }
-  if (
-    !Buffer.isBuffer(candidate.resolvedReportBytes) ||
-    !candidate.reportBytes.equals(candidate.resolvedReportBytes)
-  ) {
-    errors.push("mismatch:resolved_report_bytes");
-  }
-  if (candidate.refContainsCommit !== true) errors.push("ref_missing_commit");
-  if (!COMMIT_SHA.test(candidate.reportCommitSha)) {
-    errors.push("invalid:report_commit_sha");
-  }
-  if (!expected.approvedRetainedRefs.includes(candidate.retainedRef)) {
-    errors.push("unapproved:retained_ref");
-  }
-
-  const changedPaths = new Set(
-    Array.isArray(candidate.commitPaths) ? candidate.commitPaths : [],
-  );
-  const allowedPaths = new Set(envelopePaths);
-  if (!changedPaths.has(reportPath)) errors.push("commit_missing_report");
-  for (const path of changedPaths) {
-    if (!allowedPaths.has(path)) errors.push(`commit_path_outside_envelope:${path}`);
-  }
-
-  if (expected.mode === "delivery") {
-    const direction = report.review_epoch?.human_direction;
-    const directedOrdinal = exactKeys(direction, ["evidence", "authorized_ordinal"]) &&
-      nonemptyString(direction.evidence) && direction.authorized_ordinal === ordinal &&
-      isDeepStrictEqual(direction, expected.humanReviewDirection);
-    if (direction !== undefined && !directedOrdinal) errors.push("invalid:human_review_direction");
-    const precedingRepairEvidence = expected.precedingRepairEvidence;
-    const hasPrecedingRepairEvidence =
-      precedingRepairEvidence !== null &&
-      typeof precedingRepairEvidence === "object" &&
-      exactKeys(precedingRepairEvidence, ["ordinal", "evidence"]) &&
-      Number.isSafeInteger(precedingRepairEvidence.ordinal) &&
-      precedingRepairEvidence.ordinal > 0 &&
-      nonemptyString(precedingRepairEvidence.evidence);
-    const expectedPrecedingRepairOrdinal = hasPrecedingRepairEvidence
-      ? precedingRepairEvidence.ordinal
-      : null;
-    const validPrecedingRepair = ordinal === 1
-      ? expectedPrecedingRepairOrdinal === null
-      : expectedPrecedingRepairOrdinal === ordinal - 1 ||
-        (directedOrdinal && expectedPrecedingRepairOrdinal === null);
-    if (
-      report.delivery_goal_identity !== expected.deliveryGoalIdentity ||
-      report.review_ordinal !== ordinal ||
-      !Number.isSafeInteger(ordinal) ||
-      ordinal < 1 ||
-      (ordinal > 2 && !directedOrdinal) ||
-      !validPrecedingRepair ||
-      report.preceding_repair_ordinal !== expectedPrecedingRepairOrdinal
-    ) {
-      errors.push("invalid:delivery_identity_or_ordinal");
-    }
-  } else if (
-    report.delivery_goal_identity !== null ||
-    report.review_ordinal !== null ||
-    report.preceding_repair_ordinal !== null
-  ) {
-    errors.push("invalid:standalone_delivery_fields");
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-    derived: { lineageId, runId, ordinal, reportPath },
-  };
+  return errors.length === 0 ? { ok: true } : { ok: false, errors };
 };
 
-export const validateRetainedPass = (candidate, expected) => {
-  const { valid, errors } = inspectRetainedPass(candidate, expected);
-  return { valid, errors };
-};
-
-const authoritySignature = (candidate) =>
-  [
-    candidate.reportPath,
-    candidate.reportSha256,
-    candidate.reportCommitSha,
-  ].join("\0");
-
-export const resolveRetainedRun = (entries) => {
-  const valid = entries
-    .map((entry) => ({ entry, inspection: inspectRetainedPass(entry.candidate, entry.expected) }))
-    .filter(({ inspection }) => inspection.valid);
-  if (valid.length === 0) return { status: "none", pass: null };
-
-  const runKeys = new Set(
-    valid.map(({ inspection }) =>
-      [inspection.derived.lineageId, inspection.derived.runId].join("\0"),
-    ),
-  );
-  if (runKeys.size !== 1) return { status: "mixed_runs", pass: null };
-
-  const first = authoritySignature(valid[0].entry.candidate);
-  if (valid.every(({ entry }) => authoritySignature(entry.candidate) === first)) {
-    return {
-      status: valid.length === 1 ? "unique" : "reuse",
-      pass: valid[0].entry,
-    };
-  }
-  return { status: "conflict", pass: null };
-};
-
-export const recoverDeliveryCount = (entries, lineageId) => {
-  const matching = entries
-    .map((entry) => ({ entry, inspection: inspectRetainedPass(entry.candidate, entry.expected) }))
-    .filter(
-      ({ entry, inspection }) =>
-        entry.expected.mode === "delivery" &&
-        inspection.valid &&
-        inspection.derived.lineageId === lineageId,
-    );
-  const groups = new Map();
-  for (const { entry, inspection } of matching) {
-    const group = groups.get(inspection.derived.runId) ?? [];
-    group.push(entry);
-    groups.set(inspection.derived.runId, group);
-  }
-  let reviewCount = 0;
-  for (const group of groups.values()) {
-    const resolved = resolveRetainedRun(group);
-    if (resolved.status === "conflict") {
-      return { status: "conflict", reviewCount: null };
-    }
-    if (resolved.pass) {
-      const inspected = inspectRetainedPass(
-        resolved.pass.candidate,
-        resolved.pass.expected,
-      );
-      reviewCount = Math.max(reviewCount, inspected.derived.ordinal);
-    }
-  }
-  return { status: "ok", reviewCount };
-};
+// `entries` are the goal's `reviews/` directory entries: `{ name, report }`
+// for parsed JSON or `{ name, error }` for a parse failure. Only valid reports
+// whose ordinal matches their `pass-<n>.json` name count (delivery mode only).
+export const recoverPassCount = (entries) =>
+  entries.filter(({ name, report }) => {
+    const match = PASS_REPORT_NAME.exec(name);
+    return match !== null && validatePassReport(report).ok && report.ordinal === Number(match[1]);
+  }).length;
