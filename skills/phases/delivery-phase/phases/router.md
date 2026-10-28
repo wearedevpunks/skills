@@ -38,9 +38,8 @@ Choose one next phase from current durable authority.
 7. Require the retained execution plan through the
    [Plan Complete gate](../references/artifact-state.md#plan-complete). A
    missing or stale plan selects [spec.md](spec.md), which routes it to
-   Requirements Phase; delivery creates no plan. Incomplete plan work,
-   invalidated implementation evidence or an observed provider lifecycle fact
-   lacking exact readback selects [implement.md](implement.md).
+   Requirements Phase; delivery creates no plan. Incomplete plan work or
+   invalidated implementation evidence selects [implement.md](implement.md).
 8. Every completed implementation selects [review.md](review.md) until a valid
    Pass Report covers this delivery. No delivery
    reaches docs ingest or closeout without one. `review-phase` starts every
@@ -50,6 +49,13 @@ Choose one next phase from current durable authority.
    checks proceed without automatically reopening Code Review.
 9. Remaining docs-affecting work selects [docs-ingest.md](docs-ingest.md), otherwise
    [closeout.md](closeout.md). A fresh completed closeout needs no repeated mutation.
+
+**Ticket live state.** In `provider-task` mode, every phase records each
+[Delivery Checkpoint](../../../agnostic/requirements/write-backlog/references/delivery-status.md#delivery-checkpoints)
+it passes through `write-backlog`'s delivery-status branch, with exact
+readback, before its exit. On every entry, the router reads back the linked
+Tasks first; a stale ticket gets its missing fact recorded before any phase is
+selected.
 
 Read only the selected phase. Each exit emits the common Phase Result. Full
 Delivery re-enters here; other modes stop at the requested boundary. An unclear

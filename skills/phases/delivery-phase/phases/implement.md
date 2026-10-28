@@ -20,8 +20,8 @@ silently renaming them.
   `not_applicable` identity slots, `unprojected` relations, and its sync-skip
   reason.
 - For provider-task work, immediately route each directly observed work start,
-  blocker, pull request, merge, staging deployment, or production deployment
-  through `write-backlog`'s
+  repair resume, blocker, pull request, merge, staging deployment, or production
+  deployment through `write-backlog`'s
   [delivery-status.md](../../../agnostic/requirements/write-backlog/references/delivery-status.md) branch.
   Require exact readback before advancing the Task. Planning-only work emits no
   provider lifecycle mutation or readback claim.

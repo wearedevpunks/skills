@@ -10,7 +10,11 @@ a gate, substantially redesigns implementation, or requires missing authority.
 1. Record the blocked action, supporting evidence, and exact decision needed in
    a durable state artifact.
 2. Put its Context Pointer and exact blocker in the compact Delivery Handoff.
-3. Return `human_steering_required` and stop.
+3. In `provider-task` mode, record the blocked fact with the decision needed on
+   every linked Task through `write-backlog`'s
+   [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md#delivery-checkpoints),
+   and read it back.
+4. Return `human_steering_required` and stop.
 
 ## Completion Evidence
 

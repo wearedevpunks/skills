@@ -32,6 +32,9 @@ docs ingest or no-op, and validation are complete.
      known and differs from the PR author; otherwise report who must approve.
   5. Read back: the Managed Region bytes match, `isDraft` is false, and the
      review request is present when step 4 ran.
+  6. In `provider-task` mode, record the pull request state `ready` and the
+     review request on every linked Task through `write-backlog`'s
+     delivery-status branch, and read it back.
 
   A failed write stops closeout with the exact failed step; a rerun starts at
   step 1. Merge stays with the human.

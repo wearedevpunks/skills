@@ -13,9 +13,9 @@ Task, or provider object.
 The delivery caller reports only facts it directly observed. Accept one or more
 of these facts, each with its evidence source and observation time:
 
-- work started or changed to in-progress
+- work started, resumed, or changed to in-progress
 - blocked, including the blocker reason and evidence
-- review evidence and observed result
+- review started; review evidence and observed result
 - pull request URL and observed state
 - merge evidence
 - staging deployment evidence
@@ -26,6 +26,28 @@ For each newly observed fact, immediately record the exact linked Story or Task
 delta through the provider adapter, then read back that fact before continuing.
 Do not delay a start, blocker, review, or pull request update until a later
 delivery event.
+
+## Delivery Checkpoints
+
+A provider-task delivery passes these checkpoints. Each one is a directly
+observed fact for every linked Task it touches, recorded and read back when
+the checkpoint passes, in the phase that passes it:
+
+| Checkpoint | Fact |
+| --- | --- |
+| Worker dispatch starts a Task | work started |
+| Draft PR created or reused | pull request URL, state `draft` |
+| `review_due` persisted | review started |
+| Pass Report retained | review result: Pass Report path, `route.primary`, open finding count |
+| Route opens repair or debugging | work resumed, with the routed finding ids |
+| `human_steering_required` or another exact blocker | blocked, with the decision or blocker needed |
+| User direction resolves a blocker | work resumed |
+| Closeout PR handover read back | pull request state `ready`, review requested |
+| Merge, staging or production observed | merge, staging or production evidence |
+
+The ticket is live when its readback matches the latest checkpoint the
+delivery passed. A ticket that lags is stale; the delivery records the missing
+fact before it enters the next phase.
 
 ## Evidence Boundaries
 

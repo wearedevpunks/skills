@@ -103,6 +103,9 @@ a missing or stale plan routes there through `phases/spec.md`.
 - Accepted repair follows [review transition](../phases/review.md): retain Focused
   Repair Validation and affected Verification evidence; only a risk-triggered
   pass adds a Pass Report.
+- In `provider-task` mode, exact `write-backlog` delivery-status readback shows
+  review started, the review result, and the routed state on every linked Task
+  ([Ticket Live State](../phases/review.md#ticket-live-state)).
 
 ## Debug Complete
 

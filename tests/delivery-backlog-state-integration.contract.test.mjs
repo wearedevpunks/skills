@@ -86,3 +86,29 @@ test("closeout proves the final reviewed and documented tree before provider clo
     /after[\s\S]*exact-tree[\s\S]*(?:close|complete|update)[\s\S]*provider work[\s\S]*goal/iu,
   );
 });
+
+test("ticket live state follows delivery through review, blockers and closeout", () => {
+  const status = read(
+    "skills/agnostic/requirements/write-backlog/references/delivery-status.md",
+  );
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const review = read("skills/phases/delivery-phase/phases/review.md");
+  const steering = read("skills/phases/delivery-phase/phases/human-steering.md");
+  const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
+
+  for (const checkpoint of [
+    /`review_due` persisted \| review started/u,
+    /Pass Report retained \| review result/u,
+    /Route opens repair or debugging \| work resumed/u,
+    /`human_steering_required`[^|]*\| blocked/u,
+    /Closeout PR handover read back \| pull request state `ready`/u,
+  ]) {
+    assert.match(status, checkpoint);
+  }
+  assert.match(status, /stale[\s\S]*before it enters the next phase/iu);
+  assert.match(router, /Ticket live state[\s\S]*every phase[\s\S]*readback[\s\S]*before its exit/iu);
+  assert.match(router, /reads back the linked\s+Tasks first/iu);
+  assert.match(review, /## Ticket Live State[\s\S]*review started[\s\S]*review result[\s\S]*blocked/iu);
+  assert.match(steering, /blocked fact[\s\S]*delivery-status/iu);
+  assert.match(closeout, /pull request state `ready`[\s\S]*delivery-status/iu);
+});

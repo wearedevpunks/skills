@@ -31,7 +31,9 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    Reports and pending work.
 5. For an eligible pass, persist `review_due` and the
    `$review-phase` invocation context from the
-   [phase-handoff reference](../references/phase-handoff.md#review-invocation-context). Full
+   [phase-handoff reference](../references/phase-handoff.md#review-invocation-context).
+   In `provider-task` mode, record the review started fact on every linked
+   Task (see [Ticket Live State](#ticket-live-state)). Full
    delivery invokes it immediately; other modes return that context and stop.
    Only the Pass Report that `retain` commits completes the pass.
 
@@ -72,6 +74,23 @@ route table: follow the transition it names for `route.primary` and
 `route.secondary_debt`, including its one handoff write that opens a repair. For
 primary `human_steering_required`, preserve the returned decision record and
 stop; delivery never opens a repair state from it.
+
+## Ticket Live State
+
+In `provider-task` mode, the linked Tasks follow the review through
+`write-backlog`'s
+[Delivery Checkpoints](../../../agnostic/requirements/write-backlog/references/delivery-status.md#delivery-checkpoints),
+each with exact readback before the next step:
+
+1. `review_due` persisted: review started.
+2. Pass Report returned: review result with the Pass Report path,
+   `route.primary` and open finding count.
+3. The route acts: work resumed with the finding ids for repair or debugging;
+   blocked with the decision needed for `human_steering_required` or
+   `review_budget_exhausted`.
+
+Completion: every linked Task's readback shows the review state of the latest
+step, so no ticket still says in progress while review runs.
 
 ## Capture Debt Follow-Up
 
