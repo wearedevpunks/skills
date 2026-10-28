@@ -57,5 +57,5 @@ Before final report or PR creation:
 
 1. Verify every UI task has a linked before/after pair or an explicit reason the pair is impossible.
 2. Verify `IMPLEMENTATION-NOTES.md` contains durable links, not local-only evidence.
-3. Include a `UI Evidence` section in the PR body, PR comment, or PR-ready handoff snippet with the same links.
-4. If PR creation is out of scope for the run, leave the exact PR-ready `UI Evidence` snippet in `IMPLEMENTATION-NOTES.md`.
+3. Include a `### UI Evidence` subsection under `## Testing` in the draft PR body, with the same links, per [pr-body.md](pr-body.md). If the PR body cannot be updated, use a PR comment or PR-ready handoff snippet instead.
+4. If PR creation is out of scope for the run, leave the exact PR-ready `### UI Evidence` snippet in `IMPLEMENTATION-NOTES.md`.

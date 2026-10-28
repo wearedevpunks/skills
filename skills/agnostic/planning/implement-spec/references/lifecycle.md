@@ -191,6 +191,11 @@ not a locally prepared URL. Route observed lifecycle facts through the existing
 `write-backlog` contract. A provider failure records the exact visibility blocker;
 independent eligible work can continue within its accepted scope.
 
+Each draft PR create or update writes the body defined in
+[pr-body.md](pr-body.md): concrete `Testing`, `Risk`, and `How to revert`
+sections built from evidence observed so far. An early body names each check
+not yet run; every later update replaces those names with observed results.
+
 ## 7. Parent-owned shared upkeep
 
 The parent reconciles worker Task Results into shared summaries asynchronously
@@ -321,7 +326,8 @@ Before reporting back:
 - preserve the current blocked or incomplete `SPEC.md` and `PLAN.md` statuses
   when any acceptance item, task, checkpoint, or final architecture closure is
   unmet or blocked
-- ensure the PR body, PR comment, or PR-ready handoff snippet includes the same UI evidence links when UI changed
+- ensure the draft PR body matches [pr-body.md](pr-body.md): final `Testing`, `Risk`, and `How to revert` reflect the finalized evidence, and `Testing` carries the `UI Evidence` links when UI changed
+- when the PR body cannot be updated, a PR comment or PR-ready handoff snippet carries the same UI evidence links
 
 ## 13. Final report shape
 

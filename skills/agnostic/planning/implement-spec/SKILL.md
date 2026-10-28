@@ -105,11 +105,14 @@ Workers write on that recorded branch under exclusive Active Write Scopes.
 One plan creates at most one pull request per Touched Repository; split or
 stack PRs only when the user explicitly asks. Every wave, repair, and review fix
 lands on that repository's branch and PR, even when the plan groups tasks into
-waves or backlog items.
+waves or backlog items. Every draft PR body create or update follows
+[references/pr-body.md](references/pr-body.md): `Testing`, `Risk`, and
+`How to revert` with concrete content.
 
 ## Advanced features
 
 - Shared lifecycle, notes contract, tech-debt rules, acceptance audit, finalization: see [references/lifecycle.md](references/lifecycle.md)
+- Draft PR body contract (Testing, Risk, How to revert): see [references/pr-body.md](references/pr-body.md)
 - UI before/after screenshot evidence and PR handoff links: see [references/ui-screenshot-evidence.md](references/ui-screenshot-evidence.md)
 - Supported-runtime proof and cleanup contract: see [references/runtime-product-validation.md](references/runtime-product-validation.md)
 - Validation scope, Verification Tiers, Owned Stack and CI ownership: see [references/validation-scope.md](references/validation-scope.md)
