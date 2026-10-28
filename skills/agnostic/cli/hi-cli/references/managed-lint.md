@@ -146,6 +146,30 @@ of a scope still needs coverage. Shared settings, policy, routing, and
 toolchain inputs trigger their dependent owners even outside owned source.
 Existing Python tooling keeps its own routing while honoring shared exclusions.
 
+## Decline a Lint Asset
+
+When a project owns a capability that a Pack's lint asset would also install,
+decline that one asset instead of removing the Pack or reverting update output.
+For example, Effect diagnostics that run on tsrs instead of the
+`effect-tsgo-recommended` Oxlint backend. List its id in settings
+`lint.disabledAssets`; the ids are the `lint-<id>` Registry Items named in
+`.devpunks/installed.json` and `selection.json`:
+
+```json
+{ "lint": { "disabledAssets": ["effect-tsgo-recommended"] } }
+```
+
+`hi update` then installs nothing of that asset: no oxlint config extension,
+rules, plugin files, prepare command, or required devDependency. It reports the
+asset's previously installed paths as stale and keeps the project's own scripts
+and dependencies. An id the Baseline no longer provides is ignored, and
+`hi diff` reports it as information. Complete this when `selection.json` no
+longer lists the asset and `hi check --json` reports no dependency finding for it.
+
+A missing required devDependency is added with the range the repository root
+`package.json` declares for it, and only otherwise with the Baseline seed. A
+declared version always stays as it is.
+
 ## Reconcile Lint Adoption
 
 1. Preview selected scopes/exclusions, preserved policy inputs, effective configs,
@@ -179,6 +203,7 @@ Existing Python tooling keeps its own routing while honoring shared exclusions.
 | Lint findings | Retain file/rule/severity/location and threshold; repair only authorized source targets. Findings do not mean adoption failed operationally. |
 | Config/tool/process failure | Report exact owner, cwd, config, tool/version, command, and diagnostics; repair that boundary before dependent adoption. |
 | Command/policy/ownership conflict | Preserve the named command or file, explain competing authority, and resolve only the outstanding decision within existing authorization. |
+| Asset conflicts with a project-owned toolchain | Name the asset id and the project's own route; propose `lint.disabledAssets` ([Decline a Lint Asset](#decline-a-lint-asset)) instead of reverting Built output. |
 | Healthy routes | Report the observed health scope. A `current` `hi check` status alone does not prove lint health. |
 
 `hi check` and `hi diff` stay read-only: report the smallest next action and affected paths.
