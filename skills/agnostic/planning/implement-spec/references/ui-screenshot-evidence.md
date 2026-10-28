@@ -10,7 +10,7 @@ For each changed UI surface:
 2. Capture an **after** screenshot from the same route, viewport, fixture, and state after the change.
 3. Store screenshots as durable assets with `repo-asset-management`: backlog attachments first, then repo-provider fallback links.
 4. Link the before/after asset URLs in `IMPLEMENTATION-NOTES.md`.
-5. Carry the same links into the PR body, PR comment, or PR-ready handoff snippet.
+5. Carry the same links into the `$pr` Evidence section as its Before/After entries, or into the PR-ready handoff snippet when the run has no PR.
 
 Do not link local temp files, ephemeral browser session URLs, or unpushed workspace paths as final evidence.
 
@@ -53,9 +53,9 @@ If provider upload details are needed, load `repo-asset-management`; do not inve
 
 ## Finalization and PR Handoff
 
-Before final report or PR creation:
+Before the final report or PR body refresh:
 
 1. Verify every UI task has a linked before/after pair or an explicit reason the pair is impossible.
 2. Verify `IMPLEMENTATION-NOTES.md` contains durable links, not local-only evidence.
-3. Include a `UI Evidence` section in the PR body, PR comment, or PR-ready handoff snippet with the same links.
+3. When a PR exists, the `$pr` Evidence section carries the same links as its Before/After entries.
 4. If PR creation is out of scope for the run, leave the exact PR-ready `UI Evidence` snippet in `IMPLEMENTATION-NOTES.md`.

@@ -23,6 +23,7 @@ const directMattSkills = [
   "skills/agnostic/research/improve-codebase-architecture",
   "skills/agnostic/research/prototype",
   "skills/misc/wait-what",
+  "skills/misc/pr",
 ];
 
 test("every direct Matt-derived skill keeps the upstream license and provenance", () => {

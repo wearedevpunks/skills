@@ -33,6 +33,7 @@ with upstream files.
 | `agnostic/research/improve-codebase-architecture` | `engineering/improve-codebase-architecture` | adapted | [`62f43a18`](https://github.com/mattpocock/skills/tree/62f43a18177be6ec82da242e59ffbc490a4c22ea/skills/engineering/improve-codebase-architecture) |
 | `agnostic/research/prototype` | `engineering/prototype` | adapted | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/engineering/prototype) |
 | `misc/wait-what` | `productivity/wait-what` | adapted | [`2ffb184f`](https://github.com/mattpocock/skills/tree/2ffb184ffbb752faa664c0b204f3c9241b1428e9/skills/productivity/wait-what) |
+| `misc/pr` | `engineering/pr` | adapted | [`e484a809`](https://github.com/mattpocock/skills/tree/e484a8095543718ced436b9b49a8160ed4554000/skills/engineering/pr) |
 
 The retained writing skills were in upstream `skills/in-progress` at import
 time, so they remain licensed and attributed even though they are not part of

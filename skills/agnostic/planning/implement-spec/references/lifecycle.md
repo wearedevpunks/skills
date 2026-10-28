@@ -180,8 +180,15 @@ now. Otherwise continue implementation and perform this check immediately after
 the first meaningful in-scope commit is pushed. An empty visibility commit is
 never a qualifying change.
 
+Write the provisional body with `$pr` on every create or reuse: Summary from
+`PLAN.md`, Evidence and Review `Pending:`, Merge Danger from the spec and the
+diff so far, Authority links. Create with `gh pr create --draft --body-file`;
+for a reused draft, rewrite only its Managed Region with `gh pr edit
+--body-file`. Closeout replaces this body with the final one.
+
 The parent records the pushed commit, provider PR identity/URL, head and base,
-and exact provider readback in implementation notes. Search by recorded head
+exact provider readback and the read-back Managed Region sha256 in
+implementation notes. Search by recorded head
 and base before creation; on resume or an ambiguous creation response, read back
 that identity before retrying. A conflicting base, stack or existing non-draft
 PR requires reconciliation against accepted intent before mutation. Completion
@@ -321,7 +328,7 @@ Before reporting back:
 - preserve the current blocked or incomplete `SPEC.md` and `PLAN.md` statuses
   when any acceptance item, task, checkpoint, or final architecture closure is
   unmet or blocked
-- ensure the PR body, PR comment, or PR-ready handoff snippet includes the same UI evidence links when UI changed
+- when UI changed, ensure `IMPLEMENTATION-NOTES.md` holds the durable UI evidence links that closeout puts into the `$pr` Evidence section, or the PR-ready snippet when the run has no PR
 
 ## 13. Final report shape
 

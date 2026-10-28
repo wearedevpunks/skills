@@ -19,6 +19,22 @@ docs ingest or no-op, and validation are complete.
   the project has no full-suite CI or CI runs no E2E, run the one local broad run
   instead, covering only what CI lacks, and report it as a local broad run.
   `implement-spec`'s `references/validation-scope.md` owns this policy.
+- Once that CI result and exact-tree proof pass, hand over each Touched
+  Repository's delivery PR:
+  1. Read `gh pr view --json body,isDraft,author,state,reviewRequests`.
+  2. Resolve `$pr` and regenerate its Managed Region from final evidence:
+     Verification, Runtime Validation, UI Evidence Links, CI per check, and
+     the Pass Report route and open findings. Write it with
+     `gh pr edit --body-file`.
+  3. When the PR is open and a draft, run `gh pr ready`.
+  4. Request review from the Directing Human, the person who asked for the
+     change, with `gh pr edit --add-reviewer <login>` when their login is
+     known and differs from the PR author; otherwise report who must approve.
+  5. Read back: the Managed Region bytes match, `isDraft` is false, and the
+     review request is present when step 4 ran.
+
+  A failed write stops closeout with the exact failed step; a rerun starts at
+  step 1. Merge stays with the human.
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
   [delivery-status branch](../../../agnostic/requirements/write-backlog/references/delivery-status.md).
@@ -34,7 +50,7 @@ docs ingest or no-op, and validation are complete.
 - Report review result and whether findings remain.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.
-- For UI changes, verify the PR body, PR comment, or PR-ready handoff includes durable before/after `UI Evidence` links.
+- For UI changes, verify the `$pr` Evidence section, or the PR-ready handoff when no PR exists, carries the durable before/after `UI Evidence` links.
 
 ## Accepted Repair Continuity
 
@@ -54,7 +70,7 @@ Return a concise delivery report with:
 - review
 - debugging
 - docs ingest
-- tracker or PR state
+- tracker or PR state, with the PR handover readback
 - UI Evidence state when user-visible UI changed
 - exit: done, blocked, or split into follow-up
 
