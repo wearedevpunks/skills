@@ -79,7 +79,7 @@ stop; delivery never opens a repair state from it.
 
 In `provider-task` mode, the linked Tasks follow the review through
 `write-backlog`'s
-[Delivery Checkpoints](../../../agnostic/requirements/write-backlog/references/delivery-status.md#delivery-checkpoints),
+[Delivery Checkpoints](../../write-backlog/references/delivery-status.md#delivery-checkpoints),
 each with exact readback before the next step:
 
 1. `review_due` persisted: review started.

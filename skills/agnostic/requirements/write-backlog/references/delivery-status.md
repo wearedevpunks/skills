@@ -42,7 +42,7 @@ the checkpoint passes, in the phase that passes it:
 | Route opens repair or debugging | work resumed, with the routed finding ids |
 | `human_steering_required` or another exact blocker | blocked, with the decision or blocker needed |
 | User direction resolves a blocker | work resumed |
-| Closeout PR handover read back | pull request state `ready`, review requested |
+| Closeout PR handover read back | pull request state `ready`; the requested reviewer, or who must approve when no request was sent |
 | Merge, staging or production observed | merge, staging or production evidence |
 
 The ticket is live when its readback matches the latest checkpoint the

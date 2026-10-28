@@ -10,7 +10,7 @@ Write a compact handoff in the operating system's temporary directory, outside
 the workspace. Tailor its next action to the user's requested receiving task.
 
 For delivery work, follow the authoritative
-[Delivery Handoff contract](../../../phases/delivery-phase/references/phase-handoff.md#phase-exit-and-delivery-handoff).
+[Delivery Handoff contract](../delivery-phase/references/phase-handoff.md#phase-exit-and-delivery-handoff).
 Resolve goal, bounds, Git identity and stable Context Pointers from durable
 artifacts; retain exact blockers and explicit unknowns. The receiving task always
 cold-routes from current authorities. The disposable Delivery Context Packet is

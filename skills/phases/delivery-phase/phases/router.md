@@ -51,7 +51,7 @@ Choose one next phase from current durable authority.
    [closeout.md](closeout.md). A fresh completed closeout needs no repeated mutation.
 
 **Ticket live state.** In `provider-task` mode, every phase records each
-[Delivery Checkpoint](../../../agnostic/requirements/write-backlog/references/delivery-status.md#delivery-checkpoints)
+[Delivery Checkpoint](../../write-backlog/references/delivery-status.md#delivery-checkpoints)
 it passes through `write-backlog`'s delivery-status branch, with exact
 readback, before its exit. On every entry, the router reads back the linked
 Tasks first; a stale ticket gets its missing fact recorded before any phase is

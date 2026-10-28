@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+
+import { resolveInstalled } from "./helpers/installed-layout.mjs";
 
 const writers = {
   grill: new URL(
@@ -30,8 +33,9 @@ const resolvedLinks = (from, text, file) => {
     .filter((target) => target.split("#")[0].endsWith(file));
   for (const target of targets) {
     const [path, anchor] = target.split("#");
-    const url = new URL(path, from);
-    assert.ok(existsSync(url), `${target} resolves from ${from.pathname}`);
+    const resolved = resolveInstalled(fileURLToPath(from), path);
+    assert.ok(resolved !== undefined, `${target} resolves from ${from.pathname} once installed`);
+    const url = new URL(`file://${resolved}`);
     if (anchor) {
       const headings = [...read(url).matchAll(/^#{1,6} (.+)$/gmu)].map(([, h]) => slug(h));
       assert.ok(headings.includes(anchor), `${target} names an existing heading`);

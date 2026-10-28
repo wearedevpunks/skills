@@ -155,7 +155,7 @@ Create an item file only for debt that must survive the run.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
 - When unclear debt affects the current implementation and the spec, plan and backlog leave it open, apply the section 5 `$requirements-phase` handoff.
 - In `provider-task` mode, load `write-backlog`'s
-  [delivery-status.md](../../../requirements/write-backlog/references/delivery-status.md) branch
+  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch
   for lifecycle facts. When work starts, becomes blocked, gains a pull request,
   merges, or receives staging or production evidence, immediately call
   `write-backlog` with only the directly observed fact and require exact
@@ -355,6 +355,6 @@ proof is missing. A visible draft PR does not satisfy these gates.
 
 Once all proof matches the implemented snapshot, return the durable evidence
 pointers to delivery. Code Review is a subsequent gate; use
-[the delivery review transition](../../../../phases/delivery-phase/phases/review.md)
+[the delivery review transition](../../delivery-phase/phases/review.md)
 for the completed-pass budget and repair routing. Reviewers consume Verification
 proof; `implement-spec` retains ownership of verifier execution and maintenance.

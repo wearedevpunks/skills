@@ -39,7 +39,7 @@ Git target, stale evidence or unresolved contradiction cold-routes before furthe
 action. Discard the packet and resolve current named authorities from durable
 pointers. Invalidate only affected evidence and eligibility; independent work
 with matching inputs remains eligible. Route affected task proof back to the
-parent's [execution gates](../../../agnostic/planning/implement-spec/references/parallel-orchestration.md)
+parent's [execution gates](../../implement-spec/references/parallel-orchestration.md)
 before dependent release or finalization. This adds no lock or execution engine.
 
 On cold resume, read durable mutation receipts and provider readback before any

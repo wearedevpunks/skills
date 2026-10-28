@@ -22,7 +22,7 @@ silently renaming them.
 - For provider-task work, immediately route each directly observed work start,
   repair resume, blocker, pull request, merge, staging deployment, or production
   deployment through `write-backlog`'s
-  [delivery-status.md](../../../agnostic/requirements/write-backlog/references/delivery-status.md) branch.
+  [delivery-status.md](../../write-backlog/references/delivery-status.md) branch.
   Require exact readback before advancing the Task. Planning-only work emits no
   provider lifecycle mutation or readback claim.
 - Merge is never deployment evidence. Merge, staging, and production remain

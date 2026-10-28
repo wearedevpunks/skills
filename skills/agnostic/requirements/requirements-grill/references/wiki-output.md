@@ -5,7 +5,7 @@ Use this reference only after the user explicitly closes the grill.
 ## Inputs
 
 `<wiki-root>` and the canonical article tree come from the resolved
-[wiki contract](../../../../phases/docs-ingest-phase/references/wiki-contract.md)
+[wiki contract](../../docs-ingest-phase/references/wiki-contract.md)
 (`docs-ingest-phase/references/wiki-contract.md`).
 
 Use the grill artifacts as source:
@@ -101,11 +101,11 @@ Summarize stable meaning, glossary, and axioms; link back to source docs when us
 
 After wiki changes:
 
-- apply the [discovery rules](../../../../phases/docs-ingest-phase/references/fumadocs-routing.md#discovery)
+- apply the [discovery rules](../../docs-ingest-phase/references/fumadocs-routing.md#discovery)
   (`docs-ingest-phase/references/fumadocs-routing.md#discovery`) to every
   routed page written
 - append one `grill` entry to `<wiki-root>/log.md` by the
-  [log rule](../../../../phases/docs-ingest-phase/references/wiki-ingest.md#log)
+  [log rule](../../docs-ingest-phase/references/wiki-ingest.md#log)
   (`docs-ingest-phase/references/wiki-ingest.md#log`)
 - preserve existing frontmatter
 - update `updated`

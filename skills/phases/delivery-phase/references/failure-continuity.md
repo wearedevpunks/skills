@@ -2,8 +2,8 @@
 
 Use when a Task fails, a Task Gate requests repair, diagnosis advances, or work
 crosses accepted bounds. The parent consumes the authoritative
-[Task Result](../../../agnostic/planning/implement-spec/references/parallel-worker-brief.md)
-and [Task Gate / Execution Frontier](../../../agnostic/planning/implement-spec/references/parallel-orchestration.md)
+[Task Result](../../implement-spec/references/parallel-worker-brief.md)
+and [Task Gate / Execution Frontier](../../implement-spec/references/parallel-orchestration.md)
 contracts; these remain the sole owners of worker returns and gate outcomes.
 
 1. Retain the failed Task identity, latest result/gate evidence and dependent

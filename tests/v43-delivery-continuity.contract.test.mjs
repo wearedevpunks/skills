@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveInstalled } from './helpers/installed-layout.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const delivery = resolve(root, 'skills/phases/delivery-phase');
 const read = path => readFileSync(resolve(delivery, path), 'utf8');
@@ -50,7 +51,7 @@ test('new local relative pointers resolve to real public contracts', () => {
   const paths = ['SKILL.md','references/context-continuity.md','references/failure-continuity.md','references/phase-handoff.md', 'phases/router.md'];
   for (const path of paths) for (const match of read(path).matchAll(/\]\(([^)#]+)(?:#[^)]*)?\)/g)) {
     if (/^https?:/.test(match[1])) continue;
-    assert.doesNotThrow(() => readFileSync(resolve(delivery, dirname(path), match[1])), `${path}: ${match[1]}`);
+    assert.ok(resolveInstalled(resolve(delivery, path), match[1]) !== undefined, `${path}: ${match[1]}`);
   }
 });
 
