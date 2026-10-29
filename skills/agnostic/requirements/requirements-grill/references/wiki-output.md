@@ -59,6 +59,12 @@ Publish each accepted domain context's glossary at:
 
 Synthesize it from the active grill glossary after `$domain-modeling`'s final consistency pass. The grill log remains the decision trail.
 
+Point `$domain-modeling` at the published pages through the repository-root `GLOSSARY-MAP.md` in the [map format](../../domain-modeling/GLOSSARY-FORMAT.md#single-vs-multi-context-repos): create it if absent, then add or update one `## Contexts` line per published context:
+
+`- [<Context>](./<wiki-root>/content/docs/project/domains/<context>-glossary.mdx) — <scope>`
+
+Done when every `domains/*-glossary.mdx` page has exactly one `## Contexts` line in `GLOSSARY-MAP.md`.
+
 Usually keep out of wiki:
 
 - retry constants

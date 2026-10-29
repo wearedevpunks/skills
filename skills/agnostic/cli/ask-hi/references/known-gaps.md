@@ -11,6 +11,5 @@ Behavior that surprises operators even though the skills agree on it, plus the f
 
 ## Still open
 
-- Glossary location: `$domain-modeling` used alone writes a root `GLOSSARY.md`. Inside `$requirements-grill`, the glossary lives in the grill status file and is published to `<wiki-root>/content/docs/project/domains/<context>-glossary.mdx`. `$wait-what` names both.
 - The HI CLI copies invocation flags verbatim and never reads them; each harness enforces them, and Claude and Codex keep separate flag files per skill.
 - Pack catalog prompt-surface metadata is published, but the prompt builders read only `workspace-prompt-spec`.
