@@ -41,13 +41,13 @@ Model-invoked; Pack `planning`. Implements an agent-ready spec folder through a 
 - **Source:** `.agents/skills/implement-spec/SKILL.md`, `references/{lifecycle,parallel-orchestration,parallel-worker-brief,validation-scope,runtime-product-validation,architecture-conformance,ui-screenshot-evidence}.md`, `assets/IMPLEMENTATION-NOTES-TEMPLATE.md`
 
 ## `$tdd`
-Model-invoked; Pack `quality`. Test-drives behavior changes with vertical red-green-refactor through public interfaces.
+Model-invoked; Pack `quality`. Test-drives behavior changes with vertical red-green through public interfaces.
 - **Use when:** behavior-changing work, or an explicit TDD / RED-GREEN request. **Not for:** docs, formatting, generated code, config without asserted behavior, scaffold bookkeeping; test-only suite work goes to `$make-tsuite`.
-- **Steps:** 1 Plan: classify `tdd_status` (`required | not_testable | recovered | not_applicable`), confirm interface + prioritized behaviors, `$codebase-design`, record `red_command / expected_red_failure / green_command`. 2 Tracer bullet: one test RED → minimal GREEN. 3 One test at a time; record `red_evidence` / `green_evidence`. 4 Refactor only on GREEN.
+- **Steps:** 1 Plan: classify `tdd_status` (`required | not_testable | recovered | not_applicable`), confirm interface + prioritized behaviors, `$codebase-design`, record `red_command / expected_red_failure / green_command`. 2 Tracer bullet: one test RED → minimal GREEN. 3 One test at a time; record `red_evidence` / `green_evidence`. 4 First-run pass → Sensitivity Proof in `sensitivity_evidence`; spec rules and example generalisations → properties.
 - **Calls:** `$codebase-design`. **Called by:** `$create-plan` (RED targets), `$implement-spec` (workers), `$make-tsuite`.
 - **Writes:** tests; evidence fields in `PLAN.md`.
 - **Stops / gates:** Hard Law: no production code before RED. Mock only at system boundaries. HITL interface confirmation; in delivery the accepted plan's RED targets satisfy it.
-- **Source:** `.agents/skills/tdd/SKILL.md`, `high-signal-tests.md`, `mocking.md`, `refactoring.md`
+- **Source:** `.agents/skills/tdd/SKILL.md`, `high-signal-tests.md`, `mocking.md`, `properties.md`, `sensitivity.md`
 
 ## `$codebase-design`
 Model-invoked; Pack `quality`. Shared vocabulary and method for deep modules, seams, adapters, leverage, locality and testable boundaries.

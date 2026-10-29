@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-drive behavior changes with a red-green-refactor loop through public interfaces. Use when the user explicitly requests TDD, test-first development, RED/GREEN evidence, or behavior design remains unresolved.
+description: Test-drive behavior changes with a red-green loop through public interfaces. Use when the user explicitly requests TDD, test-first development, RED/GREEN evidence, or behavior design remains unresolved.
 ---
 
 # Test-Driven Development
@@ -32,6 +32,8 @@ If production code was written first:
 
 If the current code already passes the new test, do not fake RED. Isolate the pre-fix state or revert enough of the slice to observe the failure. If true RED cannot be reconstructed, record the deviation explicitly; do not call the task normally RED/GREEN compliant.
 
+**A test that never failed is not evidence** until a Sensitivity Proof exists. When a test or property passes on its first run, follow [sensitivity.md](sensitivity.md).
+
 **Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.
 
 For test selection and assertions, use [high-signal-tests.md](high-signal-tests.md): keep tests only when they prove durable product or capability behavior through an owned public seam.
@@ -41,6 +43,8 @@ For test selection and assertions, use [high-signal-tests.md](high-signal-tests.
 **Low-signal tests** spend maintenance without protecting owned behavior. Cull existence and registration checks, assertions already satisfied by typechecking, simulated third-party behavior or provider-shape assumptions, shape/contract checks standing in for a feature, low-value UI wiring, and regressions whose only value is blocking reversion. Keep the owned behavior and culling rules co-located in [high-signal-tests.md](high-signal-tests.md).
 
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
+
+Use [properties.md](properties.md) when a rule comes from a spec, an example test generalises to a Property, or a Counterexample needs a replay; it also owns the Form values.
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -115,17 +119,7 @@ Rules:
 - Keep tests focused on observable behavior
 - Record `red_evidence` and `green_evidence` before claiming completion
 
-### 4. Refactor
-
-After all tests pass, look for [refactor candidates](refactoring.md):
-
-- [ ] Extract duplication
-- [ ] Deepen modules (move complexity behind simple interfaces)
-- [ ] Apply SOLID principles where natural
-- [ ] Consider what new code reveals about existing code
-- [ ] Run tests after each refactor step
-
-**Never refactor while RED.** Get to GREEN first.
+The loop ends at GREEN. Refactoring belongs to the per-task `$simplify` step and to review.
 
 ## Checklist Per Cycle
 

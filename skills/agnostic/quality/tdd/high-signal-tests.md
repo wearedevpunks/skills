@@ -42,6 +42,8 @@ Assert the strongest stable meaning, not the most convenient internal shape.
 
 Negative assertions must still prove behavior. Prefer "does not expose secret in rendered output" over "does not call `maskSecret`"; prefer "invalid input leaves stored value unchanged" over "database row was not updated" when storage is not the public contract.
 
+**Tautological** tests recompute the expected value the way the code does (`expect(add(a, b)).toBe(a + b)`, a snapshot derived the same way, a constant asserted equal to itself), so they pass by construction and can never disagree with the code. Take expected values from an independent source of truth: a known-good literal, a worked example, or the spec. A property oracle that copies the code under test is tautological too; the oracle must be a simpler, independent implementation.
+
 ## Regression Tests
 
 Write regressions as product or capability invariants, not bug-scar tombstones.
