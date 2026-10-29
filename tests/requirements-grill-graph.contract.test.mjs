@@ -467,7 +467,7 @@ test("create-architecture runs flow-lenses, routes L3 decisions, and returns gap
   assert.doesNotMatch(third, /brainstorm/u);
   assert.match(third, /Return each material gap to\s+`requirements-grill` with its Altitude/u);
   assert.match(
-    step(section(read(`${root}/SKILL.md`), "Steps"), 4),
+    step(section(read(`${root}/SKILL.md`), "Steps"), 5),
     /place accepted L3 Modules\s+decisions in the template's \*\*Modules and Interfaces\*\* section/u,
   );
 

@@ -144,13 +144,15 @@ error can be repaired as metadata without reopening an accepted decision.
 ## Atomic failure
 
 Validate the whole candidate before writing canonical architecture or bookkeeping.
-On a source, identity, coverage, or consistency failure, preserve the prior
+On a source, identity, coverage, consistency, or Model failure, preserve the prior
 canonical artifact and return one `architecture-not-ready` result listing **all**
 exact gaps, affected question/evidence anchors, guarantees at stake, and upstream
 routes. Route decisions and contradictions to `requirements-phase` /
 `requirements-grill`, each decision gap with the Altitude (L1 Outcome, L2 Shape,
 or L3 Modules) of the question it implies; request targeted evidence through
 that phase when needed.
+A Model violation from the Model step is a decision gap: list the failed
+invariant or property, the Model path and the full `tsprover` trace, at L2 Shape.
 Do not interview, fill gaps with defaults, or publish a partial replacement.
 
 A retention failure also returns `architecture-not-ready`, naming the failed

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Checking"
+  short_description: "Model a flow and check every state"
+  default_prompt: "Use $model-checking to write a tsprover Model of this flow, check every reachable state, prove each invariant with a guard-removal Sensitivity Proof, and map any violation trace to a Pinned Replay."

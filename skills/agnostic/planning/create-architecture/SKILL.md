@@ -29,7 +29,17 @@ create-spec -> write-backlog`; `SPEC.md` need not exist to run this compiler.
    candidate gaps remain candidates. Return each material gap to
    `requirements-grill` with its Altitude through the contract; compilation
    cannot accept a new mechanism or guarantee.
-4. Compile a complete candidate using
+4. Resolve the installed `$model-checking` skill; when it is absent, remove the
+   template's **Models** section and continue. Invoke it on each accepted flow
+   that matches its trigger. Write each Model to
+   `<spec-folder>/models/<flow>.proof.ts` and check it with
+   `npx --yes tsprover@0.0.2 <path>`. On a violation, return the contract's
+   `architecture-not-ready` result with the trace as an L2 compile gap. On a
+   pass, record its **Models** row with the state count and the Model
+   Sensitivity Proof. Done when each triggered flow has a passing Model with a
+   Sensitivity Proof or a returned trace, or no flow matches the trigger and the
+   **Models** section is removed.
+5. Compile a complete candidate using
    [ARCHITECTURE-TEMPLATE.md](assets/ARCHITECTURE-TEMPLATE.md). Start with actors,
    purpose, capability boundary, and canonical terms. Connect owners,
    authoritative state, entrypoints, critical flows, interfaces, dependencies,
@@ -41,7 +51,7 @@ create-spec -> write-backlog`; `SPEC.md` need not exist to run this compiler.
    anchors. Before SPEC exists, leave spec-code mapping explicitly pending.
    Explain how each low-level choice supports a system constraint; keep unknowns
    and parked work visible.
-5. Resolve and invoke the installed `$show-me` skill to put the smallest useful
+6. Resolve and invoke the installed `$show-me` skill to put the smallest useful
    views **inside the document**: a system map and applicable flow, state, or
    sequence views, each answering a distinct question. Use Mermaid for component,
    data, and control relationships; use pseudocode or shallow call/file trees
@@ -49,19 +59,19 @@ create-spec -> write-backlog`; `SPEC.md` need not exist to run this compiler.
    beside each view. Preserve source labels, uncertainty, ownership, and order.
    Write context before detail in ASD-STE100 Simplified Technical English, keeping
    exact accepted glossary terms and technical identifiers.
-6. Check the complete candidate against the contract before replacing the
+7. Check the complete candidate against the contract before replacing the
    canonical artifact. Resolve relative links and selectors, cover every accepted
    detail, and check each visual against its sources. Validate Mermaid with an available
    parser or renderer; record what ran and any unavailable check. A syntax defect
    needs correction; unavailable rendering must remain a stated limitation.
    Remove template instructions and empty optional sections.
-7. Save the complete artifact and apply
+8. Save the complete artifact and apply
    [create-spec's wiki-bookkeeping.md](../create-spec/references/wiki-bookkeeping.md)
    to this artifact: use the architecture title, `ARCHITECTURE.md` path, and
    `Compiled` status in the existing planning indexes, applicable metadata, and
    maintained log. Before a spec exists, record only the architecture link.
    Preserve existing spec entries and unrelated work.
-8. Follow the contract's path-limited retention and byte-verification procedure.
+9. Follow the contract's path-limited retention and byte-verification procedure.
    Return its handoff only after retention succeeds. `create-spec` consumes that
    handoff next and completes spec-code mapping under the same contract before
    retaining the final pair. This skill performs no backlog/provider writes.

@@ -72,4 +72,4 @@ Shrinking yields the shortest failing sequence.
 
 ## Model Trace → Pinned Replay
 
-A Model Counterexample is a trace of actions. Map each action to one command of the stateful property, run that sequence as an example test, and keep it as a Pinned Replay. A Model proves the design; only its Pinned Replays reach the code.
+A Model Counterexample is a trace of actions. Map each action to one command of the stateful property, run that sequence as an example test, and keep it as a Pinned Replay. A Model proves the design; only its Pinned Replays reach the code. When installed, `$model-checking` owns how to write, check and replay a Model.

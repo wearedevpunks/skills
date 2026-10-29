@@ -65,6 +65,15 @@ transaction/side-effect boundaries, recovery, and observable completion.]
 [Beside each view: question/evidence anchors and a causal plain-language
 conclusion. Include accepted dependency/lifecycle constraints where they apply.]
 
+## Models
+
+[One row per flow that matches the `model-checking` trigger, checked by the Model
+step. Remove this section when no flow matches the `model-checking` trigger.]
+
+| Flow | Model path | Invariants | State count | Sensitivity Proof |
+| --- | --- | --- | --- | --- |
+| [FLOW code] | [`<spec-folder>/models/<flow>.proof.ts`] | [Invariant and `@leadsTo` names; accepted guarantee each checks] | [Distinct states from `tsprover`] | [Guard removed → violated invariant] |
+
 ## Modules and Interfaces
 
 [Place each accepted L3 Modules decision here: module, interface, seam or

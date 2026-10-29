@@ -89,7 +89,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | trpc | detected | @trpc/ | source guide only |
 | turborepo | detected | turbo | turborepo |
 | python | language | Python files | async-python-patterns, backend-domain-structure, python-backend-structure, python-code-style, python-design-patterns, python-testing-patterns |
-| typescript | language | typescript | quality-types; lint typescript-anti-slop; `typegraph-runtime` |
+| typescript | language | typescript | quality-types, model-checking; lint typescript-anti-slop; `typegraph-runtime` |
 | video | optional | - | cinetic, earshot, real-sound |
 
 Source guides (`opensrc/<lib>.md`) ride with their Pack; `opensrc/README.md` indexes them.

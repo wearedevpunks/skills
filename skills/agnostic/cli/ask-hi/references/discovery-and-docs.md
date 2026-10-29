@@ -230,6 +230,7 @@ All model-invoked unless marked. Read `.agents/skills/<name>/SKILL.md`.
 - Pack `pulumi`: `$pulumi-overview` (route any IaC task), `$pulumi-best-practices`, `$pulumi-component`, `$pulumi-automation-api`, `$pulumi-esc`, `$provider-upgrade`, `$package-usage`.
 - Pack `python`: `$async-python-patterns`, `$python-backend-structure`, `$python-code-style`, `$python-design-patterns`, `$python-testing-patterns`.
 - `$quality-types` (`typescript`): branded types, unions, real tests, OpenTelemetry.
+- `$model-checking` (`typescript`): tsprover Models of shared-state, job, resync and delivery flows; traces become Pinned Replays.
 - `$tanstack-query` (`tanstack-query`): server state with TanStack Query v5.
 - `$turborepo` (`turborepo`): tasks, cache, filters, boundaries.
 - `$sqlalchemy-schema-design` (`sqlalchemy`): SQLAlchemy 2.x models, Alembic.
