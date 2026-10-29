@@ -160,7 +160,7 @@ For example, Effect diagnostics that run on tsrs instead of the
 ```
 
 `hi update` then installs nothing of that asset: no oxlint config extension,
-rules, plugin files, prepare command, or required devDependency. It reports the
+rules, plugin files, or required devDependency. It reports the
 asset's previously installed paths as stale and keeps the project's own scripts
 and dependencies. An id the Baseline no longer provides is ignored, and
 `hi diff` reports it as information. Complete this when `selection.json` no
