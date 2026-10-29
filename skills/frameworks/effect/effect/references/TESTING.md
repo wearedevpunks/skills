@@ -1,6 +1,6 @@
 # Testing
 
-Use this when writing Effect tests involving time, retry, schedules, concurrency, workers, or config. Use `$effect-service-design` for service test substitutes and reusable test Layers.
+Use this when writing Effect tests involving time, retry, schedules, concurrency, workers, or config. Use `$effect-service-design` for service test substitutes and reusable test Layers. Use [PROPERTY_TESTING.md](PROPERTY_TESTING.md) for properties over generated inputs.
 
 ## Defaults
 

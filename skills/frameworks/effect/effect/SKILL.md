@@ -31,6 +31,7 @@ Read only the branch references that match the task.
 - Streams, event sources, async iterables, queues/pubsubs, pagination, backpressure, or stream consumers: read `references/STREAMS.md`.
 - Outgoing HTTP calls, Effect HttpClient, status handling, or HTTP rate limiting: read `references/HTTP_CLIENTS.md`.
 - Effect tests, time, sleeps, or concurrency synchronization: read `references/TESTING.md`.
+- Property tests, `Arbitrary` generators, `it.effect.prop`, or stateful command sequences: read `references/PROPERTY_TESTING.md`.
 - Effect-Atom data fetching, mutations, or React server state: read `references/EFFECT_ATOM.md`.
 - Effect logging, tracing, spans, or observability: read `references/OBSERVABILITY.md`.
 
