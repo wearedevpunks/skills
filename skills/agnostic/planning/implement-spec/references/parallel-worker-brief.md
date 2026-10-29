@@ -79,6 +79,9 @@ and:
 - concise summary of changes
 - how the acceptance criteria are satisfied
 - verification evidence: RED -> GREEN for testable tasks, or the exact non-testable alternative that was run
+- `test_form`, `invariant_refs` and `sensitivity_evidence`, as
+  [plan-schema.md](../../create-plan/references/plan-schema.md#task-contract)
+  defines them
 - validation evidence performed
 - durable UI before/after screenshot links when UI changed
 - required runtime-validation scenario, observed evidence, cleanup result, or exact blocker

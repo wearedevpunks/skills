@@ -118,6 +118,7 @@ silently renaming them.
    `assigned_skills`,
    `implementation_skill_guidance`,
    `tdd_status`, `tdd_target`, RED/GREEN commands, evidence fields,
+   `test_form`, `invariant_refs`, `sensitivity_evidence`,
    `codebase_design_notes`, `review_mode`, `runtime_validation`,
    `runtime_target`, `runtime_evidence`, and `runtime_cleanup`. Each task's
    `validation` is focused: tests for the changed behavior, integration checks

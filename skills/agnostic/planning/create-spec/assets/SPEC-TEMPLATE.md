@@ -27,6 +27,19 @@ _Architecture: immutable `#spec-traceability` link labeled OUT-001, plus relevan
   - Covers: OUT-001
   - Architecture: [Immutable #spec-traceability link labeled AC-001, plus relevant selectors]
 
+## Spec Invariants
+
+_One row per checkable grill axiom. `Form` takes one
+[Form](../../tdd/properties.md#form) value
+(`example | property | stateful-property | model | type`); `Pattern` names its
+[Property Pattern](../../tdd/properties.md#property-patterns) or `none`; `Seam`
+names the public interface the test drives; `Model` names the Model file or
+`none`. Write `none` when the spec has no Spec Invariant._
+
+| INV | Rule | Source (Q anchor) | Form | Pattern | Seam | Model |
+| --- | --- | --- | --- | --- | --- | --- |
+| INV-001 | [Rule the code must keep] | [Q link] | [Form] | [Pattern or none] | [Seam] | [Model or none] |
+
 ## Constraints
 
 ## Dependency Readiness

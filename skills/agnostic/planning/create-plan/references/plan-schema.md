@@ -102,6 +102,9 @@ Every task must include:
 - `reason_not_testable`
 - `red_evidence`
 - `green_evidence`
+- `test_form`
+- `invariant_refs`
+- `sensitivity_evidence`
 - `codebase_design_notes`
 - `review_mode`
 - `runtime_validation`
@@ -194,6 +197,11 @@ For behavior-changing code tasks, `tdd_status` must be `required` and the task m
 
 `red_evidence` and `green_evidence` are execution fields. They should be present but blank when the plan is created, then filled by `implement-spec` before the task is marked complete.
 
+`test_form` takes one [Form](../../tdd/properties.md#form) value, or `not_applicable` when the task adds no test.
+`invariant_refs` lists the `[INV-nnn]` Spec Invariant ids the task covers, or `none`.
+[TDD shaping](tdd-shaping.md) sets both from the spec's `## Spec Invariants`.
+`sensitivity_evidence` is an execution field: blank in the plan, filled by `implement-spec` with each Sensitivity Proof or `parent_required` as [tdd/sensitivity.md](../../tdd/sensitivity.md) defines.
+
 `reason_not_testable` cannot be used for "forgot RED." If production code came first, the executor must recover by writing a real public-result RED test, capturing failure evidence, patching to GREEN, and setting `tdd_status: recovered`.
 
 `codebase_design_notes` must name the relevant module interface, seam, adapter, or test surface when the task changes code structure. Use `not_applicable` only when the task has no codebase-design consequence.
@@ -242,6 +250,9 @@ Use `not_applicable` for the other runtime fields when `runtime_validation: not_
 - **reason_not_testable**:
 - **red_evidence**:
 - **green_evidence**:
+- **test_form**: property
+- **invariant_refs**: [INV-002]
+- **sensitivity_evidence**:
 - **codebase_design_notes**: Interface/seam/adapter/test-surface notes, or not_applicable.
 - **review_mode**: cli | browser | mixed
 - **runtime_validation**: required | not_required

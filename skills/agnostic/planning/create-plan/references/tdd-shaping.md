@@ -42,6 +42,12 @@ Preserve `$tdd` behavior:
 
 `red_evidence` and `green_evidence` start blank in the plan and must be filled during implementation before task completion.
 
+Set the Spec Invariant fields from the spec's `## Spec Invariants` table; their values are defined in [plan-schema.md](plan-schema.md):
+
+- `invariant_refs`: every `INV-nnn` whose rule the task's code enforces. Done when each Spec Invariant appears in at least one task's `invariant_refs`, and tasks that enforce none record `none`.
+- `test_form`: the `Form` of the covered Spec Invariants. A task with `invariant_refs: none` takes the Form of its first test, or `not_applicable` when it adds no test.
+- `sensitivity_evidence`: leave blank.
+
 `review_mode` must be:
 
 - `cli` for tests, commands, APIs, or non-visual validation

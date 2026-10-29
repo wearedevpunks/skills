@@ -57,6 +57,15 @@ and technical decisions, including exact accepted libraries/versions, helpers,
 APIs/paths, algorithms, configuration and protocols. Link the companion's narrative
 and diagrams instead of copying them. Retain confirmed rationale; never infer it.
 
+## Spec Invariant contract
+
+Carry every grill axiom whose `Checkable as` hint is not `not-checkable` into
+`## Spec Invariants`, one row each. `create-spec` assigns `INV-nnn` ids like
+`OUT`/`AC` codes: preserve, retire and never reuse them under the same rules.
+Each row's `Source (Q anchor)` links its source grill question. Done when every
+checkable axiom has exactly one row, or the section reads `none` because no
+checkable axiom exists.
+
 ## Dependency output contract
 
 Serialize both sections in every compiled spec:

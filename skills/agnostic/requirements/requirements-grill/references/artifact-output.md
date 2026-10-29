@@ -121,9 +121,15 @@ Accepted answer:
 - Avoid: <alias>, <alias>
 - Relationship: **<Term>** <relationship> **<Other Term>**
 - Axiom: <domain invariant that should not be re-debated>
+  Checkable as: <Property Pattern> | model | type | not-checkable
 ```
 
 Omit unused fields. If a later answer changes the glossary, add a superseding entry instead of rewriting history.
+
+`Checkable as` names how a test can check the axiom; `<Property Pattern>` is
+one of the [Property Patterns](../../tdd/properties.md#property-patterns).
+Axioms carry no id; `create-spec` carries each checkable axiom into a Spec
+Invariant.
 
 On explicit closure, add a `## Closure` section with the quoted
 shared-understanding confirmation, the quoted closure, and the handoff.
@@ -284,6 +290,7 @@ Keep the status file glossary compact and current:
 ### Axioms
 
 - <Domain invariant accepted during the grill>
+  Checkable as: <Property Pattern> | model | type | not-checkable
 
 ### Flagged Ambiguities
 

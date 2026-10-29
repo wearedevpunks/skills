@@ -138,7 +138,9 @@ Create an item file only for debt that must survive the run.
 - A wave may contain one worker when dependencies or owned paths leave one task unblocked.
 - Worker routing must be available before implementation begins; otherwise repair it or report the blocker.
 - Treat every `tdd_target` as required RED-first behavior, never optional guidance.
-- Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, and `green_evidence` as the task completion contract.
+- Treat `tdd_status`, `red_command`, `expected_red_failure`, `green_command`, `reason_not_testable`, `red_evidence`, `green_evidence`, `test_form`, `invariant_refs`, and `sensitivity_evidence` as the task completion contract.
+- At each Task Gate, run `git diff --quiet` on every file named by a recorded Mutant in `sensitivity_evidence`, and block the task while a Mutant remains.
+- For `sensitivity_evidence: parent_required`, the parent runs the Sensitivity Proof itself per [tdd/sensitivity.md](../../tdd/sensitivity.md) and records it before the Task Gate passes.
 - Treat `codebase_design_notes` as required design context for code-structure changes. Verify the implemented interface, seam, adapter strategy, and test surface match it, or update the notes with the real decision.
 - For behavior-changing tasks, do not mark a task complete until real RED and GREEN evidence is recorded in `PLAN.md`.
 - Accept missing RED/GREEN evidence only when the task has an explicit `reason_not_testable` or `tdd_status: not_applicable`.
@@ -208,7 +210,7 @@ handoff and finalization. Workers return evidence; the parent performs this upke
 - update `PLAN.md` status
 - append a concise execution log in `PLAN.md`
 - record touched files in `PLAN.md`
-- fill `red_evidence` and `green_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
+- fill `red_evidence`, `green_evidence` and `sensitivity_evidence`, or the accepted non-testable reason, before marking behavior-changing work complete
 - fill or reconcile `codebase_design_notes` when module shape, seam placement, adapters, or test surface changed
 - reconcile `## Skill Application Evidence`: verify each skill identity, allowed
   status, and how/where pointer against changed artifacts; for
