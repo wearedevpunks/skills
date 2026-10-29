@@ -76,6 +76,12 @@ description: >-
    - Record failures outside the reported behavior as unrelated, with evidence;
      they need no baseline run.
    - Compare before/after evidence.
+   - When the fixed bug breaks a rule that matches a
+     [Property Pattern](../tdd/properties.md#property-patterns), the fix adds a
+     property whose [Sensitivity Proof](../tdd/sensitivity.md) reverts the fix
+     as the Mutant. In delivery-internal mode, the rule also gets a
+     [Spec Invariant](../create-spec/assets/SPEC-TEMPLATE.md) row in `SPEC.md`;
+     a standalone fix stops at the property.
    - Hand off review by entry mode:
      - Delivery-internal: return the repair to `delivery-phase` for Focused
        Repair Validation; this phase opens no review pass.

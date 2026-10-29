@@ -40,7 +40,7 @@ test("every local reference link resolves and conditional guidance stays disclos
     const links = read(path).matchAll(/\[[^\]]+\]\(([^)]+)\)/gu);
     for (const [, target] of links) {
       if (/^[a-z]+:/iu.test(target) || target.startsWith("#")) continue;
-      const resolved = resolve(dirname(path), target);
+      const resolved = resolve(dirname(path), target.split("#")[0]);
       linkedTargets.push(resolved);
       assert.ok(existsSync(resolved), `missing reference from ${path}: ${target}`);
     }
@@ -74,11 +74,23 @@ test("audit and implementation preserve honest evidence contracts", () => {
     assert.match(audit, new RegExp(`\\*\\*${criterion}:\\*\\*`, "u"));
   }
 
-  assert.match(audit, /mutation in a disposable copy/iu);
+  assert.match(audit, /leaves production unchanged:[^\n]*\[Sensitivity Proof\]\(\.\.\/\.\.\/tdd\/sensitivity\.md\)/u);
+  assert.match(implementation, /pre-fix failure, a \[Sensitivity Proof\]\(\.\.\/\.\.\/tdd\/sensitivity\.md\)/u);
+  for (const source of [audit, implementation]) assert.doesNotMatch(source, /disposable copy/u);
   assert.match(audit, /static sensitivity reasoning `unverified`/iu);
   assert.match(audit, /purpose or technique[\s\S]*property\/fuzz[\s\S]*hardware-in-loop/iu);
   assert.match(implementation, /newly captured RED selected by a required delivery gate remains blocked/iu);
   assert.match(implementation, /explicit authorization[\s\S]*quarantine or disabled-test convention/iu);
+});
+
+test("merge folds an input-only example group into one property and keeps its inputs as Pinned Replays", () => {
+  const audit = read(`${root}/references/audit-portfolio.md`);
+
+  assert.ok(audit.includes("Give each package one disposition: `retain`, `strengthen`, `move`, `merge`, or `remove`."));
+  assert.match(
+    audit,
+    /`merge` turns an example-test group that varies only its inputs into one property; each existing input stays as a \[Pinned Replay\]\(\.\.\/\.\.\/tdd\/properties\.md#pinned-replay\)\./u,
+  );
 });
 
 test("known source-project and toolchain assumptions do not regress", () => {

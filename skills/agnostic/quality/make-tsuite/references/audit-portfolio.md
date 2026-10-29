@@ -21,7 +21,7 @@ Inventory is complete when every package names its members and at least one clai
 
 ## Judge signal
 
-Give each package one disposition: `retain`, `strengthen`, `move`, `merge`, or `remove`.
+Give each package one disposition: `retain`, `strengthen`, `move`, `merge`, or `remove`. `merge` turns an example-test group that varies only its inputs into one property; each existing input stays as a [Pinned Replay](../../tdd/properties.md#pinned-replay).
 
 Judge:
 
@@ -36,7 +36,7 @@ Static or indirect tests remain useful when they own an architecture boundary, s
 
 Classification is complete when every package has one disposition supported by observed evidence across all six criteria.
 
-Valid sensitivity evidence leaves production unchanged: an observed historical or pre-fix failure; a mutation in a disposable copy; or a controlled perturbation of external input, fixture, or test double that preserves owned behavior as real. Label static sensitivity reasoning `unverified`.
+Valid sensitivity evidence leaves production unchanged: an observed historical or pre-fix failure; a [Sensitivity Proof](../../tdd/sensitivity.md), whose revert check restores production; or a controlled perturbation of external input, fixture, or test double that preserves owned behavior as real. Label static sensitivity reasoning `unverified`.
 
 ## Removal proof
 

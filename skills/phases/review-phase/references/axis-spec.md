@@ -23,3 +23,11 @@ Report four kinds of finding:
   `IMPLEMENTATION-NOTES.md` that claims a criterion passes, where the changed
   code or test does not support the claim, for example a test that never
   exercises the criterion it names. Category `test_gap`.
+  - Also `test_gap`: a Spec Invariant (`INV-nnn`) with no test of its declared
+    [Form](../../tdd/properties.md#form); a test that passed on its first run
+    with no `sensitivity_evidence` from a
+    [Sensitivity Proof](../../tdd/sensitivity.md);
+    [Generator Narrowing](../../tdd/properties.md#generator-rules) or a loosened
+    rule with no recorded human approval; a Model that diverges from its
+    `ARCHITECTURE.md` `## Models` row; re-check it with `$model-checking` when
+    installed.

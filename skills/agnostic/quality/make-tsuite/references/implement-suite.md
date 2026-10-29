@@ -24,7 +24,7 @@ For each accepted invariant:
 2. Capture the semantic fingerprint of every existing case affected.
 3. Add or transform one slice through the owned public seam.
 4. Choose the honest evidence state:
-   - already-correct behavior: capture a passing characterization and demonstrate sensitivity through an observed historical or pre-fix failure, a mutation in a disposable copy, or controlled perturbation of external input, fixture, or test double that keeps owned behavior real; label static reasoning `unverified`;
+   - already-correct behavior: capture a passing characterization and demonstrate sensitivity through an observed historical or pre-fix failure, a [Sensitivity Proof](../../tdd/sensitivity.md), or controlled perturbation of external input, fixture, or test double that keeps owned behavior real; label static reasoning `unverified`;
    - established regression: capture genuine RED for the expected product reason and hand back production work;
    - broken test infrastructure: reach GREEN using only test-scoped changes.
 5. Run the focused test through its execution mechanism when available, then broader owning gates proportional to the boundary changed.
