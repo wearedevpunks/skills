@@ -19,6 +19,8 @@ it.prop("an amount survives JSON storage", { amount: Schema.Finite }, ({ amount 
 )
 ```
 
+When an input type has no Schema, declare one for the test; that Schema is the declared input shape.
+
 Use `Schema.Finite` for numbers stored as JSON. `Schema.Number` also generates `NaN` and `Infinity`, which JSON writes as `null`. `Schema.Finite` still generates `-0`, which comes back as `0`: `===` accepts it; `Object.is` and `toEqual` reject it.
 
 ## DB-Backed Properties

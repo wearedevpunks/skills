@@ -7,7 +7,7 @@ description: Model a flow as a TypeScript `*.proof.ts` module and check every re
 
 A **Model** is a `*.proof.ts` module that states the state, actions and invariants of one flow. `tsprover` compiles it to TLA+, and `tla-ts` checks every reachable state of it. A violation prints a trace: the sequence of actions, with the state after each, that breaks an invariant or property.
 
-Use exactly `tsprover@0.0.2` and `tla-ts@0.0.3`. Both are 0.0.x releases, so any release can change the Model language or the checker; an exact pin keeps a check result reproducible.
+Use exactly `tsprover@0.0.2`. It depends on the `tla-ts` checker that it runs, so pin no separate `tla-ts`. Both are 0.0.x releases, so any release can change the Model language or the checker; an exact pin keeps a check result reproducible.
 
 ## Trigger
 
@@ -22,7 +22,7 @@ A flow without one of these gets no Model.
 
 ## Model Rules
 
-- Scope one Model to one service. Read the service's composition file as the map: state that the service owns becomes a top-level `let`; each dependency wired there stays outside the Model and enters only as an action.
+- Scope one Model to one service. Read the service's composition file as the map: state that the service owns becomes a top-level `let`; each dependency wired there stays outside the Model and enters only as an action. When a guarantee depends on consumer state (a client cursor, a last seen id), add it as a ghost variable: a top-level `let` that the consumer's actions change, named with a `ghost` prefix.
 - A top-level `let` is a variable. An exported function that changes state is an action. An exported function that returns a boolean is an invariant; keep a helper unexported so it stays a definition.
 - Give every action parameter a finite type: literal unions, `boolean`, enums, records and tuples of these, and `Set` or `Map` of these. `tsprover` rejects `number`, `string` and arrays as parameter types, unless the action starts with a guard that selects the parameter from a set.
 - Write each precondition as a guard `if (<condition>) return;` before any change. The guards are the design decisions that the Model checks.
@@ -81,8 +81,8 @@ Run the steps that your caller needs: architecture runs 1–3, `tdd` runs 4, a p
 
 An architecture Model is a draft in the spec folder. One plan task moves each Model to `<feature-or-service>/<flow>.proof.ts`, beside the code that it models, and wires the check in the same change:
 
-- Add both tools as exact devDependencies: `"tsprover": "0.0.2"` and `"tla-ts": "0.0.3"`.
+- Add the exact devDependency `"tsprover": "0.0.2"`.
 - Add the package script `"check:models": "tsprover"`. With no file arguments, `tsprover` checks every `*.proof.ts` below the package and exits 1 on any failure.
 - CI runs `check:models`; a violation exits 1 and fails the build.
-- A pin bump of either tool reruns `check:models` and every Model Sensitivity Proof in the same change.
+- A `tsprover` pin bump reruns `check:models` and every Model Sensitivity Proof in the same change.
 - The type check stays on for `*.proof.ts`. When a managed lint rule fires on a Model, add an ignore for that rule scoped to `**/*.proof.ts`.

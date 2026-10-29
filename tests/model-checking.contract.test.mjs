@@ -43,7 +43,8 @@ test("model-checking pins both tools exactly and owns the trigger and Model rule
   const skill = read(`${root}/SKILL.md`);
 
   assert.match(skill, /`tsprover@0\.0\.2`/u);
-  assert.match(skill, /`tla-ts@0\.0\.3`/u);
+  assert.match(skill, /pin no separate `tla-ts`/u);
+  assert.match(skill, /ghost variable/u);
   const trigger = section(skill, "Trigger");
   for (const branch of [/two or more writers on shared state/u, /background job or retry/u, /recovery or resync/u, /delivery guarantee/u]) {
     assert.match(trigger, branch);
@@ -81,7 +82,7 @@ test("model-checking commits each Model beside its service with exact pins and a
   assert.match(ci, /`<feature-or-service>\/<flow>\.proof\.ts`/u);
   assert.match(ci, /exact devDependenc/u);
   assert.match(ci, /"tsprover": "0\.0\.2"/u);
-  assert.match(ci, /"tla-ts": "0\.0\.3"/u);
+  assert.doesNotMatch(ci, /"tla-ts":/u);
   assert.match(ci, /"check:models": "tsprover"/u);
   assert.match(ci, /CI runs `check:models`[\s\S]{0,120}fails the build/u);
   assert.match(ci, /pin bump[\s\S]{0,200}`check:models`[\s\S]{0,120}every Model Sensitivity Proof[\s\S]{0,40}same change/iu);
@@ -93,7 +94,7 @@ test("every pin of tsprover and tla-ts is the accepted exact version", () => {
   for (const path of [`${root}/SKILL.md`, `${architecture}/SKILL.md`, `${architecture}/assets/ARCHITECTURE-TEMPLATE.md`]) {
     const text = read(path);
     assert.doesNotMatch(text, /tsprover@(?!0\.0\.2\b)/u, path);
-    assert.doesNotMatch(text, /tla-ts@(?!0\.0\.3\b)/u, path);
+    assert.doesNotMatch(text, /tla-ts@\d/u, path);
   }
 });
 

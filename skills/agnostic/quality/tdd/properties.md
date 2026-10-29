@@ -46,6 +46,7 @@ A pure total function may start with the property. A property that passes on its
 ## Generator Rules
 
 - Generate the full declared input shape. Generator Narrowing (excluding generated inputs so a property passes) needs recorded human approval; without it, fix the code or return the rule to a human.
+- Bounding a collection's size or a recursive input's depth states the declared shape; it is not Generator Narrowing.
 - Draw ids from small pools so collisions happen.
 - Treat generated values as read-only; copy a value before you change it.
 
