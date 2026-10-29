@@ -64,7 +64,10 @@ test("model-checking steps end on checkable criteria and link tdd instead of res
 
   assert.ok(list.length >= 5, `expected at least five steps, found ${list.length}`);
   for (const entry of list) assert.match(entry, /Done when/u, entry.split("\n")[0]);
-  assert.match(skill, /remove one guard[\s\S]{0,300}violation/iu);
+  assert.match(skill, /Mutant removes one guard/iu);
+  assert.match(skill, /`@leadsTo` property, it removes `@fair`/u);
+  assert.match(skill, /same distinct state count[\s\S]{0,40}unreachable/iu);
+  assert.match(skill, /reports a violation of that invariant or property/iu);
   assert.match(skill, /\[Sensitivity Proof\]\(\.\.\/tdd\/sensitivity\.md\)/u);
   assert.match(skill, /\[Pinned Replay\]\(\.\.\/tdd\/properties\.md\)/u);
   assert.match(skill, /each (?:trace )?action[\s\S]{0,80}one command of the stateful property/iu);

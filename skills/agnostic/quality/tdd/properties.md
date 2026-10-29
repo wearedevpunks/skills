@@ -51,7 +51,7 @@ A pure total function may start with the property. A property that passes on its
 
 ## Pinned Replay
 
-Every found Counterexample becomes a Pinned Replay: an example test named after the rule, with the shrunk input as an explicit input literal. The Replay Token goes into evidence only, because it reproduces the failure only from the same implementation.
+Every found Counterexample becomes a Pinned Replay: an example test named after the rule, with the shrunk input as an explicit input literal. When Shrinking leaves detail the failure does not need, reduce the literal by hand until removing any part makes the test pass. The Replay Token goes into evidence only, because it reproduces the failure only from the same implementation.
 
 ## Run Policy
 
