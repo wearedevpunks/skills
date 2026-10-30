@@ -62,6 +62,7 @@ silently renaming them.
    parent, relation, source link, field, view, milestone, status, and provider
    object. On partial failure, stop further writes and return observed writes
    plus the exact residual delta.
+   When `humanBacklog` is set, read [the Human Backlog branch](references/human-backlog.md).
 10. Return stable provider IDs and URLs, durable wiki identities, operation,
    created/enriched/repaired/unchanged classification, structural changes, exact
    readback, and residual delta. Completion requires the return envelope to
