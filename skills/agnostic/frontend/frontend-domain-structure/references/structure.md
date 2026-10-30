@@ -85,7 +85,10 @@ A **Data Source** implements a port of an Entity or a Feature. It lives in one o
   starts with `import "server-only"` and holds server readers.
 - `simulated/` holds the in-memory source, seeds and fake runtimes.
 
-Only Composition and tests import a Data Source. Features and entity views use the Entity root.
+A `remote/` or `simulated/` folder is a Data Source at any depth of a feature or entity domain, for
+example `entities/candidate/cv/remote/`. Only Composition and tests import a Data Source. Features and
+entity views use the Entity root, and that root `index` never re-exports its own `remote/` or
+`simulated/`.
 Folders named `mock*` or `*prototype*` are errors; put fakes in `simulated/`. Put no production UI in a
 folder named "prototype".
 
@@ -102,8 +105,12 @@ renderer. The app's own API and its fakes are Data Sources, not Integrations.
 ## Server
 
 `server/` sits outside the layers, and `effect-backend-structure` governs it. Only `remote/` Data
-Sources and `app/api/` handlers import `server/`, and only through server public entrypoints.
-`app/api/` handlers import only `server/`.
+Sources and API handlers import `server/`, and only through server public entrypoints. An API handler
+is any file under an `api/` folder of the route layer, after route groups and dynamic segments
+(`app/api/`, `app/(shop)/api/`, `routes/api/`). API handlers import only `server/`.
+
+Route files import code only from `composition/`. Style and asset imports, such as `./globals.css` or
+`../styles.css?url`, are not code imports.
 
 ## UI
 
@@ -129,7 +136,8 @@ A domain is the first folder under a layer, for example `features/checkout/`, `e
 inside a domain are free. `ui/` is exempt, because shadcn keeps one file per component.
 
 An `index` file only re-exports: implementation lives in named files beside it. Production code never
-imports its own folder's `./index`; tests may, because they exercise the public entry.
+imports its own folder's `./index` or `.`; tests may, because they exercise the public entry. This
+concerns code index files only: `./index.css` and other asset files are not entries.
 
 Name one domain folder with subpaths instead of sibling folders that repeat a prefix: use
 `entities/candidate/cv/`, not `entities/candidate-cv/` beside `entities/candidate/`.
@@ -189,14 +197,14 @@ an error. A Module's no-product-terms test is a review rule; lint checks only it
 
 | Rule | Error when |
 | --- | --- |
-| `layer-order` | An import targets a higher layer, or a file outside `entities/*/remote/`, `features/*/remote/` and `app/api/` imports `server/`. |
-| `route-imports` | A route-layer file imports a folder other than `composition/`, or an `app/api/` handler imports a folder other than `server/`. |
+| `layer-order` | An import targets a higher layer, or a file outside a `remote/` Data Source of `entities/` or `features/` and outside an API handler imports `server/`. |
+| `route-imports` | A route-layer file code-imports a folder other than `composition/`, or an API handler imports a folder other than `server/`. Style and asset imports are allowed. |
 | `no-peer-feature` | A file in `features/<a>/` imports `features/<b>/`. |
 | `no-peer-entity` | A file in `entities/<a>/` imports `entities/<b>/`. |
 | `public-entrypoint` | A cross-domain import targets a file other than a domain or subpath `index.ts` or `index.tsx`, or `remote/server.ts`; `ui/` is exempt. |
-| `data-source-imports` | A file outside `composition/` that is not a test or story file imports another domain's `remote/` or `simulated/` subpath. |
+| `data-source-imports` | A file outside `composition/` that is not a test or story file imports another domain's `remote/` or `simulated/` folder at any depth, or a domain root `index` re-exports its own. |
 | `index-reexports-only` | An `index.ts` or `index.tsx` holds a statement other than an import or a re-export. |
-| `no-self-index-import` | A file that is not a test or story file imports its own folder's `./index` or `.`. |
+| `no-self-index-import` | A file that is not a test or story file imports its own folder's code `index` or `.`. |
 | `layout-placement` | A layout file under `composition/` exists outside `composition/routing/shells/<name>/`. |
 | `composition-shape` | A first-level folder of `composition/` is not `providers`, `proxy` or `routing`. |
 | `no-prefix-siblings` | Two domains of one layer share the name part before their first `-` (`candidate-cv` beside `candidate-database`), or one domain's name is another domain's name plus `-` (`candidate-cv` beside `candidate`). |
