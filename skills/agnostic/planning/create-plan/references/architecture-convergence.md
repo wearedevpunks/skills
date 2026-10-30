@@ -35,10 +35,11 @@ For backend scope, invoke `$backend-domain-structure` and read its layout refere
 platform/composition, integration, persistence, model, and public-boundary ownership from the repository.
 
 For frontend scope, invoke `$frontend-domain-structure` and read its agnostic reference. Place each changed
-responsibility in its fixed layer model (`app/` or `routes/` → `composition/` → `features/` → `modules/` →
-`integrations/` → `ui/`), then apply its invariant-owner, domain-worthiness, public-entrypoint, one-way, and
-acyclic dependency rules. For React scope, also read its React addendum: classify providers, shells and page
-templates into `composition/`, and classify components, hooks, and behavior-test seams.
+responsibility in its fixed layer model (`app/` or `routes/` → `composition/` → `features/` → `entities/` →
+`modules/` → `integrations/` → `ui/`), then apply its invariant-owner, domain-worthiness, public-entrypoint,
+Data Source, one-way, and acyclic dependency rules. For React scope, also read its React addendum: classify
+global providers, shells and page templates into `composition/`, feature and entity providers into their
+owners, and classify components, hooks, and behavior-test seams.
 
 For mixed scope, apply both theories at their respective boundaries. Preserve repository vocabulary and
 existing honest owners. Completion requires every changed responsibility and dependency edge to be grounded

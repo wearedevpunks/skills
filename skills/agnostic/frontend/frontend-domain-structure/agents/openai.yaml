@@ -1,4 +1,4 @@
 interface:
   display_name: "Frontend Domain Structure"
   short_description: "Domain-first frontend structure"
-  default_prompt: "Use $frontend-domain-structure to place frontend code in the fixed layer model with the composition layer on top, and to review domain worthiness and public dependency boundaries in the invoking scope. In React scopes, review React component boundaries; split only at a cohesive responsibility boundary evidenced by distinct behavior, meaningful inputs, repeated use, or a focused test seam; keep tiny, private, related JSX local."
+  default_prompt: "Use $frontend-domain-structure to place frontend code in the fixed entities layer model (composition, features, entities, modules, integrations), and to review domain worthiness and public dependency boundaries in the invoking scope. In React scopes, review React component boundaries; split only at a cohesive responsibility boundary evidenced by distinct behavior, meaningful inputs, repeated use, or a focused test seam; keep tiny, private, related JSX local."

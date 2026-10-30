@@ -24,8 +24,9 @@ backend scope and `$frontend-domain-structure` for frontend scope. Read their
 required references. Use their responsibility classifiers, public boundaries,
 and dependency direction to interpret the plan against the actual repository.
 Preserve project-native folder names: responsibility is authoritative; an
-example tree is not. In frontend scope, the skill fixes the layer folders, from
-`app/` or `routes/` through `composition/` to `ui/`. Conformance evidence for frontend scope includes a clean `frontend-layers` lint
+example tree is not. In frontend scope, the skill fixes the layer folders:
+`app/` or `routes/` → `composition/` → `features/` → `entities/` → `modules/` →
+`integrations/` → `ui/`. Conformance evidence for frontend scope includes a clean `frontend-layers` lint
 run on the changed files when the project installs it.
 
 When an accepted amendment changes the target contract, re-ground the affected
