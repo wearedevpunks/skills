@@ -57,7 +57,7 @@ Rules to know:
 - A failed or interrupted run converges when you run it again.
 - Exit code: 0 only when `status` is `applied`; 1 for `partial`, `refused`, or an unavailable Registry. Lint findings never change it.
 
-Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `moved-project-skill`, `renamed-project-skill`, `migrated-deleted`, `migrated-skipped` (a migration path whose parent resolves outside the repository is skipped, never followed). The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `adoptedPacks`, `refusal`, and the migration summary.
+Row actions: `written`, `skipped`, `overwritten-local-edit`, `created`, `kept`, `merged`, `merge-reported`, `linked`, `link-failed`, `dependency-added`, `dependency-removed`, `dependency-kept`, `removed`, `stale-reported`, `moved-project-skill`, `renamed-project-skill`, `migrated-deleted`, `migrated-skipped` (a migration path whose parent resolves outside the repository is skipped, never followed). The report also has `mode`, `status` (`applied`, `partial`, `refused`), previous and applied Baseline, `lint` (`passed`, `findings`, `failed`, or `skipped`), `dependencyInstall`, `failedLinks`, `requiredTools`, `adoptedPacks`, `refusal`, and the migration summary.
 
 
 ## Migration of older repositories (historical files)

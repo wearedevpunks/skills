@@ -135,9 +135,13 @@ test("agnostic reference fixes the entities layer model with Composition on top"
   );
   assert.match(
     structure,
-    /only `remote\/` Data Sources and `app\/api\/` handlers import `server\/`/i,
+    /only `remote\/` Data Sources and API handlers import `server\/`/i,
   );
-  assert.match(structure, /`app\/api\/` handlers import only `server\/`/i);
+  assert.match(structure, /API handlers import only `server\/`/i);
+  assert.match(structure, /`app\/\(shop\)\/api\/`/);
+  assert.match(structure, /Style and asset imports/i);
+  assert.match(structure, /at any depth of a feature or entity domain/i);
+  assert.match(structure, /never re-exports its own `remote\/` or\s+`simulated\/`/i);
   assert.doesNotMatch(structure, /These labels may differ between projects/i);
   assert.doesNotMatch(structure, /\bSurface\b/);
 
