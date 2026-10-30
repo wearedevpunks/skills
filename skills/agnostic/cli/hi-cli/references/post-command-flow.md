@@ -43,6 +43,7 @@ Otherwise apply [Project Verifier preservation](#project-verifier-preservation),
 | `renamed-project-skill` | Handle as in [Init](#init) step 5. |
 | `stale-reported` | A file is no longer in the Baseline. An Authored Artifact is project-owned; a locally edited Copied file was kept without `--yes`. Ask before deleting either, or before `hi update --yes` removes the Copied file. |
 | `link-failed` | Report path and target. Fix the filesystem cause (permissions, Windows Developer Mode) and run `hi update` again. There is no copy fallback. |
+| `merge-reported` | An optional merge target, such as `.oxfmtrc.json` for copied lint plugins, is absent or unusable; nothing was written. Report the path and the merge value from the detail; add it by hand only when the project uses that tool. |
 | `dependency-added`, `dependency-removed`, `dependency-kept` | The update already ran the package-manager install once (`dependencyInstall`); on `failed`, report the detail and rerun the install. Report any post-install command the detail names as skipped outside the CLI allowlist. For `dependency-kept`, report the importing file. |
 | `dependency-range-unreproducible`, or `hi check` `dependencyFindings` | A required devDependency uses a Non-reproducible Range (`latest`, `*`). Report the package, range, and seed from `<name>: "<range>" -> pin <seed>`, and suggest pinning the seed. Leave `package.json` unchanged: the project owns its versions (#248). The finding is advisory. |
 | `lefthook install` hint | Run `lefthook install`, then `hi commit-gate verify`. |
