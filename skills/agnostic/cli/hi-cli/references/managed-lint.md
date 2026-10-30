@@ -115,7 +115,16 @@ baseline. To turn a rule off, set `frontend-layers/<rule>` to `off` in
 plugin alias is `frontend-layers-<scope>`, with each scope-path character other than a letter,
 digit, `_` or `$` changed to `-` (`apps/web` gives `frontend-layers-apps-web`),
 so the key is `frontend-layers-<scope>/<rule>`. For the rules and the layer
-model, read `$frontend-domain-structure` `references/structure.md`.
+model, read `$frontend-domain-structure` `references/structure.md`; after a
+Baseline that changes the model, its `references/migration.md` maps old paths
+to new ones.
+
+A consumer formatter rewrites copied plugins, and `hi update` then reports
+them as local edits. `hi update` therefore merges `**/tools/oxlint/**` into
+the `ignorePatterns` of an existing `.oxfmtrc.json`. A repository without
+`.oxfmtrc.json` (Prettier, Biome, or no formatter config) gets a report row
+that names the pattern to add to its own formatter ignore; `hi update` creates
+no formatter file.
 
 The runner is `node .agents/scripts/managed-lint-runner.mjs`. Pass large file
 sets with `--files-from <path>` (one repository-relative path per line) instead

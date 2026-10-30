@@ -212,7 +212,7 @@ All model-invoked unless marked. Read `.agents/skills/<name>/SKILL.md`.
 - `$agent-browser` (`frontend`): browser automation, Lightpanda default, Chrome for rendering.
 - `$animate` (`frontend`): build an animation in decision order, from whether to animate through exit; `$design-phase` variant-round uses it per accepted Motion Plan entry.
 - `$review-animations` (`frontend`, explicit-only): critique motion code against a craft bar; `$design-phase` quality-gate requires its Approve.
-- `$frontend-domain-structure` (`frontend`): fixed composition layer model, frontend domain boundaries, imports, component splitting.
+- `$frontend-domain-structure` (`frontend`): fixed entities layer model (composition, features, entities, modules, integrations), frontend domain boundaries, Data Sources, imports, component splitting.
 - `$backend-domain-structure` (`backend`, `python`): domain-first layers, thin transport.
 - `$backend-recoverable-actions` (`backend`): transaction, retry, rollback, compensation for multi-step mutations.
 - `$logging-best-practices` (`backend`): wide events, canonical log lines.
