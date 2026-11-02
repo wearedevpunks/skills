@@ -52,8 +52,8 @@ test("the branch writes nothing and reports no failure without config, link or F
 test("a missing helper returns setup guidance while Core Backlog writes complete", () => {
   const guidance = prose();
 
-  assert.match(guidance, /`\.agents\/skills\/human-backlog-ado\/scripts\/ado\.py`[\s\S]*absent/iu);
-  assert.match(guidance, /setup guidance[\s\S]*`ci-solutions` Pack[\s\S]*`hi update`[\s\S]*`setup-human-backlog`/u);
+  assert.match(guidance, /`\.agents\/skills\/generate-human-backlog-skills\/scripts\/ado\.py`[\s\S]*absent/iu);
+  assert.match(guidance, /setup guidance[\s\S]*`ci-solutions` Pack[\s\S]*`hi update`[\s\S]*`generate-human-backlog-skills` skill[\s\S]*Human Backlog Config/u);
   assert.match(guidance, /zero Human Backlog writes[\s\S]*Core Backlog writes complete/iu);
 });
 
@@ -62,7 +62,7 @@ test("the Human State write uses the exact set-state call and retries through th
 
   assert.ok(
     guidance.includes(
-      'python3 .agents/skills/human-backlog-ado/scripts/ado.py set-state <id> "<Human State>" --comment "<comment>"',
+      'python3 .agents/skills/generate-human-backlog-skills/scripts/ado.py set-state <id> "<Human State>" --comment "<comment>"',
     ),
   );
   assert.match(guidance, /`written`[\s\S]*`unchanged`[\s\S]*success/iu);
