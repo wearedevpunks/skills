@@ -4,8 +4,8 @@ Use this branch after the step 9 Core Backlog readback. It projects recorded
 Core Backlog evidence onto the Business Request that a Fog links in the Human
 Backlog (Azure DevOps), and it keeps the Fog ↔ Business Request links. It
 reaches the Human Backlog only through the helper
-`.agents/skills/human-backlog-ado/scripts/ado.py`; its `--help` lists exact
-arguments.
+`.agents/skills/generate-human-backlog-skills/scripts/ado.py`; its `--help`
+lists exact arguments.
 
 ## 1. Gate
 
@@ -14,10 +14,12 @@ carries a Business Request link. A run with no `humanBacklog`, no Business
 Request link, or no Fog makes zero Human Backlog writes, reports no failure,
 and continues at step 10.
 
-When `humanBacklog` is set and `.agents/skills/human-backlog-ado/scripts/ado.py`
-is absent, return setup guidance: select the `ci-solutions` Pack, run
-`hi update`, then run `setup-human-backlog`. Make zero Human Backlog writes;
-the Core Backlog writes complete as usual.
+When `humanBacklog` is set and
+`.agents/skills/generate-human-backlog-skills/scripts/ado.py` is absent, return
+setup guidance: select the `ci-solutions` Pack, run `hi update`, then run the
+`generate-human-backlog-skills` skill to write and prove the Human Backlog
+Config. Make zero Human Backlog writes; the Core Backlog writes complete as
+usual.
 
 Completion: the gate result is recorded as `run`, `skipped` with its reason,
 or `setup guidance`.
@@ -55,7 +57,7 @@ Take the Business Request ID from the last path segment of its URL
 `ado.py get <id>`, then write the owed state:
 
 ```bash
-python3 .agents/skills/human-backlog-ado/scripts/ado.py set-state <id> "<Human State>" --comment "<comment>"
+python3 .agents/skills/generate-human-backlog-skills/scripts/ado.py set-state <id> "<Human State>" --comment "<comment>"
 ```
 
 The `--comment` is the one comment per Human State change. Write plain
@@ -86,7 +88,7 @@ steering and zero link writes.
 | --- | --- |
 | Fog, Linear | attachment link on the Fog to the Business Request URL |
 | Fog, GitHub | Fog body line `Business Request: <url>` |
-| Business Request | back link: `python3 .agents/skills/human-backlog-ado/scripts/ado.py hyperlink <id> <fog-url> --comment "Fog"`; readback: `ado.py get <id>`, whose `hyperlinks` contains the Fog URL |
+| Business Request | back link: `python3 .agents/skills/generate-human-backlog-skills/scripts/ado.py hyperlink <id> <fog-url> --comment "Fog"`; readback: `ado.py get <id>`, whose `hyperlinks` contains the Fog URL |
 
 Write the Fog side through the selected provider adapter and read it back.
 The back link is a Hyperlink relation, and a repeated write is `unchanged`, so
