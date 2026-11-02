@@ -18,6 +18,7 @@ Move each old path to its new owner. Classify by the invariant owner, not by the
 | `integrations/<mock-or-fake>/` | `simulated/` of the Entity or Feature that owns the port |
 | `integrations/<app-api-client>/` | `remote/index.ts` of the owning Entity or Feature |
 | `integrations/<server-reader>/` | `remote/server.ts` of the owning Entity or Feature |
+| `remote/` that re-exports a pure `server/` contract (`policy.ts` → `./remote` → `@/server/...`) | a direct import of the `server/<domain>` Server Contract; delete the re-export chain |
 | `integrations/<third-party>/` | stays in `integrations/` |
 | sibling folders that repeat a prefix (`candidate-cv/`, `candidate-intake/`) | one domain with subpaths (`candidate/cv/`, `candidate/intake/`) |
 

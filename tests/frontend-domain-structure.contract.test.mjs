@@ -11,6 +11,7 @@ const root = "skills/agnostic/frontend/frontend-domain-structure";
 const lintRuleIds = [
   "layer-order",
   "route-imports",
+  "server-contract-purity",
   "no-peer-feature",
   "no-peer-entity",
   "public-entrypoint",
@@ -133,11 +134,24 @@ test("agnostic reference fixes the entities layer model with Composition on top"
     structure,
     /`server\/` sits outside the layers[^.]*`effect-backend-structure`/i,
   );
+  assert.match(structure, /API handlers import only `server\/`/i);
   assert.match(
     structure,
-    /only `remote\/` Data Sources and API handlers import `server\/`/i,
+    /`index\.ts` or `index\.tsx` is the domain's \*\*Server Contract\*\*[^.]*pure[^.]*server and the browser of one app share/i,
   );
-  assert.match(structure, /API handlers import only `server\/`/i);
+  assert.match(
+    structure,
+    /Every layer below the route layer imports it through the domain folder or its `index`/i,
+  );
+  assert.match(
+    structure,
+    /never `server-only`, a Node built-in, a `server\.ts` file or a file in an `integrations\/` or `platform\/` folder/i,
+  );
+  assert.match(structure, /a Server Contract is not a Data Source/i);
+  assert.match(
+    structure,
+    /Only `remote\/` Data Sources and API handlers import `server\.ts` and every other `server\/` file that is not a Server Contract/i,
+  );
   assert.match(structure, /`app\/\(shop\)\/api\/`/);
   assert.match(structure, /Style and asset imports/i);
   assert.match(structure, /at any depth of a feature or entity domain/i);

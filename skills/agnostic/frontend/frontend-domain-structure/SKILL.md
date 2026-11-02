@@ -3,9 +3,9 @@ name: frontend-domain-structure
 description: |
   Place frontend code in the fixed entities layer model and review domain granularity, imports,
   and React component splitting. Use when creating or refactoring frontend code, placing providers,
-  shells, page templates, entities or data sources, deciding whether a feature, entity or module
-  deserves its own domain, replacing flat technical buckets, reviewing React component boundaries,
-  or fixing `frontend-layers` lint errors.
+  shells, page templates, entities, data sources or server contracts, deciding whether a feature,
+  entity or module deserves its own domain, replacing flat technical buckets, reviewing React
+  component boundaries, or fixing `frontend-layers` lint errors.
 ---
 
 # Frontend Domain Structure

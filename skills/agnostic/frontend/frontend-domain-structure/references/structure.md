@@ -104,10 +104,23 @@ renderer. The app's own API and its fakes are Data Sources, not Integrations.
 
 ## Server
 
-`server/` sits outside the layers, and `effect-backend-structure` governs it. Only `remote/` Data
-Sources and API handlers import `server/`, and only through server public entrypoints. An API handler
-is any file under an `api/` folder of the route layer, after route groups and dynamic segments
-(`app/api/`, `app/(shop)/api/`, `routes/api/`). API handlers import only `server/`.
+`server/` sits outside the layers, and `effect-backend-structure` governs it. A `server/` domain, such
+as `server/features/access/`, has two entries:
+
+- Its `index.ts` or `index.tsx` is the domain's **Server Contract**: the pure types, schemas, parsers
+  and policy functions that the server and the browser of one app share. Every layer below the route
+  layer imports it through the domain folder or its `index`. Through every file it imports, it reaches
+  only pure code: never `server-only`, a Node built-in, a `server.ts` file or a file in an
+  `integrations/` or `platform/` folder.
+- `server.ts` starts with `import "server-only"` and holds the domain's I/O. Only `remote/` Data Sources
+  and API handlers import `server.ts` and every other `server/` file that is not a Server Contract.
+
+A Server Contract is not a Data Source: consumers import it from its `server/` domain, and `remote/`
+and frontend domain `index` files leave it unexported. A contract with consumers in more than one
+application belongs to a shared package (see [Shared Packages](#shared-packages)).
+
+An API handler is any file under an `api/` folder of the route layer, after route groups and dynamic
+segments (`app/api/`, `app/(shop)/api/`, `routes/api/`). API handlers import only `server/`.
 
 Route files import code only from `composition/`. Style and asset imports, such as `./globals.css` or
 `../styles.css?url`, are not code imports.
@@ -132,8 +145,9 @@ domain-worthiness test; shared code is still organized by responsibility.
 A domain is the first folder under a layer, for example `features/checkout/`, `entities/order/`,
 `modules/navigation/` or `integrations/payments/`. A domain may have subpaths, such as
 `entities/order/refunds/`. The domain `index.ts` or `index.tsx`, or a subpath `index.ts` or
-`index.tsx`, is the only cross-domain entrypoint; `remote/server.ts` is the server entry. Imports
-inside a domain are free. `ui/` is exempt, because shadcn keeps one file per component.
+`index.tsx`, is the only cross-domain entrypoint; `remote/server.ts` is the server entry. In
+`server/`, the `index` is the Server Contract and `server.ts` is the I/O entry (see [Server](#server)).
+Imports inside a domain are free. `ui/` is exempt, because shadcn keeps one file per component.
 
 An `index` file only re-exports: implementation lives in named files beside it. Production code never
 imports its own folder's `./index` or `.`; tests may, because they exercise the public entry. This
@@ -193,12 +207,14 @@ A flat technical bucket remains a poor substitute for semantic ownership even wh
 
 The `frontend-layers` lint plugin implements this table. HI installs it as the `react-frontend-layers`
 lint asset of the `react` Pack. This table is the authority; the plugin follows it. Every violation is
-an error. A Module's no-product-terms test is a review rule; lint checks only its imports.
+an error. A Module's no-product-terms test is a review rule; lint checks only its imports. The package
+imports of a Server Contract, such as a database client, are also a review rule.
 
 | Rule | Error when |
 | --- | --- |
-| `layer-order` | An import targets a higher layer, or a file outside a `remote/` Data Source of `entities/` or `features/` and outside an API handler imports `server/`. |
+| `layer-order` | An import targets a higher layer, or a file outside a `remote/` Data Source of `entities/` or `features/` and outside an API handler imports a `server/` path other than a Server Contract (a `server/` folder or `index` file). |
 | `route-imports` | A route-layer file code-imports a folder other than `composition/`, or an API handler imports a folder other than `server/`. Style and asset imports are allowed. |
+| `server-contract-purity` | A `server/` `index.ts` or `index.tsx` imports `server-only`, a Node built-in, a `server.ts` file or a file in an `integrations/` or `platform/` folder, directly or through the files it imports. |
 | `no-peer-feature` | A file in `features/<a>/` imports `features/<b>/`. |
 | `no-peer-entity` | A file in `entities/<a>/` imports `entities/<b>/`. |
 | `public-entrypoint` | A cross-domain import targets a file other than a domain or subpath `index.ts` or `index.tsx`, or `remote/server.ts`; `ui/` is exempt. |
