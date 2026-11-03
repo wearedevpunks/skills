@@ -366,6 +366,36 @@ test("an oversized review plan blocks prepare before any engine starts", (t) => 
   assert.deepEqual(readdirSync(path.join(fx.tmp, "hi-review")), [], "a blocked prepare leaves no run directory");
 });
 
+test("prepare reads Git output larger than the default 1 MiB child-process buffer", (t) => {
+  const fx = fixtureRepo(t);
+  // The large blob sits in the base, so only reads of the tree see it, not the diff.
+  const index = path.join(fx.repo, ".agents/rules/index.md");
+  write(index, `${readFileSync(index, "utf8")}\n${"<!-- padding of a large rule registry -->\n".repeat(50_000)}`);
+  fx.git("commit", "-qam", "large rule registry");
+  const base = fx.git("rev-parse", "HEAD");
+  write(path.join(fx.repo, "src/app.mjs"), "export const limit = 3;\n");
+  fx.git("commit", "-qam", "raise limit again");
+  const prepared = prepare({ ...fx, base }, ["--spec", "specs/feature"]);
+  assert.equal(prepared.out.blocker, null, prepared.stderr);
+  const run = cli(fx, ["run", "--run-dir", prepared.out.run_dir], engines("claude-fail", "codex-clean", { HI_REVIEW_ENGINES: "codex" }));
+  assert.equal(run.out.blocker, null, run.stderr);
+});
+
+test("a private/ directory is reviewed while a secret directory still refuses its guidance", (t) => {
+  const touch = (dir) => (repo) => {
+    write(path.join(repo, dir, "AGENTS.md"), "# Package guidance\n");
+    write(path.join(repo, dir, "index.mjs"), "export const value = 1;\n");
+  };
+  const fx = fixtureRepo(t, { extraChange: touch("packages/private/foo") });
+  const prepared = prepare(fx);
+  assert.equal(prepared.out.blocker, null, prepared.stderr);
+  const packet = JSON.parse(readFileSync(path.join(prepared.out.run_dir, "packet.json"), "utf8"));
+  assert.ok(packet.changed_paths.includes("packages/private/foo/AGENTS.md"), packet.changed_paths.join(", "));
+
+  const secret = fixtureRepo(t, { extraChange: touch("config/secrets") });
+  assert.match(prepare(secret).out.blocker, /refusing sensitive --source-context: config\/secrets\/AGENTS\.md/u);
+});
+
 test("standalone review takes a commit or range, refuses other targets and keeps no counter", (t) => {
   const fx = fixtureRepo(t);
   const standalone = (locator) => cli(fx, ["prepare", "--standalone", locator]);

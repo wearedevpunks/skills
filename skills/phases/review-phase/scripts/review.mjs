@@ -53,8 +53,11 @@ const reportPathOf = ({ mode, goal, ordinal, base, head, run_id: runId }) => mod
   : `.devpunks/delivery/standalone/reviews/${short(base)}-${short(head)}-${runId}.json`;
 const sentence = (text) => String(text).replace(/\s+/gu, " ").trim().split(/(?<=\.)\s/u)[0].replace(/\.$/u, "");
 
+// Whole-tree listings and blobs of real repositories exceed Node's 1 MiB default;
+// 512 MiB is near V8's maximum string length, the real ceiling of a utf8 result.
+const GIT_MAX_BUFFER = 512 * 1024 * 1024;
 const git = (repo, args, env) =>
-  execFileSync("git", args, { cwd: repo, encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }).trimEnd();
+  execFileSync("git", args, { cwd: repo, encoding: "utf8", env, maxBuffer: GIT_MAX_BUFFER, stdio: ["ignore", "pipe", "pipe"] }).trimEnd();
 const gitOk = (repo, args) => {
   try {
     return git(repo, args);
@@ -327,7 +330,11 @@ const prepare = async (options) => {
       assignedSkillFiles: assignedSkillFiles(specFolder && readAt(`${specFolder}/PLAN.md`), files),
       specFolderFiles,
     };
-    const sourceContext = Object.fromEntries(AXES.map((axis) => [axis, [...new Set(selectSourceContext({ axis, ...sources }).flatMap(evidenceOf))]]));
+    // The vendored helper refuses any `--source-context` under a `private` segment
+    // (SENSITIVE_PATH_PARTS) and admits its diff, so such guidance stays out of the
+    // context instead of blocking the pass; secret paths still reach its refusal.
+    const admitted = (file) => !file.split("/").some((part) => part.toLowerCase() === "private");
+    const sourceContext = Object.fromEntries(AXES.map((axis) => [axis, [...new Set(selectSourceContext({ axis, ...sources }).flatMap(evidenceOf))].filter(admitted)]));
     if (sourceContext.spec.length === 0 && (mode === "delivery" || options.spec)) {
       throw new Blocker(`The Spec axis has no source because ${specFolder ?? "no spec folder"} holds no SPEC.md, ARCHITECTURE.md, PLAN.md or IMPLEMENTATION-NOTES.md at the reviewed head; name the spec folder with --spec`);
     }
