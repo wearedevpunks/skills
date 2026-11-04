@@ -31,7 +31,7 @@ Before `hi report`, run its `$retro` step in [references/commands.md](references
 
 ## Workflow
 
-For managed lint setup, Software Scope changes, policy migration, conflicting commands, or lint findings, read [references/managed-lint.md](references/managed-lint.md). Review the Software Scopes `hi init` saved before relying on managed lint; `--yes` accepts detection's proposal, which is not a deliberate owner decision.
+For managed lint setup, Software Scope changes, policy migration, conflicting commands, the type-aware backend (tsrs), or lint findings, read [references/managed-lint.md](references/managed-lint.md). Review the Software Scopes `hi init` saved before relying on managed lint; `--yes` accepts detection's proposal, which is not a deliberate owner decision.
 
 1. Run the bounded command requested by the user.
 2. Classify its result as init, update, diff, check, tools ensure, report, upgrade, or operator.
