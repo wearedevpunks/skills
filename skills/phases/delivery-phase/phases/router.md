@@ -42,8 +42,8 @@ Choose one next phase from current durable authority.
    invalidated implementation evidence selects [implement.md](implement.md).
 8. Every completed implementation selects [review.md](review.md) until a valid
    Pass Report covers this delivery. No delivery
-   reaches docs ingest or closeout without one. `review-phase` starts every
-   review engine; phases and workers reach Code Review only through it.
+   reaches docs ingest or closeout without one. `review-phase` runs every
+   Code Review; phases and workers reach Code Review only through it.
    Accepted repair follows that same transition authority's Focused Repair
    Validation and risk-triggered second-pass rules. Passing ordinary focused
    checks proceed without automatically reopening Code Review.

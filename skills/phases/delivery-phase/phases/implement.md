@@ -38,7 +38,7 @@ silently renaming them.
   to the router before expanding worker ownership.
 - Parent orchestration owns shared notes and final validation evidence.
 - Code Review happens once in `review-phase` over the combined change after
-  implementation completes; workers and the parent start no review engine here.
+  implementation completes; workers and the parent leave Code Review to it.
 - For UI work, require `implement-spec` to carry durable before/after links through `UI Evidence Links`; use `repo-asset-management` only through that evidence contract.
 - If runtime evidence appears during validation, finish the phase handoff and route to debug.
 - Preserve the opening `pass_report` and `review_run_id` through the repair.
