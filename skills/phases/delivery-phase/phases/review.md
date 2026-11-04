@@ -37,9 +37,9 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    delivery invokes it immediately; other modes return that context and stop.
    Only the Pass Report that `retain` commits completes the pass.
 
-`$review-phase` runs the whole Full Code Review Pass: two Axis Runs with Engine
-Fallback, one Adjudicator and one Pass Report, and it starts every review
-engine. Every delivery takes this full pass, whatever its size.
+`$review-phase` runs the whole Full Code Review Pass and commits its one Pass
+Report; it runs every Code Review. Every delivery takes this full pass, whatever
+its size.
 
 A semantic input change during an active run invalidates it: `status` returns
 `next: prepare` once `HEAD` moves after `prepare`. Record the changed input,

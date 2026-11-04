@@ -320,6 +320,8 @@ Before reporting back:
 - ensure **Architecture Conformance Evidence**, when applicable, contains every
   wave checkpoint and final closure; closure proves zero drift and an empty
   migration ledger
+- ensure **Acceptance Criteria Status** has a status row for every `AC-nnn`
+  in `SPEC.md`; a range row (`AC-001–AC-004`) covers each ID in it
 - ensure **Remaining work** matches any unmet or blocked criteria
 - ensure no in-goal debt remains as TODO, follow-up cleanup, or vague later-work text
 - ensure every tech-debt item file has exact blocker/decision/owner/next action

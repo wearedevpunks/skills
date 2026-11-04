@@ -1,70 +1,47 @@
 ---
 name: review-phase
-description: >-
-  One Full Code Review Pass of a committed Git change: two Axis Runs
-  (Standards, Spec) with Engine Fallback, one Adjudicator, one Pass Report and
-  one return route. Delivery starts it at review due; the operator invokes it
-  for a standalone commit or range.
+description: One Full Code Review Pass of a committed change by one fresh reviewer, ending in one Pass Report and route; delivery starts it, or run it on a standalone commit or range.
 disable-model-invocation: true
 ---
 
 # Review Phase
 
-`scripts/review.mjs` does every mechanical part of the pass: Review Packet
-identity, pass budget, source context, sizing, both Axis Runs with Engine
-Fallback, and the Pass Report write and commit. Each call prints one JSON line.
-The agent makes four calls, starts one Adjudicator and returns the route. The
-reviewed change stays readonly; the Pass Report that `retain` commits is the
-pass's only write.
-
+`scripts/review.mjs` does the mechanics: pass budget, Review Packet, Pass Report
+write and commit. Each call prints one JSON line; a non-null `blocker` is one
+sentence to relay unchanged to the caller, then stop. The reviewed change stays
+readonly; the Pass Report that `retain` commits is the pass's only write.
 `<skill>` is this skill's directory. Run each command from the repository root.
 
 ## Procedure
 
-The six steps are the whole pass: each step needs only the output of the
-command before it, and a reference loads only at the step that names it.
-Delivery enters at step 1 and continues at the step its `next` names
-(`prepare` 2, `run` 3, `adjudicate` 4, `retain` 5, `done` 6). Standalone review
-enters at step 2.
+Delivery enters at step 1 and continues at the step its `next` names (`prepare`
+2, `review` 3, `retain` 4, `done` 5). Standalone review enters at step 2.
 
 1. **Status.** `node <skill>/scripts/review.mjs status --goal <delivery-dir>`.
    Complete when the line carries `next`, `run_dir` and `pass_count`.
 2. **Prepare.** `node <skill>/scripts/review.mjs prepare --goal <delivery-dir>
-   --base <sha>`, or `prepare --standalone <commit-or-range>`. Add each option
-   the caller supplies:
-   - `--spec <folder>`: the governing spec folder.
-   - `--accepted-risk <kind>:<evidence>`: the trigger for a second pass.
-   - `--human-direction <evidence>`: the direction for a further pass.
-
-   `prepare` enforces the pass budget: one pass by default, a second only on an
-   accepted-risk trigger, a further pass only with explicit human direction.
-   Complete when the line carries `run_id`, `run_dir` and `"blocker": null`. A
-   non-null `blocker` is one sentence: relay it unchanged to the caller and
-   stop.
-3. **Run.** Start `node <skill>/scripts/review.mjs run --run-dir <run_dir>` as
-   a background command and end the turn. The harness notification of its exit
-   resumes this procedure: read the command's output once for its one JSON
-   line. Complete when that line is in context with `"blocker": null`; relay a
-   non-null `blocker` unchanged and stop.
-4. **Adjudicate.** Start exactly one readonly Adjudicator subagent in the
-   foreground and wait for it to return, with the brief in
-   [references/adjudicator.md](references/adjudicator.md) and the `run_dir`.
-   Complete when its result is in context with its token total.
-5. **Retain.** `node <skill>/scripts/review.mjs retain --run-dir <run_dir>
-   --subagent-tokens <n>`, with `<n>` the token total from the Adjudicator's
-   result. When `retain` refuses `adjudication.json`, send its error to
-   the same Adjudicator, which rewrites the file, and retain again. Complete
-   when the line carries `pass_report`, `run_id`, `commit`, `route` and
-   `findings`.
-6. **Return.** Return `pass_report`, `review_run_id` (the `run_id`),
-   `route.primary`, `route.secondary_debt` and the `findings` list to the
-   caller, with the transition [references/routing.md](references/routing.md)
-   names for that route. The retain line is the presentation source: its
-   `findings` (`id`, `axis`, `severity`, `location`, `return_route`) and
-   `rejected_count` are the caller's summary; the Pass Report stays the review
+   --base <sha>`, or `prepare --standalone <commit|base..head>`. Add each option
+   the caller supplies: `--spec <folder>`, `--accepted-risk <kind>:<evidence>`
+   (second pass), `--human-direction <evidence>` (further pass). Complete when
+   the line carries `run_id` and `run_dir`.
+3. **Review.** Start one fresh general-purpose subagent in the foreground: a
+   new agent with no parent context, never a fork or an earlier agent (Claude
+   `Agent` without fork, Codex `spawn_agent` without forked context). Its whole
+   prompt is the path of [references/reviewer.md](references/reviewer.md) and
+   the `run_dir`, with no summary or view of the change. Complete when its
+   one-line result and token total are in context.
+4. **Retain.** `node <skill>/scripts/review.mjs retain --run-dir <run_dir>
+   --subagent-tokens <n>`, with `<n>` the reviewer's token total. When `retain`
+   refuses `findings.json`, send its error to this reviewer, which rewrites the
+   file, and retain again. Complete when the line carries `pass_report`,
+   `run_id`, `commit`, `route` and `findings`.
+5. **Return.** Return `pass_report`, `review_run_id` (the `run_id`),
+   `route.primary`, `route.secondary_debt` and the `findings` list (`id`,
+   `priority`, `kind`, `location`, `return_route`), with the transition
+   [references/routing.md](references/routing.md) names for that route. The
+   retain line is the presentation source; the Pass Report stays the review
    authority. After `next: done`, read these fields from
    `<delivery-dir>/reviews/pass-<pass_count>.json`. Complete when the caller
    holds the route.
 
-Repair, debugging, debt capture, docs ingest and closeout belong to the caller
-after step 6.
+The caller owns repair, debugging, debt capture, docs ingest and closeout.

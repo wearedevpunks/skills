@@ -1,30 +1,16 @@
-// Side-effect shell of review-phase: Git, files, run directory and the vendored
-// autoreview helper. Every policy decision comes from review-contract.mjs.
-// Each subcommand prints exactly one JSON line on stdout; diagnostics go to stderr.
-import { execFileSync, spawn } from "node:child_process";
-import { createHash, randomBytes } from "node:crypto";
+// Side-effect shell of review-phase: Git, files and the private run directory.
+// Policy comes from review-contract.mjs. Each subcommand prints exactly one JSON
+// line on stdout; diagnostics go to stderr.
+import { execFileSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import {
-  deriveReviewRouting,
-  planDeliveryReviewGate,
-  planEngineOrder,
-  recoverPassCount,
-  reviewPacketIdentity,
-  selectSourceContext,
-  validatePassReport,
-} from "./review-contract.mjs";
+import { budgetBlocker, deriveReviewRouting, recoverPassCount, validateFindings, validatePassReport } from "./review-contract.mjs";
 
-const HELPER = path.join(import.meta.dirname, "vendor/autoreview");
-const AXES = ["standards", "spec"];
-// Same Pass Report location rule as review-contract.mjs, whose export set is fixed.
 const PASS_REPORT_PATH = /^\.devpunks\/delivery\/(?:[^/]+\/)*reviews\//u;
-// Upstream statuses that end an Axis Run; every other result falls to the next engine.
-const COMPLETED = new Set(["findings", "scoped-clean", "filtered", "incorrect"]);
-const DEFAULT_ENGINE_TIMEOUT_SECONDS = 900;
-const DEFAULT_MAX_ENGINE_PASSES = 3;
+const SPEC_SOURCES = ["SPEC.md", "ARCHITECTURE.md", "PLAN.md"];
 
 const HELP = `review.mjs — one Full Code Review Pass; each subcommand prints one JSON line.
 
@@ -32,17 +18,12 @@ const HELP = `review.mjs — one Full Code Review Pass; each subcommand prints o
   prepare --goal <delivery-dir> --base <sha> [--spec <folder>]
           [--accepted-risk <kind>:<evidence>] [--human-direction <evidence>]
   prepare --standalone <commit|base..head> [--spec <folder>]
-                                                       freeze the target, size both axes
-  run     --run-dir <dir>                              both Axis Runs with Engine Fallback
+                                                       write the Review Packet
   retain  --run-dir <dir> --subagent-tokens <n>        write and commit the Pass Report
-
-Env: HI_REVIEW_ENGINES, HI_REVIEW_ENGINE_TIMEOUT_SECONDS (default ${DEFAULT_ENGINE_TIMEOUT_SECONDS}),
-HI_REVIEW_MAX_ENGINE_PASSES (default ${DEFAULT_MAX_ENGINE_PASSES}), HI_REVIEW_PROMPT_DIR, CODEX_BIN, CLAUDE_BIN.
 `;
 
 class Blocker extends Error {}
 
-const sha256 = (text) => createHash("sha256").update(text).digest("hex");
 const short = (sha) => sha.slice(0, 12);
 // The run root is shared by every user of the machine, so it is sticky like /tmp
 // and only a private directory of this user counts as a run directory.
@@ -53,11 +34,11 @@ const reportPathOf = ({ mode, goal, ordinal, base, head, run_id: runId }) => mod
   : `.devpunks/delivery/standalone/reviews/${short(base)}-${short(head)}-${runId}.json`;
 const sentence = (text) => String(text).replace(/\s+/gu, " ").trim().split(/(?<=\.)\s/u)[0].replace(/\.$/u, "");
 
-// Whole-tree listings and blobs of real repositories exceed Node's 1 MiB default;
+// Whole-tree listings of real repositories exceed Node's 1 MiB default;
 // 512 MiB is near V8's maximum string length, the real ceiling of a utf8 result.
 const GIT_MAX_BUFFER = 512 * 1024 * 1024;
-const git = (repo, args, env) =>
-  execFileSync("git", args, { cwd: repo, encoding: "utf8", env, maxBuffer: GIT_MAX_BUFFER, stdio: ["ignore", "pipe", "pipe"] }).trimEnd();
+const git = (repo, args) =>
+  execFileSync("git", args, { cwd: repo, encoding: "utf8", maxBuffer: GIT_MAX_BUFFER, stdio: ["ignore", "pipe", "pipe"] }).trimEnd();
 const gitOk = (repo, args) => {
   try {
     return git(repo, args);
@@ -98,16 +79,22 @@ const goalPath = (repo, goal) => {
   }
   return relative;
 };
-
-// ---------- Pass Reports of a goal ----------
-
 const passEntries = (repo, goalRel) => {
   const dir = path.join(repo, goalRel, "reviews");
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir).map((name) => ({ name, report: readJson(path.join(dir, name)) }));
 };
+const goalRuns = (repo, goalRel) => {
+  if (!fs.existsSync(runsRoot())) return [];
+  return fs.readdirSync(runsRoot())
+    .map((name) => path.join(runsRoot(), name))
+    .filter((dir) => isOwnRunDir(fs.lstatSync(dir, { throwIfNoEntry: false })))
+    .map((dir) => ({ dir, packet: readJson(path.join(dir, "packet.json")) }))
+    .filter(({ packet }) => packet?.repo_root === repo && packet.goal === goalRel)
+    .sort((left, right) => left.packet.created_at.localeCompare(right.packet.created_at));
+};
 
-// ---------- target and source context ----------
+// ---------- prepare ----------
 
 const resolveTarget = (repo, { mode, base, standalone }) => {
   if (mode === "delivery") {
@@ -123,273 +110,88 @@ const resolveTarget = (repo, { mode, base, standalone }) => {
   return { base: baseSha, head: headSha, locator: standalone };
 };
 
-// The upstream helper reviews one commit against its parent. The review commit
-// is the head tree with Pass Report paths reset to the base, parented on the
-// base, so every target excludes `.devpunks/delivery/**/reviews/` (AC-019).
-const reviewCommit = (repo, runDir, { base, head }, excluded) => {
-  let tree = git(repo, ["rev-parse", `${head}^{tree}`]);
-  if (excluded.length > 0) {
-    const env = { ...process.env, GIT_INDEX_FILE: path.join(runDir, "review.index") };
-    git(repo, ["read-tree", head], env);
-    for (const file of excluded) {
-      const entry = git(repo, ["ls-tree", base, "--", file]);
-      const [mode, , oid] = entry.split("\t")[0].split(" ");
-      git(repo, entry ? ["update-index", "--add", "--cacheinfo", `${mode},${oid},${file}`] : ["update-index", "--force-remove", "--", file], env);
-    }
-    tree = git(repo, ["write-tree"], env);
-    fs.rmSync(env.GIT_INDEX_FILE, { force: true });
-  }
-  const date = git(repo, ["log", "-1", "--format=%cI", head]);
-  const env = { ...process.env, GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date };
-  for (const role of ["AUTHOR", "COMMITTER"]) Object.assign(env, { [`GIT_${role}_NAME`]: "hi-review", [`GIT_${role}_EMAIL`]: "hi-review@localhost" });
-  const log = git(repo, ["log", "--format=%h %s", `${base}..${head}`]);
-  return { tree, commit: git(repo, ["commit-tree", tree, "-p", base, "-m", `Review target ${base}..${head}\n\n${log}`], env) };
-};
-
-const tableRows = (markdown) =>
-  markdown.split("\n")
-    .filter((line) => line.trim().startsWith("|"))
-    .map((line) => line.trim().replace(/^\||\|$/gu, "").split("|").map((cell) => cell.trim()))
-    .filter((cells) => !cells.every((cell) => /^:?-+:?$/u.test(cell)));
 const ticked = (cell) => [...cell.matchAll(/`([^`]+)`/gu)].map((match) => match[1]);
-const section = (markdown, heading) => {
-  const start = markdown.indexOf(`\n## ${heading}`);
-  if (start < 0) return "";
-  const end = markdown.indexOf("\n## ", start + 4);
-  return markdown.slice(start, end < 0 ? undefined : end);
-};
-
 // Rules whose `path trigger` globs match a changed path, from `.agents/rules/index.md`.
 const matchRules = (index, changed) => {
-  if (!index) return [];
-  const [header = [], ...rows] = tableRows(index);
-  const columns = header.map((cell) => cell.toLowerCase());
+  const rows = (index ?? "").split("\n")
+    .filter((line) => line.trim().startsWith("|"))
+    .map((line) => line.trim().replace(/^\||\|$/gu, "").split("|").map((cell) => cell.trim()));
+  const columns = (rows[0] ?? []).map((cell) => cell.toLowerCase());
   const trigger = columns.indexOf("path trigger");
   const file = columns.indexOf("file");
   if (trigger < 0 || file < 0) return [];
-  return rows
+  return rows.slice(1)
     .filter((row) => ticked(row[trigger] ?? "").some((glob) => changed.some((p) => path.posix.matchesGlob(p, glob))))
     .map((row) => `.agents/rules/${row[file].replaceAll("`", "")}`);
 };
 
-const assignedSkillFiles = (plan, files) => {
-  const names = new Set((plan ?? "").split("\n").filter((line) => line.includes("**assigned_skills**")).flatMap(ticked));
-  return [...names].flatMap((name) => {
-    const installed = `.agents/skills/${name}/SKILL.md`;
-    const match = files.includes(installed) ? installed : files.find((file) => file.endsWith(`/${name}/SKILL.md`));
-    return match ? [match] : [];
-  });
-};
-
-// Pre-adjudication candidates from the two mechanical checks (AC-005).
-const mechanicalCandidates = (folder, { spec, plan, notes }) => {
-  if (!notes) return [];
-  const notesPath = `${folder}/IMPLEMENTATION-NOTES.md`;
-  const candidates = [];
-  if (plan) {
-    const planned = [];
-    let task = null;
-    for (const line of plan.split("\n")) {
-      task = /^###\s+(T\d+)\b/u.exec(line)?.[1] ?? task;
-      const skill = /^\s*-\s+\*\*skill\*\*:\s*`([^`]+)`/u.exec(line)?.[1];
-      if (skill) planned.push(`${task} ${skill}`);
-    }
-    const recorded = tableRows(section(notes, "Skill Application Evidence"))
-      .slice(1)
-      .map((cells) => `${cells[0]} ${cells[1]?.replaceAll("`", "")}`);
-    const count = (key) => recorded.filter((entry) => entry === key).length;
-    for (const key of new Set([...planned, ...recorded])) {
-      const problem = !planned.includes(key) ? "has a Skill Application Evidence row without a PLAN implementation_skill_guidance entry"
-        : count(key) === 0 ? "has no Skill Application Evidence row"
-          : count(key) > 1 ? `has ${count(key)} Skill Application Evidence rows instead of one` : null;
-      if (problem) candidates.push({ check: "skill_evidence", location: notesPath, claim: `${key} ${problem}` });
-    }
-  }
-  const tableLines = notes.split("\n").filter((line) => line.trim().startsWith("|"));
-  for (const id of new Set([...(spec ?? "").matchAll(/^\s*-\s+(AC-\d+):/gmu)].map((match) => match[1]))) {
-    if (!tableLines.some((line) => new RegExp(`\\b${id}\\b`, "u").test(line))) {
-      candidates.push({ check: "acceptance_record", location: `${folder}/SPEC.md`, claim: `${id} has no Verification or acceptance record in ${notesPath}` });
-    }
-  }
-  return candidates;
-};
-
-// ---------- vendored helper ----------
-
-const runHelper = (cwd, args) =>
-  new Promise((resolve, reject) => {
-    const child = spawn(HELPER, args, { cwd, env: process.env, stdio: ["ignore", "pipe", "pipe"] });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => { stdout += chunk; });
-    child.stderr.on("data", (chunk) => { stderr += chunk; });
-    child.on("error", reject);
-    child.on("close", (code) => resolve({ code, stdout, stderr }));
-  });
-
-const helperArgs = (packet, runDir, axis, engine) => [
-  "--mode", "commit", "--commit", packet.review_commit,
-  "--engine", engine,
-  "--max-priority", "P2",
-  "--max-review-passes", String(packet.max_engine_passes),
-  // Upstream accepts --prompt-file only inside the reviewed repo; the text is identical.
-  "--prompt", fs.readFileSync(path.join(runDir, `axis-${axis}.md`), "utf8"),
-  ...packet.source_context[axis].flatMap((file) => ["--source-context", file]),
-];
-
-const sizeAxis = async (packet, runDir, axis, engine) => {
-  const { stdout } = await runHelper(packet.repo_root, [...helperArgs(packet, runDir, axis, engine), "--dry-run"]);
-  const failure = /^(?:inputs|bundle|prompt): FAILED \((.*)\)$/mu.exec(stdout);
-  const plan = /^review plan: (\d+) passes; (\d+) total prompt bytes$/mu.exec(stdout);
-  if (failure || !plan) {
-    throw new Blocker(`The ${axis} Axis Run cannot start: ${sentence(failure?.[1] ?? "the helper dry run printed no review plan")}`);
-  }
-  return { bytes: Number(plan[2]), passes: Number(plan[1]) };
-};
-
-// ---------- prepare ----------
-
-const prepare = async (options) => {
+const prepare = (options) => {
   const repo = repoRoot();
   const mode = options.standalone ? "standalone" : "delivery";
   if (mode === "delivery" && (!options.goal || !options.base)) throw new Blocker("prepare needs --goal <delivery-dir> and --base <sha>, or --standalone <commit|range>");
   const goalRel = mode === "delivery" ? goalPath(repo, options.goal) : null;
   const target = resolveTarget(repo, { mode, base: options.base, standalone: options.standalone });
-  const changed = zList(git(repo, ["diff", "--name-only", "--no-renames", "-z", target.base, target.head]));
-  const reviewable = changed.filter((file) => !PASS_REPORT_PATH.test(file));
-  if (reviewable.length === 0) {
-    throw new Blocker(`The target ${target.locator} has no reviewable Git change outside Pass Reports`);
-  }
+  const changed = zList(git(repo, ["diff", "--name-only", "--no-renames", "-z", target.base, target.head]))
+    .filter((file) => !PASS_REPORT_PATH.test(file));
+  if (changed.length === 0) throw new Blocker(`The target ${target.locator} has no reviewable Git change outside Pass Reports`);
 
   let ordinal = null;
   if (mode === "delivery") {
-    const count = recoverPassCount(passEntries(repo, goalRel));
-    const [kind, ...evidence] = (options["accepted-risk"] ?? "").split(":");
-    const gate = planDeliveryReviewGate({
-      currentState: "review_requested",
-      acceptedBoundsValid: true,
-      targetSupported: true,
-      recoveredReviewCount: count,
-      acceptedRiskTrigger: options["accepted-risk"] ? { kind, evidence: evidence.join(":").trim() } : null,
-      humanReviewDirection: options["human-direction"] ? { evidence: options["human-direction"], authorized_ordinal: count + 1 } : null,
-    });
-    if (gate.state === "focused_validation") {
-      throw new Blocker(`Pass ${count} is already retained for this goal and a second pass needs an accepted-risk trigger (--accepted-risk <kind>:<evidence>)`);
-    }
-    if (gate.state === "review_budget_exhausted") {
-      throw new Blocker(`The review budget is spent after ${count} passes and a further pass needs explicit human direction (--human-direction <evidence>)`);
-    }
-    if (gate.state !== "review_due") throw new Blocker(`The pass budget cannot be planned from ${count} recovered Pass Reports`);
-    ordinal = count + 1;
+    const passCount = recoverPassCount(passEntries(repo, goalRel));
+    const blocker = budgetBlocker({ passCount, acceptedRisk: options["accepted-risk"], humanDirection: options["human-direction"] });
+    if (blocker) throw new Blocker(blocker);
+    ordinal = passCount + 1;
   }
+
+  const files = new Set(zList(git(repo, ["ls-tree", "-r", "--name-only", "-z", target.head])));
+  let specFolder = options.spec ? path.relative(repo, path.resolve(options.spec)).split(path.sep).join("/") : null;
+  if (!specFolder) {
+    const folders = [...new Set(changed.map((file) => path.posix.dirname(file)).filter((dir) => files.has(`${dir}/SPEC.md`)))];
+    if (folders.length > 1) throw new Blocker(`The change touches several spec folders (${folders.join(", ")}); name one with --spec`);
+    specFolder = folders[0] ?? goalRel;
+  }
+  const specSources = specFolder ? SPEC_SOURCES.map((name) => `${specFolder}/${name}`).filter((file) => files.has(file)) : [];
+  if (specSources.length === 0 && (mode === "delivery" || options.spec)) {
+    throw new Blocker(`The review has no spec source because ${specFolder ?? "no spec folder"} holds no ${SPEC_SOURCES.join(", ")} at the reviewed head; name the spec folder with --spec`);
+  }
+  const agentsChain = changed.flatMap((file) => {
+    const dirs = file.split("/").slice(0, -1);
+    return ["AGENTS.md", ...dirs.map((_, index) => `${dirs.slice(0, index + 1).join("/")}/AGENTS.md`)];
+  });
+  const rules = matchRules(gitOk(repo, ["show", `${target.head}:.agents/rules/index.md`]), changed);
+  const context = [...new Set([...agentsChain, ...rules, ...specSources])]
+    .filter((file) => files.has(file) && !PASS_REPORT_PATH.test(file))
+    .sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
 
   const runId = `${new Date().toISOString().replace(/[-:]/gu, "").replace(/\.\d+Z$/u, "Z")}-${randomBytes(3).toString("hex")}`;
   if (fs.mkdirSync(runsRoot(), { recursive: true }) !== undefined) fs.chmodSync(runsRoot(), 0o1777);
   const runDir = path.join(runsRoot(), runId);
   fs.mkdirSync(runDir, { mode: 0o700 });
-  try {
-    const promptDir = process.env.HI_REVIEW_PROMPT_DIR ?? path.join(import.meta.dirname, "../references");
-    const prompts = Object.fromEntries(AXES.map((axis) => {
-      const file = path.join(promptDir, `axis-${axis}.md`);
-      if (!fs.existsSync(file)) throw new Blocker(`Axis guidance ${file} is missing`);
-      const text = fs.readFileSync(file, "utf8");
-      fs.writeFileSync(path.join(runDir, `axis-${axis}.md`), text);
-      return [axis, text];
-    }));
-
-    const review = reviewCommit(repo, runDir, target, changed.filter((file) => PASS_REPORT_PATH.test(file)));
-    const blobs = new Map(zList(git(repo, ["ls-tree", "-r", "-z", review.tree])).map((entry) => {
-      const [meta, file] = entry.split("\t");
-      const [mode, , oid] = meta.split(" ");
-      return [file, { mode, oid }];
-    }));
-    const files = [...blobs.keys()];
-    const readAt = (file) => (blobs.has(file) ? git(repo, ["cat-file", "blob", blobs.get(file).oid]) : null);
-    // The helper refuses symlinked evidence: a symlink enters as its regular
-    // in-repo target, and any other non-regular entry stays out.
-    const regular = (file) => blobs.get(file)?.mode.startsWith("100");
-    const evidenceOf = (file) => {
-      if (regular(file)) return [file];
-      if (blobs.get(file)?.mode !== "120000") return [];
-      const link = readAt(file);
-      const target = path.posix.normalize(path.posix.join(path.posix.dirname(file), link));
-      return !link.startsWith("/") && regular(target) ? [target] : [];
-    };
-
-    let specFolder = options.spec ? path.relative(repo, path.resolve(options.spec)).split(path.sep).join("/") : null;
-    if (!specFolder) {
-      const folders = [...new Set(reviewable.map((file) => path.posix.dirname(file)).filter((dir) => blobs.has(`${dir}/SPEC.md`)))];
-      if (folders.length > 1) throw new Blocker(`The change touches several spec folders (${folders.join(", ")}); name one with --spec`);
-      specFolder = folders[0] ?? goalRel;
-    }
-    const specFolderFiles = specFolder ? files.filter((file) => path.posix.dirname(file) === specFolder) : [];
-    const sources = {
-      changedPaths: reviewable,
-      agentsFiles: files.filter((file) => path.posix.basename(file) === "AGENTS.md"),
-      matchedRules: matchRules(readAt(".agents/rules/index.md"), reviewable).filter((file) => blobs.has(file)),
-      assignedSkillFiles: assignedSkillFiles(specFolder && readAt(`${specFolder}/PLAN.md`), files),
-      specFolderFiles,
-    };
-    // The vendored helper refuses any `--source-context` under a `private` segment
-    // (SENSITIVE_PATH_PARTS) and admits its diff, so such guidance stays out of the
-    // context instead of blocking the pass; secret paths still reach its refusal.
-    const admitted = (file) => !file.split("/").some((part) => part.toLowerCase() === "private");
-    const sourceContext = Object.fromEntries(AXES.map((axis) => [axis, [...new Set(selectSourceContext({ axis, ...sources }).flatMap(evidenceOf))].filter(admitted)]));
-    if (sourceContext.spec.length === 0 && (mode === "delivery" || options.spec)) {
-      throw new Blocker(`The Spec axis has no source because ${specFolder ?? "no spec folder"} holds no SPEC.md, ARCHITECTURE.md, PLAN.md or IMPLEMENTATION-NOTES.md at the reviewed head; name the spec folder with --spec`);
-    }
-
-    const packet = {
-      schema: "review-packet-v1",
-      run_id: runId,
-      created_at: new Date().toISOString(),
-      mode,
-      repo_root: repo,
-      goal: goalRel,
-      locator: target.locator,
-      base: target.base,
-      head: target.head,
-      prepared_head: commitOf(repo, "HEAD"),
-      review_commit: review.commit,
-      ordinal,
-      packet_identity: reviewPacketIdentity({
-        review_run_id: runId,
-        accepted_bounds_hash: sha256(JSON.stringify({ mode, goal: goalRel, locator: target.locator, base: target.base, head: target.head })),
-        snapshot_hash: sha256(`${target.base}\n${review.tree}`),
-        source_set_hash: sha256(JSON.stringify({
-          context: Object.fromEntries(AXES.map((axis) => [axis, sourceContext[axis].map((file) => `${file} ${blobs.get(file).oid}`)])),
-          prompts: Object.fromEntries(AXES.map((axis) => [axis, sha256(prompts[axis])])),
-        })),
-      }),
-      changed_paths: reviewable,
-      spec_folder: specFolder,
-      source_context: sourceContext,
-      max_engine_passes: Number(process.env.HI_REVIEW_MAX_ENGINE_PASSES ?? DEFAULT_MAX_ENGINE_PASSES),
-      candidates: specFolder
-        ? mechanicalCandidates(specFolder, {
-          spec: readAt(`${specFolder}/SPEC.md`),
-          plan: readAt(`${specFolder}/PLAN.md`),
-          notes: readAt(`${specFolder}/IMPLEMENTATION-NOTES.md`),
-        })
-        : [],
-    };
-    const [engine] = engineOrder();
-    const sizes = await Promise.all(AXES.map((axis) => sizeAxis(packet, runDir, axis, engine)));
-    packet.axes = Object.fromEntries(AXES.map((axis, index) => [axis, sizes[index]]));
-    packet.report_path = reportPathOf(packet);
-    writeJson(path.join(runDir, "packet.json"), packet);
-    // A new delivery pass supersedes older run directories of the same goal.
-    if (mode === "delivery") {
-      for (const other of goalRuns(repo, goalRel)) if (other.dir !== runDir) fs.rmSync(other.dir, { recursive: true, force: true });
-    }
-    return { run_id: runId, run_dir: runDir, ordinal, axes: packet.axes, blocker: null };
-  } catch (error) {
-    fs.rmSync(runDir, { recursive: true, force: true });
-    throw error;
+  const packet = {
+    schema: "review-packet-v2",
+    run_id: runId,
+    created_at: new Date().toISOString(),
+    mode,
+    repo_root: repo,
+    goal: goalRel,
+    base: target.base,
+    head: target.head,
+    prepared_head: commitOf(repo, "HEAD"),
+    ordinal,
+    report_path: null,
+    changed_paths: changed,
+    context,
+  };
+  packet.report_path = reportPathOf(packet);
+  writeJson(path.join(runDir, "packet.json"), packet);
+  // A new delivery pass supersedes older run directories of the same goal.
+  if (mode === "delivery") {
+    for (const other of goalRuns(repo, goalRel)) if (other.dir !== runDir) fs.rmSync(other.dir, { recursive: true, force: true });
   }
+  return { run_id: runId, run_dir: runDir, ordinal, blocker: null };
 };
 
-// ---------- run ----------
+// ---------- retain ----------
 
 const STALE = "HEAD moved since prepare, so this run no longer matches the reviewed change; run prepare again";
 const loadRun = (runDir) => {
@@ -401,100 +203,13 @@ const loadRun = (runDir) => {
   if (packet.repo_root !== repo) throw new Blocker(`packet.json names repository ${packet.repo_root}, which does not match this repository ${repo}`);
   return { packet, stale: commitOf(repo, "HEAD") !== packet.prepared_head };
 };
-const engineOrder = () => {
-  try {
-    return planEngineOrder(process.env);
-  } catch (error) {
-    throw new Blocker(error.message);
-  }
-};
-const lensOf = (runDir, packet, axis) => {
-  const lens = readJson(path.join(runDir, `${axis}.json`));
-  return lens?.packet_identity === packet.packet_identity ? lens : undefined;
-};
-
-const runAxis = async (packet, runDir, axis, order, timeout) => {
-  const kept = lensOf(runDir, packet, axis);
-  if (kept && kept.outcome !== "incomplete") return kept;
-  fs.mkdirSync(path.join(runDir, "attempts"), { recursive: true });
-  const attempts = [];
-  const findings = [];
-  let final = null;
-  for (const [index, engine] of order.entries()) {
-    const stem = path.join(runDir, "attempts", `${axis}-${index + 1}-${engine}`);
-    for (const suffix of [".report.json", ".status.json"]) fs.rmSync(stem + suffix, { force: true });
-    const started = performance.now();
-    const result = await runHelper(packet.repo_root, [
-      ...helperArgs(packet, runDir, axis, engine),
-      "--engine-timeout-seconds", String(timeout),
-      "--json-output", `${stem}.report.json`,
-      "--status-output", `${stem}.status.json`,
-    ]);
-    fs.writeFileSync(`${stem}.log`, `${result.stdout}\n--- stderr\n${result.stderr}`);
-    const status = readJson(`${stem}.status.json`);
-    const report = readJson(`${stem}.report.json`);
-    const outcome = !status ? "refused" : status.timed_out ? "timed_out" : status.status;
-    const stderrTail = result.stderr.trim().split("\n").at(-1) ?? "";
-    attempts.push({
-      engine,
-      model: /^model: (.+)$/mu.exec(result.stdout)?.[1] ?? "upstream-default",
-      seconds: Math.round((performance.now() - started) / 100) / 10,
-      outcome,
-      usage: status?.usage ?? null,
-      cause: COMPLETED.has(outcome) ? null : sentence(status?.reason ? `${outcome} (${status.reason}, exit ${status.reviewer_exit_code})` : `exit ${result.code}: ${stderrTail}`),
-    });
-    // An incomplete report keeps its candidates for the Adjudicator.
-    if (report) findings.push(...report.findings);
-    if (COMPLETED.has(outcome)) {
-      final = report;
-      break;
-    }
-    process.stderr.write(`review.mjs: ${axis} on ${engine} ended ${outcome}; trying the next engine\n`);
-  }
-  const lens = {
-    axis,
-    packet_identity: packet.packet_identity,
-    outcome: !final ? "incomplete" : findings.length > 0 || final.review_status === "incorrect" ? "findings" : "clean",
-    engine: final ? attempts.at(-1).engine : null,
-    attempts,
-    findings,
-    priority_filtered_findings: final?.priority_filtered_findings ?? [],
-    overall_explanation: final?.overall_explanation ?? null,
-  };
-  writeJson(path.join(runDir, `${axis}.json`), lens);
-  return lens;
-};
-
-const run = async ({ "run-dir": runDir }) => {
-  const { packet, stale } = loadRun(runDir);
-  if (stale) throw new Blocker(STALE);
-  const order = engineOrder();
-  const timeout = Number(process.env.HI_REVIEW_ENGINE_TIMEOUT_SECONDS ?? DEFAULT_ENGINE_TIMEOUT_SECONDS);
-  const lenses = await Promise.all(AXES.map((axis) => runAxis(packet, runDir, axis, order, timeout)));
-  const failed = lenses.filter((lens) => lens.outcome === "incomplete");
-  const result = Object.fromEntries(lenses.map((lens) => [lens.axis, { outcome: lens.outcome, engine: lens.engine, attempts: lens.attempts.length }]));
-  result.blocker = failed.length === 0 ? null
-    : `Every engine failed for the ${failed.map((lens) => `${lens.axis} Axis Run (${lens.attempts.map((a) => `${a.engine}: ${a.cause}`).join("; ")})`).join(" and the ")}, so see ${runDir}/attempts and rerun run once an engine is available.`;
-  return result;
-};
-
-// ---------- retain ----------
-
-const routeOf = (findings) => {
-  try {
-    const route = deriveReviewRouting(findings);
-    return { primary: route.primary, secondary_debt: route.secondary_architecture_follow_up };
-  } catch {
-    return null; // validatePassReport then names the invalid findings.
-  }
-};
 
 // Recovery: (1) validate before any write; (2) publish the complete report with
 // an exclusive link, so a second writer fails and a crash leaves no partial
 // ordinal; (3) commit only that path, which a retry repeats safely; (4) remove
 // the run directory last.
 const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
-  if (tokens !== undefined && !/^\d+$/u.test(tokens)) throw new Blocker("--subagent-tokens must be a non-negative integer");
+  if (!/^\d+$/u.test(tokens ?? "")) throw new Blocker("retain needs --subagent-tokens <n>, the reviewer's token total as a non-negative integer");
   const { packet, stale } = loadRun(runDir);
   const repo = packet.repo_root;
   if (packet.mode === "delivery") goalPath(repo, path.join(repo, packet.goal ?? ""));
@@ -507,31 +222,23 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
   if (existing === null) throw new Blocker(`${packet.report_path} exists but is not valid JSON, so this run cannot write pass ${packet.ordinal}`);
   if (!existing) {
     if (stale) throw new Blocker(STALE);
-    const lenses = AXES.map((axis) => lensOf(runDir, packet, axis));
-    const missing = AXES.filter((axis, index) => !lenses[index] || lenses[index].outcome === "incomplete");
-    if (missing.length > 0) throw new Blocker(`The ${missing.join(" and ")} Review Lens Result is missing or incomplete; run run first`);
-    let adjudication = readJson(path.join(runDir, "adjudication.json"));
-    if (adjudication === undefined) throw new Blocker(`${runDir}/adjudication.json is missing; start the Adjudicator`);
-    // Compatibility: an adjudication.json that already holds subagent_tokens needs no option.
-    if (tokens !== undefined) adjudication = { ...adjudication, subagent_tokens: Number(tokens) };
-    else if (adjudication?.subagent_tokens === undefined) throw new Blocker("retain needs --subagent-tokens <n>, the token total the harness reports for the Adjudicator");
+    const file = readJson(path.join(runDir, "findings.json"));
+    if (file === undefined) throw new Blocker(`${runDir}/findings.json is missing; start the reviewer`);
+    const check = validateFindings(file);
+    if (!check.ok) throw new Blocker(`findings.json is invalid (${check.errors.join("; ")}); rewrite it and rerun retain`);
     const report = {
-      schema: "pass-report-v1",
+      schema: "pass-report-v2",
       run_id: packet.run_id,
       ordinal: packet.ordinal,
       mode: packet.mode,
       base: packet.base,
       head: packet.head,
-      packet_identity: packet.packet_identity,
-      axes: Object.fromEntries(lenses.map((lens) => [lens.axis, {
-        lens_result: lens.outcome,
-        attempts: lens.attempts.map(({ cause, ...attempt }) => attempt),
-      }])),
-      adjudication,
-      route: routeOf(adjudication?.findings),
+      reviewer: { subagent_tokens: Number(tokens) },
+      findings: file.findings,
+      route: deriveReviewRouting(file.findings),
     };
-    const check = validatePassReport(report);
-    if (!check.ok) throw new Blocker(`adjudication.json is invalid (${check.errors.join("; ")}); rewrite it and rerun retain`);
+    const reportCheck = validatePassReport(report);
+    if (!reportCheck.ok) throw new Blocker(`packet.json cannot form a valid Pass Report (${reportCheck.errors.join("; ")}); run prepare`);
     fs.mkdirSync(path.dirname(reportFile), { recursive: true });
     const staged = `${reportFile}.${packet.run_id}.tmp`;
     writeJson(staged, report);
@@ -564,29 +271,17 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
   }
   const commit = git(repo, ["log", "-1", "--format=%H", "--", packet.report_path]);
   fs.rmSync(runDir, { recursive: true, force: true });
-  const { findings, rejected } = existing.adjudication;
   return {
     pass_report: packet.report_path,
     run_id: packet.run_id,
     commit,
     route: existing.route,
-    findings: findings.map(({ id, axis, severity, location, return_route }) => ({ id, axis, severity, location, return_route })),
-    rejected_count: rejected.length,
+    findings: existing.findings.map(({ id, priority, kind, location, return_route }) => ({ id, priority, kind, location, return_route })),
     blocker: null,
   };
 };
 
 // ---------- status ----------
-
-const goalRuns = (repo, goalRel) => {
-  if (!fs.existsSync(runsRoot())) return [];
-  return fs.readdirSync(runsRoot())
-    .map((name) => path.join(runsRoot(), name))
-    .filter((dir) => isOwnRunDir(fs.lstatSync(dir, { throwIfNoEntry: false })))
-    .map((dir) => ({ dir, packet: readJson(path.join(dir, "packet.json")) }))
-    .filter(({ packet }) => packet?.repo_root === repo && packet.goal === goalRel)
-    .sort((left, right) => left.packet.created_at.localeCompare(right.packet.created_at));
-};
 
 const status = ({ goal }) => {
   if (!goal) throw new Blocker("status needs --goal <delivery-dir>");
@@ -604,41 +299,35 @@ const status = ({ goal }) => {
   }
   const { packet, dir } = latest;
   const next = commitOf(repo, "HEAD") !== packet.prepared_head ? "prepare"
-    : AXES.some((axis) => (lensOf(dir, packet, axis)?.outcome ?? "incomplete") === "incomplete") ? "run"
-      : fs.existsSync(path.join(dir, "adjudication.json")) ? "retain" : "adjudicate";
+    : fs.existsSync(path.join(dir, "findings.json")) ? "retain" : "review";
   return { next, run_dir: dir, pass_count: passCount, blocker: null };
 };
 
 // ---------- entry point ----------
 
 const FAILURE_SHAPES = {
-  prepare: { run_id: null, run_dir: null, ordinal: null, axes: null },
-  run: { standards: null, spec: null },
-  retain: { pass_report: null, run_id: null, commit: null, route: null, findings: null, rejected_count: null },
+  prepare: { run_id: null, run_dir: null, ordinal: null },
+  retain: { pass_report: null, run_id: null, commit: null, route: null, findings: null },
   status: { next: null, run_dir: null, pass_count: null },
 };
-const COMMANDS = { prepare, run, retain, status };
+const COMMANDS = { prepare, retain, status };
 
-const main = async () => {
-  const [command, ...rest] = process.argv.slice(2);
-  if (!Object.hasOwn(COMMANDS, command)) {
-    process.stdout.write(HELP);
-    process.exitCode = command === "--help" || command === "-h" ? 0 : 2;
-    return;
-  }
-  let result;
+const [command, ...rest] = process.argv.slice(2);
+if (!Object.hasOwn(COMMANDS, command)) {
+  process.stdout.write(HELP);
+  process.exitCode = command === "--help" || command === "-h" ? 0 : 2;
+} else {
+  let output;
   try {
     const { values } = parseArgs({
       args: rest,
       options: Object.fromEntries(["goal", "base", "standalone", "spec", "accepted-risk", "human-direction", "run-dir", "subagent-tokens"].map((name) => [name, { type: "string" }])),
     });
-    result = await COMMANDS[command](values);
+    output = COMMANDS[command](values);
   } catch (error) {
     if (!(error instanceof Blocker)) process.stderr.write(`${error.stack ?? error}\n`);
-    result = { ...FAILURE_SHAPES[command], blocker: `${sentence(error.message)}.` };
+    output = { ...FAILURE_SHAPES[command], blocker: `${sentence(error.message)}.` };
   }
-  process.stdout.write(`${JSON.stringify(result)}\n`);
-  process.exitCode = result.blocker ? 1 : 0;
-};
-
-await main();
+  process.stdout.write(`${JSON.stringify(output)}\n`);
+  process.exitCode = output.blocker ? 1 : 0;
+}
