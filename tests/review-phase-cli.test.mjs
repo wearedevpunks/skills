@@ -197,6 +197,17 @@ test("HEAD moving after prepare makes the run stale", (t) => {
   assert.equal(status(fx).run_dir, fresh);
 });
 
+test("a run directory from the older review-phase sends the pass back to prepare", (t) => {
+  const fx = fixtureRepo(t);
+  const runDir = prepared(fx);
+  const packetFile = path.join(runDir, "packet.json");
+  writeFileSync(packetFile, JSON.stringify({ ...readJson(packetFile), schema: "review-packet-v1" }));
+  assert.equal(status(fx).next, "prepare");
+  assert.match(retain(fx, runDir).out.blocker, /older review-phase; run prepare/u);
+  prepared(fx);
+  assert.equal(existsSync(runDir), false, "prepare removes the older run directory");
+});
+
 test("the Pass Report ordinal is created exclusively and a retry reports the existing report", (t) => {
   const fx = fixtureRepo(t);
   const runDir = prepared(fx);

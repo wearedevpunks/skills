@@ -11,6 +11,7 @@ import { budgetBlocker, deriveReviewRouting, recoverPassCount, validateFindings,
 
 const PASS_REPORT_PATH = /^\.devpunks\/delivery\/(?:[^/]+\/)*reviews\//u;
 const SPEC_SOURCES = ["SPEC.md", "ARCHITECTURE.md", "PLAN.md"];
+const PACKET_SCHEMA = "review-packet-v2";
 
 const HELP = `review.mjs — one Full Code Review Pass; each subcommand prints one JSON line.
 
@@ -168,7 +169,7 @@ const prepare = (options) => {
   const runDir = path.join(runsRoot(), runId);
   fs.mkdirSync(runDir, { mode: 0o700 });
   const packet = {
-    schema: "review-packet-v2",
+    schema: PACKET_SCHEMA,
     run_id: runId,
     created_at: new Date().toISOString(),
     mode,
@@ -201,6 +202,7 @@ const loadRun = (runDir) => {
   if (!packet) throw new Blocker(`Run directory ${runDir} holds no packet.json; run prepare`);
   const repo = repoRoot();
   if (packet.repo_root !== repo) throw new Blocker(`packet.json names repository ${packet.repo_root}, which does not match this repository ${repo}`);
+  if (packet.schema !== PACKET_SCHEMA) throw new Blocker(`${runDir} comes from an older review-phase; run prepare`);
   return { packet, stale: commitOf(repo, "HEAD") !== packet.prepared_head };
 };
 
@@ -298,7 +300,7 @@ const status = ({ goal }) => {
     return { next: done ? "done" : "prepare", run_dir: null, pass_count: passCount, blocker: null };
   }
   const { packet, dir } = latest;
-  const next = commitOf(repo, "HEAD") !== packet.prepared_head ? "prepare"
+  const next = packet.schema !== PACKET_SCHEMA || commitOf(repo, "HEAD") !== packet.prepared_head ? "prepare"
     : fs.existsSync(path.join(dir, "findings.json")) ? "retain" : "review";
   return { next, run_dir: dir, pass_count: passCount, blocker: null };
 };
