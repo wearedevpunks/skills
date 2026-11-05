@@ -193,7 +193,7 @@ Model-invoked; Pack `docs`. Maintains project-owned Codebase Rules after `hi ini
 - **Use when:** the `hi init` / `hi update` post-command handoff reaches rules. **Not for:** other edits to `AGENTS.md`; use `$writing-for-agents`.
 - **Steps:** read or create `.agents/rules/index.md`; one invariant per scope-grouped rule file, backed by Code Evidence or an accepted decision; index by id, scope, path trigger, task trigger, tags, file; scoped `AGENTS.md` = scope + skill routing + one Registry pointer; evaluate activated rules `pass | fail | not-applicable`. Done when the index is exhaustive, pointers resolve, project rules are preserved.
 - **Calls:** `$writing-for-agents`. **Called by:** `$hi-cli`.
-- **Writes:** `.agents/rules/index.md`, `.agents/rules/<scope>/*.md`, scoped `AGENTS.md`.
+- **Writes:** `.agents/rules/index.md`, `.agents/rules/<scope>/*.md`, scoped `AGENTS.md`. Never `.agents/rules/packs/`: HI owns it; the index gets the Pack rule rows from the handoff.
 - **Stops / gates:** keeps existing project rules.
 - **Source:** `.agents/skills/rule-authoring/SKILL.md`, `references/migration.md`
 

@@ -44,7 +44,8 @@ A **Managed Artifact** is any path `installed.json` records. Its kind decides wh
 - **Installed Record** `.devpunks/installed.json`: fact, written only by the installer, last. Holds `baseline`, `shape`, `detectedPacks`, `items`, `paths` (path -> `{artifact, item}`), installer-added `dependencies`, `failedLinks`. It holds no content hashes.
 - **Recorded Shape** (`shape`): workspaces with languages and technologies, Pack ids, `monorepo`, `wikiRoot`, `docsRoot`. Built Artifacts render from it.
 - **Drift**: local bytes differ from what the Baseline expects. A local edit is a byte difference after normalizing line endings and trailing whitespace. `hi diff` classes: `update-available`, `local-edit`, `conflict`, `shape-drift`, `missing`, `stale`, `link-failed`. Authored files and detected-but-unselected Packs are information rows.
-- **Survives an update**: every path `installed.json` omits. That covers Authored files, Project Skills (`.agents/skills/<id>` with no Registry Item), `.agents/rules/**`, and extra files inside a Registry skill directory, such as the Project Verifier in `.agents/skills/verify-behavior/references/`. `hi update` overwrites or prunes recorded paths only.
+- **Survives an update**: every path `installed.json` omits. That covers Authored files, Project Skills (`.agents/skills/<id>` with no Registry Item), `.agents/rules/index.md` and project rules in `.agents/rules/<scope>/`, and extra files inside a Registry skill directory, such as the Project Verifier in `.agents/skills/verify-behavior/references/`. `hi update` overwrites or prunes recorded paths only.
+- **Pack rules**: `.agents/rules/packs/` is HI-owned. Each `.agents/rules/packs/<id>.md` is a Built file of its `pack-<id>` item: `hi update` renders it again and prunes it when no selected Pack Builds it. Never put a project rule in `packs/`.
 - **Project Skill collision**: when a later Baseline ships the same id, the Baseline skill takes the id and the Project Skill moves to `.agents/skills/[DEPRECATED] <id>`.
 
 To change a Copied or Built file, change its source: settings, an Authored input, or the shared skill upstream, then `hi update`.
@@ -141,7 +142,8 @@ Source guides (`opensrc/<lib>.md`) ride with their Pack; `opensrc/README.md` ind
 
 ## Codebase Rule Registry
 
-- **Location**: `.agents/rules/index.md`, a table `id | scope | path trigger | task trigger | tags | file`, one rule file per stable invariant. Project-owned: no Registry Item writes it and hi never reads it.
+- **Location**: `.agents/rules/index.md`, a table `id | scope | path trigger | task trigger | tags | file`, one rule file per stable invariant; `file` is relative to `.agents/rules/`. Project-owned: no Registry Item writes the index and hi never reads it.
+- **Rule files**: project rules in `.agents/rules/<scope>/`, project-owned. Pack rules in `.agents/rules/packs/`, HI-owned and Built; `.devpunks/AGENT-HANDOFF.md` "Pack rules" gives the index row of each one.
 - **Rule file**: `id`, authority, one positive requirement, triggers, verification, exceptions.
 - **Activation**: agent-side, before editing or reviewing. Match each touched path to `path trigger` and the task to `task trigger`; tags only group.
 - **Evidence**: record each active rule as `pass`, `fail` or `not-applicable` with current evidence in the handoff or work log.
