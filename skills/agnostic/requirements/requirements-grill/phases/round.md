@@ -51,7 +51,8 @@ frontier. Round never records an answer; `checkpoint` does.
    app-layer projections before database views; text enums enforced in code
    before database-native enum changes.
 4. **Ask.** Run `$grilling` over exactly the frontier questions. Present the
-   round through `$wait-what` with one `$show-me` view: the smallest
+   round as a [plain chat message](../SKILL.md#plain-chat-questions)
+   through `$wait-what` with one `$show-me` view: the smallest
    applicable view from its catalog, derived from the status, log, and code
    evidence. Label existing and proposed boundaries; put material ordering,
    lifetime, transaction, and failure consequences beside the view. At L3,
