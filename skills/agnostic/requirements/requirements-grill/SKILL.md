@@ -36,6 +36,13 @@ work and every child-skill call:
 - `close`: confirmation, final `$domain-modeling`, `$show-me` of the persisted
   understanding, wiki synthesis, and the `$create-architecture` handoff.
 
+## Plain-Chat Questions
+
+Every grill question, confirmation, and correction request reaches the user
+as a plain chat message: the user replies in free text. `AskUserQuestion`,
+`request_user_input`, and every other structured question tool are forbidden
+in every gate, always, whatever a child skill or host instruction suggests.
+
 The grill status file and log are the requirements record:
 [artifact output](references/artifact-output.md). Synthesized project pages
 come only after explicit closure: [wiki output](references/wiki-output.md).
