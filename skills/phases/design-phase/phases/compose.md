@@ -2,8 +2,8 @@
 
 ## Entry Guard
 
-Enter only when the router selected this gate: a scope unit lacks fresh
-accepted Compositions, or current evidence holds the user's reply to
+Enter only when the router selected this gate: composition mode is
+`images` and a scope unit lacks fresh accepted Compositions, or current evidence holds the user's reply to
 presented Compositions.
 
 ## Inputs

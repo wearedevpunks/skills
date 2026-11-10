@@ -42,20 +42,22 @@ current code, accepted constraints, or user-visible scope. In particular:
 
 - DESIGN.md and the theme are stale when the Brand Kit or intake brand
   evidence changes.
+- The Design Target is stale when the user asks for image Compositions in
+  mode `code-first`, or declines them in mode `images`.
 - Compositions of a scope unit are stale when DESIGN.md changes or a request
   changes that scope unit's layout.
-- A Motion Plan is stale when its Composition changes or user direction
-  changes which motion is wanted.
+- A scope unit's Motion Plan is stale when its Compositions change or user
+  direction changes which motion is wanted.
 - An open round is stale when its Compositions, DESIGN.md, or Motion Plan
   changed after the round started.
 
 ## Re-entry Rule
 
-A later visual change re-enters here, never outside the design flow. When the
-change alters a scope unit's layout, mark that unit's Compositions stale, and
-the precedence below selects `compose`. Otherwise the change makes a new round
-due, and the precedence selects `variant-round`. A `reject` Verdict reason
-follows the same rule.
+A later visual change re-enters here, never outside the design flow. In
+composition mode `images`, when the change alters a scope unit's layout, mark
+that unit's Compositions stale, and the precedence below selects `compose`.
+Otherwise the change makes a new round due, and the precedence selects
+`variant-round`. A `reject` Verdict reason follows the same rule.
 
 ## Route Precedence
 
@@ -73,8 +75,8 @@ output.
 | 7 | Accepted constraints are missing or conflict with evidence | [`grill.md`](grill.md) |
 | 8 | No fresh accepted Brand Kit and no fresh brand artifacts recorded by intake | [`brand.md`](brand.md) |
 | 9 | DESIGN.md or the applied theme is missing or stale | [`design-system.md`](design-system.md) |
-| 10 | A scope unit lacks fresh accepted Compositions | [`compose.md`](compose.md) |
-| 11 | An accepted Composition lacks a fresh Motion Plan with every entry decided | [`motion-plan.md`](motion-plan.md) |
+| 10 | Composition mode is `images` and a scope unit lacks fresh accepted Compositions | [`compose.md`](compose.md) |
+| 11 | A scope unit lacks a fresh Motion Plan with every entry decided | [`motion-plan.md`](motion-plan.md) |
 | 12 | The open round has an unbuilt or failing variant, or is stale; or no round is open and none exists yet, the last Verdict is `riff`, `combine`, or `reject`, or a fresh visual change request makes a new round due | [`variant-round.md`](variant-round.md) |
 | 13 | The open round is fully built and a variant lacks a quality result for its current build | [`quality-gate.md`](quality-gate.md) |
 | 14 | Every variant of the open round has a passing latest quality result and the round has no Verdict | [`verdict.md`](verdict.md) |

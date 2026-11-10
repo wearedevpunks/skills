@@ -9,7 +9,8 @@ or failing variant or is stale, or no round is open and a new round is due.
 
 - the Design Target section: surface, scope unit, real route, working
   branch, existing-UI intent
-- accepted Compositions, DESIGN.md, accepted constraints
+- DESIGN.md, accepted constraints, and, in composition mode `images`, the
+  accepted Compositions
 - Motion Plan entries in state `accepted`
 - the handoff's Round State: round counter, open round, last Verdict, and
   quality failures
@@ -46,7 +47,8 @@ handoff write.
    each craft skill with a concrete target (route, variant id, files, inputs);
    child skills run autonomously and act on the target at once:
    - `design-taste-frontend`, always;
-   - `image-to-code`, with the accepted Compositions as its design images;
+   - `image-to-code` in composition mode `images`, with the accepted
+     Compositions as its design images;
    - `emil-design-eng`, as the craft bar;
    - `animate` on web, or `animate-expo` on Expo, for every `accepted` Motion
      Plan entry;

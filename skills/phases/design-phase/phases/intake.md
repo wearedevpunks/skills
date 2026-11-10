@@ -32,18 +32,21 @@ later gates.
 2. Record existing-UI intent: `improve-existing` only when the user clearly
    intends to improve or rework existing UI, quoting their words; otherwise
    `new-ui`.
-3. Record scope units: one per user-visible page or flow, each with its real
+3. Record the composition mode: `images` only when the user asks for image
+   Compositions before code (mockups or design images), quoting their words;
+   otherwise `code-first`.
+4. Record scope units: one per user-visible page or flow, each with its real
    route.
-4. Record whether `components.json` exists and its resolved paths, the
+5. Record whether `components.json` exists and its resolved paths, the
    DESIGN.md path, theme files, and reusable components.
-5. Record brand artifacts. Mark them `fresh brand artifacts` only when they
+6. Record brand artifacts. Mark them `fresh brand artifacts` only when they
    define the identity (mark, palette, type) and match current brand
    constraints.
-6. Record screenshots and design inputs; record each missing one as an
+7. Record screenshots and design inputs; record each missing one as an
    evidence gap. Gaps alone do not block.
-7. Record content sources, copy and brand constraints, and known design
+8. Record content sources, copy and brand constraints, and known design
    decisions.
-8. Classify confidence `high`, `medium`, or `low-confidence`, and list
+9. Classify confidence `high`, `medium`, or `low-confidence`, and list
    staleness risks.
 
 Low-confidence rule: intake is `low-confidence` when it holds fewer than the
@@ -59,8 +62,8 @@ silent blank-slate design system.
 
 ## Completion Evidence
 
-- Design Target section: surface, existing-UI intent, scope units with
-  routes, `components.json` state, DESIGN.md and theme paths, brand artifacts
+- Design Target section: surface, existing-UI intent, composition mode,
+  scope units with routes, `components.json` state, DESIGN.md and theme paths, brand artifacts
   with freshness, screenshots, evidence gaps
 - confidence class and staleness risks
 

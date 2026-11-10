@@ -72,7 +72,7 @@ Artifacts: the obligation map below.
 | O4 Lean constraints through `requirements-grill` | yes | yes | grill outcome | grill | delegation and lean scope kept |
 | O5 Brand Kit accepted by the user, or brand skipped on fresh brand artifacts | yes | yes | Artifact Index, brand outcome, route-trace skip row | brand, router | acceptance only from explicit user words |
 | O6 DESIGN.md in Stitch format, shadcn Steps 3–7 in the existing app or NativeWind theme, browser check, no user stop | yes | yes | DESIGN.md, theme files, design-system outcome | design-system | no `--template`; no checkpoint exit |
-| O7 Compositions per scope unit, both imagegen skills by default, brief carries DESIGN.md + directive + copy lens, user accepts | yes | yes | Artifact Index, compose outcome | compose | both references appended to every brief |
+| O7 Compositions only in composition mode `images` (opt-in; default `code-first`): per scope unit, both imagegen skills by default, brief carries DESIGN.md + directive + copy lens, user accepts | yes | yes | Artifact Index, compose outcome | compose | both references appended to every brief |
 | O8 Codex image ladder or a visible blocked outcome | yes | yes | gate outcome, Artifact Index | brand, compose | one reference; no code or HTML fallback |
 | O9 Motion Plan ledger `proposed → accepted → built → verified` | yes | yes | Motion Plan section | motion-plan, variant-round, quality-gate | each state has one writer |
 | O10 Variants on the real route behind a dev-only `?variant=` switch; 3 default, cap 5; named axes; mobile and desktop widths; agreed skill set | yes | yes | Round State, working-branch code | variant-round | no standalone HTML, prototype branch, or isolated route |
@@ -84,7 +84,7 @@ Artifacts: the obligation map below.
 | O16 Delivery brief names the promote commit and the delivery boundary; stop for explicit `$delivery-phase` | yes | yes | delivery-handoff outcome | delivery-handoff | brief fields complete |
 | O17 Durable design handoff beside `SPEC.md`; images through `repo-asset-management` | yes | yes | `DESIGN-HANDOFF.md` | every gate | location and discovery rule explicit |
 | O18 `human_steering_required` terminal | yes | yes | gate outcome | every gate | reachable, durable, distinct from checkpoints |
-| O19 Later visual change re-enters at `compose` on layout change, else `variant-round` | yes | yes | route trace, router row | router | rule in one place |
+| O19 Later visual change re-enters at `compose` on layout change in mode `images`, else `variant-round` | yes | yes | route trace, router row | router | rule in one place |
 | O20 Route trace on every selection | yes | yes | Route Trace section | router | timestamp, output, evidence, rejected alternatives |
 
 Survivor artifacts: the design handoff; Brand Kit images; DESIGN.md and theme
@@ -443,7 +443,8 @@ Artifacts:
 
 | Scenario | Predicted route (record first) | Derived route (apply contracts) | Match | Repair if mismatch |
 |---|---|---|---|---|
-| Baseline path | intake → grill → brand (checkpoint) → reply → design-system → compose (checkpoint) → reply → motion-plan → variant-round → quality-gate → verdict (checkpoint) → `keep` → promote → backlog → delivery-handoff → `design_complete` | rows 6, 7, 8, 4/5, 9, 10, 4/5, 11, 12, 13, 14, 4/5, 15, 16, 18, 19 | Yes | |
+| Baseline path (mode `images`) | intake → grill → brand (checkpoint) → reply → design-system → compose (checkpoint) → reply → motion-plan → variant-round → quality-gate → verdict (checkpoint) → `keep` → promote → backlog → delivery-handoff → `design_complete` | rows 6, 7, 8, 4/5, 9, 10, 4/5, 11, 12, 13, 14, 4/5, 15, 16, 18, 19 | Yes | |
+| Branch path: default mode `code-first` | compose skipped; motion-plan reads route code and scope unit content; variant-round runs without `image-to-code` | row 10 false; row 11; row 12 | Yes | |
 | Branch path: intake records fresh brand artifacts; user names web only | brand skipped; compose uses `imagegen-frontend-web` only | row 8 false, skip row written; row 9; compose step 3 one skill | Yes | |
 | Repair cycle: variant B fails the copy lens | variant-round repairs B in round N, counter unchanged; quality-gate re-checks B | quality `variants_failed` → row 12 repair mode → row 13 for B's new build → row 14 | Yes | |
 | Human checkpoint: Compositions presented, user resumes with no reply | restate the checkpoint, load no gate | row 4 `composition_acceptance_required` | Yes | |
@@ -488,8 +489,8 @@ Validation:
 - Obligations O1–O20 each map to a state, a gate or router rule, and an
   evidence artifact; the terminal `design_complete` requires a fresh brief,
   which requires backlog linkage, a promote commit, a `keep`, passing quality
-  results, and accepted Compositions and Brand Kit (or fresh brand
-  artifacts).
+  results, accepted Compositions in mode `images`, and an accepted Brand Kit
+  (or fresh brand artifacts).
 - Router precedence is total and single-valued; authority order and the
   overlap tie-breaks in Define Authority Outcome hold. Each transition
   meaning has one owner: staleness and re-entry in the router; gate work in

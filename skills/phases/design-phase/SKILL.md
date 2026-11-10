@@ -1,6 +1,6 @@
 ---
 name: design-phase
-description: Routes product design work from brand identity through a design system, accepted compositions, and quality-checked variant rounds in the real app to committed Design-Owned UI Code, backlog linkage, and a delivery handoff.
+description: Routes product design work from brand identity through a design system, optional image compositions, and quality-checked variant rounds in the real app to committed Design-Owned UI Code, backlog linkage, and a delivery handoff.
 disable-model-invocation: true
 ---
 
@@ -21,5 +21,5 @@ the real route, passes the Quality Gate, and is committed by Promote.
 4. After the gate writes its durable outcome, stop or re-enter this bootstrap.
 
 The router is the sole route authority. Gate files own executable work and
-every child-skill activation. The user stops the run at three checkpoints:
-brand, compose, and verdict.
+every child-skill activation. The user stops the run at the brand and verdict
+checkpoints, and at the compose checkpoint in composition mode `images`.
