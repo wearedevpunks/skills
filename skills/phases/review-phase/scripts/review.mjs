@@ -11,7 +11,17 @@ import { budgetBlocker, deriveReviewRouting, recoverPassCount, validateFindings,
 
 const PASS_REPORT_PATH = /^\.devpunks\/delivery\/(?:[^/]+\/)*reviews\//u;
 const SPEC_SOURCES = ["SPEC.md", "ARCHITECTURE.md", "PLAN.md"];
-const PACKET_SCHEMA = "review-packet-v2";
+const PACKET_SCHEMA = "review-packet-v3";
+// One reviewer reads every reviewed diff in one context, so a larger change gets
+// a partial review. About 75k tokens, which leaves room to verify findings.
+const REVIEW_BUDGET_BYTES = 256_000;
+const LOCKFILES = new Set([
+  "bun.lock", "bun.lockb", "package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "deno.lock",
+  "Cargo.lock", "uv.lock", "poetry.lock", "Pipfile.lock", "Gemfile.lock", "composer.lock", "go.sum", "flake.lock",
+  "Package.resolved", "Podfile.lock", "pubspec.lock", "mix.lock",
+]);
+// Drizzle migration snapshots and test-runner snapshot directories.
+const GENERATED_SNAPSHOT = /(?:^|\/)(?:meta\/\d+_snapshot\.json|__snapshots__\/.+)$/u;
 
 const HELP = `review.mjs — one Full Code Review Pass; each subcommand prints one JSON line.
 
@@ -38,8 +48,9 @@ const sentence = (text) => String(text).replace(/\s+/gu, " ").trim().split(/(?<=
 // Whole-tree listings of real repositories exceed Node's 1 MiB default;
 // 512 MiB is near V8's maximum string length, the real ceiling of a utf8 result.
 const GIT_MAX_BUFFER = 512 * 1024 * 1024;
-const git = (repo, args) =>
-  execFileSync("git", args, { cwd: repo, encoding: "utf8", maxBuffer: GIT_MAX_BUFFER, stdio: ["ignore", "pipe", "pipe"] }).trimEnd();
+const git = (repo, args, input) => execFileSync("git", args, {
+  cwd: repo, encoding: "utf8", maxBuffer: GIT_MAX_BUFFER, input, stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
+}).trimEnd();
 const gitOk = (repo, args) => {
   try {
     return git(repo, args);
@@ -126,6 +137,57 @@ const matchRules = (index, changed) => {
     .map((row) => `.agents/rules/${row[file].replaceAll("`", "")}`);
 };
 
+// Source before tests before docs, larger diffs first within a tier.
+const tierOf = (file) => /(?:^|\/)(?:tests?|__tests__)\/|[._-](?:test|spec)\.[^/]+$/u.test(file) ? 1
+  : /\.(?:md|mdx|txt|rst|adoc)$/u.test(file) || /(?:^|\/)docs?\//u.test(file) ? 2 : 0;
+const DIFF = ["diff", "--no-ext-diff", "--no-color", "--no-renames", "--src-prefix=a/", "--dst-prefix=b/"];
+// Diff bytes per path from one patch, split at each `diff --git a/<p> b/<p>`
+// header; a path whose header Git quotes is measured with its own diff.
+const diffSizer = (repo, target) => {
+  const sizes = new Map();
+  for (const block of git(repo, ["-c", "core.quotePath=false", ...DIFF, target.base, target.head]).split(/^(?=diff --git )/mu)) {
+    const header = block.slice("diff --git a/".length, block.indexOf("\n"));
+    const file = header.slice(0, (header.length - 3) / 2);
+    if (header === `${file} b/${file}`) sizes.set(file, (sizes.get(file) ?? 0) + Buffer.byteLength(block));
+  }
+  return (file) => sizes.get(file) ?? Buffer.byteLength(git(repo, ["--literal-pathspecs", ...DIFF, target.base, target.head, "--", file]));
+};
+
+// Generated files stay out of the review payload. When the rest exceeds the
+// budget, the first-ranked file and each later file that still fits are reviewed.
+const planCoverage = (repo, target, changed) => {
+  const reasons = new Map();
+  const attrs = zList(git(repo, ["check-attr", `--source=${target.head}`, "-z", "--stdin", "linguist-generated", "diff"], changed.join("\0")));
+  for (let index = 0; index < attrs.length; index += 3) {
+    const [file, attr, value] = attrs.slice(index, index + 3);
+    const reason = attr === "linguist-generated" && ["set", "true"].includes(value) ? "linguist-generated"
+      : attr === "diff" && value === "unset" ? "-diff" : null;
+    if (reason && !reasons.has(file)) reasons.set(file, reason);
+  }
+  for (const file of changed) {
+    if (reasons.has(file)) continue;
+    if (LOCKFILES.has(path.posix.basename(file))) reasons.set(file, "lockfile");
+    else if (GENERATED_SNAPSHOT.test(file)) reasons.set(file, "generated-snapshot");
+  }
+  const candidates = changed.filter((file) => !reasons.has(file));
+  if (candidates.length === 0) {
+    throw new Blocker(`The target ${target.locator} changes only generated files (${changed.join(", ")}), so it has nothing to review`);
+  }
+  const sizeOf = diffSizer(repo, target);
+  const ranked = candidates.map((file) => ({ file, tier: tierOf(file), bytes: sizeOf(file) }))
+    .sort((left, right) => left.tier - right.tier || right.bytes - left.bytes);
+  let room = REVIEW_BUDGET_BYTES;
+  ranked.forEach(({ file, bytes }, index) => {
+    if (index === 0 || bytes <= room) room -= bytes;
+    else reasons.set(file, "over-budget");
+  });
+  const leftOut = changed.filter((file) => reasons.has(file)).map((file) => ({ path: file, reason: reasons.get(file) }));
+  return {
+    reviewed: changed.filter((file) => !reasons.has(file)),
+    coverage: { scope: leftOut.some(({ reason }) => reason === "over-budget") ? "partial" : "full", left_out: leftOut },
+  };
+};
+
 const prepare = (options) => {
   const repo = repoRoot();
   const mode = options.standalone ? "standalone" : "delivery";
@@ -143,6 +205,7 @@ const prepare = (options) => {
     if (blocker) throw new Blocker(blocker);
     ordinal = passCount + 1;
   }
+  const { reviewed, coverage } = planCoverage(repo, target, changed);
 
   const files = new Set(zList(git(repo, ["ls-tree", "-r", "--name-only", "-z", target.head])));
   let specFolder = options.spec ? path.relative(repo, path.resolve(options.spec)).split(path.sep).join("/") : null;
@@ -155,11 +218,11 @@ const prepare = (options) => {
   if (specSources.length === 0 && (mode === "delivery" || options.spec)) {
     throw new Blocker(`The review has no spec source because ${specFolder ?? "no spec folder"} holds no ${SPEC_SOURCES.join(", ")} at the reviewed head; name the spec folder with --spec`);
   }
-  const agentsChain = changed.flatMap((file) => {
+  const agentsChain = reviewed.flatMap((file) => {
     const dirs = file.split("/").slice(0, -1);
     return ["AGENTS.md", ...dirs.map((_, index) => `${dirs.slice(0, index + 1).join("/")}/AGENTS.md`)];
   });
-  const rules = matchRules(gitOk(repo, ["show", `${target.head}:.agents/rules/index.md`]), changed);
+  const rules = matchRules(gitOk(repo, ["show", `${target.head}:.agents/rules/index.md`]), reviewed);
   const context = [...new Set([...agentsChain, ...rules, ...specSources])]
     .filter((file) => files.has(file) && !PASS_REPORT_PATH.test(file))
     .sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
@@ -180,8 +243,9 @@ const prepare = (options) => {
     prepared_head: commitOf(repo, "HEAD"),
     ordinal,
     report_path: null,
-    changed_paths: changed,
+    changed_paths: reviewed,
     context,
+    coverage,
   };
   packet.report_path = reportPathOf(packet);
   writeJson(path.join(runDir, "packet.json"), packet);
@@ -238,6 +302,7 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
       reviewer: { subagent_tokens: Number(tokens) },
       findings: file.findings,
       route: deriveReviewRouting(file.findings),
+      coverage: packet.coverage,
     };
     const reportCheck = validatePassReport(report);
     if (!reportCheck.ok) throw new Blocker(`packet.json cannot form a valid Pass Report (${reportCheck.errors.join("; ")}); run prepare`);
@@ -279,6 +344,7 @@ const retain = ({ "run-dir": runDir, "subagent-tokens": tokens }) => {
     commit,
     route: existing.route,
     findings: existing.findings.map(({ id, priority, kind, location, return_route }) => ({ id, priority, kind, location, return_route })),
+    coverage: existing.coverage,
     blocker: null,
   };
 };
@@ -309,7 +375,7 @@ const status = ({ goal }) => {
 
 const FAILURE_SHAPES = {
   prepare: { run_id: null, run_dir: null, ordinal: null },
-  retain: { pass_report: null, run_id: null, commit: null, route: null, findings: null },
+  retain: { pass_report: null, run_id: null, commit: null, route: null, findings: null, coverage: null },
   status: { next: null, run_dir: null, pass_count: null },
 };
 const COMMANDS = { prepare, retain, status };

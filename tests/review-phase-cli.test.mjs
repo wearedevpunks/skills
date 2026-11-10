@@ -92,7 +92,7 @@ test("prepare writes a private Review Packet with the changed paths and context"
   const packet = readJson(path.join(runDir, "packet.json"));
   const head = fx.git("rev-parse", "HEAD");
   assert.deepEqual(packet, {
-    schema: "review-packet-v2",
+    schema: "review-packet-v3",
     run_id: result.out.run_id,
     created_at: packet.created_at,
     mode: "delivery",
@@ -105,6 +105,7 @@ test("prepare writes a private Review Packet with the changed paths and context"
     report_path: `${GOAL}/reviews/pass-1.json`,
     changed_paths: ["specs/feature/IMPLEMENTATION-NOTES.md", "src/app.mjs"],
     context: [".agents/rules/src/source-rule.md", "AGENTS.md", "specs/feature/PLAN.md", "specs/feature/SPEC.md", "src/AGENTS.md"],
+    coverage: { scope: "full", left_out: [] },
   });
   assert.deepEqual(status(fx), { next: "review", run_dir: runDir, pass_count: 0, blocker: null });
 });
@@ -152,6 +153,7 @@ test("retain validates findings.json, commits only the Pass Report and routes it
       { id: "f001", priority: "P1", kind: "contract", location: "src/app.mjs:1", return_route: "implementation" },
       { id: "f002", priority: "P1", kind: "smell", location: "src/app.mjs:1", return_route: "debt_follow_up" },
     ],
+    coverage: { scope: "full", left_out: [] },
     blocker: null,
   });
   assert.equal(fx.git("show", "--name-only", "--format=", "HEAD"), `${GOAL}/reviews/pass-1.json`);
@@ -314,4 +316,81 @@ test("every subcommand prints one JSON line with a blocker on bad input", (t) =>
   assert.match(cli(fx, ["status"]).out.blocker, /--goal/u);
   const help = spawnSync(process.execPath, [cliPath, "--help"], { encoding: "utf8" });
   for (const command of ["status", "prepare", "retain"]) assert.match(help.stdout, new RegExp(`^  ${command} `, "mu"));
+});
+
+// About 56 bytes per line; each line costs one more byte in the diff.
+const filler = (lines) => "export const pad = 'x'; // filler line of a large change\n".repeat(lines);
+const preparedAt = (fx, base) => {
+  const result = prepare({ ...fx, base }, ["--spec", "specs/feature"]);
+  assert.equal(result.out.blocker, null, result.stderr);
+  return { runDir: result.out.run_dir, packet: readJson(path.join(result.out.run_dir, "packet.json")) };
+};
+const retainedReport = (fx, runDir) => {
+  review(runDir, []);
+  const retained = retain(fx, runDir);
+  assert.equal(retained.out.blocker, null, retained.stderr);
+  return { line: retained.out, report: readJson(path.join(fx.repo, retained.out.pass_report)) };
+};
+
+test("a change larger than 3 x 64 KB is reviewed in full in one pass", (t) => {
+  const fx = fixtureRepo(t);
+  const base = fx.git("rev-parse", "HEAD");
+  fx.commit("src/big.mjs", filler(3_600), "large change");
+  const { runDir, packet } = preparedAt(fx, base);
+  assert.deepEqual(packet.changed_paths, ["src/big.mjs"]);
+  assert.deepEqual(packet.coverage, { scope: "full", left_out: [] });
+  const { line, report } = retainedReport(fx, runDir);
+  assert.deepEqual(line.coverage, { scope: "full", left_out: [] });
+  assert.deepEqual(report.coverage, { scope: "full", left_out: [] });
+});
+
+test("lockfiles, generated snapshots and files that .gitattributes marks generated are left out and listed", (t) => {
+  const fx = fixtureRepo(t);
+  const base = fx.git("rev-parse", "HEAD");
+  write(path.join(fx.repo, ".gitattributes"), "src/gen/** linguist-generated\nassets/*.dat -diff\n");
+  write(path.join(fx.repo, "bun.lock"), "{ \"lockfileVersion\": 1 }\n");
+  write(path.join(fx.repo, "src/gen/client.ts"), "export const generated = true;\n");
+  write(path.join(fx.repo, "db/meta/0001_snapshot.json"), "{ \"version\": \"7\" }\n");
+  write(path.join(fx.repo, "assets/blob.dat"), "opaque\n");
+  fx.commit("src/app.mjs", "export const limit = 5;\n", "change with generated files");
+  const leftOut = [
+    { path: "assets/blob.dat", reason: "-diff" },
+    { path: "bun.lock", reason: "lockfile" },
+    { path: "db/meta/0001_snapshot.json", reason: "generated-snapshot" },
+    { path: "src/gen/client.ts", reason: "linguist-generated" },
+  ];
+  const { runDir, packet } = preparedAt(fx, base);
+  assert.deepEqual(packet.changed_paths, [".gitattributes", "src/app.mjs"]);
+  assert.deepEqual(packet.coverage, { scope: "full", left_out: leftOut });
+  assert.deepEqual(retainedReport(fx, runDir).report.coverage, { scope: "full", left_out: leftOut });
+
+  fx.commit("bun.lock", "{ \"lockfileVersion\": 2 }\n", "lockfile only");
+  assert.match(cli(fx, ["prepare", "--standalone", "HEAD"]).out.blocker, /only generated files \(bun\.lock\)/u);
+});
+
+test("a change over the review budget gets a partial review of the most important files", (t) => {
+  const fx = fixtureRepo(t);
+  const base = fx.git("rev-parse", "HEAD");
+  write(path.join(fx.repo, "src/core.mjs"), filler(2_700));
+  write(path.join(fx.repo, "src/extra.mjs"), filler(2_150));
+  write(path.join(fx.repo, "src/small.mjs"), "export const small = 1;\n");
+  write(path.join(fx.repo, 'tests/core "quoted".test.mjs'), filler(1_070));
+  fx.commit("docs/guide.md", filler(900), "change over the budget");
+  // Source before tests before docs, larger first; each file that still fits is reviewed.
+  // Git quotes the test file's patch header, so its size comes from its own diff.
+  const leftOut = [{ path: "docs/guide.md", reason: "over-budget" }, { path: "src/extra.mjs", reason: "over-budget" }];
+  const { runDir, packet } = preparedAt(fx, base);
+  assert.deepEqual(packet.changed_paths, ["src/core.mjs", "src/small.mjs", 'tests/core "quoted".test.mjs']);
+  assert.deepEqual(packet.coverage, { scope: "partial", left_out: leftOut });
+  assert.ok(!packet.context.includes("docs/AGENTS.md"), "context follows only the reviewed files");
+  const { line, report } = retainedReport(fx, runDir);
+  assert.deepEqual(line.coverage, { scope: "partial", left_out: leftOut });
+  assert.deepEqual(report.coverage, { scope: "partial", left_out: leftOut });
+
+  // One file over the whole budget is still reviewed, alone.
+  fx.commit("src/huge.mjs", filler(5_000), "one file over the budget");
+  const standalone = cli(fx, ["prepare", "--standalone", "HEAD"]);
+  assert.equal(standalone.out.blocker, null, standalone.stderr);
+  const huge = readJson(path.join(standalone.out.run_dir, "packet.json"));
+  assert.deepEqual([huge.changed_paths, huge.coverage], [["src/huge.mjs"], { scope: "full", left_out: [] }]);
 });

@@ -8,6 +8,7 @@ const RISK_KINDS = ["architecture", "security", "public_contract", "runtime_topo
 const MAX_FINDINGS = 5;
 const FINDING_KEYS = ["id", "priority", "kind", "location", "failure_scenario", "action", "return_route"];
 const REPORT_KEYS = ["schema", "run_id", "ordinal", "mode", "base", "head", "reviewer", "findings", "route"];
+const LEFT_OUT_REASONS = ["linguist-generated", "-diff", "lockfile", "generated-snapshot", "over-budget"];
 const COMMIT_SHA = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u;
 const PASS_REPORT_NAME = /^pass-([1-9]\d*)\.json$/u;
 
@@ -65,8 +66,16 @@ const findingErrors = (findings) => {
 export const validateFindings = (file) =>
   result(hasExactKeys(file, ["findings"]) ? findingErrors(file.findings) : ['findings.json: must be an object with exactly the key "findings"']);
 
+const isCoverage = (coverage) => hasExactKeys(coverage, ["scope", "left_out"]) && Array.isArray(coverage.left_out) &&
+  coverage.left_out.every((entry) => hasExactKeys(entry, ["path", "reason"]) && isText(entry.path) && LEFT_OUT_REASONS.includes(entry.reason)) &&
+  coverage.scope === (coverage.left_out.some(({ reason }) => reason === "over-budget") ? "partial" : "full");
+
+// `coverage` is optional so that v2 reports retained before it still count.
 export const validatePassReport = (report) => {
-  if (!hasExactKeys(report, REPORT_KEYS)) return result([`report: must have exactly the keys ${REPORT_KEYS.join(", ")}`]);
+  const hasCoverage = isObject(report) && Object.hasOwn(report, "coverage");
+  if (!hasExactKeys(report, hasCoverage ? [...REPORT_KEYS, "coverage"] : REPORT_KEYS)) {
+    return result([`report: must have exactly the keys ${REPORT_KEYS.join(", ")}, and optionally coverage`]);
+  }
   const errors = [];
   const expect = (ok, key, expected) => ok || errors.push(`${key}: must be ${expected}`);
   expect(report.schema === "pass-report-v2", "schema", '"pass-report-v2"');
@@ -75,6 +84,10 @@ export const validatePassReport = (report) => {
   expect(report.mode === "delivery" ? Number.isSafeInteger(report.ordinal) && report.ordinal > 0 : report.ordinal === null,
     "ordinal", "a positive integer in delivery mode and null in standalone mode");
   for (const key of ["base", "head"]) expect(COMMIT_SHA.test(report[key]), key, "a commit SHA");
+  if (hasCoverage) {
+    expect(isCoverage(report.coverage), "coverage",
+      `{ scope, left_out: [{ path, reason }] }, reason one of ${LEFT_OUT_REASONS.join(", ")}, scope partial exactly when a file is over-budget`);
+  }
   expect(hasExactKeys(report.reviewer, ["subagent_tokens"]) && Number.isSafeInteger(report.reviewer.subagent_tokens) &&
     report.reviewer.subagent_tokens >= 0, "reviewer", "{ subagent_tokens: a non-negative integer }");
   const findingProblems = findingErrors(report.findings);
