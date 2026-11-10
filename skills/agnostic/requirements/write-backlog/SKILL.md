@@ -51,8 +51,8 @@ silently renaming them.
    invocation plus accepted evidence authorizes them. Ambiguity, conflict, or
    missing authority still stops with zero writes. Completion means every
    structural change is previewed and recorded for the return envelope.
-7. Apply `$wait-what` when proposed ticket wording or project terms do not land.
-   Re-pitch in canonical language while preserving accepted meaning.
+7. Write every ticket title, body, and preview the user reads through
+   `$wait-what`, preserving accepted meaning.
 8. Select exactly one adapter from `backlogProvider`:
    - `Linear`: read [the Linear provider branch](references/providers/linear.md).
    - `GitHub`: read [the GitHub provider branch](references/providers/github.md).

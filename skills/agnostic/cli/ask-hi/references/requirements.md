@@ -86,12 +86,12 @@ Model-invoked; Pack `requirements`. Sole provider mutation authority: reconcile,
 - **Source:** `.agents/skills/write-backlog/SKILL.md`, `REFERENCE.md`, `references/technical-projection.md`, `references/issue-reconciliation.md`, `references/delivery-status.md`, `references/providers/linear.md`, `references/providers/github.md`, `assets/concepts/story-shape.md`
 
 ## `$wait-what`
-Model-invoked; Pack `misc`. Re-pitches a message that did not land: context, ASD-STE100, ubiquitous language.
-- **Use when:** an explanation or question missed. **Not for:** renaming terms, which goes to `$requirements-grill`.
-- **Steps:** read the canonical glossary in the routed grill status; keep its terms; re-pitch.
-- **Calls:** none. **Called by:** `$requirements-grill` (every question), `$write-backlog` (wording), `$create-plan` (final language check), `$business-finder`, `$functional-finder`, `$finder-phase`; human.
+Model-invoked; Pack `misc`. Re-pitches a message that did not land: context, ASD-STE100, ubiquitous language. Names grill, spec, architecture, plan and review items by name, with a code only in brackets or a link.
+- **Use when:** any message a human reads refers to artifact items, or an explanation or question missed. **Not for:** renaming terms, which goes to `$requirements-grill`.
+- **Steps:** read the canonical glossary in the routed grill status; keep its terms; re-pitch; replace each bare code with its item's name.
+- **Calls:** none. **Called by:** `$requirements-grill` (every question and update), `$requirements-phase`, `$delivery-phase`, `$implement-spec`, `$review-phase` (user-facing messages), `$write-backlog` (ticket text), `$pr` (PR body), `$create-plan` (final language check), `$business-finder`, `$functional-finder`, `$finder-phase`; human.
 - **Writes:** nothing.
-- **Stops / gates:** keeps glossary terms unchanged.
+- **Stops / gates:** keeps glossary terms unchanged; done when every code left sits in brackets after its name or in a link.
 - **Source:** `.agents/skills/wait-what/SKILL.md`
 
 ## `$show-me`

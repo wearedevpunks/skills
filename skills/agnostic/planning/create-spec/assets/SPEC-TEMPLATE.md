@@ -17,13 +17,15 @@ updated: YYYY-MM-DD
 
 ## Requirements and Outcomes
 
-### OUT-001: [Observable outcome]
+### OUT-001: [Short name]
+
+[Observable outcome]
 
 _Architecture: immutable `#spec-traceability` link labeled OUT-001, plus relevant selectors._
 
 ## Acceptance Criteria
 
-- AC-001: [Binary observable criterion]
+- AC-001 **[Short name]**: [Binary observable criterion]
   - Covers: OUT-001
   - Architecture: [Immutable #spec-traceability link labeled AC-001, plus relevant selectors]
 
@@ -38,7 +40,7 @@ names the public interface the test drives; `Model` names the Model file or
 
 | INV | Rule | Source (Q anchor) | Form | Pattern | Seam | Model |
 | --- | --- | --- | --- | --- | --- | --- |
-| INV-001 | [Rule the code must keep] | [Q link] | [Form] | [Pattern or none] | [Seam] | [Model or none] |
+| INV-001 | **[Short name]**: [Rule the code must keep] | [Q link] | [Form] | [Pattern or none] | [Seam] | [Model or none] |
 
 ## Constraints
 

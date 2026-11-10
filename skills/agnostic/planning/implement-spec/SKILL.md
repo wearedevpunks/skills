@@ -36,7 +36,8 @@ silently renaming them.
 Follow [references/parallel.md](references/parallel.md) as the execution contract.
 
 The parent owns Task Gates, Active Write Scopes and shared artifacts. Scoped workers own
-implementation tasks.
+implementation tasks. The parent writes every status update, handoff, and
+relayed Task Result the user reads through `$wait-what`.
 
 When the delivery brief names a `design-phase` promote commit, its UI files are
 Design-Owned UI Code: accepted input that tasks extend with logic and data. Put

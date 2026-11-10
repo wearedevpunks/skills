@@ -10,6 +10,7 @@ The adjacent `LICENSE` is the upstream MIT license retained with this skill.
 
 Devpunks preserves the upstream re-pitch instruction with these local adaptations:
 
-- `description` becomes a model-invocation trigger for messages that do not land, grilling presentation, and plan language checks.
+- `description` becomes a model-invocation trigger for messages that refer to artifact items, messages that do not land, grilling presentation, and plan language checks.
+- The body adds a "Names, not codes" section: messages a human reads name grill, spec, architecture, plan, and review items by name and keep codes only in brackets or links.
 - `disable-model-invocation: true` is removed so composing skills can invoke `$wait-what`.
 - The body adds a preamble that reads the canonical glossary in the routed `requirements-grill` status artifact and routes terminology changes through `requirements-grill`.

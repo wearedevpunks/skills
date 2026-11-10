@@ -77,6 +77,9 @@ workflow or a Finder lifecycle owner.
    plus the Write Backlog result and exact residual delta. The result is ready
    for `delivery-phase`.
 
+Write every message the user reads in this phase, including relayed subagent
+reports, through `$wait-what`.
+
 ## Boundary
 
 Requirements Phase owns decision closure, compilation order, and authorization
