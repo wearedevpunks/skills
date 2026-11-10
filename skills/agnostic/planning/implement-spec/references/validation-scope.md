@@ -47,17 +47,51 @@ the stories the plan changes.
 
 ## Owned Stack
 
-The **Owned Stack** is the runtime (containers, services, processes, scratch
-state) that this delivery started and owns, isolated from other runs and users.
-Start it once and reuse it across delivery steps, tasks and tiers. Between runs,
-restore known state with a controlled reset: truncate or reseed owned data,
-restart only the process a change invalidated. Relaunch only when a reset cannot
-restore known owned state.
+The **Owned Stack** is the runtime this delivery owns: its processes, its
+scratch state, and its data on shared servers. Owned Stack isolation means data
+isolation.
 
-Reuse a resource only with proven ownership and isolation. Reuse earlier
-evidence only when its relevant input identities (authority, code, runtime,
-scenario) match. Tear the Owned Stack down through owned cleanup when the
-delivery ends.
+Heavy servers (Postgres, RabbitMQ, MinIO and similar) are shared across runs,
+deliveries and agents. Reuse a running one; start one only when none runs. Each
+run owns its data there: its own database, vhost or bucket, named from the run.
+Two risks follow. A shared server is a single point of failure for every run
+on it. A test that reads or writes outside its run's data breaks other runs, so
+every test stays inside its run's data.
+
+Start the Owned Stack once and reuse it across delivery steps, tasks and tiers.
+Between runs, restore known state with a controlled reset: truncate or reseed
+owned data, restart only the process a change invalidated. Relaunch only when a
+reset cannot restore known owned state.
+
+Reuse any other resource only with proven ownership and isolation. Reuse
+earlier evidence only when its relevant input identities (authority, code,
+runtime, scenario) match. When the delivery ends, tear the Owned Stack down
+through owned cleanup: drop the run's data, stop the run's processes, and leave
+shared servers running. Then run the test-resource sweep.
+
+### Test-resource sweep
+
+An agent command timeout kills the test process with SIGKILL, so its own
+teardown never runs and its containers stay behind. Every container a test
+starts carries these labels, set by the tests or by the project's test resource
+manager:
+
+- `hi.test-resource=true`
+- `hi.owner-pid=<pid of the test process>`
+- `hi.run-id=<id>` (optional)
+
+With Ryuk disabled, the labels are the only way the sweep finds orphans. Start
+shared servers without them, so the sweep leaves those servers running.
+
+`hi update` installs the sweep. Run
+`node .agents/scripts/test-resource-sweep.mjs` (`--dry-run` lists without
+removing). It removes only proven orphans: labeled containers that have exited,
+and running labeled containers whose owner pid is dead. It leaves unlabeled
+containers alone and exits 0 when Docker is absent.
+
+Run it at delivery closeout and at debugging-phase exit. Where the agent
+harness supports it, a SessionEnd hook also runs it; the hook is a backstop, so
+closeout and debugging exit still run the sweep.
 
 ## Expensive runs need a New Discriminator
 

@@ -88,6 +88,9 @@ description: >-
      - Standalone: hand the human the `$review-phase <commit-or-range>`
        command naming the commit or `base..head` range that holds the fix.
 8. **Exit.**
+   - Before any exit report, run the test-resource sweep from
+     `implement-spec`'s `references/validation-scope.md`. It removes only
+     orphans, so a delivery's Owned Stack stays up.
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
    - Human steering: return `human_steering_required` with the retained decision record.

@@ -50,7 +50,9 @@ docs ingest or no-op, and validation are complete.
 - Report validation commands, browser checks, smoke tests, or manual scenarios,
   labelled focused, CI, or local broad run. Focused checks never report as a
   full-suite pass.
-- Tear down the delivery's Owned Stack through owned cleanup.
+- Tear down the delivery's Owned Stack through owned cleanup, then run the
+  test-resource sweep. `implement-spec`'s `references/validation-scope.md` owns
+  both.
 - Report review result and whether findings remain.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.

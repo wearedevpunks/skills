@@ -35,7 +35,7 @@ test('CI owns broad regression with one local broad run fallback', () => {
 test('verification tiers and Owned Stack reuse have one source', () => {
   assert.match(scope, /\*\*Tier 1\*\*: saved receipts and pure-helper checks/);
   assert.match(scope, /Saved receipts never replace current runtime acceptance/);
-  assert.match(scope, /Relaunch only when a reset cannot\nrestore known owned state/);
+  assert.match(scope, /Relaunch only when a\s+reset cannot\s+restore known owned state/);
   assert.match(runtime, /Reuse the delivery's Owned Stack after a controlled reset/);
   for (const doc of [implement, lifecycle, runtime, worker, plan]) {
     assert.match(doc, /validation-scope\.md/);
@@ -44,6 +44,28 @@ test('verification tiers and Owned Stack reuse have one source', () => {
     assert.match(doc, /`implement-spec`'s\s+`references\/validation-scope\.md`/);
   }
   assert.doesNotMatch(worker, /extra plan validation when feasible/);
+});
+
+test('Owned Stack isolation is data isolation on shared servers', () => {
+  assert.match(scope, /Owned Stack isolation means data\s+isolation/);
+  assert.match(scope, /Postgres, RabbitMQ, MinIO and similar/);
+  assert.match(scope, /own database, vhost or bucket, named from the run/);
+  assert.match(scope, /single point of failure/);
+  assert.doesNotMatch(scope, /\(containers, services, processes, scratch\s+state\) that this delivery started/);
+  assert.match(runtime, /validation-scope\.md\) owns shared servers, reuse, reset and teardown rules/);
+});
+
+test('one test-resource sweep removes labeled orphans at closeout and debugging exit', () => {
+  assert.match(scope, /`hi\.test-resource=true`/);
+  assert.match(scope, /`hi\.owner-pid=<pid of the test process>`/);
+  assert.match(scope, /With Ryuk disabled, the labels are the only way the sweep finds/);
+  assert.match(scope, /`node \.agents\/scripts\/test-resource-sweep\.mjs`/);
+  assert.match(scope, /owner pid is dead/);
+  assert.match(scope, /SessionEnd/);
+  for (const doc of [closeout, debugging]) {
+    assert.match(doc, /test-resource sweep/);
+    assert.doesNotMatch(doc, /hi\.owner-pid/);
+  }
 });
 
 test('verifier scopes to the plan and returns all its evidence', () => {
