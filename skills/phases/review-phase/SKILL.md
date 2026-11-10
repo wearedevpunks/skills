@@ -46,7 +46,8 @@ Delivery enters at step 1 and continues at the step its `next` names (`prepare`
    `priority`, `kind`, `location`, `return_route`) and `coverage`, with the
    transition [references/routing.md](references/routing.md) names for that
    route. A `coverage.scope` of `partial` is a partial review: present it as
-   one, and list each `coverage.left_out` path with its reason. The
+   one, and list each `coverage.left_out` path with its reason. Write what
+   the user reads through `$wait-what`. The
    retain line is the presentation source; the Pass Report stays the review
    authority. After `next: done`, read these fields from
    `<delivery-dir>/reviews/pass-<pass_count>.json`. Complete when the caller

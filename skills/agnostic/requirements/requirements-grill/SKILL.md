@@ -38,8 +38,9 @@ work and every child-skill call:
 
 ## Plain-Chat Questions
 
-Every grill question, confirmation, and correction request reaches the user
-as a plain chat message: the user replies in free text. `AskUserQuestion`,
+Every grill question, confirmation, correction request, and status update
+reaches the user as a plain chat message written through `$wait-what`: the
+user replies in free text. `AskUserQuestion`,
 `request_user_input`, and every other structured question tool are forbidden
 in every gate, always, whatever a child skill or host instruction suggests.
 

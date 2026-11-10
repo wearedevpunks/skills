@@ -22,6 +22,10 @@ Every acceptance criterion should be:
 - observable
 - testable
 - identified as `AC-###` with one or more one-way `OUT-###` coverage links
+- named with a 3–6 word short name that a reader recognizes without the code
+
+Give each outcome and Spec Invariant the same short name. Messages to humans
+use these names in place of codes, through `$wait-what`.
 
 Avoid:
 
@@ -66,6 +70,8 @@ Avoid:
   every real outcome and criterion has a complete source-grounded architecture
   mapping; its spec backlinks resolve to the final retained architecture
 - preserve unchanged spec codes; explicitly retire superseded codes
+- ensure every outcome, acceptance criterion, and Spec Invariant has a short
+  name; add one to each item an amendment touches when an older spec lacks it
 - remove all template scaffolding and empty irrelevant sections
 - ensure the document reads cleanly without ghost instructions
 - check that terminology matches repository domain language

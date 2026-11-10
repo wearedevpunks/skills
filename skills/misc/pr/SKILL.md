@@ -49,8 +49,8 @@ This format is the whole body contract: a repository
 1. Gather the inputs: the diff against the base, the spec or ticket, the plan,
    and recorded evidence (Verification, Runtime Validation, UI Evidence Links,
    CI per check, Pass Report). The Door call needs the spec, not only the diff.
-2. Fill each section by the rules below. When proof or a result does not exist
-   yet, write `Pending:` and what will supply it.
+2. Fill each section by the rules below, through `$wait-what`. When proof or a
+   result does not exist yet, write `Pending:` and what will supply it.
 3. Write the Managed Region into the body by the rewrite rules, through
    `--body-file`.
 4. Read the body back.

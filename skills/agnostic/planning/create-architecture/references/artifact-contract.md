@@ -100,7 +100,8 @@ Give addressable architecture blocks stable `ARC-###` selectors; give flows stab
 `FLOW-###` selectors and addressed steps `FLOW-###-STEP-###` selectors. Use
 `DEC-###` for an accepted detail only when block/step selectors cannot locate it
 precisely. Provide an explicit, resolvable anchor for each selector and include
-its code in the relevant heading, table row, or diagram label. Diagrams may use
+its code beside a short name in the relevant heading, table row, or diagram
+label; messages to humans use that name. Diagrams may use
 separate internal node IDs; record the public selector on the visible element.
 
 Preserve selectors across refresh and reordering. Keep retired or superseded

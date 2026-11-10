@@ -377,7 +377,7 @@ test("artifact-output defines the four altitude fields", () => {
   assert.match(text, /^- Altitude: L1 \| L2 \| L3$/mu);
   assert.match(
     text,
-    /^\| Question id \| Branch \| Altitude \| Prerequisites \| Question \| State \|$/mu,
+    /^\| Question id \| Name \| Branch \| Altitude \| Prerequisites \| Question \| State \|$/mu,
   );
   assert.match(text, /^- Brief import: <brief path> sha256 <hash> R<N> \| none$/mu);
   assert.match(text, /^## Legacy Status$/mu);

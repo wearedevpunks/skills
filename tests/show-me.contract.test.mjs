@@ -150,7 +150,7 @@ test("backlog visualizes material topology decisions while handoff stays untouch
   assert.match(backlog, /visual does not replace[\s\S]*traceability/iu);
   assert.match(
     backlog,
-    /\$wait-what` when proposed ticket wording or project terms do not land/iu,
+    /ticket title, body, and preview the user reads through\s+`\$wait-what`/iu,
   );
   assert.doesNotMatch(handoff, /show-me/);
 });

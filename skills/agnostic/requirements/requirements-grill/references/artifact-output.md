@@ -52,12 +52,12 @@ After adding or renaming a grill artifact:
 
 The log is structured, not a raw transcript.
 
-Keep each question's `Q<N>` id stable across rounds, partial responses, and superseding decisions. Never reuse or renumber an id.
+Keep each question's `Q<N>` id stable across rounds, partial responses, and superseding decisions. Never reuse or renumber an id. Give each question a 3–6 word short name; messages to the user name the question by it.
 
 Record accepted decisions as:
 
 ```md
-### Q<N>
+### Q<N>: <short name>
 
 Prerequisites:
 - <Q ids and exact fact/source prerequisites, or `none`>
@@ -111,7 +111,7 @@ When the user changes an earlier decision, add a new entry that explicitly super
 Record glossary decisions in the log when terms or axioms are first pinned:
 
 ```md
-### Glossary Q<N>
+### Glossary Q<N>: <term>
 
 Question:
 <terminology or axiom question>
@@ -178,10 +178,10 @@ first round.
 - Shared-understanding confirmation: not-ready | pending | confirmed
 - Closure: open | closed R<N> | reopened R<N>
 
-| Question id | Branch | Altitude | Prerequisites | Question | State |
-| --- | --- | --- | --- | --- | --- |
-| Q<N> | <branch> | L2 | none | <decision question> | unanswered |
-| Q<N+1> | <branch> | L3 | Q<N-2>; Unknown: <precise unknown> | <decision question> | unanswered |
+| Question id | Name | Branch | Altitude | Prerequisites | Question | State |
+| --- | --- | --- | --- | --- | --- | --- |
+| Q<N> | <short name> | <branch> | L2 | none | <decision question> | unanswered |
+| Q<N+1> | <short name> | <branch> | L3 | Q<N-2>; Unknown: <precise unknown> | <decision question> | unanswered |
 ```
 
 The table lists every open question across all branches and Altitudes, plus
