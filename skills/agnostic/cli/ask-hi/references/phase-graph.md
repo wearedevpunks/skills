@@ -20,7 +20,19 @@ Phases are the lifecycle entrypoints. Each phase composes skills and ends by han
 | Reconstruct wiki knowledge for an existing project | `$docs-onboarding` | model-invoked |
 | Readonly investigation across independent surfaces | `$parallel-research` | model-invoked |
 
-An explicit-only entry starts only when the human types it. When an agent finds one is next, it names the command and stops.
+## Confirm to continue
+
+This is the one rule for how an explicit-only phase starts. Other skills link here instead of restating it.
+
+A human starts an explicit-only phase in one of three ways:
+
+1. **Typed command.** The human types `$<phase>`, directly or in a `$goalify` goal text.
+2. **Named proposal.** A phase ends and an explicit-only phase is next. The agent names that phase and its scope (goal, input artifacts, where it stops) and asks to continue. A human yes to that named proposal starts the phase. A bare yes to a vague or unnamed proposal starts nothing: the agent names the phase and scope, then asks again.
+3. **Full Delivery inner step.** A Full Delivery the human started already approves its own inner steps: `$review-phase` at `review_due`, and the return to `$requirements-phase` for a missing, stale or changed Architecture/SPEC pair, backlog projection or plan, including a scope change. The agent continues without asking again.
+
+After a start by 2 or 3, the agent reads `.agents/skills/<phase>/SKILL.md` with a file read and follows it. The Skill tool refuses a skill with `disable-model-invocation: true`, so the file read is the way in. On Codex, `allow_implicit_invocation: false` stops only the agent choosing the skill from its description; it does not block this file read, so the rule is the same on both harnesses.
+
+In every other case the agent ends its turn with the named proposal.
 
 ## Handoffs
 
