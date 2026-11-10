@@ -34,7 +34,9 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    [phase-handoff reference](../references/phase-handoff.md#review-invocation-context).
    In `provider-task` mode, record the review started fact on every linked
    Task (see [Ticket Live State](#ticket-live-state)). Full
-   delivery invokes it immediately; other modes return that context and stop.
+   delivery invokes it immediately; other modes return that context as a named
+   proposal and stop. Both follow
+   [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
    Only the Pass Report that `retain` commits completes the pass.
 
 `$review-phase` runs the whole Full Code Review Pass and commits its one Pass

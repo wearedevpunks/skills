@@ -27,6 +27,6 @@ Answer questions about the HI Baseline from its skill graph and install mechanic
 ## Vocabulary
 
 - **Phase**: a lifecycle entrypoint skill under `phases/`; it routes and composes other skills.
-- **Explicit-only**: the skill sets `disable-model-invocation: true` (Claude) or `allow_implicit_invocation: false` (Codex). Only a human can start it; tell the asker to type `$<skill>`.
+- **Explicit-only**: the skill sets `disable-model-invocation: true` (Claude) or `allow_implicit_invocation: false` (Codex). A human starts it: tell the asker to type `$<skill>`. For a phase, a yes to the agent's named proposal also starts it ([Confirm to continue](references/phase-graph.md#confirm-to-continue)).
 - **Model-invoked**: an agent or another skill can start it from its description.
 - **Pack**: a named set of skills, hooks and lint assets that `hi` installs; selection lives in `.devpunks/settings.json`.
