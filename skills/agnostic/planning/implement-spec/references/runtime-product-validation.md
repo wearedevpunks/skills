@@ -40,7 +40,7 @@ Read scoped repository guidance, runbooks, manifests, and scripts to identify:
 - durable evidence sources
 - cleanup rules
 
-Reuse the delivery's Owned Stack after a controlled reset; start the supported runtime and dependencies only when no Owned Stack exists yet. [validation-scope.md](validation-scope.md) owns reuse, reset and teardown rules. Treat a missing or broken runtime as a diagnosis and recovery task before declaring a blocker. Record an exact blocker only after relevant recovery attempts fail or required authority or infrastructure is unavailable.
+Reuse the delivery's Owned Stack after a controlled reset; start the supported runtime and dependencies only when no Owned Stack exists yet. [validation-scope.md](validation-scope.md) owns shared servers, reuse, reset and teardown rules. Treat a missing or broken runtime as a diagnosis and recovery task before declaring a blocker. Record an exact blocker only after relevant recovery attempts fail or required authority or infrastructure is unavailable.
 
 ## Run an isolated scenario
 
