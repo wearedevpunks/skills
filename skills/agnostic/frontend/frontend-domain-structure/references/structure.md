@@ -28,9 +28,9 @@ alias. Package imports, such as `next/navigation`, are outside these rules.
 
 The layer root holds only these layer folders and `server/`. Any other top-level folder under the layer
 root is an error. Test and story files follow the same rules as the code they test, except that they
-may import Data Sources and their own folder's `index`. A test or story file has `.test.`, `.spec.` or
-`.stories.` in its file name. The rules apply to a package whose layer root contains `app/` or
-`routes/`; a package without a route layer is not checked.
+may import Data Sources (see [Data Sources](#data-sources)) and their own folder's `index`. A test or
+story file has `.test.`, `.spec.` or `.stories.` in its file name. The rules apply to a package whose
+layer root contains `app/` or `routes/`; a package without a route layer is not checked.
 
 ## Route Layer
 
@@ -86,9 +86,11 @@ A **Data Source** implements a port of an Entity or a Feature. It lives in one o
 - `simulated/` holds the in-memory source, seeds and fake runtimes.
 
 A `remote/` or `simulated/` folder is a Data Source at any depth of a feature or entity domain, for
-example `entities/candidate/cv/remote/`. Only Composition and tests import a Data Source. Features and
-entity views use the Entity root, and that root `index` never re-exports its own `remote/` or
-`simulated/`.
+example `entities/candidate/cv/remote/`. Only Composition and tests import a Data Source, also from
+inside its own domain; the files of one Data Source import each other. A domain `index` or a subpath
+`index`, such as `entities/candidate/cv/index.ts`, re-exports only code outside its Data Sources. Ports
+and contract types live outside `remote/` and `simulated/`: Features and entity views import them from
+the domain and take the Data Source that Composition selects as an input.
 Folders named `mock*` or `*prototype*` are errors; put fakes in `simulated/`. Put no production UI in a
 folder named "prototype".
 
@@ -147,7 +149,8 @@ A domain is the first folder under a layer, for example `features/checkout/`, `e
 `entities/order/refunds/`. The domain `index.ts` or `index.tsx`, or a subpath `index.ts` or
 `index.tsx`, is the only cross-domain entrypoint; `remote/server.ts` is the server entry. In
 `server/`, the `index` is the Server Contract and `server.ts` is the I/O entry (see [Server](#server)).
-Imports inside a domain are free. `ui/` is exempt, because shadcn keeps one file per component.
+Imports inside a domain need no entrypoint; [Data Sources](#data-sources) limit which files import a
+Data Source. `ui/` is exempt, because shadcn keeps one file per component.
 
 An `index` file only re-exports: implementation lives in named files beside it. Production code never
 imports its own folder's `./index` or `.`; tests may, because they exercise the public entry. This
@@ -218,7 +221,7 @@ imports of a Server Contract, such as a database client, are also a review rule.
 | `no-peer-feature` | A file in `features/<a>/` imports `features/<b>/`. |
 | `no-peer-entity` | A file in `entities/<a>/` imports `entities/<b>/`. |
 | `public-entrypoint` | A cross-domain import targets a file other than a domain or subpath `index.ts` or `index.tsx`, or `remote/server.ts`; `ui/` is exempt. |
-| `data-source-imports` | A file outside `composition/` that is not a test or story file imports another domain's `remote/` or `simulated/` folder at any depth, or a domain root `index` re-exports its own. |
+| `data-source-imports` | A file that is not in `composition/`, not a test or story file and not in the same Data Source imports a `remote/` or `simulated/` folder at any depth of a feature or entity domain, also of its own domain. A re-export from a domain or subpath `index` is such an import. |
 | `index-reexports-only` | An `index.ts` or `index.tsx` holds a statement other than an import or a re-export. |
 | `no-self-index-import` | A file that is not a test or story file imports its own folder's code `index` or `.`. |
 | `layout-placement` | A layout file under `composition/` exists outside `composition/routing/shells/<name>/`. |

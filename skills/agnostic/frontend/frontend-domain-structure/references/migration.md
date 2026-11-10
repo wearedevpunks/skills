@@ -19,6 +19,8 @@ Move each old path to its new owner. Classify by the invariant owner, not by the
 | `integrations/<app-api-client>/` | `remote/index.ts` of the owning Entity or Feature |
 | `integrations/<server-reader>/` | `remote/server.ts` of the owning Entity or Feature |
 | `remote/` that re-exports a pure `server/` contract (`policy.ts` → `./remote` → `@/server/...`) | a direct import of the `server/<domain>` Server Contract; delete the re-export chain |
+| a port or contract type in `remote/` or `simulated/` | a named file of the domain, outside its Data Sources |
+| an import of a Data Source outside Composition and tests, also a domain or subpath `index` that re-exports one | an input that Composition selects; delete the import (see [Data Sources](structure.md#data-sources)) |
 | `integrations/<third-party>/` | stays in `integrations/` |
 | sibling folders that repeat a prefix (`candidate-cv/`, `candidate-intake/`) | one domain with subpaths (`candidate/cv/`, `candidate/intake/`) |
 
