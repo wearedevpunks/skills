@@ -56,6 +56,29 @@ docs ingest or no-op, and validation are complete.
 - Report docs ingest result or explicit no-op reason.
 - For UI changes, verify the `$pr` Evidence section, or the PR-ready handoff when no PR exists, carries the durable before/after `UI Evidence` links.
 
+## PR Watch
+
+The PR is part of delivery state: a push does not finish delivery. Watch each
+open delivery PR at its current head commit. A draft can start no CI and no
+reviewers, so the watch starts once the handover marks the PR ready for review.
+
+1. Read the current head's state: required checks (pending, failed or passed);
+   reviews and comments from every external reviewer, bots such as Greptile,
+   CodeRabbit or Vercel Agent Review and humans; mergeability and its
+   blockers, such as conflicts, required approvals and branch protection. Use
+   the host's PR-watch capability when it has one; otherwise poll with bounded
+   backoff.
+2. Fix each valid finding and failed check as accepted repair (see
+   [Accepted Repair Continuity](#accepted-repair-continuity)), then commit and
+   push. Record a reason on each finding you reject or defer.
+3. A new head resets the watch: rerun the Checks above against it, then return
+   to step 1.
+4. Stop when the head is mergeable, when only the human can clear what remains,
+   or when the polling bound runs out. Report `mergeable`, `not mergeable` or
+   `pending` with the reason: the open checks, open findings or named blocker.
+
+Delivery never merges; the human merges.
+
 ## Accepted Repair Continuity
 
 Follow [review.md](review.md) for Focused Repair Validation, affected Verification
@@ -74,7 +97,7 @@ Return a concise delivery report with:
 - review
 - debugging
 - docs ingest
-- tracker or PR state, with the PR handover readback
+- tracker or PR state, with the PR handover readback and the PR Watch report
 - UI Evidence state when user-visible UI changed
 - exit: done, blocked, or split into follow-up
 

@@ -60,3 +60,21 @@ test("delivery writes the PR body through pr", () => {
   assert.match(closeout, /differs from the PR author/);
   assert.match(closeout, /Merge stays with the human/);
 });
+
+test("delivery watches an open PR at its current head until it reports", () => {
+  const closeout = read("skills/phases/delivery-phase/phases/closeout.md");
+  const router = read("skills/phases/delivery-phase/phases/router.md");
+  const watch = closeout.match(/## PR Watch\n([\s\S]*?)\n## /)?.[1];
+  assert.ok(watch, "closeout owns a PR Watch section");
+  assert.match(watch, /current head/);
+  assert.match(watch, /new head resets/i);
+  assert.match(watch, /draft/i);
+  assert.match(watch, /required checks/);
+  assert.match(watch, /external reviewer/);
+  assert.match(watch, /mergeab/);
+  assert.match(watch, /reason/);
+  assert.match(watch, /backoff/);
+  assert.match(watch, /`mergeable`, `not mergeable` or\s+`pending`/);
+  assert.match(watch, /never merges/);
+  assert.match(router, /closeout\.md#pr-watch/);
+});
