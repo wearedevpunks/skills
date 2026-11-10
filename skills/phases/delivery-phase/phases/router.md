@@ -49,6 +49,8 @@ Choose one next phase from current durable authority.
    checks proceed without automatically reopening Code Review.
 9. Remaining docs-affecting work selects [docs-ingest.md](docs-ingest.md), otherwise
    [closeout.md](closeout.md). A fresh completed closeout needs no repeated mutation.
+   An open delivery PR keeps closeout active until its
+   [PR Watch](closeout.md#pr-watch) reports for the current head.
 
 **Ticket live state.** In `provider-task` mode, every phase records each
 [Delivery Checkpoint](../../write-backlog/references/delivery-status.md#delivery-checkpoints)
