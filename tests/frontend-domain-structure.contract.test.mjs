@@ -155,7 +155,6 @@ test("agnostic reference fixes the entities layer model with Composition on top"
   assert.match(structure, /`app\/\(shop\)\/api\/`/);
   assert.match(structure, /Style and asset imports/i);
   assert.match(structure, /at any depth of a feature or entity domain/i);
-  assert.match(structure, /never re-exports its own `remote\/` or\s+`simulated\/`/i);
   assert.doesNotMatch(structure, /These labels may differ between projects/i);
   assert.doesNotMatch(structure, /\bSurface\b/);
 
@@ -196,7 +195,19 @@ test("agnostic reference fixes the entities layer model with Composition on top"
   assert.match(structure, /a \*\*Data Source\*\* implements a port/i);
   assert.match(structure, /`remote\/`[^.]*server-backed/i);
   assert.match(structure, /`simulated\/`[^.]*in-memory/i);
-  assert.match(structure, /only Composition and tests import a Data Source/i);
+  assert.match(
+    structure,
+    /only Composition and tests import a Data Source, also from inside its own domain/i,
+  );
+  assert.match(
+    structure,
+    /domain `index` or a subpath `index`, such as `entities\/candidate\/cv\/index\.ts`, re-exports only code outside its Data Sources/i,
+  );
+  assert.match(
+    structure,
+    /ports and contract types live outside `remote\/` and `simulated\/`/i,
+  );
+  assert.doesNotMatch(structure, /imports inside a domain are free/i);
   assert.match(structure, /`remote\/index\.ts`[^.]*browser/i);
   assert.match(structure, /`remote\/server\.ts`[^.]*`import "server-only"`/i);
   assert.match(structure, /no production UI[^.]*folder named "prototype"/i);
@@ -257,6 +268,12 @@ test("agnostic reference owns the Lint Rules table that frontend-layers implemen
   assert.match(lintRules, /`frontend-layers`[^.]*implements this table/i);
   assert.match(lintRules, /`react-frontend-layers`[^.]*`react` Pack/i);
   assert.match(lintRules, /this table is the authority/i);
+  const [, dataSourceImports] = tableRows(lintRules).find(
+    ([id]) => id === "`data-source-imports`",
+  );
+  assert.match(dataSourceImports, /also of its own domain/i);
+  assert.match(dataSourceImports, /domain or subpath `index`/i);
+  assert.doesNotMatch(dataSourceImports, /another domain's/i);
 });
 
 test("migration reference maps the composition-layer model to the entities layer model", () => {
@@ -271,6 +288,8 @@ test("migration reference maps the composition-layer model to the entities layer
     ["`composition/<surface>/pages/<page>/`", "`composition/routing/pages/<page>/`"],
     ["`integrations/<mock-or-fake>/`", "`simulated/`"],
     ["`integrations/<server-reader>/`", "`remote/server.ts`"],
+    ["a port or contract type in `remote/` or `simulated/`", "a named file of the domain"],
+    ["an import of a Data Source outside Composition and tests", "an input that Composition selects"],
   ]) {
     assert.ok(migration.includes(from), `migration map lacks ${from}`);
     assert.ok(migration.includes(to), `migration map lacks ${to}`);
