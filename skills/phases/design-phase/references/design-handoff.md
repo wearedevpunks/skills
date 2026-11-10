@@ -34,7 +34,7 @@ reads it on every entry, including cold resume.
 Sections, in this order:
 
 1. `## Design Target`: spec folder, surface (`web` | `expo`), existing-UI
-   intent, scope units with real routes, working branch, target app root.
+   intent, composition mode (`images` | `code-first`), scope units with real routes, working branch, target app root.
    Written by intake.
 2. `## Round State`: the round counter, then one block per round: start time
    and source (first round, Verdict, or change request); each variant's id,
@@ -42,7 +42,7 @@ Sections, in this order:
    per check per build; "Decisions for you"; the Verdict with the user's words;
    superseded or dropped status. Written by variant-round, quality-gate, and
    verdict.
-3. `## Motion Plan`: one table per Composition, with columns entry id,
+3. `## Motion Plan`: one table per scope unit, with columns entry id,
    location, opportunity, suggested motion, state, round, variant ids,
    evidence.
 4. `## Artifact Index`: one row per artifact, with columns artifact, kind,
@@ -96,8 +96,8 @@ answers that decision; then the gate that recorded it runs again.
 
 `proposed → accepted → built → verified`, each with one writer:
 
-- `motion-plan` writes `proposed` and `accepted`. A changed Composition
-  returns its entries to `proposed`.
+- `motion-plan` writes `proposed` and `accepted`. Changed Compositions
+  return their scope unit's entries to `proposed`.
 - `variant-round` writes `built` with the round number and variant ids. A new
   round sets every `accepted`, `built`, or `verified` entry it implements to
   `built` for that round.
@@ -109,8 +109,8 @@ Each approved artifact set covers one user-visible scope unit and holds:
 
 - scope unit
 - artifact intent: Design-Owned UI Code on the named route
-- artifact links or files: the Brand Kit, Compositions, and screenshots of the
-  promoted route
+- artifact links or files: the Brand Kit, Compositions when present, and
+  screenshots of the promoted route
 - durable visual asset links when available
 - evidence summary
 - accepted constraints

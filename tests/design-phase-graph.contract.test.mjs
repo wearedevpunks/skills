@@ -130,6 +130,27 @@ test("router keeps re-entry, cold resume, brand skip, and staleness rules", () =
   assert.match(text, /## Route Trace/u);
 });
 
+test("image Compositions are opt-in through the composition mode", () => {
+  assert.match(
+    gate("intake"),
+    /composition mode: `images` only when the user asks for image\s+Compositions[\s\S]{0,120}otherwise `code-first`/u,
+  );
+  assert.match(
+    router(),
+    /\| 10 \| Composition mode is `images` and a scope unit lacks fresh accepted Compositions \|/u,
+  );
+  assert.match(router(), /\| 11 \| A scope unit lacks a fresh Motion Plan/u);
+  assert.match(
+    router(),
+    /In\s+composition mode `images`, when the change alters a scope unit's layout/u,
+  );
+  assert.match(gate("motion-plan"), /One Motion Plan per scope unit/u);
+  assert.match(
+    gate("variant-round"),
+    /`image-to-code` in composition mode `images`/u,
+  );
+});
+
 test("verdict routes riff and combine to a new round, keep to promote, reject to router", () => {
   const exits = section(gate("verdict"), "Declared Exits");
   assert.match(exits, /`riff`[^\n]*`variant-round`/u);

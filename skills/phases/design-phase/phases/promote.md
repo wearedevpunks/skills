@@ -9,8 +9,8 @@ for exactly one variant and no promote commit exists for it.
 
 - the kept variant: round, id, route, build identity, quality results, and
   "Decisions for you" with any the user closed
-- the Design Target section, DESIGN.md, accepted constraints, Compositions,
-  and the Motion Plan
+- the Design Target section, DESIGN.md, accepted constraints, Compositions
+  when present, and the Motion Plan
 - [the design handoff contract](../references/design-handoff.md) for the
   approved artifact contract fields
 
