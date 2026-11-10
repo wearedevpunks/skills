@@ -7,6 +7,8 @@ checkout.
 ## Inputs
 
 `<run_dir>/packet.json` names `base`, `head`, `changed_paths` and `context`.
+`changed_paths` is this pass's whole scope; `coverage.left_out` lists the
+generated and over-budget files that stay outside it.
 Read the change with `git diff <base> <head> -- <changed_paths>` and each
 `context` file with `git show <head>:<path>`: the `AGENTS.md` chain, the matched
 Codebase Rules, and the spec folder's `SPEC.md`, `ARCHITECTURE.md` and
