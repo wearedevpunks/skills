@@ -44,6 +44,21 @@ user replies in free text. `AskUserQuestion`,
 `request_user_input`, and every other structured question tool are forbidden
 in every gate, always, whatever a child skill or host instruction suggests.
 
+## Round Message
+
+A round is one turn, built in this order:
+
+1. **View.** Render one `$show-me` view of the frontier before writing any
+   question: in T3 Code through `html_preview`, then `html_render`, so the
+   page sits above the reply. Markdown is the surface only on a host with no
+   inline renderer.
+2. **Questions.** Write each frontier question in the
+   [Question Format](#question-format), in one plain chat message.
+
+A round is ready to send when its view is rendered and every question has a
+topic, one question sentence, two or more viable options, and exactly one
+recommendation.
+
 ## Question Format
 
 Every decision in a round, at every Altitude, L3 module proposals included,
@@ -66,9 +81,6 @@ its words and keeps the block.
   first as A. The user replies with a letter, a mix, or free text.
 - **One viable answer** means the item is a fact, not a decision: send it to
   `ground` and keep it out of the round.
-
-A round is ready to send when every question has a topic, one question
-sentence, two or more viable options, and exactly one recommendation.
 
 The grill status file and log are the requirements record:
 [artifact output](references/artifact-output.md). Synthesized project pages
