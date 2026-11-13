@@ -79,7 +79,7 @@ To change a Copied or Built file, change its source: settings, an Authored input
 | frontend | surface | nextjs/react | agent-browser, animate, brandkit, break-ui, design-phase, design-taste-frontend, emil-design-eng, find-animation-opportunities, image-to-code, imagegen-frontend-mobile, imagegen-frontend-web, frontend-domain-structure, mobile-native, prototype-variants, review-animations, shadcn |
 | better-auth | detected | better-auth | better-auth-best-practices |
 | drizzle | detected | drizzle-kit, drizzle-orm | source guide only |
-| effect | detected | effect, @effect/ | effect, effect-backend-structure, effect-recoverable-actions, effect-service-design; lint effect-no-barrel-imports, effect-tsgo-recommended |
+| effect | detected | effect, @effect/ | effect, effect-backend-structure, effect-recoverable-actions, effect-service-design; lint effect-edge, effect-no-barrel-imports, effect-tsgo-recommended |
 | elysia | detected | elysia | elysiajs |
 | expo | detected | expo, @expo/ | 20 Expo skills (expo-*, eas-*, building-native-ui, ...) |
 | nextjs | detected | next | next-best-practices, next-cache-components; lint next-core |
