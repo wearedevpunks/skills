@@ -274,6 +274,18 @@ test("every grill question reaches the user as plain chat, never through a struc
   assert.match(rule, /`AskUserQuestion`,\s+`request_user_input`, and every other structured question tool are forbidden\s+in every gate, always/u);
 });
 
+test("every round renders its show-me view before the questions and is ready only with both", () => {
+  const message = section(skill(), "Round Message");
+  assert.match(message, /1\. \*\*View\.\*\* Render one `\$show-me` view of the frontier before writing any\s+question/u);
+  assert.match(message, /`html_preview`, then `html_render`/u);
+  assert.match(message, /Markdown is the surface only on a host with no\s+inline renderer/u);
+  assert.match(message, /2\. \*\*Questions\.\*\*[\s\S]*\[Question Format\]\(#question-format\)/u);
+  assert.match(message, /A round is ready to send when its view is rendered and every question has a\s+topic, one question sentence, two or more viable options, and exactly one\s+recommendation/u);
+  const ask = step(section(gate("round"), "Bounded Action"), 4);
+  assert.match(ask, /\[Round Message\]\(\.\.\/SKILL\.md#round-message\) order: the view renders first/u);
+  assert.match(section(gate("round"), "Completion Evidence"), /Round Message[\s\S]*its view rendered/u);
+});
+
 test("every grill question carries a topic, one exact question, and two or more options with one recommended", () => {
   const format = section(skill(), "Question Format");
   assert.match(format, /at every Altitude, L3 module proposals included/u);
@@ -283,11 +295,10 @@ test("every grill question carries a topic, one exact question, and two or more 
   assert.match(format, /- \*\*B\. <option>\*\*/u);
   assert.match(format, /two or more, each a distinct outcome/u);
   assert.match(format, /Exactly one is recommended/u);
-  assert.match(format, /A round is ready to send when every question has a topic, one question\s+sentence, two or more viable options, and exactly one recommendation/u);
   const prepare = step(section(gate("round"), "Bounded Action"), 3);
   assert.match(prepare, /\[Question Format\]\(\.\.\/SKILL\.md#question-format\)/u);
   assert.doesNotMatch(prepare, /one meaningful\s+alternative/u);
-  assert.match(section(gate("round"), "Completion Evidence"), /Question Format/u);
+  assert.match(section(gate("round"), "Completion Evidence"), /every question in the Question Format/u);
   assert.match(step(section(gate("checkpoint"), "Bounded Action"), 1), /other options as rejected alternatives/u);
 });
 

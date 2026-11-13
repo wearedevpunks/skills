@@ -58,8 +58,8 @@ frontier. Round never records an answer; `checkpoint` does.
    evidence. Label existing and proposed boundaries; put material ordering,
    lifetime, transaction, and failure consequences beside the view. At L3,
    the view is an interface sketch or a module tree. Load `$show-me` before
-   building the view and render it on its first supported surface; in T3
-   Code that is the inline HTML renderer.
+   building the view, and build the round in the
+   [Round Message](../SKILL.md#round-message) order: the view renders first.
 5. **Complete a round (route row 11).** Present, through the missing call,
    the round's remaining `unanswered` questions; when none remain, present the
    round's accepted answers for the user to correct.
@@ -83,8 +83,8 @@ unknown.
 ## Completion Evidence
 
 - the Current Round names the round id, Altitude, and frontier
-- every presented question meets the
-  [Question Format](../SKILL.md#question-format) bar
+- the round met the [Round Message](../SKILL.md#round-message) ready-to-send
+  bar: its view rendered, every question in the Question Format
 - the round's Required Calls lines exist for `grilling`, `wait-what`, and
   `show-me`
 - each `$wayfinder` route result is recorded against its question id
