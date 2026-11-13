@@ -72,3 +72,31 @@ test("scope-changing design evidence returns through Requirements Phase", () => 
   assert.match(deliveryRouter, /route[\s\S]{0,120}Requirements Phase/iu);
   assert.doesNotMatch(deliveryRouter, /Technical Finder invocation/iu);
 });
+
+test("post-grill compilers run as parallel lanes that meet at identity joins", () => {
+  const compile = requirements.slice(
+    requirements.indexOf("**Compile wave.**"),
+    requirements.indexOf("**Spec join.**"),
+  );
+  assert.match(compile, /start three lanes at\s+once/u);
+  assert.match(compile, /architecture lane is the\s+critical path and runs in this agent/u);
+  assert.match(compile, /\*\*Architecture lane:\*\*/u);
+  assert.match(compile, /\*\*Spec lane\*\* \(subagent\)/u);
+  assert.match(compile, /\*\*Discovery lane\*\* \(subagent\)/u);
+  assert.match(compile, /`create-spec` in draft mode/u);
+  assert.match(compile, /`architecture-not-ready`\s+result discards the spec draft/u);
+  assert.match(compile, /With no subagents, run the spec and discovery lanes inline/u);
+
+  const projection = requirements.slice(
+    requirements.indexOf("**Projection wave.**"),
+    requirements.indexOf("**Plan join.**"),
+  );
+  assert.match(projection, /\*\*Backlog lane\*\* \(subagent\)/u);
+  assert.match(projection, /\*\*Plan lane\*\* \(this agent/u);
+  assert.match(projection, /while the backlog lane runs/u);
+
+  const createSpec = read("skills/agnostic/planning/create-spec/SKILL.md");
+  assert.match(createSpec, /\*\*Draft mode\.\*\*[\s\S]{0,200}steps 1 to 4 while\s+`create-architecture` runs/u);
+  const createPlan = read("skills/agnostic/planning/create-plan/SKILL.md");
+  assert.match(createPlan, /steps 1 to 11 run while `write-backlog` runs, and step 12 waits/u);
+});

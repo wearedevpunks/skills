@@ -35,8 +35,9 @@ Run every step on every response set, a partial set included. On route rows
 1. **Record.** Record each supplied answer separately against its stable
    question id through the
    [log contract](../references/artifact-output.md#grill-log-contract), with
-   its Altitude, and mark it `answered`. Leave each omitted question
-   `unanswered`; never infer an answer. Record a park or deferral with the
+   its Altitude, and mark it `answered`. A letter answer records its option
+   as the accepted answer and the other options as rejected alternatives.
+   Leave each omitted question `unanswered`; never infer an answer. Record a park or deferral with the
    user's reason; a branch park names its Altitude. A changed earlier decision
    gets a superseding entry; a contradiction with an accepted decision becomes
    a new explicit question. A question left open on one precise unknown that

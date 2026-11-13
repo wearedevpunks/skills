@@ -42,9 +42,10 @@ frontier. Round never records an answer; `checkpoint` does.
    Persist the route result against the question id.
 3. **Prepare each question.** For a technical question, state the evidence
    anchor and observed constraint, ask one decision, and state its code
-   consequence. Give a recommendation, its rationale, and one meaningful
-   alternative. An L3 question decides module names, interfaces, primitives,
-   seam placement, or file layout. For a Brief fork, recommend the Brief's
+   consequence. Write every question in the
+   [Question Format](../SKILL.md#question-format). An L3 question decides
+   module names, interfaces, primitives, seam placement, or file layout. For a
+   Brief fork, recommend the Brief's
    proposed default. When the Precision Inputs record a conservative-closure
    direction, recommend the smallest already-justified model: no new table,
    mode, enum value, service, or abstraction; future branches parked;
@@ -82,6 +83,8 @@ unknown.
 ## Completion Evidence
 
 - the Current Round names the round id, Altitude, and frontier
+- every presented question meets the
+  [Question Format](../SKILL.md#question-format) bar
 - the round's Required Calls lines exist for `grilling`, `wait-what`, and
   `show-me`
 - each `$wayfinder` route result is recorded against its question id

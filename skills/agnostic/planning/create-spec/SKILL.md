@@ -19,6 +19,12 @@ implementation and testing decisions, dependency evidence, and accepted
 parent/base constraints. Provider backlog items may be source evidence, but
 they are not specification identities or readiness prerequisites.
 
+**Draft mode.** `requirements-phase` may run steps 1 to 4 while
+`create-architecture` runs. Step 2 then checks every readiness input except the
+architecture, and the candidate stays outside the planning surface. The draft
+is done at step 4; the full run resumes from step 2 with the retained
+architecture and the draft, and re-checks the draft against that architecture.
+
 ## Steps
 
 Before naming or rewriting domain concepts, read the canonical glossary in the
