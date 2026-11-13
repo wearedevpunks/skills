@@ -40,7 +40,8 @@ In every other case the agent ends its turn with the named proposal.
 $business-finder | $functional-finder → $finder-phase ⇄ $prototype-phase
         └─ returns to human ─→ $requirements-phase
 $brainstorm (proposal loop, one $show-me view per turn; no branch, commit, worktree or implementation agent) ─ Brainstorm Brief ─→ $requirements-grill
-$requirements-phase → $requirements-grill → $create-architecture → $create-spec → $write-backlog → $create-plan
+$requirements-phase → $requirements-grill → ($create-architecture ∥ $create-spec draft ∥ plan discovery)
+        → $create-spec join → ($write-backlog ∥ $create-plan) → plan join
         └─ result ─→ $delivery-phase
 $design-phase → (grill, brand, design system, optional compose, motion plan, variant rounds ⇄ quality gate, verdict, promote, backlog) ─ brief ─→ human → $delivery-phase
 $resolve-debt-phase (accepted) → $create-spec ─ brief ─→ human → $delivery-phase

@@ -274,6 +274,23 @@ test("every grill question reaches the user as plain chat, never through a struc
   assert.match(rule, /`AskUserQuestion`,\s+`request_user_input`, and every other structured question tool are forbidden\s+in every gate, always/u);
 });
 
+test("every grill question carries a topic, one exact question, and two or more options with one recommended", () => {
+  const format = section(skill(), "Question Format");
+  assert.match(format, /at every Altitude, L3 module proposals included/u);
+  assert.match(format, /### 1\. <Topic/u);
+  assert.match(format, /\*\*Question:\*\* <the exact decision, one sentence ending in "\?">/u);
+  assert.match(format, /- \*\*A\. <option>\*\* \(recommended\)/u);
+  assert.match(format, /- \*\*B\. <option>\*\*/u);
+  assert.match(format, /two or more, each a distinct outcome/u);
+  assert.match(format, /Exactly one is recommended/u);
+  assert.match(format, /A round is ready to send when every question has a topic, one question\s+sentence, two or more viable options, and exactly one recommendation/u);
+  const prepare = step(section(gate("round"), "Bounded Action"), 3);
+  assert.match(prepare, /\[Question Format\]\(\.\.\/SKILL\.md#question-format\)/u);
+  assert.doesNotMatch(prepare, /one meaningful\s+alternative/u);
+  assert.match(section(gate("round"), "Completion Evidence"), /Question Format/u);
+  assert.match(step(section(gate("checkpoint"), "Bounded Action"), 1), /other options as rejected alternatives/u);
+});
+
 test("round runs $grilling unchanged through $wait-what with a $show-me view and $wayfinder for one stuck unknown", () => {
   const text = gate("round");
   assert.match(section(text, "Actor-Like Gate Boundary"), /`\$grilling` is the\s+per-round interview primitive, unchanged/u);
