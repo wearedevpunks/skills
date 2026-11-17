@@ -156,25 +156,35 @@ of a scope still needs coverage. Shared settings, policy, routing, and
 toolchain inputs trigger their dependent owners even outside owned source.
 Existing Python tooling keeps its own routing while honoring shared exclusions.
 
-## Run Effect rules on tsrs
+## Type-aware backend: tsrs
 
-To keep the `effect-tsgo-recommended` Oxlint rules but run them on tsrs instead
-of `oxlint-tsgolint`, set settings `lint.typeAwareBackend` to `"tsrs"` (default
-`"tsgolint"`) and run `hi update`:
+Type-aware Oxlint rules run on tsrs, the Rust port of TypeScript, by default
+(CLI 6.13.0 or later). Each Lint Route of a scope that selects
+`effect-tsgo-recommended` carries `tool.typeAwareBackend: "tsrs"`, and the
+runner starts `effect-tsgo --tsrs-lint oxlint ...`; other scopes keep their
+route. The asset requires the `tsrs` devDependency, not `oxlint-tsgolint`, and
+the scope's `@effect/tsgo` must be 0.67.0 or later. A missing or older
+`@effect/tsgo` is a tool failure whose message names the fix. `hi update` never
+raises a declared version, so an adopting project raises `@effect/tsgo`,
+`oxlint` and `@oxlint/plugins` together to versions from the `@effect/tsgo`
+README "Supported Package Versions" table.
+
+To run them on tsgolint instead, set settings `lint.typeAwareBackend` to
+`"tsgolint"`, keep `oxlint-tsgolint` as a project-owned devDependency in each
+such scope, and run `hi update`:
 
 ```json
-{ "lint": { "typeAwareBackend": "tsrs" } }
+{ "lint": { "typeAwareBackend": "tsgolint" } }
 ```
 
-Each Lint Route of a scope that selects `effect-tsgo-recommended` then carries
-`tool.typeAwareBackend: "tsrs"`, and the runner starts
-`effect-tsgo --tsrs-lint oxlint ...`; other scopes keep their route. It needs
-CLI 6.10.0 or later and the scope's `@effect/tsgo` 0.67.0 or later. A missing or
-older `@effect/tsgo` is a tool failure whose message names the fix. Upstream
-marks `--tsrs-lint` experimental; to return to tsgolint, remove the key and run
-`hi update`. Complete this when those routes in `selection.json` carry
-`typeAwareBackend: "tsrs"` and managed lint on one of those scopes reports
-`passed` or `findings`, not `failed`.
+Type-check with tsrs too, never `tsc`: `effect-tsgo tsrs --noEmit -p
+tsconfig.json` in an Effect package (it adds Effect diagnostics), `tsrs --noEmit
+-p tsconfig.json` elsewhere. CI runs the same `lint` and `check-types` scripts.
+
+Complete this when the routes in `selection.json` carry
+`typeAwareBackend: "tsrs"`, managed lint on one of those scopes reports
+`passed` or `findings`, not `failed`, and a probe file with a floating Promise
+reports `typescript(no-floating-promises)`.
 
 ## Decline a Lint Asset
 
@@ -183,7 +193,7 @@ decline that one asset instead of removing the Pack or reverting update output.
 For example, a type check that already reports Effect diagnostics
 (`effect-tsgo tsrs --noEmit`) makes the `effect-tsgo-recommended` Oxlint rules
 a second copy; to keep those rules on tsrs instead, follow
-[Run Effect rules on tsrs](#run-effect-rules-on-tsrs). List its id in settings
+[Type-aware backend: tsrs](#type-aware-backend-tsrs). List its id in settings
 `lint.disabledAssets`; the ids are the `lint-<id>` Registry Items named in
 `.devpunks/installed.json` and `selection.json`:
 
