@@ -177,9 +177,12 @@ such scope, and run `hi update`:
 { "lint": { "typeAwareBackend": "tsgolint" } }
 ```
 
-Type-check with tsrs too, never `tsc`: `effect-tsgo tsrs --noEmit -p
-tsconfig.json` in an Effect package (it adds Effect diagnostics), `tsrs --noEmit
--p tsconfig.json` elsewhere. CI runs the same `lint` and `check-types` scripts.
+Type-check without `tsc` or tsgo. Prefer `bun check --no-script -p
+tsconfig.json` (Bun 1.4.4 or later; `--no-script` stops it running a `check`
+script instead). A package whose tsconfig configures the
+`@effect/language-service` plugin keeps `effect-tsgo tsrs --noEmit -p
+tsconfig.json`, because `bun check` does not run Effect diagnostics. CI runs the
+same `lint` and `check-types` scripts.
 
 Complete this when the routes in `selection.json` carry
 `typeAwareBackend: "tsrs"`, managed lint on one of those scopes reports
