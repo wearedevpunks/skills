@@ -76,7 +76,7 @@ It compares each managed path three ways: local bytes, the Registry Item at the 
 | `local-edit` | Local differs from the installed Baseline; upstream is unchanged. | Keep the edit, or restore it with `hi update --yes`. |
 | `conflict` | Local edit and an upstream change on the same Copied Artifact. | Decide; `hi update --yes` overwrites and git keeps the local version. |
 | `shape-drift` | A Built Artifact renders differently with the current repository shape (for example, a new workspace). | `hi update`. |
-| `missing` | A recorded path is absent. | `hi update` recreates it. |
+| `missing` | A recorded path is absent, or a scope's `tsconfig.json` lacks a required language-service plugin (`merge` row). | `hi update` recreates the path or adds the plugin entry. |
 | `stale` | Output no longer matches its input, for example harness agent files after a `manifest.mjs` edit. | `hi update`. |
 | `link-failed` | A recorded symlink is missing or could not be created. | Fix the filesystem cause, then `hi update`. |
 
@@ -86,7 +86,7 @@ Copied Artifacts compare after normalizing line endings and trailing whitespace 
 
 Use as the cheap read-only status. Flag: `--json`.
 
-It fetches only the root catalog, compares the installed Baseline with `latest`, checks the CLI range, and checks the tools in settings `requiredTools`. It reads only `installed.json` and settings. It returns `status`:
+It fetches only the root catalog, compares the installed Baseline with `latest`, checks the CLI range, and checks the tools in settings `requiredTools`. It reads `installed.json` and settings, plus the lint `selection.json` and the selected scopes' tsconfigs for `tsconfigPluginFindings` (advisory, as `dependencyFindings`). It returns `status`:
 
 | `status` | Meaning |
 | --- | --- |

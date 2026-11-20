@@ -177,25 +177,59 @@ such scope, and run `hi update`:
 { "lint": { "typeAwareBackend": "tsgolint" } }
 ```
 
-Type-check without `tsc` or tsgo. Prefer `bun check --no-script -p
-tsconfig.json` (Bun 1.4.4 or later; `--no-script` stops it running a `check`
-script instead). A package whose tsconfig configures the
-`@effect/language-service` plugin keeps `effect-tsgo tsrs --noEmit -p
-tsconfig.json`, because `bun check` does not run Effect diagnostics. CI runs the
-same `lint` and `check-types` scripts.
-
 Complete this when the routes in `selection.json` carry
 `typeAwareBackend: "tsrs"`, managed lint on one of those scopes reports
 `passed` or `findings`, not `failed`, and a probe file with a floating Promise
 reports `typescript(no-floating-promises)`.
 
+## Effect Language Service plugin
+
+Each scope that gets the `effect-tsgo-recommended` devDependencies carries the
+Effect Language Service plugin in its own `tsconfig.json` (CLI 6.14.0 or
+later). `hi update` adds this entry to `compilerOptions.plugins` unless an
+entry with that `name` is already in effect, its own or an `extends` base's:
+
+```json
+{ "name": "@effect/language-service", "ignoreEffectWarningsInTscExitCode": true }
+```
+
+It keeps other entries such as `{ "name": "next" }`, comments, and an existing
+entry's options; it never creates a tsconfig. A tsconfig it cannot edit
+(absent, symlinked, unparsable, or with an `extends` it cannot resolve) is a
+`merge-reported` row: add the entry from the detail to the tsconfig that
+scope's `check-types` uses. `hi diff` reports a missing entry as `missing`, and
+`hi check --json` as `tsconfigPluginFindings`.
+
+Type-check without `tsc` or tsgo. Each Effect scope's `check-types` is
+`effect-tsgo tsrs --noEmit -p tsconfig.json`: `bun check` ignores tsconfig
+`plugins` and reports no Effect diagnostic. Other scopes use `bun check
+--no-script -p tsconfig.json` (Bun 1.4.4 or later; `--no-script` stops it
+running a `check` script instead). CI runs the same `lint` and `check-types`
+scripts.
+
+Both gates report the same Effect rules. Managed lint (`maxWarnings: 0`) fails
+on Effect warnings and errors; the type check prints every Effect diagnostic and
+fails on type errors and Effect errors. Suppress an Effect rule in both gates
+with `// @effect-diagnostics-next-line <rule>:off -- Effect edge: <reason>` (or
+a file-level `@effect-diagnostics`); an `oxlint-disable` comment silences only
+managed lint, so the type check still fails.
+
+The editor needs the same entry and no `@effect/language-service` package:
+`@effect/tsgo` reads the entry by name. Run `effect-tsgo tsc --lsp --stdio` as
+the editor's TypeScript server, or `effect-tsgo patch` where `typescript` 7 or
+`@typescript/native` is installed.
+
+Complete this when each Effect scope's tsconfig has the entry in effect
+(`hi diff` shows its tsconfig `current`), its `check-types` runs
+`effect-tsgo tsrs --noEmit -p tsconfig.json`, and a probe file with a floating
+Effect fails that type check with `TS377001`.
+
 ## Decline a Lint Asset
 
 When a project owns a capability that a Pack's lint asset would also install,
 decline that one asset instead of removing the Pack or reverting update output.
-For example, a type check that already reports Effect diagnostics
-(`effect-tsgo tsrs --noEmit`) makes the `effect-tsgo-recommended` Oxlint rules
-a second copy; to keep those rules on tsrs instead, follow
+For example, a project that runs its own Effect diagnostics declines
+`effect-tsgo-recommended`; to keep those rules on tsrs instead, follow
 [Type-aware backend: tsrs](#type-aware-backend-tsrs). List its id in settings
 `lint.disabledAssets`; the ids are the `lint-<id>` Registry Items named in
 `.devpunks/installed.json` and `selection.json`:
@@ -205,7 +239,8 @@ a second copy; to keep those rules on tsrs instead, follow
 ```
 
 `hi update` then installs nothing of that asset: no oxlint config extension,
-rules, plugin files, or required devDependency. It reports the
+rules, plugin files, tsconfig plugin entry, or required devDependency. It
+leaves tsconfigs untouched, keeps an entry an earlier update wrote, and reports the
 asset's previously installed paths as stale and keeps the project's own scripts
 and dependencies. An id the Baseline no longer provides is ignored, and
 `hi diff` reports it as information. Complete this when `selection.json` no
