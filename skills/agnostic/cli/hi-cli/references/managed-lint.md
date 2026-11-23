@@ -107,8 +107,8 @@ cannot evaluate is preserved verbatim under a comment. Put project rules, catego
 
 The `react-frontend-layers` asset applies in each Software Scope where the
 `react` Pack applies, that is, where the scope's own manifest declares `react`
-or `react-dom`. It installs the `frontend-layers` JS plugin at
-`<scope>/tools/oxlint/frontend-layers/index.mjs` and checks only a package whose
+or `react-dom`. Its `frontend-layers` JS plugin loads from the Shared Plugin
+Copy (below) and checks only a package whose
 layer root contains `app/` or `routes/`. Every violation is an error, with no
 baseline. To turn a rule off, set `frontend-layers/<rule>` to `off` in
 `oxlint.local.ts`. In a Software Scope other than the repository root, the
@@ -119,9 +119,17 @@ model, read `$frontend-domain-structure` `references/structure.md`; after a
 Baseline that changes the model, its `references/migration.md` maps old paths
 to new ones.
 
+Copied JS plugins (`anti-slop`, `frontend-layers`) live once per repository,
+in the Shared Plugin Copy at `.agents/lint/oxlint/<plugin>/`. Each Software
+Scope's Built `oxlint.config.ts` loads a plugin through the relative path from
+the scope (`../../.agents/lint/oxlint/anti-slop/index.mjs` for `apps/web`). Do
+not copy a plugin into a scope. A repository updated from a Baseline before CLI
+6.16.0 loses its `<scope>/tools/oxlint/` copies at the next `hi update`; an
+edited copy is reported, and `hi update --yes` removes it.
+
 A consumer formatter rewrites copied plugins and Built `oxlint.config.ts`
 files, and `hi update` then reports them as local edits. `hi update` therefore
-merges `**/tools/oxlint/**` and `**/oxlint.config.ts` into the
+merges `.agents/lint/oxlint/**` and `**/oxlint.config.ts` into the
 `ignorePatterns` of an existing `.oxfmtrc.json`. A repository without
 `.oxfmtrc.json` (Prettier, Biome, or no formatter config) gets a report row
 that names each pattern to add to its own formatter ignore; `hi update`
