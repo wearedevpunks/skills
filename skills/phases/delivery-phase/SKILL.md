@@ -1,6 +1,6 @@
 ---
 name: delivery-phase
-description: Human-invoked router for a scoped delivery goal using current artifacts and evidence.
+description: Human-invoked AFK router for a scoped delivery goal using current artifacts and evidence.
 disable-model-invocation: true
 ---
 
@@ -18,6 +18,25 @@ disable-model-invocation: true
 5. Complete that phase and write its outcome. Full delivery re-enters routing immediately; other modes stop at their selected boundary.
 
 Within accepted bounds, full delivery grants its selected inner steps the authority needed to reach closeout. Progressive loading still exposes one phase at a time.
+
+## AFK
+
+`delivery-phase` is an **AFK** phase: the human starts it and is away until
+its stop. Every mode, every phase file and every inner step it runs, including
+Requirements Phase, `implement-spec` and its workers, settles each pending
+user question autonomously:
+
+1. Choose the recommended answer from current artifacts, evidence and accepted
+   bounds.
+2. Record the question, the chosen answer and its evidence in the Phase
+   Result's `changed_facts` and in the Delivery Handoff.
+3. Continue.
+
+The human reads these decisions in the stop report. Never call
+`AskUserQuestion`, `request_user_input` or any other question tool during
+delivery. Only a decision that every answer would take outside accepted bounds
+selects [human steering](phases/human-steering.md), which writes a durable
+record and asks nothing.
 
 ## Entry Modes
 
@@ -68,5 +87,6 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 
 - User explicitly requested a HITL checkpoint or one-phase mode and its resumable state was written.
 - Router reaches closeout and final evidence is reported.
-- Scope is ambiguous, stale, contradictory, or blocked by missing access.
+- Scope is stale, contradictory, or blocked by missing access, and no in-bounds
+  [AFK](#afk) answer resolves it.
 - `human_steering_required` remains durable while its required decision is unresolved.
