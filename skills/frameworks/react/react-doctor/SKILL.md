@@ -12,6 +12,8 @@ Scans React codebases for security, performance, correctness, and architecture i
 
 Resolve the checked-out branch's configured upstream. If there is no configured
 upstream, stop and ask the user to configure one or select a base explicitly.
+Inside AFK `delivery-phase`, use the recorded delivery base commit as the base
+([Autonomous Decision](../delivery-phase/SKILL.md#afk)) and continue.
 
 ```bash
 base="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')" || {
