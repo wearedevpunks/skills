@@ -42,7 +42,9 @@ description: >-
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.
    - If the next action exceeds these bounds, retain the evidence and required
-     decision; return `human_steering_required` and stop.
+     decision; return `human_steering_required` and stop. Inside
+     `delivery-phase`, delivery takes that decision as an out-of-bounds
+     Autonomous Decision.
 3. **Reproduce visible behavior.**
    - Before forming hypotheses or starting fix work, run `$verify-behavior` in
      `reproduce` mode when the reported behavior is visibly exercisable.

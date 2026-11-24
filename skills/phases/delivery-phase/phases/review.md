@@ -26,9 +26,11 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    After a completed pass, apply the repair rules below before opening another;
    a risk-triggered second pass passes `--accepted-risk <kind>:<evidence>`.
    At two completed passes, a further pass needs explicit
-   human direction, passed as `--human-direction <evidence>`. Without it return
-   `review_budget_exhausted` with the `prepare` blocker and keep the Pass
-   Reports and pending work.
+   human direction, passed as `--human-direction <evidence>`; that evidence is
+   only the human's own words. Without it, take an out-of-bounds
+   [Autonomous Decision](../SKILL.md#afk) on `review_budget_exhausted`: capture
+   the open findings as debt and continue to docs ingest or closeout, keeping
+   the Pass Reports.
 5. For an eligible pass, persist `review_due` and the
    `$review-phase` invocation context from the
    [phase-handoff reference](../references/phase-handoff.md#review-invocation-context).
@@ -74,8 +76,10 @@ remaining work; it never counts as progress or expands the review allowance.
 [routing reference](../../review-phase/references/routing.md) is the single
 route table: follow the transition it names for `route.primary` and
 `route.secondary_debt`, including its one handoff write that opens a repair. For
-primary `human_steering_required`, preserve the returned decision record and
-stop; delivery never opens a repair state from it.
+primary `human_steering_required`, take one out-of-bounds
+[Autonomous Decision](../SKILL.md#afk) per blocking finding. A decision that
+needs a code change follows the `implementation` row; any other decision
+follows the `debt_follow_up` row.
 
 ## Ticket Live State
 
@@ -87,9 +91,10 @@ each with exact readback before the next step:
 1. `review_due` persisted: review started.
 2. Pass Report returned: review result with the Pass Report path,
    `route.primary` and open finding count.
-3. The route acts: work resumed with the finding ids for repair or debugging;
-   blocked with the decision needed for `human_steering_required` or
-   `review_budget_exhausted`.
+3. The route acts: work resumed with the finding ids for repair or debugging,
+   or with the out-of-bounds Autonomous Decision taken for
+   `human_steering_required` or `review_budget_exhausted`; blocked only for
+   missing access.
 
 Completion: every linked Task's readback shows the review state of the latest
 step, so no ticket still says in progress while review runs.

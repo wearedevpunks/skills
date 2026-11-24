@@ -22,21 +22,31 @@ Within accepted bounds, full delivery grants its selected inner steps the author
 ## AFK
 
 `delivery-phase` is an **AFK** phase: the human starts it and is away until
-its stop. Every mode, every phase file and every inner step it runs, including
-Requirements Phase, `implement-spec` and its workers, settles each pending
-user question autonomously:
+its stop. Starting it grants the run authority to decide. Every mode, every
+phase file and every inner step it runs, including Requirements Phase,
+`implement-spec`, `debugging-phase` and their workers, settles each pending
+user question as an **Autonomous Decision**:
 
-1. Choose the recommended answer from current artifacts, evidence and accepted
-   bounds.
-2. Record the question, the chosen answer and its evidence in the Phase
-   Result's `changed_facts` and in the Delivery Handoff.
-3. Continue.
+1. Choose the recommended answer from current artifacts and evidence.
+2. Mark it **out-of-bounds** when it changes accepted requirements or scope,
+   weakens a gate, substantially redesigns implementation, or replaces a
+   decision any delivery file or inner step reserves for the human
+   (`human_steering_required`, `review_budget_exhausted`, human direction).
+   Mark every other decision in-bounds.
+3. Record the question, the answer, the evidence and the mark in the Phase
+   Result's `changed_facts` and in the Delivery Handoff's
+   `autonomous_decisions`.
+4. For an out-of-bounds decision, post one thread message at once that opens
+   with `⚠️ AUTONOMOUS DECISION OUTSIDE ACCEPTED BOUNDS` and states the
+   question, the answer, the evidence and how to reverse it.
+5. Continue.
 
-The human reads these decisions in the stop report. Never call
-`AskUserQuestion`, `request_user_input` or any other question tool during
-delivery. Only a decision that every answer would take outside accepted bounds
-selects [human steering](phases/human-steering.md), which writes a durable
-record and asks nothing.
+Every report the human reads opens with the full Autonomous Decisions list,
+out-of-bounds first: the closeout report, every stop report and, through
+`$pr`, the PR body. Never call `AskUserQuestion`, `request_user_input` or any
+other question tool during delivery. Only missing access that no decision can
+grant, such as credentials, permissions or an unreachable provider, selects
+[human steering](phases/human-steering.md).
 
 ## Entry Modes
 
@@ -87,6 +97,5 @@ record and asks nothing.
 
 - User explicitly requested a HITL checkpoint or one-phase mode and its resumable state was written.
 - Router reaches closeout and final evidence is reported.
-- Scope is stale, contradictory, or blocked by missing access, and no in-bounds
-  [AFK](#afk) answer resolves it.
-- `human_steering_required` remains durable while its required decision is unresolved.
+- Required access is missing and no [Autonomous Decision](#afk) can grant it.
+- `human_steering_required` remains durable while its required access is missing.

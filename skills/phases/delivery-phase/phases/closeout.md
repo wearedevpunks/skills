@@ -23,8 +23,8 @@ docs ingest or no-op, and validation are complete.
   Repository's delivery PR:
   1. Read `gh pr view --json body,isDraft,author,state,reviewRequests`.
   2. Resolve `$pr` and regenerate its Managed Region from final evidence:
-     Verification, Runtime Validation, UI Evidence Links, CI per check, and
-     the Pass Report route and open findings. Write it with
+     the Autonomous Decisions list, Verification, Runtime Validation, UI
+     Evidence Links, CI per check, and the Pass Report route and open findings. Write it with
      `gh pr edit --body-file`.
   3. When the PR is open and a draft, run `gh pr ready`.
   4. Request review from the Directing Human, the person who asked for the
@@ -90,7 +90,11 @@ reruns and risk-triggered second-pass eligibility. Preserve the opening
 
 ## Output
 
-Return a concise delivery report with:
+Return a concise delivery report. It opens with the Autonomous Decisions
+block before any other line: `⚠️ AUTONOMOUS DECISIONS: <n> taken, <k> outside
+accepted bounds`, then each out-of-bounds decision (question, answer,
+evidence, how to reverse it), then each in-bounds one. With none, it opens
+with `Autonomous Decisions: none`. Then report:
 
 - goal
 - current phase state

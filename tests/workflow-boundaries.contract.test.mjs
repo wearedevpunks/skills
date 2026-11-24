@@ -56,7 +56,8 @@ test("delivery and debugging preserve scope decisions before proceeding", () => 
   assert.match(delivery, /references\/failure-continuity\.md/iu);
   assert.match(router, /Preserve terminal `human_steering_required` until current user direction\s+resolves the required decision/iu);
   assert.match(delivery, /Within accepted bounds, full delivery grants/iu);
-  assert.match(router, /New boundary evidence selects\s+\[human-steering\.md\]/iu);
+  assert.match(router, /New missing-access evidence selects\s+\[human-steering\.md\]/iu);
+  assert.match(router, /every other boundary takes an\s+out-of-bounds \[Autonomous Decision\]/iu);
   assert.match(gate, /Record the blocked action, supporting evidence, and exact decision needed/iu);
   assert.match(gate, /in\s+a durable state artifact/iu);
   assert.match(gate, /Pointer and exact blocker in the compact Delivery Handoff/iu);
@@ -79,8 +80,8 @@ test("review routes scope decisions before repair", async () => {
     { primary: "human_steering_required", secondary_debt: false },
   );
   assert.match(reviewer, /`human_steering_required`: the repair exceeds accepted bounds/iu);
-  assert.match(routing, /`human_steering_required` \| either \| Stop\. Return the blocking findings, their evidence and the exact decision needed\. Delivery stays out of repair/iu);
-  assert.match(delivery, /primary `human_steering_required`.*never opens a repair state/isu);
+  assert.match(routing, /`human_steering_required` \| either \| Standalone: stop\. Return the blocking findings, their evidence and the exact decision needed\. Inside `delivery-phase`, delivery takes one out-of-bounds Autonomous Decision per blocking finding/iu);
+  assert.match(delivery, /primary `human_steering_required`, take one out-of-bounds[\s\S]*Autonomous Decision[\s\S]*per blocking finding/iu);
 });
 
 test("review-phase is one fresh reviewer with a capped, verified lens", () => {

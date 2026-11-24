@@ -16,9 +16,12 @@ contracts; these remain the sole owners of worker returns and gate outcomes.
    diagnosis may continue while it can distinguish named hypotheses and produce
    Diagnostic Evidence. Record the observation and discriminating result before
    retrying; repeating the same repair is not new evidence.
-3. Stagnant repair, required scope redesign, weaker gates, changed requirements,
-   missing access or a human decision routes to [human steering](../phases/human-steering.md).
-   Keep accepted bounds and scope custody intact while steering is required.
+3. Stagnant repair, required scope redesign, weaker gates, changed requirements
+   or a human decision takes an out-of-bounds
+   [Autonomous Decision](../SKILL.md#afk): another approach, debt capture or a
+   narrower scope. Missing access routes to
+   [human steering](../phases/human-steering.md). Keep scope custody intact
+   while steering is required.
 4. Retain the resulting phase-specific state behind a pointer and emit the common
    [Phase Result](context-continuity.md#common-phase-result). Resume checks current
    authority and mutation proof before doing any remaining work.

@@ -16,6 +16,17 @@ This format is the whole body contract: a repository
 
 ```markdown
 <!-- hi:pr-body:start -->
+## ⚠️ Autonomous Decisions
+
+> [!CAUTION]
+> Delivery took <n> decisions without the human; <k> are OUTSIDE ACCEPTED
+> BOUNDS. Review each one before merge.
+
+| Bounds | Question | Decision | Evidence | How to reverse |
+| --- | --- | --- | --- | --- |
+| **OUT-OF-BOUNDS** | ... | ... | ... | ... |
+| in-bounds | ... | ... | ... | ... |
+
 ## Summary
 
 <smallest view + short text>
@@ -47,8 +58,9 @@ This format is the whole body contract: a repository
 ## Steps
 
 1. Gather the inputs: the diff against the base, the spec or ticket, the plan,
-   and recorded evidence (Verification, Runtime Validation, UI Evidence Links,
-   CI per check, Pass Report). The Door call needs the spec, not only the diff.
+   recorded evidence (Verification, Runtime Validation, UI Evidence Links,
+   CI per check, Pass Report), and the Delivery Handoff's
+   `autonomous_decisions`. The Door call needs the spec, not only the diff.
 2. Fill each section by the rules below, through `$wait-what`. When proof or a
    result does not exist yet, write `Pending:` and what will supply it.
 3. Write the Managed Region into the body by the rewrite rules, through
@@ -56,11 +68,22 @@ This format is the whole body contract: a repository
 4. Read the body back.
 
 Completion: the read-back body has exactly one Managed Region that opens at
-`## Summary`; every section holds content, `Pending:` or `None`; the Door has
+`## ⚠️ Autonomous Decisions` when delivery recorded any, otherwise at
+`## Summary`; it lists every recorded Autonomous Decision; every section holds content, `Pending:` or `None`; the Door has
 its reason; every byte outside the Managed Region matches the body before the
 write; the Summary view alone tells what the PR changes.
 
 ## Sections
+
+### Autonomous Decisions
+
+Write this section only when the delivery's `autonomous_decisions` lists any;
+otherwise omit it. It is the loudest part of the body: the `[!CAUTION]` alert
+with both counts, then one row per decision, out-of-bounds rows first with
+**OUT-OF-BOUNDS** in bold. An out-of-bounds decision changed accepted
+requirements or scope, weakened a gate, redesigned implementation or replaced
+a decision reserved for the human, so the reviewer must see each one before
+reading anything else.
 
 ### Summary
 
@@ -95,7 +118,8 @@ the pair, per check.
   layout, API consumers, mobile, CI or installs.
 - **How to revert:** the exact steps. For a one-way door, also name what the
   revert leaves behind.
-- **Risk:** `High` for every one-way door; `Low` for docs, copy, internal-only
+- **Risk:** `High` for every one-way door and for every PR with an
+  out-of-bounds Autonomous Decision; `Low` for docs, copy, internal-only
   changes, or additive changes behind a flag; `Medium` otherwise. Risk is a
   label for the reviewer; review depth and approvals keep their own owners.
 
