@@ -42,9 +42,13 @@ user question as an **Autonomous Decision**:
 5. Continue.
 
 Every report the human reads opens with the full Autonomous Decisions list,
-out-of-bounds first: the closeout report, every stop report and, through
-`$pr`, the PR body. Never call `AskUserQuestion`, `request_user_input` or any
-other question tool during delivery. Only missing access that no decision can
+out-of-bounds first: the closeout report, every stop report and the PR body's
+[Autonomous Decisions Block](phases/closeout.md#autonomous-decisions-block).
+This rule outranks any vendored inner skill (such as `$grilling`, `$tdd`,
+`$swarm-planner`, `$debug-agent`, `$domain-modeling`, `$verify-behavior`)
+that would ask, wait or stop; the calling skill maps each such point. Never
+call `AskUserQuestion`, `request_user_input` or any other question tool during
+delivery. Only missing access that no decision can
 grant, such as credentials, permissions or an unreachable provider, selects
 [human steering](phases/human-steering.md).
 

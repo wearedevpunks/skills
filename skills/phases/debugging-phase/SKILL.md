@@ -112,8 +112,11 @@ Phase Result's `changed_facts`.
 - **`human_steering_required`:** return it only for missing access
   (credentials, permissions or an unreachable provider), with the
   missing-access record.
-- **Reproduction and verification:** `$debug-agent` runs its
-  [Inside AFK Delivery](../debug-agent/SKILL.md#inside-afk-delivery) branch.
+- **`$debug-agent` (vendored; apply these instead of its user steps):** write
+  and run the reproduction yourself (`$verify-behavior` `reproduce` on the
+  Owned Stack, or a script); rerun it yourself to verify; read the log after
+  your own run and rerun on an empty log; report a logging server that fails
+  to start to the caller as the exact blocker. Ask the user nothing.
 
 ## Parallel Rules
 

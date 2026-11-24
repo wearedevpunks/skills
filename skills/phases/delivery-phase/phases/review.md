@@ -80,7 +80,7 @@ or expands the review allowance.
 [routing reference](../../review-phase/references/routing.md) is the single
 route table: follow the transition it names for `route.primary` and
 `route.secondary_debt`, including its one handoff write that opens a repair. For
-primary `human_steering_required`, take one out-of-bounds
+primary `human_steering_required`, delivery replaces that row's stop: take one out-of-bounds
 [Autonomous Decision](../SKILL.md#afk) per blocking finding. A decision that
 needs a code change follows the `implementation` row; any other decision
 follows the `debt_follow_up` row.

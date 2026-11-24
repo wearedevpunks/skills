@@ -21,6 +21,3 @@ adaptations:
 - Authority and Review sections carry delivery links and the Pass Report.
 - The body is a marker-delimited Managed Region, so rewrites keep bot and
   human content outside it.
-- An `## ⚠️ Autonomous Decisions` section opens the Managed Region when an AFK
-  `delivery-phase` run decided without the human; out-of-bounds decisions set
-  Risk to `High`.

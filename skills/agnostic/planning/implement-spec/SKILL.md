@@ -43,6 +43,23 @@ Inside AFK `delivery-phase`, each pending user question in this skill becomes an
   Requirements Phase and continue.
 - Blocked tasks: report each with its exact external blocker. Only missing
   access stops for the human.
+- Draft PR: write delivery's
+  [Autonomous Decisions Block](../delivery-phase/phases/closeout.md#autonomous-decisions-block)
+  above the `$pr` Managed Region.
+- Vendored inner skills keep their text; apply these mappings instead of
+  their human steps, and forward them in every worker brief:
+  - `$tdd` planning: the plan's `tdd_target` and task contract are the
+    confirmed interface and behavior priority. Generator Narrowing is an
+    out-of-bounds Autonomous Decision.
+  - `$verify-behavior`, `$create-verification-skill`,
+    `$update-verification-skill`: human authentication is missing access, so
+    the affected checks stay `blocked` with the exact prerequisite. Every
+    other open choice, approval action or authority conflict comes back here
+    and settles as an Autonomous Decision.
+  - `$agent-browser` 2FA: missing access. Record it and keep the checks
+    `blocked` instead of waiting.
+  - `$react-doctor` with no configured upstream: use the recorded delivery
+    base commit as the base.
 
 Standalone use keeps the human `$requirements-phase` handoff.
 

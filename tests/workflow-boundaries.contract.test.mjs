@@ -80,8 +80,8 @@ test("review routes scope decisions before repair", async () => {
     { primary: "human_steering_required", secondary_debt: false },
   );
   assert.match(reviewer, /`human_steering_required`: the repair exceeds accepted bounds/iu);
-  assert.match(routing, /`human_steering_required` \| either \| Standalone: stop\. Return the blocking findings, their evidence and the exact decision needed\. Inside `delivery-phase`, delivery takes one out-of-bounds Autonomous Decision per blocking finding/iu);
-  assert.match(delivery, /primary `human_steering_required`, take one out-of-bounds[\s\S]*Autonomous Decision[\s\S]*per blocking finding/iu);
+  assert.match(routing, /`human_steering_required` \| either \| Stop\. Return the blocking findings, their evidence and the exact decision needed\. Delivery stays out of repair/iu);
+  assert.match(delivery, /primary `human_steering_required`, delivery replaces that row's stop: take one out-of-bounds[\s\S]*Autonomous Decision[\s\S]*per blocking finding/iu);
 });
 
 test("review-phase is one fresh reviewer with a capped, verified lens", () => {
