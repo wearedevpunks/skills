@@ -9,7 +9,7 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 - **Role:** higher-order planning orchestrator
 - **Entrypoint type:** public entrypoint
-- **Upstream:** `requirements-phase` after `spec-written`, with the current retained agent-ready `ARCHITECTURE.md` and `SPEC.md` and its `planning-discovery` report; steps 1 to 11 run while `write-backlog` runs, and step 12 waits for its written or provider-absent result; `implement-spec` for an execution-only amendment
+- **Upstream:** `requirements-phase` after `spec-written`, with the current retained agent-ready `ARCHITECTURE.md` and `SPEC.md` and its `planning-discovery` report; steps 1 to 11 run while `write-backlog` runs, and step 12 waits for its written or provider-absent result; `requirements-phase` plan-only input for a missing, stale, or execution-only-amended plan
 - **Delegates to:** `planning-discovery` for bounded readonly orientation when subagents are available, reusing a supplied report; `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, `$codebase-design`; `plan-reviewer` for the final readonly plan review
 - **Downstream:** retained execution-ready `PLAN.md` and its verified immutable blob URL, returned to `requirements-phase` for the Requirements result; `delivery-phase` and `implement-spec` execute it
 - **Entry conditions:** scope is clear enough to plan; stop if required planning inputs or tools are missing

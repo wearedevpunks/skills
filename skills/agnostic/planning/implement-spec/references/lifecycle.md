@@ -32,8 +32,8 @@ Compiler readiness needs no separate spec review or approval state.
 
 If `PLAN.md` is missing or invalid, stop and route the exact gap to
 `requirements-phase`, which owns `create-plan`. Do not auto-generate plans from
-this skill. Execution-only amendments within accepted bounds still call
-`create-plan` directly through
+this skill. Execution-only amendments within accepted bounds also go to
+`requirements-phase` as plan-only input, per
 [architecture-conformance.md](architecture-conformance.md).
 
 ## 2. Resolve the target folder
@@ -62,7 +62,7 @@ decision selectors, mapped spec codes and source Q evidence in worker Context Po
 Input Sets. Recheck them before dependent dispatch, Task Gates and finalization.
 Refresh changed sources through existing freshness gates; preserve unaffected
 proof and historical review lineage. Missing plan pointers return to
-Requirements Phase / `create-plan`; missing or conflicting accepted design
+Requirements Phase as plan-only input; missing or conflicting accepted design
 returns to Requirements Phase / `requirements-grill`.
 
 When `PLAN.md` declares architecture applicability as `architecture-bearing`,

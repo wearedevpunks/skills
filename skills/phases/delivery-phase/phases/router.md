@@ -33,8 +33,8 @@ Choose one next phase from current durable authority.
    retention and its current Write Backlog result through the
    [Backlog Projection Complete gate](../references/artifact-state.md#backlog-projection-complete).
    Missing, stale or contradictory required proof selects [spec.md](spec.md),
-   which routes the exact gap to Requirements Phase before planning. It owns Requirements Grill, Create Architecture,
-   Create Spec, Write Backlog and Create Plan. Valid current proof proceeds without a new approval gate;
+   which routes the exact gap to Requirements Phase before planning; Requirements
+   Phase owns every artifact up to the retained plan. Valid current proof proceeds without a new approval gate;
    optional Finder context is passed only when supplied, never manufactured.
 7. Require the retained execution plan through the
    [Plan Complete gate](../references/artifact-state.md#plan-complete). A

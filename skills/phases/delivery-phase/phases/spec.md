@@ -16,11 +16,11 @@ silently renaming them.
 
 Return the bounded goal, exact artifact/decision gap and current source pointers
 to Requirements Phase. It owns `requirements-grill -> create-architecture ->
-create-spec -> write-backlog`, then `create-plan`. Pass optional Finder context
+create-spec -> write-backlog` and the retained plan. Pass optional Finder context
 only when supplied. Reuse matching current retained artifacts; unsettled
 decisions return to `requirements-grill` before either compiler runs. A missing
 or stale plan with a current pair and projection returns to Requirements Phase
-for its `create-plan` step only. Full Delivery starts Requirements Phase;
+as [plan-only input](../../requirements-phase/SKILL.md#inputs). Full Delivery starts Requirements Phase;
 other modes name it as the next phase in their stop report and ask nothing, per
 [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
 Requirements Phase run from delivery stays [AFK](../SKILL.md#afk): each grill

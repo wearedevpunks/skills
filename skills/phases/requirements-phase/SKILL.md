@@ -16,6 +16,12 @@ After grill closure it runs that chain as parallel **lanes** that meet at
 - Direct bounded requirements input, including any narrower caller-supplied
   provider projection boundary. This route creates no Fog or Finder
   artifact and no Grilling provider item implicitly.
+- Plan-only input: a current retained pair and Write Backlog result whose
+  `PLAN.md` is missing, stale, or needs an execution-only amendment within
+  accepted bounds (from `delivery-phase` or `implement-spec`). Skip the grill
+  and both compilers; run the plan lane and plan join only, with `create-plan`
+  on the same spec folder. A change to accepted architecture decisions is not
+  plan-only: it returns to `requirements-grill`.
 - Optional Finder context, only when the caller supplies a Fog, Finder child,
   Research child, Prototype child, or durable Finder handoff. Resolve the exact
   identity and its owning Fog graph. Load only that graph. Requirements Phase
