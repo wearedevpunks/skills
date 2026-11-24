@@ -5,9 +5,13 @@ description: Reads the telemetry of a Collective Intelligence (CI) environment (
 
 # ci-clickstack
 
-Each CI environment runs one self-hosted ClickStack: a gateway collector, ClickHouse, and HyperDX. People open HyperDX in a browser after an Entra ID sign-in. Agents use its MCP server at `https://hyperdx.<environment base domain>/api/mcp`. Each request to it authenticates with a HyperDX API key. The operator of the machine registers that server at user scope as `clickstack-<environment>`, for example `clickstack-staging`, so its tools appear as `mcp__clickstack-<environment>__*`.
+Each CI environment with ClickStack enabled (`capabilities.clickstack: true` in its `environment.yaml`) runs one self-hosted ClickStack: a gateway collector, ClickHouse, and HyperDX. People open HyperDX in a browser after an Entra ID sign-in. Agents use its MCP server at `https://hyperdx.<environment base domain>/api/mcp`. Each request to it authenticates with a HyperDX API key. The operator of the machine registers that server at user scope as `clickstack-<environment>`, for example `clickstack-staging`, so its tools appear as `mcp__clickstack-<environment>__*`.
 
-The source of truth is the ClickStack README in `collective-intelligence-platform/ci-deployment-definitions`, at `charts/kubernetes/platform/clickstack/README.md`. Read its "Agent access" and "Dashboards" sections with `gh api` when this skill does not answer a question.
+The source of truth is the ClickStack README in `collective-intelligence-platform/ci-deployment-definitions`, at `charts/kubernetes/platform/clickstack/README.md`. Read its "Agent access" and "Dashboards" sections when this skill does not answer a question:
+
+```bash
+gh api repos/collective-intelligence-platform/ci-deployment-definitions/contents/charts/kubernetes/platform/clickstack/README.md -H 'Accept: application/vnd.github.raw'
+```
 
 ## 1. Select the environment
 
@@ -15,7 +19,9 @@ Use the environment that runs the CI installation under investigation. A solutio
 
 The environment is selected when a `clickstack-<environment>` server for it is in your tool list.
 
-When it is missing, stop and tell the user: "Register `clickstack-<environment>` as in the ClickStack README, section Agent access, then start a new session." The operator keeps the key in the team vault and registers the server on their own machine. Registration stays out of the repository and out of the chat: never ask for, print or write the key, and never add the server to `.mcp.json` or `.codex/config.toml`. A 401 answer means that the agent process started without the key: ask the user to fix the registration and start a new session.
+When the environment has no ClickStack, report that it has no telemetry to read and stop.
+
+When the environment has ClickStack but the server is missing, stop and tell the user: "Register `clickstack-<environment>` as in the ClickStack README, section Agent access, then start a new session." The operator keeps the key in the team vault and registers the server on their own machine. Registration stays out of the repository and out of the chat: never ask for, print or write the key, and never add the server to the repository's `.mcp.json` or `.codex/config.toml`. A 401 answer means that the agent process started without a valid key (missing, expired or revoked): ask the user to provide the current team key from the vault to the agent and start a new session.
 
 ## 2. Query
 
