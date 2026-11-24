@@ -14,7 +14,8 @@ a gate, substantially redesigns implementation, or requires missing authority.
    every linked Task through `write-backlog`'s
    [delivery-status branch](../../write-backlog/references/delivery-status.md#delivery-checkpoints),
    and read it back.
-4. Return `human_steering_required` and stop.
+4. Return `human_steering_required` and stop. The decision record is the whole
+   request to the human; ask nothing, per [AFK](../SKILL.md#afk).
 
 ## Completion Evidence
 

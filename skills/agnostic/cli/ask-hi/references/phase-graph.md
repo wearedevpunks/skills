@@ -10,7 +10,7 @@ Phases are the lifecycle entrypoints. Each phase composes skills and ends by han
 | Close unclear requirements or product decisions; produce ARCHITECTURE.md + SPEC.md + backlog + PLAN.md | `$requirements-phase` | explicit-only |
 | Answer one precise unknown with a throwaway build | `$prototype-phase` (inside Finder) or `$prototype` (lean) | model-invoked |
 | Turn brand and product evidence into committed Design-Owned UI Code on the real route | `$design-phase` | explicit-only |
-| Implement an accepted spec, issue or plan end to end | `$delivery-phase` | explicit-only |
+| Implement an accepted spec, issue or plan end to end, AFK | `$delivery-phase` | explicit-only |
 | Run delivery unattended under one goal | `$goalify`, with goal text that asks for end-to-end `$delivery-phase` | model-invoked |
 | Review a diff, branch, PR or artifact | `$review-phase` | explicit-only |
 | Investigate a runtime failure, crash or broken flow | `$debugging-phase` | model-invoked |

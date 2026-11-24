@@ -23,6 +23,10 @@ or stale plan with a current pair and projection returns to Requirements Phase
 for its `create-plan` step only. Full Delivery starts Requirements Phase and
 other modes propose it, per
 [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
+Requirements Phase run from delivery stays [AFK](../SKILL.md#afk): each grill
+question takes its recommended answer, recorded in the grill log as an
+autonomous decision. A question with no in-bounds answer selects
+[human-steering.md](human-steering.md).
 
 ## Completion State
 
