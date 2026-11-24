@@ -28,12 +28,11 @@ export const deriveReviewRouting = (findings) => {
 };
 
 // One pass by default, a second only on an accepted-risk trigger, further passes
-// only with human direction quoting the human's own words; otherwise the caller
-// captures the open findings as debt. Returns null when the pass may start.
+// only with explicit human direction. Returns null when the pass may start.
 export const budgetBlocker = ({ passCount, acceptedRisk, humanDirection }) => {
   if (passCount >= 2) {
     return isText(humanDirection) ? null
-      : `The review budget is spent after ${passCount} passes; a further pass needs human direction (--human-direction <evidence>) quoting the human's own words, otherwise the caller captures the open findings as debt`;
+      : `The review budget is spent after ${passCount} passes and a further pass needs explicit human direction (--human-direction <evidence>)`;
   }
   if (passCount === 0) return null;
   const [kind, ...evidence] = (acceptedRisk ?? "").split(":");

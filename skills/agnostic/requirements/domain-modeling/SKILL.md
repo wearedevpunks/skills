@@ -41,8 +41,6 @@ Create files lazily — only when you have something to write. If no `GLOSSARY.m
 
 ## During the session
 
-Inside AFK `delivery-phase`, raise each challenge, fuzzy term, scenario, and code contradiction below as a grill Glossary question, settled as an [Autonomous Decision](../delivery-phase/SKILL.md#afk), in place of asking the user.
-
 ### Challenge against the glossary
 
 When the user uses a term that conflicts with the existing language in `GLOSSARY.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y — which is it?"
@@ -73,4 +71,4 @@ Only offer to create an ADR when all three are true:
 2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
 
-If any of the three is missing, skip the ADR. Inside AFK `delivery-phase`, write the ADR, when all three hold, as an in-bounds Autonomous Decision in place of offering it. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).

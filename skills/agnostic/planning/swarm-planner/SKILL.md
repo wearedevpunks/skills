@@ -7,20 +7,11 @@ description: Build a dependency-aware task graph for parallel multi-agent execut
 
 Create implementation plans with explicit task dependencies optimized for parallel agent execution. This skill can be ran inside or outside of Plan Mode. 
 
-## Inside AFK Delivery
-
-Inside AFK `delivery-phase`, every question this skill asks (principle 3,
-steps 1a and 3, and the Important list) becomes an
-[Autonomous Decision](../delivery-phase/SKILL.md#afk): choose the recommended
-answer from evidence, mark its bounds, record it in the plan's decision ledger,
-return it to the caller and continue. Ask the user nothing. Standalone use
-keeps asking.
-
 ## Core Principles
 
 1. **Explore Codebase**: Investigate architecture, patterns, existing implementations, dependencies, and frameworks in use.
 2. **Fresh Documentation First**: Use Context7 for ANY external library, framework, or API before planning tasks
-3. **Ask Questions**: Clarify ambiguities and seek clarification on scope, constraints, or priorities throughout the planning process. At any time. Inside AFK `delivery-phase`, take an Autonomous Decision instead ([Inside AFK Delivery](#inside-afk-delivery)).
+3. **Ask Questions**: Clarify ambiguities and seek clarification on scope, constraints, or priorities throughout the planning process. At any time.
 4. **Explicit Dependencies**: Every task declares what it depends on, enabling maximum parallelization
 5. **Atomic Tasks**: Each task is independently executable by a single agent
 6. **Review Before Yield**: A subagent reviews the plan for gaps before finalizing
@@ -35,7 +26,7 @@ keeps asking.
 
 ### 1a. Optional: Stop to Clarification Questions
 
-- If the architecture is unclear or missing STOP AND YIELD to the user, and request user input (AskUserQuestions) before moving on. Always offer recommendations for clarification questions. Inside AFK `delivery-phase`, take an Autonomous Decision instead and continue.
+- If the architecture is unclear or missing STOP AND YIELD to the user, and request user input (AskUserQuestions) before moving on. Always offer recommendations for clarification questions.
 - If architecture is present, skip 1a and move onto next step. 
 
 ### 2. Documentation
@@ -48,15 +39,12 @@ This ensures version-accurate APIs, correct parameters, and current best practic
 
 ### 3. STOP and Request User Input
 
-Standalone, when anything is unclear or could reasonably be done multiple ways:
+When anything is unclear or could reasonably be done multiple ways:
 - Stop and ask clarifying questions immediately
 - Do not make assumptions about scope, constraints, or priorities
 - Questions should reduce risk and eliminate ambiguity
 - Always offer recommendations for clarification questions.
 - Use request_user_input or AskUserQuestion tool if available. 
-
-Inside AFK `delivery-phase`, take each such question as an Autonomous Decision
-([Inside AFK Delivery](#inside-afk-delivery)).
 
 ### 4. Create Dependency-Aware Plan
 
@@ -209,4 +197,4 @@ T2 ──┴── T4 ──┘
 - Root tasks (no dependencies) can be executed in parallel immediately
 - Do NOT implement - only create the plan
 - Always use Context7 for external dependencies before finalizing tasks
-- Always ask questions where ambiguity exists; inside AFK `delivery-phase`, record Autonomous Decisions instead
+- Always ask questions where ambiguity exists

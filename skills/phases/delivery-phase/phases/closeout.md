@@ -25,15 +25,17 @@ docs ingest or no-op, and validation are complete.
   Repository's delivery PR:
   1. Read `gh pr view --json body,isDraft,author,state,reviewRequests`.
   2. Resolve `$pr` and regenerate its Managed Region from final evidence:
-     the Autonomous Decisions list, Verification, Runtime Validation, UI
-     Evidence Links, CI per check, and the Pass Report route and open findings. Write it with
-     `gh pr edit --body-file`.
+     Verification, Runtime Validation, UI Evidence Links, CI per check, and
+     the Pass Report route and open findings. Then write the
+     [Autonomous Decisions Block](#autonomous-decisions-block) above it. Write
+     the body with `gh pr edit --body-file`.
   3. When the PR is open and a draft, run `gh pr ready`.
   4. Request review from the Directing Human, the person who asked for the
      change, with `gh pr edit --add-reviewer <login>` when their login is
      known and differs from the PR author; otherwise name the Directing Human
      as merge reviewer in the report and ask nothing.
-  5. Read back: the Managed Region bytes match, `isDraft` is false, and the
+  5. Read back: the Managed Region and Autonomous Decisions Block bytes match,
+     `isDraft` is false, and the
      review request is present when step 4 ran.
   6. In `provider-task` mode, record on every linked Task through
      `write-backlog`'s delivery-status branch the pull request state `ready`
@@ -61,6 +63,33 @@ docs ingest or no-op, and validation are complete.
 - Report debugging result or explicit skip reason.
 - Report docs ingest result or explicit no-op reason.
 - For UI changes, verify the `$pr` Evidence section, or the PR-ready handoff when no PR exists, carries the durable before/after `UI Evidence` links.
+
+## Autonomous Decisions Block
+
+Delivery owns this block; `$pr` owns only its Managed Region. Write the block
+first in the PR body, above the Managed Region, between
+`<!-- hi:autonomous-decisions:start -->` and
+`<!-- hi:autonomous-decisions:end -->`; rewrite only those bytes on each
+refresh. With no Autonomous Decision, write `Autonomous Decisions: none`
+between the markers.
+
+```markdown
+<!-- hi:autonomous-decisions:start -->
+## ⚠️ Autonomous Decisions
+
+> [!CAUTION]
+> Delivery took <n> decisions without the human; <k> are OUTSIDE ACCEPTED
+> BOUNDS. Review each one before merge.
+
+| Bounds | Question | Decision | Evidence | How to reverse |
+| --- | --- | --- | --- | --- |
+| **OUT-OF-BOUNDS** | ... | ... | ... | ... |
+| in-bounds | ... | ... | ... | ... |
+<!-- hi:autonomous-decisions:end -->
+```
+
+List every decision in the Delivery Handoff's `autonomous_decisions`,
+out-of-bounds rows first.
 
 ## PR Watch
 

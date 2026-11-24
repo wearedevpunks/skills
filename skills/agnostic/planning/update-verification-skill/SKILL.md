@@ -34,8 +34,6 @@ semantics remain with their owning implementation/debugging workflow.
    authority supports the meaning, and all affected index/journey/helper references
    are reconciled. Contradictory product-expected semantics means product failure or
    an unresolved authority blocker, never permission to erase an expected behavior.
-   Return `blocked` naming the authority conflict; inside AFK `delivery-phase`, the
-   caller settles it as an [Autonomous Decision](../delivery-phase/SKILL.md#afk).
 
 ## Drive and triage
 

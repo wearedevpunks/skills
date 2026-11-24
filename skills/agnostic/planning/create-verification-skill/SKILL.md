@@ -21,10 +21,7 @@ owns the portable structure and safety rules. Read that contract before authorin
    knowledge. Answer from evidence: what the user touches; how it starts and becomes
    ready; how an agent drives it; which observations and side effects prove it;
    how concurrent instances, credentials and scratch state are isolated. Cite sources.
-   When an unobservable prerequisite is missing access, return `blocked` with the
-   exact prerequisite. Standalone, ask only for another unobservable prerequisite
-   needed to continue; inside AFK `delivery-phase`, return it to the caller, which
-   settles it as an [Autonomous Decision](../delivery-phase/SKILL.md#afk).
+   Ask only for an unobservable prerequisite needed to continue.
 3. Prefer the repository's supported command and existing browser, PTY, HTTP or native
    harness. Use stable selectors, commands or prompt strings. Missing build/runtime
    prerequisites require bounded authorized setup or an exact blocker. Product repair

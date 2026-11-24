@@ -30,7 +30,8 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 Create a plan first. Never implement code in this skill.
 
 Inside AFK `delivery-phase`, every plan-shaping question (each `$grilling`
-round, response set, missing input and blocking ambiguity) becomes an
+round, response set, missing input and blocking ambiguity, and each
+`$swarm-planner` or `$tdd` step that would ask, confirm or stop) becomes an
 [Autonomous Decision](../delivery-phase/SKILL.md#afk): choose the recommended
 answer from evidence, mark its bounds, record it in the decision ledger and
 return it in the Phase Result's `changed_facts`. Ask the user nothing; only

@@ -12,5 +12,4 @@ Devpunks preserves the upstream body and structure with these local adaptations:
 
 - `CONTEXT.md`, `CONTEXT-MAP.md`, and `CONTEXT-FORMAT.md` become `GLOSSARY.md`, `GLOSSARY-MAP.md`, and `GLOSSARY-FORMAT.md`.
 - The glossary-only rule under "Update GLOSSARY.md inline" now pressure-tests implementation and architecture consequences during live modeling and persists accepted technical decisions in the grill artifacts and `SPEC.md`, keeping `GLOSSARY.md` glossary-only.
-- Inside AFK `delivery-phase`, challenges become grill Glossary questions settled as Autonomous Decisions, ADRs are decided as in-bounds Autonomous Decisions, and the context is picked as an Autonomous Decision (`SKILL.md` and `GLOSSARY-FORMAT.md`).
 - `agents/openai.yaml` adds Codex display metadata.

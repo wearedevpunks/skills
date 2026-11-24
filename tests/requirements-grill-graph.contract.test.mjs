@@ -423,7 +423,7 @@ test("grilling/SKILL.md stays byte-identical to the skills base", () => {
     .digest("hex");
   assert.equal(
     sha,
-    "f51892b8df7939a570cfd1b9bd8a4753cc081d1722596682223593126b1604cb",
+    "f22d5fa0fab7077190e9ab85142d2952d9fa7dad1b5b38f80bf1f316fd4759ea",
   );
 });
 

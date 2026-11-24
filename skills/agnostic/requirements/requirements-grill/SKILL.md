@@ -71,7 +71,10 @@ section is the single map; each gate points here.
   drops accepted scope, such as less depth than the Target Altitude, is
   out-of-bounds.
 - **Glossary, axiom, Flow Lenses, and compile-gap questions** are frontier
-  questions like any other and settle in their round.
+  questions like any other and settle in their round. Vendored
+  `$domain-modeling` and `$grilling` keep their text: a term challenge, an
+  ADR offer or a context choice they raise is a frontier question here, and
+  their "wait for the user" steps follow this map.
 - **`$wayfinder`.** This agent is the decision owner. A prototype verdict is
   an Autonomous Decision from the prototype evidence.
 - **Auto-pin.** AFK delivery is the authorization: record
