@@ -2,8 +2,11 @@
 
 ## Guard
 
-The next action exceeds accepted bounds, changes accepted requirements, weakens
-a gate, substantially redesigns implementation, or requires missing authority.
+The next action requires access that no
+[Autonomous Decision](../SKILL.md#afk) can grant: credentials, permissions or
+an unreachable provider. Every other boundary, including changed requirements,
+a weaker gate or a redesign, takes an out-of-bounds Autonomous Decision and
+never reaches this phase.
 
 ## Bounded Action
 

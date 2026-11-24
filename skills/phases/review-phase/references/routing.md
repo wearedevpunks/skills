@@ -10,7 +10,7 @@ delivery state and caller preference leave it unchanged.
 
 | `primary` | `secondary_debt` | Delivery transition |
 | --- | --- | --- |
-| `human_steering_required` | either | Stop. Return the blocking findings, their evidence and the exact decision needed. Delivery stays out of repair and resumes when current user direction resolves the decision. |
+| `human_steering_required` | either | Standalone: stop. Return the blocking findings, their evidence and the exact decision needed. Inside `delivery-phase`, delivery takes one out-of-bounds Autonomous Decision per blocking finding: one that needs a code change follows the `implementation` row, any other the `debt_follow_up` row. |
 | `debugging` | `true` | Enter `debt_follow_up` first with `post_debt_route: debugging`, then open scoped debugging. |
 | `debugging` | `false` | Open scoped debugging. |
 | `implementation` | `true` | Enter `debt_follow_up` first with `post_debt_route: implementation`, then open the implementation repair. |

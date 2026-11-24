@@ -34,8 +34,8 @@ silently renaming them.
 - Use a one-worker wave only when dependencies or ownership leave one task
   unblocked.
 - Keep changes inside the active delivery scope.
-- When the next action exceeds accepted bounds, return the required decision
-  to the router before expanding worker ownership.
+- When the next action exceeds accepted bounds, record an out-of-bounds
+  [Autonomous Decision](../SKILL.md#afk) before expanding worker ownership.
 - Parent orchestration owns shared notes and final validation evidence.
 - Code Review happens once in `review-phase` over the combined change after
   implementation completes; workers and the parent leave Code Review to it.

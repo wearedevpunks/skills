@@ -18,6 +18,7 @@ context_pointers: typed stable pointers with identity and freshness rule
 provider_identities: relevant identities or explicit none
 blocker: exact blocker or explicit none
 unknowns: explicit unknowns or none
+autonomous_decisions: every Autonomous Decision so far, out-of-bounds first, or none
 boundary_rationale: at most one sentence plus rationale pointer, when unusual
 ```
 
@@ -103,7 +104,7 @@ After accepted repair, retain Focused Repair Validation and affected Verificatio
 evidence under the transition rules in [review.md](../phases/review.md). A clean
 handoff links the Pass Report, final changes and passing required checks.
 
-For `human_steering_required`, store the blocked action, evidence, and required
-decision in the pointed durable state artifact. Keep only its pointer and exact
+For `human_steering_required` (missing access only), store the blocked action,
+evidence, and required decision in the pointed durable state artifact. Keep only its pointer and exact
 blocker in the Delivery Handoff. The state remains terminal until current user
 direction resolves the required decision.

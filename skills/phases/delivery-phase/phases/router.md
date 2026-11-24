@@ -6,8 +6,9 @@ Choose one next phase from current durable authority.
    trigger-specific instructions, validate required pointers and warm/cold mode.
    A failed resolution emits the common Phase Result and blocks its action.
 2. Preserve terminal `human_steering_required` until current user direction
-   resolves the required decision. New boundary evidence selects
-   [human-steering.md](human-steering.md).
+   resolves the required decision. New missing-access evidence selects
+   [human-steering.md](human-steering.md); every other boundary takes an
+   out-of-bounds [Autonomous Decision](../SKILL.md#afk).
 3. Before any dependent dispatch, require the
    [Architecture/SPEC Pair Complete gate](../references/artifact-state.md#architecturespec-pair-complete)
    for every delivery, including existing, resumed and local work. Missing,
@@ -61,7 +62,8 @@ selected.
 
 Read only the selected phase. Each exit emits the common Phase Result. Full
 Delivery re-enters here; other modes stop at the requested boundary. An unclear
-goal blocks with the exact missing authority rather than inferred scope.
+goal takes its recommended reading as an out-of-bounds
+[Autonomous Decision](../SKILL.md#afk).
 
 Same-goal revision, resume, rebase, commit, retry and handoff keep the goal's
 Pass Reports, so its pass count persists. Only an explicitly new delivery goal

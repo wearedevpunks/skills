@@ -25,8 +25,8 @@ other modes propose it, per
 [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
 Requirements Phase run from delivery stays [AFK](../SKILL.md#afk): each grill
 question takes its recommended answer, recorded in the grill log as an
-autonomous decision. A question with no in-bounds answer selects
-[human-steering.md](human-steering.md).
+autonomous decision. A question with no in-bounds answer takes an
+out-of-bounds [Autonomous Decision](../SKILL.md#afk).
 
 ## Completion State
 
