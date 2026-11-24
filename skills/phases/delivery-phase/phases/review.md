@@ -62,7 +62,8 @@ architecture, security or authorization, a public contract, runtime or deploymen
 topology, or accepted scope. Record that change as the `accepted_risk` kind
 `architecture`, `security`, `public_contract`, `runtime_topology` or
 `accepted_scope` with its accepted repair evidence; changed accepted scope must
-already have explicit authority. Recheck implementation completion before the
+already have explicit authority or an out-of-bounds
+[Autonomous Decision](../SKILL.md#afk). Recheck implementation completion before the
 pass. The two-completed-pass ceiling still applies.
 
 Continue a repair only when new evidence advances diagnosis or validation, or a

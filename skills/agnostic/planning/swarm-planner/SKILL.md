@@ -39,6 +39,9 @@ This ensures version-accurate APIs, correct parameters, and current best practic
 
 ### 3. STOP and Request User Input
 
+Inside an AFK `delivery-phase` run, steps 1a and 3 take each question as an
+Autonomous Decision under delivery-phase AFK and ask the user nothing.
+
 When anything is unclear or could reasonably be done multiple ways:
 - Stop and ask clarifying questions immediately
 - Do not make assumptions about scope, constraints, or priorities
