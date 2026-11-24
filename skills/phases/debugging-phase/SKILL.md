@@ -17,7 +17,7 @@ description: >-
 - **Delivery-internal inputs:** `implement-spec` validation failure or `review-phase` runtime failure
 - **Wraps:** `$verify-behavior`, `$debug-agent`, optional readonly `$parallel-research`, bounded fixes, focused tests or scenario reruns, review handoff
 - **Owns:** evidence matrices, cited log references, hypothesis status, fix verification
-- **Exit conditions:** bug fixed, concrete blocker proven, or `human_steering_required`
+- **Exit conditions:** bug fixed, concrete blocker proven, or `human_steering_required`; inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery)
 
 ## Use When
 
@@ -41,10 +41,9 @@ description: >-
 2. **Set bounds.**
    - Define owned files, systems, and scenarios.
    - For delivery-internal debugging, patch only inside the active delivery scope.
-   - If the next action exceeds these bounds, retain the evidence and required
-     decision; return `human_steering_required` and stop. Inside
-     `delivery-phase`, delivery takes that decision as an out-of-bounds
-     Autonomous Decision.
+   - Standalone: if the next action exceeds these bounds, retain the evidence and required
+     decision; return `human_steering_required` and stop. Inside AFK
+     `delivery-phase`, follow [Inside AFK Delivery](#inside-afk-delivery).
 3. **Reproduce visible behavior.**
    - Before forming hypotheses or starting fix work, run `$verify-behavior` in
      `reproduce` mode when the reported behavior is visibly exercisable.
@@ -96,6 +95,25 @@ description: >-
    - Fixed: report cause, patch, verification, and residual risk.
    - Blocked: report the concrete blocker and the missing artifact/access/action.
    - Human steering: return `human_steering_required` with the retained decision record.
+   - Inside AFK `delivery-phase`, both exits follow
+     [Inside AFK Delivery](#inside-afk-delivery).
+
+## Inside AFK Delivery
+
+Inside AFK `delivery-phase`, every pending question or human decision is an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk); record each one in the
+Phase Result's `changed_facts`.
+
+- **Next action exceeds bounds:** take an out-of-bounds Autonomous Decision and
+  continue.
+- **Blocker other than access:** take an Autonomous Decision per delivery's
+  [failure continuity](../delivery-phase/references/failure-continuity.md):
+  another approach, debt capture or a narrower scope.
+- **`human_steering_required`:** return it only for missing access
+  (credentials, permissions or an unreachable provider), with the
+  missing-access record.
+- **Reproduction and verification:** `$debug-agent` runs its
+  [Inside AFK Delivery](../debug-agent/SKILL.md#inside-afk-delivery) branch.
 
 ## Parallel Rules
 
@@ -118,4 +136,4 @@ Return a concise debugging report with:
 - **Root cause:** confirmed cause or why none is proven
 - **Changes:** bounded patch summary, or none if blocked/out of scope
 - **Verification:** commands/scenarios rerun and result
-- **Exit:** fixed, blocked, or `human_steering_required`
+- **Exit:** fixed, blocked, or `human_steering_required` (inside AFK `delivery-phase`: missing access only)

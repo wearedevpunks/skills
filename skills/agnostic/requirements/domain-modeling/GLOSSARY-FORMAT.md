@@ -57,4 +57,4 @@ The skill infers which structure applies:
 - If only a root `GLOSSARY.md` exists, single context
 - If neither exists, create a root `GLOSSARY.md` lazily when the first term is resolved
 
-When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
+When multiple contexts exist, infer which one the current topic relates to. If unclear, ask. Inside AFK `delivery-phase`, pick the closest context as an [Autonomous Decision](../delivery-phase/SKILL.md#afk).

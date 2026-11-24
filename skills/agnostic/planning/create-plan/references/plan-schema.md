@@ -38,6 +38,10 @@ Topology**, **Declared Dependency Graph**, **Responsibility Acceptance Criteria*
 ledger starts with every planned temporary seam and final closure requires it to be empty.
 
 `unresolved questions` is not a hiding place for skipped planning. Include only `$grilling`-deferred, externally blocked, or non-blocking questions, and state why each remains open.
+Inside AFK `delivery-phase`, record each settled question in the resolved
+decision ledger as an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) with its bounds mark;
+`unresolved questions` keeps only externally blocked items.
 
 Each wave labels an earliest Execution Frontier, not a whole-wave release barrier.
 Record every eligible task under dependency, write/read, runtime and architecture

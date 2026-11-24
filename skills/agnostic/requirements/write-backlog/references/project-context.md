@@ -4,7 +4,9 @@ Read this reference for every mutation.
 
 ## Authority Order
 
-1. A persisted explicit human decision resolves a genuine semantic conflict.
+1. A persisted explicit human decision resolves a genuine semantic conflict;
+   inside AFK `delivery-phase`, so does an out-of-bounds
+   [Autonomous Decision](../../delivery-phase/SKILL.md#afk) recorded in the wiki.
 2. The project wiki owns durable product meaning: Product brief, objectives,
    users, boundaries, Product Map, constraints and non-goals, operating rules,
    owner, repository, wiki, and `V*` milestone context.

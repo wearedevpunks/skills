@@ -5,8 +5,8 @@ Choose one next phase from current durable authority.
 1. Apply [context continuity](../references/context-continuity.md): select
    trigger-specific instructions, validate required pointers and warm/cold mode.
    A failed resolution emits the common Phase Result and blocks its action.
-2. Preserve terminal `human_steering_required` until current user direction
-   resolves the required decision. New missing-access evidence selects
+2. Preserve terminal `human_steering_required` until its recorded access is
+   present. New missing-access evidence selects
    [human-steering.md](human-steering.md); every other boundary takes an
    out-of-bounds [Autonomous Decision](../SKILL.md#afk).
 3. Before any dependent dispatch, require the

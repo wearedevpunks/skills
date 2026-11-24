@@ -43,6 +43,60 @@ reaches the user as a plain chat message written through `$wait-what`: the
 user replies in free text. `AskUserQuestion`,
 `request_user_input`, and every other structured question tool are forbidden
 in every gate, always, whatever a child skill or host instruction suggests.
+Inside AFK `delivery-phase`, the grill sends the user no question at all:
+[Inside AFK Delivery](#inside-afk-delivery).
+
+## Inside AFK Delivery
+
+Inside AFK `delivery-phase`, directly or through `requirements-phase`, the
+grill sends the user nothing and waits for no reply. Each point below that
+would ask or stop for the user settles as an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk): settle, mark, record,
+and post it as that section directs, and also log it in the grill. This
+section is the single map; each gate points here.
+
+- **Round.** Build the round and write its Current Round as usual, then send
+  it to no one. Write the response set yourself: for each frontier question,
+  its recommended option, re-checked against current evidence, as an
+  Autonomous Decision. That response set is current direct evidence: re-enter
+  the router at once, and `checkpoint` records it as an "agree all" reply.
+- **Human-facing calls.** `$wait-what` and `$show-me` serve a human reader.
+  The round's `wait-what` and `show-me` lines and the close `show-me` line
+  read `not due — AFK delivery`, and the Round Message view is not due.
+- **Log entry.** Each decided answer carries
+  `Source: autonomous decision (in-bounds | out-of-bounds)` and an
+  `Evidence:` line by the
+  [log contract](references/artifact-output.md#grill-log-contract).
+- **Parks and deferrals.** The reason is the decision's evidence. A park that
+  drops accepted scope, such as less depth than the Target Altitude, is
+  out-of-bounds.
+- **Glossary, axiom, Flow Lenses, and compile-gap questions** are frontier
+  questions like any other and settle in their round.
+- **`$wayfinder`.** This agent is the decision owner. A prototype verdict is
+  an Autonomous Decision from the prototype evidence.
+- **Auto-pin.** AFK delivery is the authorization: record
+  `Auto-pin: authorized R<N> (AFK delivery)`.
+- **Confirmation and closure.** When the Close Guard passes, run the final
+  `$domain-modeling` pass, then set confirmation to `confirmed` and close the
+  grill in the same pass. Each is an Autonomous Decision whose evidence is the
+  passing Close Guard check. The log Closure section records both decisions
+  in place of quotes; wiki synthesis and the `$create-architecture` handoff
+  follow.
+- **Blocked `grill_target_unclear` or `grill_state_conflict`.** Choose the
+  topic and `<wiki-root>`, or the winning evidence, as an Autonomous Decision,
+  record it in the status file, and re-enter the router.
+- **`human_steering_required`.** Each such gate exit and router row 1 becomes
+  an out-of-bounds Autonomous Decision, and the gate continues its bounded
+  action. Work beyond the grill (implementation, a plan, a code edit) becomes
+  a note to the caller: `delivery-phase` owns it.
+- **Router rows 8 and 9** never stop. Row 8 writes the response set, so row 6
+  selects `checkpoint`; row 9 writes the confirmation and closure decisions as
+  the reply, so row 7 selects `close`.
+
+The structured question tool rule above still holds. Blocked outcomes that
+hold no user decision (`facts_pending`, `call_failed`,
+`precision_input_unreadable`) keep their behavior for the caller to handle;
+by delivery-phase AFK, only missing access waits for the human.
 
 ## Round Message
 
@@ -57,7 +111,8 @@ A round is one turn, built in this order:
 
 A round is ready to send when its view is rendered and every question has a
 topic, one question sentence, two or more viable options, and exactly one
-recommendation.
+recommendation. Inside AFK `delivery-phase`, the round is recorded, not sent:
+[Inside AFK Delivery](#inside-afk-delivery).
 
 ## Question Format
 
@@ -78,7 +133,8 @@ its words and keeps the block.
 
 - **Options:** two or more, each a distinct outcome the user could accept as
   written, each with its consequence. Exactly one is recommended, listed
-  first as A. The user replies with a letter, a mix, or free text.
+  first as A. The user replies with a letter, a mix, or free text; inside
+  AFK `delivery-phase`, the agent's response set picks A.
 - **One viable answer** means the item is a fact, not a decision: send it to
   `ground` and keep it out of the round.
 

@@ -46,7 +46,7 @@ Normalization operation targets it.
 
 Stable provider identity plus durable wiki identity is the reuse key. A title
 match, incomplete search, ambiguous candidate, conflicting identity, unexpected
-parent, or unsupported representation returns exact steering and zero writes.
+parent, or unsupported representation returns the exact gap and zero writes.
 
 ## Initialization Metadata and Views
 

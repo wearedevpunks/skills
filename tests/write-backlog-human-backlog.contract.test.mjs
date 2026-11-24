@@ -129,9 +129,9 @@ test("the provider, Fog intake and delivery status references stay unchanged", (
     ),
     {
       "references/fog-intake.md": "c4e2c04dc5249d460af723c1843f368c15006098528002368ecca86b10b9a6d4",
-      "references/delivery-status.md": "52b95c0d34389b55999772adb5eadfa37c2d85ef2c9809eb64dd23f0e193da5d",
-      "references/providers/github.md": "c0688a8ed93fb2f40e654f9b00af72aea0fba3c1b4860569fc0e4371e8ae388a",
-      "references/providers/linear.md": "3cf97d38323fa2855de5ce58f2ddc95a6b03d197a5fd6c0fa6644a4753818a27",
+      "references/delivery-status.md": "b7c59a29e5d61b8759dd12c180c715bb03b336aa25a7363404477a24c171d3f5",
+      "references/providers/github.md": "c5eae30bb4641ae23baf3a06f62915d2df5f450b95bc4ee631dac91e19fa1830",
+      "references/providers/linear.md": "2da8a3147e3e44aff4f12408fdaa548553e0d12a408e85dc72dd9b798a7320aa",
     },
   );
 });

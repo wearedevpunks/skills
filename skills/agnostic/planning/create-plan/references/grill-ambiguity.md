@@ -17,7 +17,9 @@ Infer as much as possible from:
 - issues
 - backlog references
 
-Ask only for missing high-impact inputs:
+Derive the high-impact inputs below from that evidence. Outside AFK
+`delivery-phase`, ask only for the ones still missing; inside it, take each as
+an [Autonomous Decision](../../delivery-phase/SKILL.md#afk):
 
 - domain or scope
 - goal statement or issue set
@@ -43,6 +45,10 @@ Every plan-shaping question in a `$grilling` round must contain exactly these he
 - `Why it matters`
 
 If the block is malformed, regenerate it before continuing.
+
+Inside AFK `delivery-phase`, keep the block and add two headings after
+`Why it matters`: `Autonomous answer` and `Bounds: in | out`. Record the block
+in the decision ledger as an Autonomous Decision and send nothing to the user.
 
 ## Grill behavior
 

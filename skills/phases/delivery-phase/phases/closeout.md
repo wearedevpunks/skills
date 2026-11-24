@@ -14,7 +14,9 @@ docs ingest or no-op, and validation are complete.
   files and exclude them from staging.
 - Compare the trees. When the final tree differs from the pre-review candidate,
   rerun every required release classification and exact-tree provider proof against
-  the final commit. A failed or unavailable required proof blocks closeout.
+  the final commit. A failed required proof returns to repair through
+  [failure continuity](../references/failure-continuity.md); a proof
+  unavailable for missing access selects [human steering](human-steering.md).
 - Push the final commit, then await its CI result and report it per check. When
   the project has no full-suite CI or CI runs no E2E, run the one local broad run
   instead, covering only what CI lacks, and report it as a local broad run.
@@ -29,16 +31,18 @@ docs ingest or no-op, and validation are complete.
   3. When the PR is open and a draft, run `gh pr ready`.
   4. Request review from the Directing Human, the person who asked for the
      change, with `gh pr edit --add-reviewer <login>` when their login is
-     known and differs from the PR author; otherwise report who must approve.
+     known and differs from the PR author; otherwise name the Directing Human
+     as merge reviewer in the report and ask nothing.
   5. Read back: the Managed Region bytes match, `isDraft` is false, and the
      review request is present when step 4 ran.
   6. In `provider-task` mode, record on every linked Task through
      `write-backlog`'s delivery-status branch the pull request state `ready`
-     and the step 4 outcome: the requested reviewer, or who must approve when
-     no request was sent. Read it back.
+     and the step 4 outcome: the requested reviewer, or the named Directing
+     Human when no request was sent. Read it back.
 
-  A failed write stops closeout with the exact failed step; a rerun starts at
-  step 1. Merge stays with the human.
+  A write that fails for missing access selects
+  [human steering](human-steering.md); repair any other failed write and rerun
+  from step 1. Merge stays with the human.
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
   [delivery-status branch](../../write-backlog/references/delivery-status.md).

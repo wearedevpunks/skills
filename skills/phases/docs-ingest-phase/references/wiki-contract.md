@@ -37,7 +37,9 @@ All six fields `resolved` gives a resolved contract. Any other result is a
 setup authority, else with the [Gap report](#gap-report).
 
 **Setup authority** is the user's request, in this task, to set up or adopt the
-wiki, or project guidance that delegates it.
+wiki, or project guidance that delegates it. Inside AFK `delivery-phase`, an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) grants it by
+[Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Adopt
 
@@ -57,8 +59,9 @@ path, and the diff moves, deletes or re-routes no existing page.
 
 Use when no wiki exists and the task holds setup authority.
 
-1. Take the destination from project guidance or the user. Done when one
-   destination path is named; otherwise write the [Gap report](#gap-report).
+1. Take the destination from project guidance or the user; inside AFK
+   `delivery-phase`, from project guidance only. Done when one destination path
+   is named; otherwise write the [Gap report](#gap-report).
 2. Create the project-owned destination: the wiki-root `AGENTS.md` with the
    contract section, the raw home, the canonical article tree with its
    navigation metadata, and the root discovery index. Every created file is

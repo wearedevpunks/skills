@@ -11,7 +11,7 @@ Accept any of:
 - a domain name plus spec name
 - an explicit `SPEC.md` path
 
-`<wiki-root>` and the canonical article tree come from the resolved [wiki contract](wiki-contract.md). Resolve routed `content/docs/project/specs` folders first, then legacy root `specs` folders. If ambiguous, ask only for the missing folder.
+`<wiki-root>` and the canonical article tree come from the resolved [wiki contract](wiki-contract.md). Resolve routed `content/docs/project/specs` folders first, then legacy root `specs` folders. If ambiguous, ask only for the missing folder; inside AFK `delivery-phase`, take the folder the delivery spec names as an [Autonomous Decision](../../delivery-phase/SKILL.md#afk).
 
 ## Freshness
 

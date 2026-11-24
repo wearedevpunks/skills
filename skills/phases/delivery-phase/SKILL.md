@@ -17,7 +17,7 @@ disable-model-invocation: true
 4. Load exactly one phase file from `phases/`.
 5. Complete that phase and write its outcome. Full delivery re-enters routing immediately; other modes stop at their selected boundary.
 
-Within accepted bounds, full delivery grants its selected inner steps the authority needed to reach closeout. Progressive loading still exposes one phase at a time.
+Full delivery grants its selected inner steps the authority to reach closeout; a step beyond accepted bounds takes an out-of-bounds [Autonomous Decision](#afk). Progressive loading still exposes one phase at a time.
 
 ## AFK
 
@@ -63,7 +63,7 @@ grant, such as credentials, permissions or an unreachable provider, selects
 - [phases/review.md](phases/review.md): prepare the explicit review handoff or
   route findings from a Pass Report.
 - [phases/debug.md](phases/debug.md): investigate runtime-evidence failures.
-- [phases/human-steering.md](phases/human-steering.md): return a scope or authority boundary for human steering.
+- [phases/human-steering.md](phases/human-steering.md): stop for missing access that no Autonomous Decision can grant.
 - [phases/docs-ingest.md](phases/docs-ingest.md): ingest docs-affecting changes or record a no-op.
 - [phases/closeout.md](phases/closeout.md): finish tracker, PR, validation, and final report state; watch the open PR until it reports.
 
@@ -81,8 +81,9 @@ grant, such as credentials, permissions or an unreachable provider, selects
 - Design-Owned UI Code from a `design-phase` promote commit is accepted input.
   Delivery adds logic, data, and the rest of the requirement to it. A change to a
   design-owned file is a defect fix only, recorded in the Phase Result.
-- Full Delivery continues within accepted bounds. Other modes emit one common
-  Phase Result and stop at their requested boundary.
+- Full Delivery continues to closeout and takes an out-of-bounds Autonomous
+  Decision at each bound. Other modes emit one common Phase Result and stop at
+  their requested boundary.
 - [references/context-continuity.md](references/context-continuity.md) owns
   Context Pointers, disposable packets, common Phase Results and legacy recovery.
 - [references/phase-handoff.md](references/phase-handoff.md) owns durable delivery

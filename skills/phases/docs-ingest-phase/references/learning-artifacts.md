@@ -61,7 +61,7 @@ Before writing a new learning artifact, check existing routed learning pages in 
 - `consolidate`: overlapping learnings should become one canonical page
 - `replace`: old guidance is misleading and a clear successor exists
 - `delete`: old guidance is clearly obsolete, unreferenced, and no longer useful
-- `mark_stale`: accuracy is ambiguous or needs a human decision
+- `mark_stale`: current evidence cannot settle its accuracy; name the evidence that would
 
 Record the outcome in the ingest report with the evidence that justifies it.
 

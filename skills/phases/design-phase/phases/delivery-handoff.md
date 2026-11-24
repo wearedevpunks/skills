@@ -35,7 +35,11 @@ loads or starts `delivery-phase`; only the user invokes it.
 ## Invariants
 
 - Design approval stays closed during delivery unless artifacts are stale or
-  contradicted; a later visual change re-enters `design-phase`.
+  contradicted; a later visual change re-enters `design-phase`. Inside AFK
+  `delivery-phase`, a stale or contradicted design artifact is an out-of-bounds
+  [Autonomous Decision](../../delivery-phase/SKILL.md#afk): delivery records
+  it and continues. A later visual change the human asks for re-enters
+  `design-phase`.
 - Final evidence uses durable links; local temp files and transient browser
   URLs are pending evidence only.
 

@@ -15,6 +15,7 @@ Devpunks keeps the upstream vertical red-green loop and co-located testing refer
 - `properties.md`: Property Patterns, slice order, generator rules, Pinned Replay, run policy, stateful properties, and the Form values.
 - `sensitivity.md`: the Sensitivity Proof procedure; a test that never failed is not evidence.
 - The Tautological anti-pattern in `high-signal-tests.md`, adapted from upstream `59db609` (`skills/engineering/tdd/SKILL.md`).
+- AFK `delivery-phase` carve-outs: Planning takes the plan's `tdd_target` and task contract as the confirmed interface and behavior priority, and Generator Narrowing approval becomes an out-of-bounds Autonomous Decision; standalone use keeps the upstream user confirmation.
 - The Refactor workflow step and its refactor-candidates reference are removed, following upstream `59db609`: "Refactoring is not part of the loop." Refactoring belongs to the per-task `$simplify` step and to review.
 
 The rest of the skill stays on the `62f43a1` snapshot; full adoption of later upstream changes is a separate delivery.

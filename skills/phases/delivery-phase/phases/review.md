@@ -26,8 +26,9 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    After a completed pass, apply the repair rules below before opening another;
    a risk-triggered second pass passes `--accepted-risk <kind>:<evidence>`.
    At two completed passes, a further pass needs explicit
-   human direction, passed as `--human-direction <evidence>`; that evidence is
-   only the human's own words. Without it, take an out-of-bounds
+   human direction, passed as `--human-direction <evidence>`; that evidence
+   quotes only words the human already wrote in this goal or thread, so
+   delivery asks for none. Without them, take an out-of-bounds
    [Autonomous Decision](../SKILL.md#afk) on `review_budget_exhausted`: capture
    the open findings as debt and continue to docs ingest or closeout, keeping
    the Pass Reports.
@@ -36,8 +37,8 @@ the [review-phase](../../review-phase/SKILL.md) skill's `scripts/review.mjs`;
    [phase-handoff reference](../references/phase-handoff.md#review-invocation-context).
    In `provider-task` mode, record the review started fact on every linked
    Task (see [Ticket Live State](#ticket-live-state)). Full
-   delivery invokes it immediately; other modes return that context as a named
-   proposal and stop. Both follow
+   delivery invokes it immediately; other modes name `$review-phase` and that
+   context as the next phase in their stop report and ask nothing. Both follow
    [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
    Only the Pass Report that `retain` commits completes the pass.
 
@@ -68,8 +69,10 @@ pass. The two-completed-pass ceiling still applies.
 
 Continue a repair only when new evidence advances diagnosis or validation, or a
 remaining discriminating diagnostic can resolve the failure. Record that evidence
-or diagnostic before retrying. A stagnant loop returns an exact blocker and
-remaining work; it never counts as progress or expands the review allowance.
+or diagnostic before retrying. A stagnant loop takes an out-of-bounds
+Autonomous Decision per [failure continuity](../references/failure-continuity.md):
+another approach, debt capture or a narrower scope. It never counts as progress
+or expands the review allowance.
 
 ## Route Findings
 

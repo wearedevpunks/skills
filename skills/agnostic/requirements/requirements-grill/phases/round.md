@@ -31,14 +31,17 @@ frontier. Round never records an answer; `checkpoint` does.
 2. **Stuck unknown.** For a frontier question that carries an `Unknown:`
    prerequisite (one precise unknown that neither a user answer nor fact
    finding can close), invoke `$wayfinder` with the unknown, its owning branch
-   and question id, the evidence so far, and the user as decision owner. Run
-   the returned route:
+   and question id, the evidence so far, and the user as decision owner
+   (inside AFK `delivery-phase`, this agent, by
+   [Inside AFK Delivery](../SKILL.md#inside-afk-delivery)). Run the returned
+   route:
    - `grilling`: the question stays in this round;
    - `research`: run `$parallel-research`; the question waits on its report
      and leaves this frontier;
    - `prototype`: run `$prototype` on a `prototype/<slug>` branch with the
      unknown and owning question as its brief; park the question until the
-     human verdict closes it.
+     human verdict closes it (inside AFK `delivery-phase`, the verdict
+     Autonomous Decision).
    Persist the route result against the question id.
 3. **Prepare each question.** For a technical question, state the evidence
    anchor and observed constraint, ask one decision, and state its code
@@ -60,14 +63,19 @@ frontier. Round never records an answer; `checkpoint` does.
    the view is an interface sketch or a module tree. Load `$show-me` before
    building the view, and build the round in the
    [Round Message](../SKILL.md#round-message) order: the view renders first.
+   Inside AFK `delivery-phase`, run `$grilling` only: build no view, send
+   the round to no one, and record `wait-what` and `show-me` as `not due`.
 5. **Complete a round (route row 11).** Present, through the missing call,
    the round's remaining `unanswered` questions; when none remain, present the
-   round's accepted answers for the user to correct.
+   round's accepted answers for the user to correct. Inside AFK
+   `delivery-phase`, write the missing line as `not due — AFK delivery`.
 6. **Record calls.** Write the round's call evidence under
    [Required Calls](../references/artifact-output.md#required-calls):
    `grilling`, `wait-what`, and `show-me` with the view name and the surface
    it rendered on; add `wayfinder`
-   when step 2 ran. Then stop for the user's answers.
+   when step 2 ran. Then stop for the user's answers. Inside AFK
+   `delivery-phase`, write the response set as Autonomous Decisions instead
+   and exit `answered_autonomously`.
 
 Required calls: `$grilling`, `$wait-what`, `$show-me`; `$wayfinder` for a stuck
 unknown.
@@ -77,14 +85,16 @@ unknown.
 - One round asks exactly one Altitude.
 - The round asks only the router's frontier ids; it adds and drops none,
   except questions that step 2 routes to research or prototype.
-- No answer is inferred or written.
+- No answer is inferred or written; an AFK response set is a decision, and
+  `checkpoint` writes it.
 - Question ids stay stable.
 
 ## Completion Evidence
 
 - the Current Round names the round id, Altitude, and frontier
 - the round met the [Round Message](../SKILL.md#round-message) ready-to-send
-  bar: its view rendered, every question in the Question Format
+  bar: its view rendered, every question in the Question Format; inside AFK
+  `delivery-phase`, the view is `not due`
 - the round's Required Calls lines exist for `grilling`, `wait-what`, and
   `show-me`
 - each `$wayfinder` route result is recorded against its question id
@@ -97,6 +107,10 @@ unknown.
   research or prototype; nothing is presented.
 - `human_steering_required`: preparing a question shows that the decision
   belongs outside this grill's topic; the record names the decision needed.
+- `complete` `answered_autonomously`: inside AFK `delivery-phase`, the round
+  is recorded and its response set is written as Autonomous Decisions. There,
+  `answers_required` and `human_steering_required` never fire:
+  [Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Durable Handoff
 
@@ -105,5 +119,5 @@ Write the `round` entry under
 
 ## Stop Or Router Re-entry
 
-After `answers_required` or a steering exit, stop. After
-`frontier_rerouted`, re-enter [`router.md`](router.md).
+After `answers_required` or a steering exit, stop. After `frontier_rerouted`
+or `answered_autonomously`, re-enter [`router.md`](router.md).

@@ -100,8 +100,9 @@ not a repeated effect or a duplicated resource.
    close now, not after a failed run. Keep credentials, secrets,
    personal data and sensitive state out of prompts, screenshots, recordings,
    reports and retained evidence; name a missing prerequisite
-   without its value and keep affected checks blocked. Leave required human
-   authentication or approval actions to the user.
+   without its value and keep affected checks blocked. Required human
+   authentication or approval actions are missing access: leave them to the user
+   and keep affected checks blocked with the exact prerequisite.
 3. Pass Doctor before Drive. Follow the selected Feature Map path end-to-end and
    record actions, observed positive result, Scenario Falsifier and its observation.
    Capture every manifest observation before evaluating assertions, and redact

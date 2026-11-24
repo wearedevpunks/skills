@@ -49,8 +49,12 @@ silently renaming them.
    milestone movement, duplicate closure, merge, split, reparenting,
    reorganization, and divergent-topology repair are structural changes: the
    invocation plus accepted evidence authorizes them. Ambiguity, conflict, or
-   missing authority still stops with zero writes. Completion means every
-   structural change is previewed and recorded for the return envelope.
+   missing authority still stops with zero writes. Return each gap with its
+   candidates. Inside AFK `delivery-phase`, the caller settles ambiguity or
+   conflict as an [Autonomous Decision](../delivery-phase/SKILL.md#afk),
+   out-of-bounds when it changes accepted scope or hierarchy, persists it and
+   invokes again; only missing provider access stays blocked. Completion means
+   every structural change is previewed and recorded for the return envelope.
 7. Write every ticket title, body, and preview the user reads through
    `$wait-what`, preserving accepted meaning.
 8. Select exactly one adapter from `backlogProvider`:

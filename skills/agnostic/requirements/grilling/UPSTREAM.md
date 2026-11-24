@@ -14,3 +14,4 @@ Devpunks preserves the upstream body and structure with these local adaptations:
 - `description` becomes a model-invocation trigger for local grilling requests and skill composition.
 - `disable-model-invocation: true` is removed so `$grilling` remains model-invocable.
 - The body adds a minimal question-and-transition contract: one explicit decision and question with a concise recommendation and rationale, precise interpretation choices, explicit branch settlement, and a state restatement before each new frontier.
+- The body adds an AFK `delivery-phase` carve-out: each round's decisions become Autonomous Decisions on the recommendations, and the session continues without waiting for answers or confirmation.

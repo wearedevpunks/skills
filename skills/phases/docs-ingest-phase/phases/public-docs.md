@@ -18,7 +18,7 @@ when routed pages or navigation metadata will change.
 4. For substantial work, choose or create one durable private writer artifact bundle for the public target.
 5. Inspect existing `fragments.md` in that bundle.
 6. If fragments are missing or stale, run `writing-fragments` in docs-ingest artifact mode to create or refresh `fragments.md`.
-7. Present the existing or generated fragments to the user and ask whether they are sufficient to continue.
+7. Present the existing or generated fragments to the user and ask whether they are sufficient to continue. Inside AFK `delivery-phase`, steps 7–9 run as the [checkpoint](#fragment-sufficiency-checkpoint)'s Autonomous Decision.
 8. If the user says they are insufficient, asks for changes, or says more guidance is needed, ask for the missing guidance before running `writing-beats` or `writing-shape`.
 9. Once fragments are confirmed sufficient or the user has supplied enough guidance to revise them, update `fragments.md` as needed.
 10. Run `writing-beats`, then `writing-shape`, then write or merge the final public page.
@@ -27,6 +27,12 @@ when routed pages or navigation metadata will change.
 ## Fragment Sufficiency Checkpoint
 
 This checkpoint is mandatory for substantial public-doc work.
+
+Inside AFK `delivery-phase`, the checkpoint is an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) by
+[Inside AFK Delivery](../SKILL.md#inside-afk-delivery): judge the fragments
+against the delivery evidence, revise `fragments.md`, and the recorded decision
+is the answer. Standalone, the steps below apply.
 
 When presenting fragments:
 
@@ -44,7 +50,7 @@ Report:
 
 - public docs target and audience
 - writer artifact bundle used
-- fragments presented, confirmed, revised, or blocked for guidance
+- fragments presented, confirmed, revised, blocked for guidance, or settled by Autonomous Decision
 - beats and shape artifacts written or skipped
 - public pages written, merged, or skipped
 - routed metadata, sidebar, or index updates

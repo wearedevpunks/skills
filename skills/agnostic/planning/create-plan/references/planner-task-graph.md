@@ -81,3 +81,5 @@ Preserve `$swarm-planner` behavior:
   holes before yielding
 
 Do not stop between ambiguity reduction and swarm graph construction unless a true blocking ambiguity remains.
+Inside AFK `delivery-phase`, settle that ambiguity as an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) and continue; stop only for missing access.

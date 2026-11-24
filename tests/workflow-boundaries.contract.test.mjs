@@ -54,14 +54,14 @@ test("delivery and debugging preserve scope decisions before proceeding", () => 
   const handoff = read("skills/phases/delivery-phase/references/phase-handoff.md");
   const debug = read("skills/phases/debugging-phase/SKILL.md");
   assert.match(delivery, /references\/failure-continuity\.md/iu);
-  assert.match(router, /Preserve terminal `human_steering_required` until current user direction\s+resolves the required decision/iu);
-  assert.match(delivery, /Within accepted bounds, full delivery grants/iu);
+  assert.match(router, /Preserve terminal `human_steering_required` until its recorded access is\s+present/iu);
+  assert.match(delivery, /Full delivery grants its selected inner steps the authority to reach closeout/iu);
   assert.match(router, /New missing-access evidence selects\s+\[human-steering\.md\]/iu);
   assert.match(router, /every other boundary takes an\s+out-of-bounds \[Autonomous Decision\]/iu);
-  assert.match(gate, /Record the blocked action, supporting evidence, and exact decision needed/iu);
+  assert.match(gate, /Record the blocked action, supporting evidence, and exact access needed/iu);
   assert.match(gate, /in\s+a durable state artifact/iu);
   assert.match(gate, /Pointer and exact blocker in the compact Delivery Handoff/iu);
-  assert.match(gate, /In every mode, resume routing when current\s+user direction resolves the required decision/iu);
+  assert.match(gate, /resume routing when the\s+named access is present/iu);
   assert.match(handoff, /human_steering_required/iu);
   assert.match(debug, /next action exceeds these bounds, retain the evidence and required\s+decision/iu);
   assert.match(debug, /return `human_steering_required` and stop/iu);
