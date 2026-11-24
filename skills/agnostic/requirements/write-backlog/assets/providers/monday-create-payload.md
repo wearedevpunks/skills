@@ -198,7 +198,7 @@ Story body ownership:
 - immutable spec link
 - accepted artifact links
 
-If a board does not support subitems, stop and ask whether to add subitem support or use a different monday.com board. Do not silently degrade into flat story items.
+If a board does not support subitems, return setup guidance that names the board and the missing subitem support, with zero writes. Keep stories as subitems; flat story items are no substitute.
 
 ## Add native blockers
 

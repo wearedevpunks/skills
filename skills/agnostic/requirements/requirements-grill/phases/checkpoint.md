@@ -14,7 +14,9 @@ Enter only when the router selected this gate:
 
 ## Inputs
 
-- the user's response set, when present
+- the user's response set, when present; inside AFK `delivery-phase`, the
+  agent's Autonomous Decision response set
+  ([Inside AFK Delivery](../SKILL.md#inside-afk-delivery))
 - the status file (Current Round, Branch Dashboard, Technical Grounding,
   Precision Inputs, Required Calls, Glossary) and the log
 - the [Altitude Ladder](router.md#altitude-ladder)
@@ -37,13 +39,17 @@ Run every step on every response set, a partial set included. On route rows
    [log contract](../references/artifact-output.md#grill-log-contract), with
    its Altitude, and mark it `answered`. A letter answer records its option
    as the accepted answer and the other options as rejected alternatives.
-   Leave each omitted question `unanswered`; never infer an answer. Record a park or deferral with the
-   user's reason; a branch park names its Altitude. A changed earlier decision
+   Leave each omitted question `unanswered`; never infer an answer. Inside
+   AFK `delivery-phase`, record each Autonomous Decision as its answer, with
+   its `Source:` and `Evidence:` lines. Record a park or deferral with the
+   user's reason (inside AFK `delivery-phase`, the decision's evidence); a
+   branch park names its Altitude. A changed earlier decision
    gets a superseding entry; a contradiction with an accepted decision becomes
    a new explicit question. A question left open on one precise unknown that
    neither the answer nor fact finding can close gets an `Unknown:`
    prerequisite. A missing fact becomes a fact request. When the user
-   authorizes auto-pinning, record the authorization in Precision Inputs and
+   authorizes auto-pinning (inside AFK `delivery-phase`, AFK delivery is the
+   authorization), record the authorization in Precision Inputs and
    record each obvious remaining default of a ready question as an `answered`
    entry with `Source: auto-pinned default` and its Altitude. On a closed
    grill, set `Closure` to `reopened R<N>` first.
@@ -101,8 +107,9 @@ for an L3 derivation, `$codebase-design`, the applicable stack skills,
 
 ## Invariants
 
-- An answer is recorded only from the user's words, a Brief import, or an
-  authorized auto-pin; each records its Altitude.
+- An answer is recorded only from the user's words, a Brief import, an
+  authorized auto-pin, or, inside AFK `delivery-phase`, an Autonomous
+  Decision; each records its Altitude.
 - Question ids stay stable and are never reused.
 - A Target Altitude only rises.
 - No planning item from the [Altitude Ladder](router.md#altitude-ladder)
@@ -126,7 +133,9 @@ for an L3 derivation, `$codebase-design`, the applicable stack skills,
   `missing` with the reason.
 - `human_steering_required`: the response set asks for work beyond the grill
   (implementation, a plan, a code edit) or changes a decision this grill does
-  not own; the record names the decision needed.
+  not own; the record names the decision needed. Inside AFK
+  `delivery-phase`, this exit never fires:
+  [Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Durable Handoff
 
@@ -136,4 +145,4 @@ Write the `checkpoint` entry under
 ## Stop Or Router Re-entry
 
 After `recorded`, re-enter [`router.md`](router.md). On a blocked or steering
-exit, stop.
+exit, stop; inside AFK `delivery-phase`, the steering exit never fires.

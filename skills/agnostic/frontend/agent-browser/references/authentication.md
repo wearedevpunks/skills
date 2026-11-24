@@ -100,7 +100,9 @@ agent-browser --engine chrome --session task-chrome-123 state save ./oauth-state
 
 ## Two-Factor Authentication
 
-Handle 2FA with manual intervention:
+Handle 2FA with manual intervention. Inside AFK `delivery-phase`, 2FA is missing
+access: record the exact prerequisite and keep the affected checks blocked
+instead of waiting.
 
 ```bash
 # Login with credentials

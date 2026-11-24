@@ -17,4 +17,6 @@ initial seeding or automatic full audit; updater name and four outcomes; current
 branch/PR; caller-owned acceptance and identity-bound proof reuse. Explicit full audit
 retains the upstream multi-feature source-reader/live-coordinator procedure. Source-backed
 retirement reconciles references while preserving expected product semantics. Build or
-product repair returns to its owner; maintenance edits only verifier content.
+product repair returns to its owner; maintenance edits only verifier content. Inside
+AFK `delivery-phase`, open interview choices return to the caller as Autonomous
+Decisions; only missing access blocks.

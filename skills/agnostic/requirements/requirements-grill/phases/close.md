@@ -6,9 +6,12 @@ Enter only when the router selected this gate:
 
 - route row 15: the [Close Guard](router.md#close-guard) passes: every
   branch is settled at its Target Altitude or parked at a named Altitude with
-  the user's reason; or
+  the user's reason (inside AFK `delivery-phase`, the decision's evidence);
+  or
 - route row 7: current evidence holds the user's reply to a pending
-  confirmation or closure request, with no new decision content.
+  confirmation or closure request, with no new decision content; inside AFK
+  `delivery-phase`, the confirmation and closure Autonomous Decisions are
+  that reply ([Inside AFK Delivery](../SKILL.md#inside-afk-delivery)).
 
 ## Inputs
 
@@ -37,9 +40,14 @@ only confirmation and closure.
       the status file and log;
    3. set confirmation to `pending` and ask the user to confirm shared
       understanding.
+   Inside AFK `delivery-phase`, run sub-step 1 only; `show-me` is `not due`,
+   and the confirmation and closure Autonomous Decisions replace the ask.
 3. **Record the reply.** Set confirmation to `confirmed` only on the user's
    explicit words, and quote them. When the same reply explicitly closes the
-   grill, continue to step 4; otherwise ask for explicit closure.
+   grill, continue to step 4; otherwise ask for explicit closure. Inside AFK
+   `delivery-phase`, set `confirmed` on the confirmation Autonomous Decision,
+   record the decision in place of the quote, and continue to step 4 on the
+   closure Autonomous Decision.
 4. **Close.** On explicit closure:
    1. write the log Closure section and set the status `Closure` line to
       `closed R<N>`;
@@ -61,14 +69,16 @@ understanding), wiki synthesis on explicit closure.
 
 ## Invariants
 
-- Confirmation and closure come only from the user's explicit words.
+- Confirmation and closure come only from the user's explicit words, or,
+  inside AFK `delivery-phase`, from recorded Autonomous Decisions.
 - Close records no decision; a correction re-enters through `checkpoint`.
 - Wiki synthesis runs only after explicit closure.
 
 ## Completion Evidence
 
 - the Close Guard check result
-- confirmation state with the user's quoted words
+- confirmation state with the user's quoted words, or the recorded
+  Autonomous Decisions inside AFK `delivery-phase`
 - on closure: the log Closure section, wiki pages written, and the
   `$create-architecture` handoff
 
@@ -83,6 +93,9 @@ understanding), wiki synthesis on explicit closure.
   names the failing branch.
 - `human_steering_required`: the reply asks for work beyond the grill; the
   record names the decision needed.
+
+Inside AFK `delivery-phase`, the two `checkpoint` exits and the steering exit
+never fire: [Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Durable Handoff
 

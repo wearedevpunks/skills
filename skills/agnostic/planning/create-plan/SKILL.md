@@ -29,6 +29,13 @@ description: Creates execution-ready `PLAN.md` artifacts by composing `grilling`
 
 Create a plan first. Never implement code in this skill.
 
+Inside AFK `delivery-phase`, every plan-shaping question (each `$grilling`
+round, response set, missing input and blocking ambiguity) becomes an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk): choose the recommended
+answer from evidence, mark its bounds, record it in the decision ledger and
+return it in the Phase Result's `changed_facts`. Ask the user nothing; only
+missing access stops planning.
+
 Before naming or rewriting domain concepts, read the canonical glossary in the
 routed `requirements-grill` status artifact. Preserve its canonical terms;
 route proposed terminology changes through `requirements-grill` instead of
@@ -89,7 +96,9 @@ silently renaming them.
 ### Default workflow
 
 1. Derive host, owner, tracker, and scope from repo state instead of assuming them.
-2. Ask only for missing high-impact inputs such as scope, goal, or backlog target.
+2. Derive high-impact inputs such as scope, goal, or backlog target from
+   evidence. Outside AFK `delivery-phase`, ask only for the ones still missing;
+   inside it, take an Autonomous Decision.
 3. Every plan-shaping question in each `$grilling` round must use the exact block: `Decision`, `Recommendation`, `Question`, `Why it matters`.
 4. Keep `$grilling`, `$parallel-research`, `$swarm-planner`, `$tdd`, and `$codebase-design` as visible inputs to one planning run; record when `$parallel-research`, `planning-discovery`, or `plan-reviewer` is used or intentionally skipped because the work is not split-friendly or subagents are unavailable.
 5. Build the plan's Wiki Context before task synthesis. Resolve the wiki

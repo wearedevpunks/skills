@@ -26,5 +26,6 @@ contracts; these remain the sole owners of worker returns and gate outcomes.
    [Phase Result](context-continuity.md#common-phase-result). Resume checks current
    authority and mutation proof before doing any remaining work.
 
-Completion: dependent blocking, independent progress, scope custody, new evidence
-or exact human boundary and next action are recoverable from durable pointers.
+Completion: dependent blocking, independent progress, scope custody, new
+evidence or the missing-access boundary, the Autonomous Decisions taken and the
+next action are recoverable from durable pointers.

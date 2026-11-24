@@ -47,7 +47,10 @@ above the reply. When the host is T3 Code, it is the surface for every
    again at 390px.
 2. Call `html_render` with the preview's `contentHeight` and a short title.
 3. Write the reply below it. The reply adds what the page leaves out: the
-   textual conclusion, the questions, and the next step.
+   textual conclusion, the questions, and the next step. Inside AFK
+   `delivery-phase`, it lists the
+   [Autonomous Decisions](../../delivery-phase/SKILL.md#afk) taken in place of
+   questions.
 
 Completion: `html_render` returned success, and the reply carries the textual
 conclusion.

@@ -44,7 +44,9 @@ For the accepted in-scope branches require:
 - closed decisions, explicit shared-understanding confirmation, grounded
   technical branches, and no unanswered material question or open decision;
   percentages, timestamps, a candidate, or an `answered` label alone do not prove
-  closure;
+  closure. Inside AFK `delivery-phase`, a confirmation and closure recorded as
+  [Autonomous Decisions](../../delivery-phase/SKILL.md#afk) in the grill log
+  Closure section is explicit;
 - matching current status, durable decisions, glossary terms, relationships,
   axioms, and explicit supersession; preserve stable `Q<N>` IDs and distinguish
   superseding entries by their anchors;
@@ -62,6 +64,8 @@ observed current behavior or accepted design; neither proves the other.
 
 Track source disposition truthfully: `accepted`, `superseded`, `parked`, or
 `unknown`. A candidate is `unknown` acceptance, never accepted by the compiler.
+A grill log entry with `Source: autonomous decision` is `accepted`; keep its
+in-bounds or out-of-bounds mark and its `Evidence:` beside the decision.
 Preserve explicit replacement links for superseded decisions. A missing version
 or rationale that was never provided is `not recorded`, not an invented value
 or automatic blocker. Required missing evidence, contradictions, or a newly

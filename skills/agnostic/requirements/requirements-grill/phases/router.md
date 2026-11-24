@@ -31,7 +31,9 @@ Inspect, in authority order:
 1. current direct evidence: the user's current message (answers, parks,
    corrections, confirmation, closure, auto-pin authorization, scope
    direction), a compile gap that `create-architecture` returns with its
-   Altitude, and code evidence;
+   Altitude, and code evidence; inside AFK `delivery-phase`, the agent's
+   Autonomous Decisions stand in for the user's message
+   ([Inside AFK Delivery](../SKILL.md#inside-afk-delivery));
 2. fresh workflow-native artifacts: the status file, the log, the Brainstorm
    Brief, and the Fog graph;
 3. the latest Gate Outcomes entry of each gate in the status file;
@@ -67,7 +69,8 @@ Each branch has exactly one Target Altitude and one Settled Altitude.
   branch. A branch becomes code-bearing when an accepted answer has a code
   consequence (it names or changes code, a schema, a contract, configuration,
   or a runtime path); its Target Altitude then rises to L3. A Target Altitude
-  only rises; less depth needs a user park at a named Altitude.
+  only rises; less depth needs a user park at a named Altitude (inside AFK
+  `delivery-phase`, an out-of-bounds Autonomous Decision park).
 - **Settled Altitude**: the deepest Altitude at which every question of the
   branch, at that Altitude and above, is answered or parked, and the latest
   checkpoint's Expand and Flow Lenses passes added no question to the branch
@@ -91,7 +94,8 @@ The Close Guard passes when all of these hold:
 
 - no question is `unanswered`;
 - every active branch is settled at its Target Altitude, or parked at a named
-  Altitude with the user's reason recorded;
+  Altitude with the user's reason recorded (inside AFK `delivery-phase`, the
+  Autonomous Decision's evidence);
 - every auto-pinned default records its Altitude;
 - every code-bearing branch is grounded with no open technical decision;
 - every round's Required Calls record is complete; rounds before a recorded
@@ -122,6 +126,10 @@ output.
 | 15 | No open question exists and the Close Guard passes | [`close.md`](close.md) |
 | 16 | No open question exists and the Close Guard fails | blocked `grill_state_conflict` |
 
+Inside AFK `delivery-phase`, rows 1, 2, 3, 8, 9, and 16 never stop for the
+user: [Inside AFK Delivery](../SKILL.md#inside-afk-delivery) settles each as
+an Autonomous Decision, and the router re-enters.
+
 In the [Required Calls record](../references/artifact-output.md#required-calls),
 the round lines of R<N> are `grilling`, `wait-what`, and `show-me`; its
 checkpoint lines are `domain-modeling`, `flow-lenses`, `expand`, and
@@ -147,3 +155,8 @@ blocker, return that blocked outcome and stop instead of loading the gate.
   question ids it holds; a restated gate blocker names the missing evidence.
 - gate: load exactly that flat phase file; sibling gates stay outside the
   current trace.
+
+Inside AFK `delivery-phase`, the terminal `human_steering_required`, the
+checkpoint outputs, and the `grill_target_unclear` and `grill_state_conflict`
+outputs ask nothing and stop nowhere:
+[Inside AFK Delivery](../SKILL.md#inside-afk-delivery) settles them.

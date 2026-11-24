@@ -23,9 +23,10 @@ They guess based on code alone. You **cannot** and **must NOT** fix bugs this wa
    - **If reproduction is straightforward** (e.g., a single CLI command, a curl request, a simple script): write and run an ad hoc reproduction script yourself. Tailor it to the runtime — Playwright/Puppeteer for browser bugs, a Node/Python/shell script for backend bugs, etc.
    - **Otherwise**: ask the user to reproduce it. Provide clear, numbered steps. Remind them to restart apps/services if instrumented files are cached or bundled. Offer: "If you'd like me to write a reproduction script instead, let me know."
    - Once the user confirms a reproduction pathway (manual or automated), reuse it for all subsequent iterations without re-asking.
+   - Inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery).
 4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence
 5. **Fix only with 100% confidence** and log proof; keep instrumentation in place for verification
-6. **Verify with logs**: ask user to run again, compare before/after logs with cited entries
+6. **Verify with logs**: ask user to run again (inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery)), compare before/after logs with cited entries
 7. **If logs prove success**: continue to step 8. **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
 8. **After confirmed success**: explain the problem and provide a concise summary of the fix (1-2 lines)
 9. **Clean up on every exit**, including a blocked one: remove instrumentation when the Cleanup rule applies (see Cleanup section), then stop the logging server (see Logging STEP 6)
@@ -36,6 +37,23 @@ They guess based on code alone. You **cannot** and **must NOT** fix bugs this wa
 - ALWAYS rely on runtime information + code (never code alone)
 - Keep instrumentation until the Cleanup rule removes it
 - Fixes often fail; iteration is expected and preferred. Taking longer with more data yields better, more precise fixes
+
+## Inside AFK Delivery
+
+Inside AFK `delivery-phase` (usually through `debugging-phase`), every user
+question is an [Autonomous Decision](../delivery-phase/SKILL.md#afk); ask
+nothing:
+
+- **Reproduce (step 3):** write and run the reproduction yourself through
+  `$verify-behavior` `reproduce` on the Owned Stack, or an ad hoc script when
+  that fits better.
+- **Verify (step 6):** rerun that reproduction yourself and compare
+  before/after logs.
+- **Read logs (STEP 4):** read the log path after your own run completes. An
+  empty or missing log means the reproduction failed: fix it and rerun it
+  yourself.
+- **Logging server fails to start (STEP 0):** stop and report the failure to
+  the caller as the exact blocker.
 
 ---
 
@@ -66,7 +84,7 @@ Capture and remember these values:
 - **Log path**: The `logPath` value (NDJSON logs are written here)
 - **Session ID**: The `sessionId` value (unique identifier for this debug session)
 
-If the server fails to start, STOP IMMEDIATELY and inform the user.
+If the server fails to start, STOP IMMEDIATELY and inform the user (inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery)).
 
 - DO NOT PROCEED with instrumentation without valid logging configuration.
 - The server is idempotent — if one is already running, it returns the existing server's info instead of starting a duplicate. Before the command, check for `debug-server.lock` in the log path's directory: a lock naming a reachable server means the command reuses that server, and STEP 6 leaves it running.
@@ -133,10 +151,10 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 ### STEP 4: Read logs after user runs the program
 
-- After the user runs the program and confirms completion in their interface, do NOT ask them to type "done"; then use the file-read tool to read the file at the **log path**.
+- After the user runs the program and confirms completion in their interface, do NOT ask them to type "done"; then use the file-read tool to read the file at the **log path**. Inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery).
 - The log file will contain NDJSON entries (one JSON object per line) from your instrumentation.
 - Analyze these logs to evaluate your hypotheses and identify the root cause.
-- If log file is empty or missing: tell user the reproduction may have failed and ask them to try again.
+- If log file is empty or missing: tell user the reproduction may have failed and ask them to try again. Inside AFK `delivery-phase`, see [Inside AFK Delivery](#inside-afk-delivery).
 
 ### STEP 5: Keep logs during fixes
 

@@ -1,6 +1,8 @@
 # Wiki Output From Grill Artifacts
 
-Use this reference only after the user explicitly closes the grill.
+Use this reference only after the user explicitly closes the grill, or,
+inside AFK `delivery-phase`, after the closure Autonomous Decision
+([Inside AFK Delivery](../SKILL.md#inside-afk-delivery)).
 
 ## Inputs
 

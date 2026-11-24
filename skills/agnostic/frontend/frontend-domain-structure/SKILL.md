@@ -46,7 +46,7 @@ When the scope still has `modules/<domain>` with product terms, `composition/<su
    the agnostic reference.
 7. Complete in the requested mode.
    - For a review or diagnostic request, return findings and a recommended target structure without editing files.
-   - Only change files when the user explicitly asks to create, refactor, or implement; then make the smallest coherent move and validate with focused behavior tests, a new run of the `frontend-layers` lint rules, and the narrowest relevant static checks. Move each touched behavior out of a flat technical bucket, such as `lib/`, `utils/` or `helpers/`, to its invariant owner, and create its entrypoint before you update consumers.
+   - Only change files when the user explicitly asks to create, refactor, or implement, or when the invoking implementation (such as an `implement-spec` task) assigns that work; then make the smallest coherent move and validate with focused behavior tests, a new run of the `frontend-layers` lint rules, and the narrowest relevant static checks. Move each touched behavior out of a flat technical bucket, such as `lib/`, `utils/` or `helpers/`, to its invariant owner, and create its entrypoint before you update consumers.
 
 ## Completion
 

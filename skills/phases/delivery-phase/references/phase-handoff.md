@@ -105,6 +105,6 @@ evidence under the transition rules in [review.md](../phases/review.md). A clean
 handoff links the Pass Report, final changes and passing required checks.
 
 For `human_steering_required` (missing access only), store the blocked action,
-evidence, and required decision in the pointed durable state artifact. Keep only its pointer and exact
-blocker in the Delivery Handoff. The state remains terminal until current user
-direction resolves the required decision.
+evidence, and required access in the pointed durable state artifact. Keep only
+its pointer and exact blocker in the Delivery Handoff. The state remains
+terminal until that access is present.

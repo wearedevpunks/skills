@@ -111,7 +111,7 @@ Forbidden debt language:
 - "follow-up cleanup"
 - vague TODOs without an owner, decision, and blocker
 
-Use the ledger only for debt that cannot be resolved inside the current run because it is outside the active goal, requires a human product/scope decision, or is blocked by an external dependency.
+Use the ledger only for debt that cannot be resolved inside the current run because it is outside the active goal, requires a product/scope decision (human standalone; out-of-bounds Autonomous Decision inside AFK `delivery-phase`), or is blocked by an external dependency.
 
 Each item file records:
 
@@ -120,7 +120,11 @@ Each item file records:
 - decision needed or external blocker
 - owner or next action
 
-If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision, stop and hand the human the `$requirements-phase` command with a brief: the exact debt, the decision it needs and current source pointers. Resume execution from its recorded outcome, applying any accepted scope change before continuing.
+If the debt is inside the active goal, fix it before advancing. If the debt is outside the active goal but affects the implementation decision: standalone, stop and hand the human the `$requirements-phase` command with a brief: the exact debt, the decision it needs and current source pointers. Resume execution from its recorded outcome, applying any accepted scope change before continuing.
+Inside AFK `delivery-phase`, take an out-of-bounds
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) instead, per
+[Inside AFK Delivery](../SKILL.md#inside-afk-delivery): route the accepted scope
+change through Requirements Phase and continue.
 
 Create an item file only for debt that must survive the run.
 
@@ -155,7 +159,7 @@ Create an item file only for debt that must survive the run.
 - Keep an operator-visible execution board in the conversation so progress is obvious.
 - Keep scope discipline. Out-of-scope findings that do not affect the current implementation go to `IMPLEMENTATION-NOTES.md`, not silent scope creep.
 - Never leave sloppy debt, TODO placeholders, temporary compromises, or "later" implementation notes for in-goal work.
-- When unclear debt affects the current implementation and the spec, plan and backlog leave it open, apply the section 5 `$requirements-phase` handoff.
+- When unclear debt affects the current implementation and the spec, plan and backlog leave it open, apply section 5: the `$requirements-phase` handoff standalone, the out-of-bounds Autonomous Decision inside AFK `delivery-phase`.
 - In `provider-task` mode, load `write-backlog`'s
   [delivery-status.md](../../write-backlog/references/delivery-status.md) branch
   for lifecycle facts. When work starts, becomes blocked, gains a pull request,
@@ -338,6 +342,7 @@ Before reporting back:
 
 Summarize:
 
+- Autonomous Decisions, out-of-bounds first
 - implementation status
 - validation results
 - key deviations or surprises
@@ -345,7 +350,7 @@ Summarize:
 - runtime-validation evidence and exact blockers
 - behavior-verification evidence and exact blockers
 - manual review checklist
-- blocked tasks needing input
+- blocked tasks with their exact external blocker
 - which spec-linked tech-debt item files were created or updated
 
 ## 14. Return implementation to delivery

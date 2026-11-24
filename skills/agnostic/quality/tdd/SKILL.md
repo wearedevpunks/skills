@@ -75,6 +75,11 @@ RIGHT (vertical):
 
 ### 1. Planning
 
+Inside AFK `delivery-phase`, the plan's `tdd_target` and task contract are the
+confirmed interface and behavior priority. Take every remaining choice as an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk) and ask nothing.
+Standalone use confirms with the user as below.
+
 Before writing any code:
 
 - [ ] Decide whether the work is behavior-changing and therefore `tdd_status: required`

@@ -64,7 +64,9 @@ Prerequisites:
 
 Altitude: L1 | L2 | L3
 
-Source: user | Brainstorm Brief | auto-pinned default
+Source: user | Brainstorm Brief | auto-pinned default | autonomous decision (in-bounds | out-of-bounds)
+
+Evidence: <artifacts and evidence behind an autonomous decision>
 
 Question:
 <question asked>
@@ -76,8 +78,12 @@ Rejected alternatives:
 - <alternative and reason, when recorded>
 ```
 
-Omit `Source:` for a user answer and `Rejected alternatives:` when none is
-recorded.
+Omit `Source:` for a user answer, `Evidence:` for any source other than
+`autonomous decision`, and `Rejected alternatives:` when none is recorded.
+An `autonomous decision` entry is an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) made inside AFK
+`delivery-phase` ([Inside AFK Delivery](../SKILL.md#inside-afk-delivery)); it
+counts as an accepted answer.
 
 For a technical question, preserve the grounding and accepted scope beside the decision:
 
@@ -132,7 +138,10 @@ Axioms carry no id; `create-spec` carries each checkable axiom into a Spec
 Invariant.
 
 On explicit closure, add a `## Closure` section with the quoted
-shared-understanding confirmation, the quoted closure, and the handoff.
+shared-understanding confirmation, the quoted closure, and the handoff. Inside
+AFK `delivery-phase`, the section records the confirmation and closure
+Autonomous Decisions, each with `Source:` and `Evidence:`, in place of the
+quotes.
 
 ## Status File Contract
 
@@ -147,6 +156,9 @@ shared-understanding confirmation, the quoted closure, and the handoff.
 | <branch> | parked | L1 | none | <direction> | — | at L1: <user's reason> |
 ```
 
+Inside AFK `delivery-phase`, a park reason is the Autonomous Decision's
+evidence.
+
 `Target altitude` and `Settled altitude` follow the
 [Altitude Ladder](../phases/router.md#altitude-ladder). A Settled Altitude
 reached through precision inputs names its evidence anchors.
@@ -159,7 +171,7 @@ reached through precision inputs names its evidence anchors.
 - Brief import: <brief path> sha256 <hash> R<N> | none
 - Fog: <Fog identity> | not supplied
 - Altitude upgrade: R<N> | not needed
-- Auto-pin: authorized R<N> | not authorized
+- Auto-pin: authorized R<N> | authorized R<N> (AFK delivery) | not authorized
 - Conservative closure: requested R<N> | not requested
 - Compile gaps: <gap summary> -> Q<N> | none
 ```
@@ -217,7 +229,8 @@ requested | reported`.
 `wayfinder` lines; `checkpoint` writes the `domain-modeling`, `flow-lenses`,
 `expand`, and `level derivation` lines. A call that could not run reads
 `<call>: R<N> missing — <reason>`. A round's record is complete when every
-line is `run` or `not due`.
+line is `run` or `not due`. Inside AFK `delivery-phase`, the `wait-what` and
+`show-me` lines read `<call>: R<N> not due — AFK delivery`.
 
 ### Technical Grounding
 
@@ -254,7 +267,9 @@ Each gate exit replaces that gate's entry:
 
 UI evidence does not apply. The router treats `Next suggested route` as its
 lowest authority. A `human_steering_required` entry names the blocker, the
-evidence, the proposed action, and the decision the user must make.
+evidence, the proposed action, and the decision the user must make. Inside AFK
+`delivery-phase`, no gate writes that entry: the decision is an out-of-bounds
+Autonomous Decision in the log.
 
 ### Completion
 
@@ -265,7 +280,8 @@ Completion percentages are working signals:
 - `85-99%`: mostly closed; final decisions, a level below the Target
   Altitude, or shared-understanding confirmation remain
 - `100%`: the branch is settled at its Target Altitude, no question is
-  open, shared understanding is explicitly confirmed, and a code-bearing
+  open, shared understanding is explicitly confirmed (inside AFK
+  `delivery-phase`, by a recorded Autonomous Decision), and a code-bearing
   branch is grounded with no open technical decision
 - `parked`: preserved for later at a named Altitude, out of current scope
 

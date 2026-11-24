@@ -17,6 +17,8 @@ Execute every listed skill; keep this reference focused on sequencing and disclo
 ## Graph map
 
 1. Read current repo state and derive as much context as possible before asking.
+   Inside AFK `delivery-phase`, each remaining question becomes an
+   [Autonomous Decision](../delivery-phase/SKILL.md#afk); ask the user nothing.
 2. Reduce ambiguity before task synthesis:
    - see [references/grill-ambiguity.md](references/grill-ambiguity.md)
 3. Classify architecture applicability and persist convergence views when required:

@@ -13,7 +13,7 @@ Use when a workflow needs durable links for approved design assets, prototype sc
    - backlog attachments preferred when the backlog provider supports durable files.
 2. Fall back to repo-provider storage.
    - Use repo-provider assets when backlog attachments are unavailable, size-limited, visibility-mismatched, or unsuitable for PR/review reuse.
-3. Select provider from `.devpunks/settings.json`; if absent, infer only from existing repo/provider hints and surface conflicts.
+3. Select provider from `.devpunks/settings.json`; if absent, infer only from existing repo/provider hints and surface conflicts. Inside AFK `delivery-phase`, settle a provider conflict as an [Autonomous Decision](../delivery-phase/SKILL.md#afk).
 4. Load exactly one provider reference:
    - GitHub: [references/github.md](references/github.md)
    - GitLab: [references/gitlab.md](references/gitlab.md)

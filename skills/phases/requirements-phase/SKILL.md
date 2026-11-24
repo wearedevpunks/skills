@@ -26,10 +26,23 @@ workflow or a Finder lifecycle owner.
 
 ## Inside Delivery
 
-When `delivery-phase` runs this phase, it stays AFK: every grill round and
-child skill question becomes an Autonomous Decision under
-[delivery-phase AFK](../delivery-phase/SKILL.md#afk), recorded in the grill
-log, with no question tool.
+Inside AFK `delivery-phase`, this phase runs AFK and passes AFK to every
+child skill. Each pending user question, in this phase or in a child skill,
+becomes an [Autonomous Decision](../delivery-phase/SKILL.md#afk), with no
+question tool:
+
+- `requirements-grill` settles its rounds, parks, glossary questions,
+  confirmation, and closure by its
+  [Inside AFK Delivery](../requirements-grill/SKILL.md#inside-afk-delivery)
+  map and logs each decision in the grill log.
+- `create-plan` and `write-backlog` settle their own questions by their AFK
+  carve-outs.
+- A missing provider projection boundary is an in-bounds Autonomous Decision:
+  project the accepted specification's scope.
+
+Only missing access stops this phase for the human: a configured provider
+that fails, or missing credentials or permissions, returns the blocked
+backlog delta of step 8.
 
 ## Workflow
 
@@ -38,11 +51,13 @@ log, with no question tool.
 2. Read the matching `requirements-grill` status before its log. Summarize
    accepted, rejected, superseded, parked, and unresolved branches. If no
    matching status exists, start the bounded Requirements Grill directly.
-3. While material decisions remain open, use `requirements-grill` for the HITL
-   interview. Research recommendations are evidence, not decisions. Complete
+3. While material decisions remain open, use `requirements-grill` for the
+   interview: HITL when standalone, AFK inside delivery. Research
+   recommendations are evidence, not decisions. Complete
    this step when every material branch is settled at its Target Altitude or
    explicitly parked.
-4. **Compile wave.** When the user confirms shared understanding and the
+4. **Compile wave.** When the user confirms shared understanding (inside
+   delivery, the grill's confirmation Autonomous Decision) and the
    remaining branches are closed or explicitly parked, start three lanes at
    once from the same grill status and log. The architecture lane is the
    critical path and runs in this agent; the other two run in subagents.
@@ -80,9 +95,10 @@ log, with no question tool.
    local-only artifacts return the compiler's atomic `spec-not-ready` result.
 7. **Projection wave.** After `spec-written`, start both lanes at once:
    - **Backlog lane** (subagent): honor the caller's accepted provider
-     projection boundary; missing authority returns a blocked backlog delta
-     while retaining the compiled pair. Pass the verified stable blob URL and
-     current provider evidence to `write-backlog`. Write Backlog derives the
+     projection boundary; a missing boundary returns a blocked backlog delta
+     while retaining the compiled pair (inside delivery, an Autonomous
+     Decision by [Inside Delivery](#inside-delivery)). Pass the verified
+     stable blob URL and current provider evidence to `write-backlog`. Write Backlog derives the
      Stories, Tasks, and blocker graph supported by the accepted result. With
      no prior Finder projection, it may reuse, enrich, or create the
      accepted placement through Product Area, Initiative, and Epic before
@@ -91,14 +107,16 @@ log, with no question tool.
      Each Task is atomic, independently
      ownable, and understandable from its Story and stable specification.
      With no backlog provider configured, this lane does not start.
-   - **Plan lane** (this agent, since `create-plan` may grill the user): invoke
+   - **Plan lane** (this agent, since `create-plan` may grill the user or,
+     inside delivery, settle Autonomous Decisions): invoke
      `create-plan` with the retained pair and the discovery lane's report. It
      runs every step before its task graph while the backlog lane runs.
 8. **Plan join.** Route on the Write Backlog result. A written result resumes
    `create-plan` at its task graph with that result. With no backlog provider,
    `create-plan` continues at once with `task_identity_mode: planning-only`.
-   A blocked result (a configured provider failed or authority is missing)
-   stops this phase with no plan and returns the exact blocked delta.
+   A blocked result (a configured provider failed, or credentials,
+   permissions, or a standalone projection boundary are missing) stops this
+   phase with no plan and returns the exact blocked delta.
    Require `create-plan` to commit and push or explicitly retain `PLAN.md`,
    then verify its immutable blob URL resolves bytes matching the plan. Complete
    this step when the retained plan is verified or the blocked result returns.

@@ -114,3 +114,12 @@ row in the final column instead of copying its evidence.
 | Date | Feedback | Changes |
 |------|----------|---------|
 | | | |
+
+## Autonomous Decisions
+
+Inside AFK `delivery-phase`, one row per
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk), out-of-bounds rows first.
+
+| Question | Answer | Evidence | Bounds | Reverse by |
+|----------|--------|----------|--------|------------|
+| | | | | |

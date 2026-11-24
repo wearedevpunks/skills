@@ -24,6 +24,9 @@ written to the project wiki before the run can complete.
    project-wiki path before returning.
 
 The report may close factual uncertainty. It must not silently choose product
-direction or impersonate a human decision-maker. A later `docs-ingest-phase`
+direction or impersonate a human decision-maker. Inside AFK `delivery-phase`,
+list each unresolved product decision with a recommended answer and its
+evidence; the caller settles it as an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk). A later `docs-ingest-phase`
 run may project reusable knowledge from this report, but that optional curation
 step does not replace the report or block research completion.

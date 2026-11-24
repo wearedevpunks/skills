@@ -53,7 +53,7 @@ Done when every part of the intended outcome has durable evidence, with no dupli
 
 ## Overlapping writes
 
-Before reconciling content that overlaps a canonical page, re-read the page's current state from disk and Git. Apply your change on top of that state and preserve every concurrent change. When both changes cannot stand, leave the page as found and report an explicit conflict that names the page, both changes and the decision needed.
+Before reconciling content that overlaps a canonical page, re-read the page's current state from disk and Git. Apply your change on top of that state and preserve every concurrent change. When both changes cannot stand, leave the page as found and report an explicit conflict that names the page, both changes and the decision needed. Inside AFK `delivery-phase`, settle the conflict as an [Autonomous Decision](../../delivery-phase/SKILL.md#afk) by [Inside AFK Delivery](../SKILL.md#inside-afk-delivery) and apply the chosen change.
 
 Health work reads Project Verifier assets only; the [Project Verifier boundary](../SKILL.md#project-verifier-boundary) governs them.
 

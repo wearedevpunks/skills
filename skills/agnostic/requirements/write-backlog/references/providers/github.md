@@ -34,7 +34,7 @@ the same connection; its node ID and login are the authenticated user.
 Stable provider identity plus durable wiki identity is the reuse key. A title
 match, standalone provenance URL, incomplete search, ambiguous candidate,
 conflicting identity, wrong repository, or unsupported parent relation returns
-exact steering and zero writes.
+the exact gap and zero writes.
 
 ## Initialization Metadata, Fields, and Views
 

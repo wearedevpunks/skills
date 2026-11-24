@@ -40,8 +40,8 @@ the checkpoint passes, in the phase that passes it:
 | `review_due` persisted | review started |
 | Pass Report retained | review result: Pass Report path, `route.primary`, open finding count |
 | Route opens repair or debugging | work resumed, with the routed finding ids |
-| `human_steering_required` or another exact blocker | blocked, with the decision or blocker needed |
-| User direction resolves a blocker | work resumed |
+| `human_steering_required` (missing access) or another exact blocker | blocked, with the missing access or blocker named |
+| Access restored or blocker cleared | work resumed |
 | Closeout PR handover read back | pull request state `ready`; the requested reviewer, or who must approve when no request was sent |
 | Merge, staging or production observed | merge, staging or production evidence |
 

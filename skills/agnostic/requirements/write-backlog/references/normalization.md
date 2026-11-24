@@ -46,7 +46,9 @@ For each finding, record the stable identities, owning authority, observed
 state, intended state, drift class, dependent objects, and proposed action.
 Ambiguous identities, incomplete searches, or conflicting authorities produce
 zero writes. A wiki/provider disagreement about product meaning requires a new
-human decision persisted in the wiki before another attempt.
+human decision persisted in the wiki before another attempt. Inside AFK
+`delivery-phase`, that decision is an out-of-bounds
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) the caller persists.
 
 Automatically repair only an unambiguous additive mapping or stale operational
 field after complete preflight proves all of these conditions:

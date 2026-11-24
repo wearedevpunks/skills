@@ -48,6 +48,7 @@ Run these reusable skills in order:
 ```text
 writing-fragments
   -> present fragments and confirm sufficiency with user
+     (inside AFK delivery-phase: Autonomous Decision)
   -> writing-beats
   -> writing-shape
   -> final public page write/merge
@@ -67,7 +68,10 @@ When `docs-ingest-phase` orchestrates these skills, call each one in docs-ingest
 After inspecting existing fragments or generating fresh fragments, present the
 current fragments to the user before running beats or shape. Ask whether they
 are sufficient to continue. If the user says more guidance is needed, ask for
-the missing guidance and revise `fragments.md` before continuing.
+the missing guidance and revise `fragments.md` before continuing. Inside AFK
+`delivery-phase`, the checkpoint is an
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) by
+[Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Durable Writer Artifacts
 

@@ -20,8 +20,8 @@ create-spec -> write-backlog`, then `create-plan`. Pass optional Finder context
 only when supplied. Reuse matching current retained artifacts; unsettled
 decisions return to `requirements-grill` before either compiler runs. A missing
 or stale plan with a current pair and projection returns to Requirements Phase
-for its `create-plan` step only. Full Delivery starts Requirements Phase and
-other modes propose it, per
+for its `create-plan` step only. Full Delivery starts Requirements Phase;
+other modes name it as the next phase in their stop report and ask nothing, per
 [Confirm to continue](../../ask-hi/references/phase-graph.md#confirm-to-continue).
 Requirements Phase run from delivery stays [AFK](../SKILL.md#afk): each grill
 question takes its recommended answer, recorded in the grill log as an

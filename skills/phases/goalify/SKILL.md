@@ -26,7 +26,10 @@ Include only:
 - context: exact paths, issues, URLs, logs, artifacts, and constraints
 - workflow: terse checkpoints with named skills, tools, or phases from context
 - proof: commands, scenarios, artifacts, logs, or other done evidence
-- stop: done condition, early-stop blocker, and final report expectation
+- stop: done condition, early-stop blocker, and final report expectation; for
+  a delivery goal, the early stop is missing access only and every other
+  question is an [Autonomous Decision](../delivery-phase/SKILL.md#afk) under
+  AFK `delivery-phase`
 
 Keep it pointer-heavy, no secrets, no vague "make it work", and <= 4,000
 characters after `/goal`.

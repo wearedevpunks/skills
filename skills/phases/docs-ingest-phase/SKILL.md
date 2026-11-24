@@ -45,8 +45,28 @@ Completion of one path does not imply loading another path.
 - Classify by audience first: internal/project/operator docs are private/internal; reader/adopter/scaffold-recipient docs are public.
 - Use the repo's existing private and public docs surfaces. Do not create a second routed docs surface or hardcode Harness-specific route names in other repos.
 - If both paths apply, prefer private/internal first when source capture, route policy, metadata, or durable writer artifact location is unresolved.
-- Public docs work that runs the writer flow must include the fragment sufficiency checkpoint from [phases/public-docs.md](phases/public-docs.md).
+- Public docs work that runs the writer flow must include the fragment sufficiency checkpoint from [phases/public-docs.md](phases/public-docs.md); inside AFK `delivery-phase` it settles by [Inside AFK Delivery](#inside-afk-delivery).
 - After a path completes, report enough state for future resume: selected path, inputs processed, docs written or skipped, validation, blockers, and next path if any.
+
+## Inside AFK Delivery
+
+Inside AFK `delivery-phase`, every docs-ingest gate settles as an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk), recorded by that
+contract, and the run continues:
+
+- **Scope and audience**: take the docs goal, source artifacts and target
+  reader from the delivery spec, diff and review output. In-bounds.
+- **Setup authority**: adopting an existing wiki tree is in-bounds. Setting up
+  a new wiki at the destination that project guidance names is out-of-bounds.
+  With no named destination, write the gap report, record it as docs follow-up
+  debt and return the outcome to delivery without a stop.
+- **Destination and spec folder**: take the candidate the delivery spec and
+  project guidance name. In-bounds.
+- **Fragment sufficiency checkpoint**: judge the fragments against the delivery
+  spec and diff, revise `fragments.md` from that evidence and continue to beats
+  and shape. In-bounds.
+- **Health conflicts**: apply the change the accepted spec supports.
+  Out-of-bounds when it changes accepted product meaning.
 
 ## Project Verifier boundary
 
@@ -57,5 +77,5 @@ Treat Feature Maps as read-only navigation inputs to ordinary product and domain
 - Selected path completed and its resumable outcome was reported.
 - Router finds no docs-affecting change and reports a no-op reason.
 - A wiki contract gap blocks the selected branch and its gap report is written.
-- Required docs surface, route policy, source artifact, or user guidance is missing.
-- Public fragment sufficiency checkpoint is waiting for the user's answer.
+- Required docs surface, route policy, source artifact, or user guidance is missing. Inside AFK `delivery-phase`, missing guidance settles by [Inside AFK Delivery](#inside-afk-delivery).
+- Standalone, the public fragment sufficiency checkpoint is waiting for the user's answer.

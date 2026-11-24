@@ -48,8 +48,9 @@ never whether `ARCHITECTURE.md` is required.
   the current SPEC identity. A stored URL or local file alone is insufficient.
 - Scope includes required tracker children, acceptance criteria, constraints,
   and non-goals.
-- Required unresolved questions or missing, stale or contradictory authority
-  prevent completion. Agent-ready compiler output needs no additional spec
+- Each unresolved question takes an [Autonomous Decision](../SKILL.md#afk)
+  through Requirements Phase; missing, stale or contradictory authority still
+  prevents completion. Agent-ready compiler output needs no additional spec
   approval or review gate.
 
 ## Plan Complete

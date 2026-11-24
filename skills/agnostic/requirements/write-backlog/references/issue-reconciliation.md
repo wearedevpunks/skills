@@ -58,6 +58,8 @@ Classify the intended delta:
 Additive and stale repairs may proceed after complete preflight. Structural
 changes proceed after a `$show-me` preview. Conflicting meaning
 requires a new decision persisted in its durable source before another attempt.
+Inside AFK `delivery-phase`, that decision is an out-of-bounds
+[Autonomous Decision](../../delivery-phase/SKILL.md#afk) the caller persists.
 
 ## Partial Failure Recovery
 

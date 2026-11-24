@@ -11,7 +11,7 @@ description: Implement an agent-ready spec folder through a plan-derived Executi
 - **Entrypoint type:** public entrypoint
 - **Upstream:** current retained agent-ready `ARCHITECTURE.md` / `SPEC.md` pair and execution-ready `PLAN.md`
 - **Delegates to:** `$tdd`, `$codebase-design`, `$simplify`, and internal scoped-worker orchestration
-- **Human handoff:** a `$requirements-phase` command and brief for debt that needs a decision outside the active goal
+- **Decision handoff:** for debt that needs a decision outside the active goal, an out-of-bounds Autonomous Decision inside AFK `delivery-phase` ([Inside AFK Delivery](#inside-afk-delivery)); standalone, a `$requirements-phase` command and brief for the human
 - **Downstream:** `delivery-phase`, which runs `$review-phase` Code Review, then `$docs-ingest-phase` when the resulting spec folder should be ingested into domain knowledge
 - **Entry conditions:** existing agent-ready spec folder; route a missing or invalid `PLAN.md` to `requirements-phase`
 - **Stop conditions:** shared acceptance audit complete, final manual review checklist written, spec folder finalized, blocked work reported honestly
@@ -30,6 +30,21 @@ Before naming or rewriting domain concepts, read the canonical glossary in the
 routed `requirements-grill` status artifact. Preserve its canonical terms;
 route proposed terminology changes through `requirements-grill` instead of
 silently renaming them.
+
+## Inside AFK Delivery
+
+Inside AFK `delivery-phase`, each pending user question in this skill becomes an
+[Autonomous Decision](../delivery-phase/SKILL.md#afk). Record it in the
+`## Autonomous Decisions` table of `IMPLEMENTATION-NOTES.md` and return it in
+`changed_facts`:
+
+- Debt that needs a product/scope decision outside the active goal: take an
+  out-of-bounds Autonomous Decision, route the accepted scope change through
+  Requirements Phase and continue.
+- Blocked tasks: report each with its exact external blocker. Only missing
+  access stops for the human.
+
+Standalone use keeps the human `$requirements-phase` handoff.
 
 ## Execution responsibilities
 
@@ -81,7 +96,7 @@ Provider mechanics remain inside `write-backlog`.
    cumulative proof and final closure remain mandatory.
 6. Use `$codebase-design` vocabulary while reviewing each worker change: interface, seam, adapter, depth, leverage, locality, and test surface.
 7. Resolve implementation debt as soon as it appears. Do not leave "later" work, TODOs, temporary compromises, or vague follow-up debt.
-8. If a debt item needs a product/scope decision outside the active goal, stop and hand the human the `$requirements-phase` command with a brief, per `references/lifecycle.md` section 5.
+8. If a debt item needs a product/scope decision outside the active goal: standalone, stop and hand the human the `$requirements-phase` command with a brief, per `references/lifecycle.md` section 5; inside AFK `delivery-phase`, take an out-of-bounds Autonomous Decision and continue ([Inside AFK Delivery](#inside-afk-delivery)).
 9. Keep provider Task bodies owner-ready. Route lifecycle facts through
    `write-backlog` instead of rewriting Epic, Story, or Task bodies with
    execution handoff detail.

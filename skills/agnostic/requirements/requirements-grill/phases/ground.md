@@ -120,7 +120,8 @@ evidence is the anchors and fact records in the Technical Grounding table.
   gap cannot be read or names another topic; the record names it.
 - `human_steering_required`: a precision input requests work beyond the grill,
   such as implementation, a plan, or a code edit; the record names the
-  decision needed.
+  decision needed. Inside AFK `delivery-phase`, this exit never fires:
+  [Inside AFK Delivery](../SKILL.md#inside-afk-delivery).
 
 ## Durable Handoff
 
@@ -130,4 +131,5 @@ Write the `ground` entry under
 ## Stop Or Router Re-entry
 
 After a `complete` exit, re-enter [`router.md`](router.md). On a blocked or
-steering exit, stop.
+steering exit, stop; inside AFK `delivery-phase`, the steering exit never
+fires.
