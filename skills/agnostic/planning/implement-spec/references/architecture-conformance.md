@@ -13,9 +13,9 @@ no owner, edge, criterion, wave, seam, migration, or task contract.
 
 A change to accepted architecture decisions pauses dependent execution and
 returns the exact gap to Requirements Phase / `requirements-grill`; refresh the
-pair before `$create-plan`. Execution-only contract changes within accepted bounds
-route through `$create-plan` on the same spec folder for architecture convergence
-and plan review. Reload the amended plan before dispatching more architecture-bearing work.
+pair and plan there. Execution-only contract changes within accepted bounds
+route to `$requirements-phase` as plan-only input: its `$create-plan` step on the
+same spec folder runs architecture convergence and plan review. Reload the amended plan before dispatching more architecture-bearing work.
 
 ## Load the theory
 
@@ -90,7 +90,7 @@ Evidence` in `IMPLEMENTATION-NOTES.md`. Include expected state, observed state,
 evidence, violations, public seam delta, migration delta, and verdict. A failed
 checkpoint blocks tasks consuming its unproved responsibilities. Record those
 consumers explicitly; independent eligible work continues. Repair the current wave or
-route a target-contract amendment through `$create-plan`; final closure is not
+route a target-contract amendment to `$requirements-phase` as plan-only input; final closure is not
 the first cleanup pass.
 
 ## Final closure
