@@ -24,6 +24,13 @@ After grill closure it runs that chain as parallel **lanes** that meet at
 The optional context loader is an input adapter to this phase, not a second
 workflow or a Finder lifecycle owner.
 
+## Inside Delivery
+
+When `delivery-phase` runs this phase, it stays AFK: every grill round and
+child skill question becomes an Autonomous Decision under
+[delivery-phase AFK](../delivery-phase/SKILL.md#afk), recorded in the grill
+log, with no question tool.
+
 ## Workflow
 
 1. Select the applicable input contract above. Complete entry when the direct
