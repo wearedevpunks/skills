@@ -6,8 +6,7 @@ defined in [references/ledger.md](references/ledger.md).
 
 Authority: the closed grill in `wearedevpunks/harness-intelligence`,
 `apps/wiki/content/docs/project/grilling/orchestrator-phase-grill-log.md`
-(Q1–Q48 and the R6 module decisions), its status file and brainstorm brief,
-from the retro of an 18–26 Nov 2026 coordinator thread.
+(Q1–Q48 and the R6 module decisions), its status file and brainstorm brief.
 
 Test references are source-repository provenance; reproduce with
 `node --test tests/orchestrator-phase-graph.contract.test.mjs`.
