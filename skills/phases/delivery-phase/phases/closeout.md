@@ -33,7 +33,8 @@ docs ingest or no-op, and validation are complete.
   4. Request review from the Directing Human, the person who asked for the
      change, with `gh pr edit --add-reviewer <login>` when their login is
      known and differs from the PR author; otherwise name the Directing Human
-     as merge reviewer in the report and ask nothing.
+     as merge reviewer in the report and ask nothing. An
+     [Orchestrated Track](../SKILL.md#orchestrated-track) skips this request.
   5. Read back: the Managed Region and Autonomous Decisions Block bytes match,
      `isDraft` is false, and the
      review request is present when step 4 ran.
@@ -44,7 +45,8 @@ docs ingest or no-op, and validation are complete.
 
   A write that fails for missing access selects
   [human steering](human-steering.md); repair any other failed write and rerun
-  from step 1. Merge stays with the human.
+  from step 1. Merge stays with the human, or with the Orchestrator of an
+  [Orchestrated Track](../SKILL.md#orchestrated-track).
 - After exact-tree proof passes, route final directly observed delivery facts
   through `write-backlog`'s
   [delivery-status branch](../../write-backlog/references/delivery-status.md).
@@ -112,7 +114,8 @@ reviewers, so the watch starts once the handover marks the PR ready for review.
    or when the polling bound runs out. Report `mergeable`, `not mergeable` or
    `pending` with the reason: the open checks, open findings or named blocker.
 
-Delivery never merges; the human merges.
+Delivery never merges; the human merges, or the Orchestrator of an
+[Orchestrated Track](../SKILL.md#orchestrated-track) after its `ready` line.
 
 ## Accepted Repair Continuity
 

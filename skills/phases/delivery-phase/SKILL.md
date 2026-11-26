@@ -52,6 +52,20 @@ delivery. Only missing access that no decision can
 grant, such as credentials, permissions or an unreachable provider, selects
 [human steering](phases/human-steering.md).
 
+## Orchestrated Track
+
+When the brief names an Orchestrator thread, this run is a **Track** of an
+open `$orchestrator-phase`. AFK holds unchanged; two things change:
+
+1. **Report up.** Send one line to the Orchestrator thread at each state
+   change: every out-of-bounds Autonomous Decision, every stop report and the
+   closeout exit. Send state changes only, never acks.
+2. **Ready, not merge.** When PR Watch reports `mergeable` for the current
+   head, closeout sends `ready <PR URL> @ <head commit>` to the Orchestrator
+   and requests no merge review from the human. The Orchestrator merges while
+   its phase is open; delivery still never merges. A new head sends a new
+   `ready` line.
+
 ## Entry Modes
 
 - **Full delivery:** user asks to deliver a bounded goal end to end.
