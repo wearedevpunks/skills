@@ -12,6 +12,7 @@ Phases are the lifecycle entrypoints. Each phase composes skills and ends by han
 | Turn brand and product evidence into committed Design-Owned UI Code on the real route | `$design-phase` | explicit-only |
 | Implement an accepted spec, issue or plan end to end, AFK | `$delivery-phase` | explicit-only |
 | Run delivery unattended under one goal | `$goalify`, with goal text that asks for end-to-end `$delivery-phase` | model-invoked |
+| Run many cross-dependent scopes across threads and repositories AFK from one Orchestrator thread; it goes solo when the scopes are not cross-dependent and big | `$orchestrator-phase` | explicit-only |
 | Review a diff, branch, PR or artifact | `$review-phase` | explicit-only |
 | Investigate a runtime failure, crash or broken flow | `$debugging-phase` | model-invoked |
 | Hunt many bugs across a codebase (ClawPatch) | `$bug-discovery-phase`, then `$bug-resolution-phase` | explicit-only |
@@ -24,13 +25,14 @@ Phases are the lifecycle entrypoints. Each phase composes skills and ends by han
 
 This is the one rule for how an explicit-only phase starts. Other skills link here instead of restating it.
 
-A human starts an explicit-only phase in one of three ways:
+A human starts an explicit-only phase in one of four ways:
 
 1. **Typed command.** The human types `$<phase>`, directly or in a `$goalify` goal text.
 2. **Named proposal.** A phase ends and an explicit-only phase is next. The agent names that phase and its scope (goal, input artifacts, where it stops) and asks to continue. A human yes to that named proposal starts the phase. A bare yes to a vague or unnamed proposal starts nothing: the agent names the phase and scope, then asks again. Inside `$delivery-phase`, the stop report names the phase and scope and asks nothing; the human's later message that starts it counts as the yes.
 3. **Full Delivery inner step.** A Full Delivery the human started already approves its own inner steps: `$review-phase` at `review_due`, and the return to `$requirements-phase` for a missing, stale or changed Architecture/SPEC pair, backlog projection or plan, including a scope change. The agent continues without asking again. Inside them every pending user question is an [Autonomous Decision](../../delivery-phase/SKILL.md#afk); a scope change is out-of-bounds and posted to the thread at once.
+4. **Orchestrator brief.** An open `$orchestrator-phase` the human started approves the phases its Tracks run. The Orchestrator's brief or message that names the phase and scope starts it in the Track, including `$delivery-phase` after the Track reports `grill closed`.
 
-After a start by 2 or 3, the agent reads `.agents/skills/<phase>/SKILL.md` with a file read and follows it. The Skill tool refuses a skill with `disable-model-invocation: true`, so the file read is the way in. On Codex, `allow_implicit_invocation: false` stops only the agent choosing the skill from its description; it does not block this file read, so the rule is the same on both harnesses.
+After a start by 2, 3 or 4, the agent reads `.agents/skills/<phase>/SKILL.md` with a file read and follows it. The Skill tool refuses a skill with `disable-model-invocation: true`, so the file read is the way in. On Codex, `allow_implicit_invocation: false` stops only the agent choosing the skill from its description; it does not block this file read, so the rule is the same on both harnesses.
 
 In every other case the agent ends its turn with the named proposal.
 
@@ -50,6 +52,8 @@ $delivery-phase (Plan Complete entry gate; missing or stale plan → $requiremen
 $debugging-phase ⇄ $delivery-phase (entry on verify mismatch or review route; returns evidence)
 $bug-discovery-phase ─ human ─→ $bug-resolution-phase → $debugging-phase | $docs-ingest-phase
 $goalify → active goal → $delivery-phase (full delivery when the goal asks for it)
+$orchestrator-phase → Tracks ($requirements-phase ─ grill closed ─→ $delivery-phase in the same thread | $delivery-phase | $debugging-phase) ─ ready ─→ Orchestrator merges, ships, verifies
+        └─ go solo ─→ Solo Thread runs the routed phase itself; work grows ─→ reopen through a fork + $handoff
 ```
 
 ## What each phase composes
@@ -68,6 +72,7 @@ $goalify → active goal → $delivery-phase (full delivery when the goal asks f
 | `$resolve-debt-phase` | `$parallel-research`, `$create-spec` | decision request, delivery brief, or resolved debt file |
 | `$docs-ingest-phase` | `$docs-onboarding`, `$writing-fragments` → `$writing-beats` → `$writing-shape`, `$show-me` | ingest outcome plus `log.md` entry |
 | `$goalify` | none | one active goal |
+| `$orchestrator-phase` | Tracks running `$requirements-phase`, `$delivery-phase`, `$debugging-phase`; Workers; `$handoff`, `$secrets-cli`, `$agent-browser`, `$verify-behavior`, `$model-checking`, `$wait-what` | settled Tracks and a closed Ledger, or a Solo Thread |
 
 ## Standalone skills
 

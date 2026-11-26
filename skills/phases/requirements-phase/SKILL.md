@@ -50,6 +50,16 @@ Only missing access stops this phase for the human: a configured provider
 that fails, or missing credentials or permissions, returns the blocked
 backlog delta of step 8.
 
+## Orchestrated Track
+
+When the brief names an Orchestrator thread, this phase is the shaping step
+of an `$orchestrator-phase` Track; the human grills here as usual. When step 9
+returns the Requirements result, send one line to the Orchestrator thread:
+`grill closed` with the result's architecture, specification and plan
+identities. The Orchestrator then starts `$delivery-phase` in this same
+thread. Send one line for any stop, with its blocked delta. Send state
+changes only, never acks.
+
 ## Workflow
 
 1. Select the applicable input contract above. Complete entry when the direct

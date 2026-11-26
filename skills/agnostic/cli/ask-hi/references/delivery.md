@@ -89,6 +89,15 @@ Model-invoked; Packs `planning`, `requirements`. Durable links for visual eviden
 - **Stops / gates:** upload failure = recorded blocker, local path only as pending evidence; callers link this skill and copy no commands.
 - **Source:** `.agents/skills/repo-asset-management/SKILL.md`
 
+## `$orchestrator-phase`
+Explicit-only; Pack `planning`. AFK Orchestrator that runs many cross-dependent scopes as Tracks across threads and repositories, merges and ships them, and reports to the human.
+- **Use when:** several cross-dependent scopes of big size must land together (ordered merges, an optional integration branch, per-target deploys). **Not for:** one scope, or small scopes: the Orchestrator goes solo and runs the routed phase itself.
+- **Steps:** a router over `.orchestrator/<run>/ledger.md` and the new event. Intake (route; orchestrate or go solo; adopt) → Charter (`charter.md`, shown in the first report) → Split (Tracks and dependencies; integration branch only above about 1.5 million changed lines) → Spawn (brief; start check within 2 minutes) → Listen (steady state: one event, Ledger update, act or delegate, end the turn) → Merge (the exact reported commit, after the repository's checks and review; squash; restack) → Ship → Verify (post-deploy Worker) → Settle. A Solo Thread whose work grows reopens the phase through a fork plus `$handoff`.
+- **Calls:** `$requirements-phase`, `$delivery-phase`, `$debugging-phase` inside Tracks (typed in the brief); Workers; `$handoff`; `$secrets-cli`; `$agent-browser`, `$verify-behavior`, `$model-checking`; `$wait-what` for reports. **Called by:** human.
+- **Writes:** `.orchestrator/<run>/charter.md`; `.orchestrator/<run>/ledger.md` (Tracks, Needs-you items, decisions, events).
+- **Stops / gates:** never a question tool; every pending choice is an Autonomous Decision. Human Gates: production deploys, new functional PR merges, paid infrastructure, production data deletion outside an approved migration; each waits as a Needs-you item while other Tracks continue. A gate opens on the human's words, typed or quoted in a relayed go that the Orchestrator checks against the source thread. Goes solo only when no live Track remains. Tracks report state changes to the Orchestrator ([Orchestrated Track](../../delivery-phase/SKILL.md#orchestrated-track)).
+- **Source:** `.agents/skills/orchestrator-phase/SKILL.md`, `phases/router.md`, `phases/{intake,charter,split,spawn,listen,merge,ship,verify,settle,solo,reopen}.md`, `references/{hosts,ledger,charter,track-brief,report}.md`
+
 ## `$goalify`
 Model-invoked; Pack `planning`. Turns messy intent into one lean `/goal`, activates it at once, and keeps working under it.
 - **Use when:** an AFK or compaction-safe run needs one goal. **Not for:** planning the work itself, which the goal's named workflow does.
