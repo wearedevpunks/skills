@@ -74,7 +74,7 @@ Do every applicable step; skip a step only when its condition is false.
       supplied; who acquires and releases resources. Apply the stack skill
       that applies (for Effect, `$effect-service-design`);
    3. inspect the primitive: through the stack skills and the project source
-      guide or `opensrc`, read the exact module, symbol, and source version;
+      guide or `$opensrc`, read the exact module, symbol, and source version;
       record its guarantees, limitations, and the remainder the application
       owns. Keep installed-version facts, proposed design, and unproved
       runtime behavior apart.
@@ -88,7 +88,7 @@ Do every applicable step; skip a step only when its condition is false.
    satisfies.
 
 Required calls: subagent fact finding for steps 8 and 9, the applicable stack
-skills and `opensrc` for step 8, and `$domain-modeling` for step 6. Their
+skills and `$opensrc` for step 8, and `$domain-modeling` for step 6. Their
 evidence is the anchors and fact records in the Technical Grounding table.
 
 ## Invariants

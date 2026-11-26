@@ -6,7 +6,7 @@ description: |
   transport adapters, DB integrations, test placement, backend boilerplate, or
   Layer composition ownership in any Effect backend root. Enforces concrete
   module boundaries, actions-own-orchestration, integration dependency direction,
-  three-level Layer composition operators, effect-solutions plus opensrc source
+  three-level Layer composition operators, effect-solutions plus $opensrc source
   lookup, and @effect/vitest conventions.
 compatibility: Requires Effect v4. Examples are reviewed against the version documented in this repository.
 ---
@@ -30,7 +30,7 @@ This skill adds Effect-specific internal-module topology, repository boundaries,
 
    **Complete when:** the backend root and every governing instruction or reference used for the change are named.
 
-2. Run the smallest relevant `effect-solutions` guides, then inspect local `opensrc` Effect sources for unfamiliar or ambiguous APIs.
+2. Run the smallest relevant `effect-solutions` guides, then inspect Effect sources through `$opensrc` for unfamiliar or ambiguous APIs.
 
    **Complete when:** every Effect API decision in scope is supported by a relevant guide or the current source.
 
@@ -51,12 +51,12 @@ Always consult `effect-solutions` first. Use the smallest relevant set:
 - `effect-solutions show error-handling`
 - `effect-solutions show testing`
 
-Use `opensrc` next when the guide is not enough:
+Use `$opensrc` next when the guide is not enough:
 
-- Run `opensrc path Effect-TS/effect`.
+- Fetch `Effect-TS/effect` through `$opensrc`.
 - Inspect `packages/effect`, `packages/sql`, or `packages/sql-drizzle` in that checkout.
 
-For non-Effect libraries, run `opensrc path <package>` or `opensrc path owner/repo`.
+For non-Effect libraries, use `$opensrc` on the package or repository.
 
 ## Effect Coding Rules
 
@@ -81,7 +81,7 @@ Read `references/layout.md` for the mutually exclusive Layer ownership classifie
 
 - `$backend-domain-structure` was applied
 - relevant `effect-solutions` guides were checked
-- `opensrc` sources were checked when needed
+- `$opensrc` sources were checked when needed
 - code landed in the correct backend layer
 - actions own orchestration
 - services are only reusable mechanics

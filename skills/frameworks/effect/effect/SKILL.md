@@ -15,7 +15,7 @@ Use current Effect v4 APIs and the production defaults in this skill. Establishe
 Check these before guessing:
 
 - the nearest `AGENTS.md` and any project-local Effect practices doc
-- `opensrc path Effect-TS/effect`, then the current Effect v4 source at https://github.com/Effect-TS/effect/tree/main
+- `$opensrc` on `Effect-TS/effect`, then the current Effect v4 source at https://github.com/Effect-TS/effect/tree/main
 - the project-pinned `effect` package source only when exact installed-version behavior matters
 
 ## Branch Chooser

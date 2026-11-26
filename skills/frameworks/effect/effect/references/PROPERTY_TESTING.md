@@ -4,7 +4,7 @@ Use this when writing an Effect property or stateful property. Patterns, slice o
 
 ## Version
 
-This reference targets the API of the npm `latest` `effect` and `@effect/vitest` release (4.1.0). `effect/Arbitrary` is `@stability unstable`. On any other installed version, verify each name below through `opensrc path effect` before you write a property.
+This reference targets the API of the npm `latest` `effect` and `@effect/vitest` release (4.1.0). `effect/Arbitrary` is `@stability unstable`. On any other installed version, verify each name below through `$opensrc` on `effect` before you write a property.
 
 ## Generators From Schemas
 

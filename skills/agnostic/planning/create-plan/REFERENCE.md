@@ -7,7 +7,7 @@
 The required-inner-skills list in canonical [SKILL.md](SKILL.md) is authoritative and includes `$show-me`.
 Execute every listed skill; keep this reference focused on sequencing and disclosed rules.
 
-- `opensrc` provides source context for installed or external packages
+- `$opensrc` provides source context for installed or external packages
 - scoped `AGENTS.md` files provide per-path skill requirements through one final
   `## Skills` table with `Skill | Exact trigger`; select matching non-phase rows
   and open each selected installed skill's `SKILL.md`, which remains workflow
