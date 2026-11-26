@@ -58,7 +58,7 @@ silently renaming them.
 6. After `$grilling` completes, continue to plan synthesis; backlog eligibility
    remains step 14.
 7. If readonly discovery has independent code paths, specs, backlog items, external docs, or hypotheses, read and use `$parallel-research` before final task synthesis.
-8. Research with `opensrc path <package>` or `opensrc path <owner>/<repo>` plus primary-source web docs when current behavior matters.
+8. Research package or repository source through `$opensrc`, plus primary-source web docs when current behavior matters.
 9. Locate scoped `AGENTS.md` files for every planned task path. Scoped guidance
    uses one final `## Skills` table with `Skill | Exact trigger`. Select only
    non-phase rows whose exact triggers match the task, then open each selected

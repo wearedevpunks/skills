@@ -265,7 +265,7 @@ test("ground finds facts through subagents, never asks, and imports the Brief wi
   const grounding = step(section(text, "Bounded Action"), 8);
   assert.match(grounding, /through subagents/u);
   assert.match(grounding, /stack skill/u);
-  assert.match(grounding, /`opensrc`/u);
+  assert.match(grounding, /`\$opensrc`/u);
 });
 
 test("every grill question reaches the user as plain chat, never through a structured question tool", () => {
@@ -335,7 +335,7 @@ test("checkpoint runs on every response set: record, domain model, flow lenses, 
   for (const input of [
     /`\$codebase-design`\s+vocabulary/u,
     /applicable stack skills/u,
-    /`opensrc` for the exact\s+primitive module/u,
+    /`\$opensrc` for the exact\s+primitive module/u,
     /`\$show-me` interface sketch or module\s+tree/u,
   ]) {
     assert.match(derive, input);
@@ -346,7 +346,7 @@ test("checkpoint runs on every response set: record, domain model, flow lenses, 
   );
   assert.match(
     text,
-    /^Required calls: `\$domain-modeling` and `\$flow-lenses` on every response set;\s+for an L3 derivation, `\$codebase-design`, the applicable stack skills,\s+`opensrc`, and `\$show-me`/mu,
+    /^Required calls: `\$domain-modeling` and `\$flow-lenses` on every response set;\s+for an L3 derivation, `\$codebase-design`, the applicable stack skills,\s+`\$opensrc`, and `\$show-me`/mu,
   );
   assert.match(artifact(), /^- flow-lenses: R<N> run — /mu);
 });

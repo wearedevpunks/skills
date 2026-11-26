@@ -27,7 +27,7 @@ This skill adds the Effect-specific primitives and testing expectations.
 2. Read the nearest relevant `AGENTS.md` files.
 3. Read `$backend-recoverable-actions` plus its strategy and test matrices.
 4. Run `effect-solutions show error-handling` and `effect-solutions show testing`.
-5. Check local `opensrc` source when transaction, retry, accumulation, or control-flow behavior matters.
+5. Check source through `$opensrc` when transaction, retry, accumulation, or control-flow behavior matters.
 6. Enumerate the action steps in order.
 7. Choose the failure strategy before writing code.
 8. Add failure-path `@effect/vitest` tests before considering the action complete.

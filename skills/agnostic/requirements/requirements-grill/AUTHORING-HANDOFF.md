@@ -78,7 +78,7 @@ Artifacts: the obligation map below.
 | O5 Altitude Ladder L1/L2/L3 and planning exclusions defined once (AC-012, D5) | yes | yes | router `## Altitude Ladder` | router | one definition; gates link it |
 | O6 Target Altitude L3 code-bearing, L1 product-only; raise to L3 on first code consequence (AC-012) | yes | yes | Branch Dashboard | ground, checkpoint | rule in ladder; raise step in checkpoint |
 | O7 One Altitude per round, shallowest ready across branches (AC-013) | yes | yes | Current Round `Altitude` | router, round | Round Selection rule; round invariant |
-| O8 Level N+1 derivation at checkpoint; L3 via `$codebase-design` vocabulary, stack skills, `opensrc`, `$show-me` sketch or module tree (AC-014) | yes | yes | log questions with Altitude, Required Calls `level derivation` | checkpoint | step 7 names all four inputs |
+| O8 Level N+1 derivation at checkpoint; L3 via `$codebase-design` vocabulary, stack skills, `$opensrc`, `$show-me` sketch or module tree (AC-014) | yes | yes | log questions with Altitude, Required Calls `level derivation` | checkpoint | step 7 names all four inputs |
 | O9 No placeholder-label default (AC-015); L3 decides names, interfaces, primitives, seams, layout | yes | yes | log template, ladder | define-handoffs, router | the AC-015 grep over the skill is empty |
 | O10 `ground` uses subagents and never asks the user (AC-011) | yes | yes | Technical Grounding, fact records | ground | boundary and invariant state it |
 | O11 Technical grounding obligations of the former live-flow reference kept (locate, owner, primitive, consequence, ask) | yes | yes | Technical Grounding table, log technical template | ground, round | steps 8 (ground) and 3–4 (round) |
@@ -155,9 +155,9 @@ Artifacts:
 
 | Gate ID | Entry guard | Actor-like gate boundary owner | Internal delegation policy | Reconciliation rule | Outputs | Exit semantics | Durable handoff |
 |---|---|---|---|---|---|---|---|
-| ground | row 4 | artifacts, precision import, branch Altitudes, grounding, fact dispatch | subagents for facts; stack skills and `opensrc` for primitives; `$domain-modeling` load | reports become facts and cleared prerequisites | status, log | `grounded`, `facts_requested`, blocked `precision_input_unreadable`, steering | Gate Outcomes `ground` |
+| ground | row 4 | artifacts, precision import, branch Altitudes, grounding, fact dispatch | subagents for facts; stack skills and `$opensrc` for primitives; `$domain-modeling` load | reports become facts and cleared prerequisites | status, log | `grounded`, `facts_requested`, blocked `precision_input_unreadable`, steering | Gate Outcomes `ground` |
 | round | rows 11, 13 | one round at one Altitude | `$grilling`, `$wait-what`, `$show-me`, `$wayfinder` (+ `$parallel-research`, `$prototype`) | wayfinder results recorded per question | Current Round, Required Calls | checkpoint `answers_required`, `frontier_rerouted`, steering | Gate Outcomes `round` |
-| checkpoint | rows 6, 10, 12 | recording, Altitude bookkeeping, derivation, call evidence | `$domain-modeling`, `$flow-lenses`, `$codebase-design`, stack skills, `opensrc`, `$show-me` | gaps become questions, resolved, parked, or deferred | log, status | `recorded`, blocked `call_failed`, steering | Gate Outcomes `checkpoint` |
+| checkpoint | rows 6, 10, 12 | recording, Altitude bookkeeping, derivation, call evidence | `$domain-modeling`, `$flow-lenses`, `$codebase-design`, stack skills, `$opensrc`, `$show-me` | gaps become questions, resolved, parked, or deferred | log, status | `recorded`, blocked `call_failed`, steering | Gate Outcomes `checkpoint` |
 | close | rows 7, 15 | confirmation, closure, synthesis, handoff | `$domain-modeling`, `$show-me`, wiki synthesis | corrections re-route to checkpoint | status, log Closure, wiki pages | checkpoints `shared_understanding_required`, `closure_required`; `grill_closed`; `guard_failed`; steering | Gate Outcomes `close` |
 
 ### Graph Layer

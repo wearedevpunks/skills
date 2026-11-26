@@ -69,7 +69,7 @@ When `PLAN.md` declares architecture applicability as `architecture-bearing`,
 also read [architecture-conformance.md](architecture-conformance.md) before
 dispatching the first wave.
 
-If package or framework behavior matters, inspect source with `opensrc --modify false` before guessing.
+If package or framework behavior matters, inspect its source through `$opensrc` before guessing.
 
 ## 4. Prepare execution notes
 

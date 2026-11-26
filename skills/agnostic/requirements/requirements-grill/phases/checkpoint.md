@@ -80,7 +80,7 @@ Run every step on every response set, a partial set included. On route rows
    questions from that level's ladder contents and the accepted decisions.
    - L3 derivation uses `$codebase-design` vocabulary (module, interface,
      seam, adapter, depth), the applicable stack skills (for example
-     `$effect-service-design`), `opensrc` for the exact primitive module,
+     `$effect-service-design`), `$opensrc` for the exact primitive module,
      symbol, and source version, and a `$show-me` interface sketch or module
      tree of the proposed modules.
    - When the precision inputs already settle level N+1, derive no question
@@ -103,7 +103,7 @@ Run every step on every response set, a partial set included. On route rows
 
 Required calls: `$domain-modeling` and `$flow-lenses` on every response set;
 for an L3 derivation, `$codebase-design`, the applicable stack skills,
-`opensrc`, and `$show-me`.
+`$opensrc`, and `$show-me`.
 
 ## Invariants
 

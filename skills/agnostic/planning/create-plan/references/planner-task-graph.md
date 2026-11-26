@@ -4,9 +4,9 @@ Use this reference to run `$swarm-planner` and produce the swarm graph of `Tn` t
 
 ## Research before task design
 
-Use `opensrc path <package>` or `opensrc path <owner>/<repo>` when source context from installed or external packages matters.
+Use `$opensrc` when source context from installed or external packages matters.
 
-Use web search when `opensrc` is insufficient or when current API behavior matters.
+Use web search when `$opensrc` is insufficient or when current API behavior matters.
 
 Prefer primary sources.
 

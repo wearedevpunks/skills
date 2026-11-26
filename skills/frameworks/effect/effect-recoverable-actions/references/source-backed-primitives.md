@@ -1,6 +1,6 @@
 # Source-Backed Primitives
 
-Use local `opensrc` source to verify these Effect recoverability primitives.
+Use `$opensrc` source to verify these Effect recoverability primitives.
 
 ## Transactions
 
