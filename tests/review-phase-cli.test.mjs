@@ -110,6 +110,26 @@ test("prepare writes a private Review Packet with the changed paths and context"
   assert.deepEqual(status(fx), { next: "review", run_dir: runDir, pass_count: 0, blocker: null });
 });
 
+test("prepare adds task-only rules and reads Markdown-link File cells", (t) => {
+  const fx = fixtureRepo(t);
+  write(path.join(fx.repo, ".agents/rules/packs/sdk-guidance.md"), "# SDK guidance\n");
+  write(path.join(fx.repo, ".agents/rules/root/linked.md"), "# Linked rule\n");
+  write(path.join(fx.repo, ".agents/rules/root/other.md"), "# Other rule\n");
+  fx.commit(".agents/rules/index.md", [
+    "| id | scope | path trigger | task trigger | tags | file |",
+    "| :-- | --- | --- | --- | --- | --- |",
+    "| `R-SRC-001` | src | `src/**` | source changes | src | [root/linked.md](root/linked.md) |",
+    "| `R-WEB-001` | web | `web/**` | web changes | web | [root/other.md](root/other.md) |",
+    "| sdk-guidance | repository | none (import-based) | change code that imports the SDK | pack | [packs/sdk-guidance.md](packs/sdk-guidance.md) |",
+    "",
+  ].join("\n"), "linked rule registry");
+  const packet = readJson(path.join(prepared(fx), "packet.json"));
+  assert.deepEqual(packet.context.filter((file) => file.startsWith(".agents/rules/")), [
+    ".agents/rules/packs/sdk-guidance.md",
+    ".agents/rules/root/linked.md",
+  ]);
+});
+
 test("delivery prepare blocks without a spec source and on several spec folders", (t) => {
   const fx = fixtureRepo(t);
   const base = fx.git("rev-parse", "HEAD");
