@@ -16,6 +16,7 @@ Answer questions about the HI Baseline from its skill graph and install mechanic
    | Which phase or skill fits a task; how phases hand off                                    | [phase-graph.md](references/phase-graph.md)                          |
    | Requirements: grill, brainstorm, flow lenses, glossary, architecture, spec, backlog      | [requirements.md](references/requirements.md)                        |
    | Delivery: plan, workers, TDD, validation, behavior verification, goals, closeout         | [delivery.md](references/delivery.md)                                |
+   | Orchestration: Orchestrator, Tracks, Charter, Ledger, Human Gates, Needs-you, going solo | [delivery.md](references/delivery.md#orchestrator-phase)             |
    | Review, debugging, bug hunts, tech debt, research, security                              | [quality.md](references/quality.md)                                  |
    | Finder, prototypes, design, docs ingest, wiki, writing skills                            | [discovery-and-docs.md](references/discovery-and-docs.md)            |
    | Packs, install paths, Harness Adapters, prompt specs, rules, hooks, tools, release, drift | [baseline.md](references/baseline.md)                                |
