@@ -123,18 +123,28 @@ const resolveTarget = (repo, { mode, base, standalone }) => {
 };
 
 const ticked = (cell) => [...cell.matchAll(/`([^`]+)`/gu)].map((match) => match[1]);
-// Rules whose `path trigger` globs match a changed path, from `.agents/rules/index.md`.
+// A File cell is `x.md`, x.md or a Markdown link [x.md](x.md); the link target names the file.
+const ruleFile = (cell) => (cell.match(/\]\(([^)\s]+)\)/u)?.[1] ?? cell.replaceAll("`", "")).trim();
+// Rules from `.agents/rules/index.md`: each row whose `path trigger` globs match a changed path,
+// and each row with no path glob but a task trigger, which the reviewer applies by reading the diff.
 const matchRules = (index, changed) => {
   const rows = (index ?? "").split("\n")
     .filter((line) => line.trim().startsWith("|"))
     .map((line) => line.trim().replace(/^\||\|$/gu, "").split("|").map((cell) => cell.trim()));
   const columns = (rows[0] ?? []).map((cell) => cell.toLowerCase());
   const trigger = columns.indexOf("path trigger");
+  const task = columns.indexOf("task trigger");
   const file = columns.indexOf("file");
   if (trigger < 0 || file < 0) return [];
+  const applies = (row) => {
+    const globs = ticked(row[trigger] ?? "");
+    if (globs.length === 0) return task >= 0 && (row[task] ?? "") !== "";
+    return globs.some((glob) => changed.some((p) => path.posix.matchesGlob(p, glob)));
+  };
   return rows.slice(1)
-    .filter((row) => ticked(row[trigger] ?? "").some((glob) => changed.some((p) => path.posix.matchesGlob(p, glob))))
-    .map((row) => `.agents/rules/${row[file].replaceAll("`", "")}`);
+    .filter((row) => !row.every((cell) => /^:?-+:?$/u.test(cell)))
+    .filter((row) => (row[file] ?? "") !== "" && applies(row))
+    .map((row) => `.agents/rules/${ruleFile(row[file])}`);
 };
 
 // Source before tests before docs, larger diffs first within a tier.

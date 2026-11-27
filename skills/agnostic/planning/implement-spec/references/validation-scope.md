@@ -78,6 +78,10 @@ manager:
 
 - `hi.test-resource=true`
 - `hi.owner-pid=<pid of the test process>`
+- `hi.owner-host=<hostname of the test process>` (`os.hostname()`, `$(hostname)`)
+- `hi.owner-pidns=<pid namespace of the test process>` on Linux: the target of
+  `readlink /proc/self/ns/pid`, for example `pid:[4026531836]`. Leave it out
+  where `/proc/self/ns/pid` does not exist.
 - `hi.run-id=<id>` (optional)
 
 With Ryuk disabled, the labels are the only way the sweep finds orphans. Start
@@ -86,8 +90,11 @@ shared servers without them, so the sweep leaves those servers running.
 `hi update` installs the sweep. Run
 `node .agents/scripts/test-resource-sweep.mjs` (`--dry-run` lists without
 removing). It removes only proven orphans: labeled containers that have exited,
-and running labeled containers whose owner pid is dead. It leaves unlabeled
-containers alone and exits 0 when Docker is absent.
+and running labeled containers whose owner host and pid namespace match the
+sweep's own and whose owner pid is dead. A running container from another host
+or pid namespace, or without `hi.owner-host`, stays: a remote or shared Docker
+daemon serves containers whose owner pid means nothing here. The sweep leaves
+unlabeled containers alone and exits 0 when Docker is absent.
 
 Run it at delivery closeout and at debugging-phase exit. Where the agent
 harness supports it, a SessionEnd hook also runs it; the hook is a backstop, so

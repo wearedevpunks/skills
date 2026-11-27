@@ -164,6 +164,25 @@ of a scope still needs coverage. Shared settings, policy, routing, and
 toolchain inputs trigger their dependent owners even outside owned source.
 Existing Python tooling keeps its own routing while honoring shared exclusions.
 
+## Prepare step: lint.prepare
+
+Type-aware rules read generated types, such as Next.js route types from
+`next typegen`. On a fresh checkout those files are absent, and the rules
+report false findings. `hi update` owns the `lint` package scripts and the
+Commit Gate calls the runner directly, so a script prefix never reaches every
+run. Put the generator in settings `lint.prepare`, a list of shell commands
+(CLI 6.17.0 or later):
+
+```json
+{ "lint": { "prepare": ["turbo run typegen"] } }
+```
+
+`managed-lint-runner.mjs` runs each command once, in order, from the
+repository root, before Oxlint, and only when the run has files to lint. A
+command that fails ends the run as an operational failure that names the
+command. `bun run lint`, the Commit Gate and the lint step of `hi update` run
+the step; the edit hook skips it to stay inside its per-edit timeout.
+
 ## Type-aware backend: tsrs
 
 Type-aware Oxlint rules run on tsrs, the Rust port of TypeScript, by default
